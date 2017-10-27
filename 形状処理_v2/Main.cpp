@@ -1,6 +1,7 @@
-#include <gl/freeglut.h>
+#define GLOBAL_INSTANCE 
+#include "GV.h"
+
 #include "Callback.h"
-#include "Initialize.h"
 
 int main(int argc, char* argv[])
 {

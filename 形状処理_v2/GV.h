@@ -1,5 +1,14 @@
 #pragma once
 
+#include <gl/freeglut.h>
 #include "define.h"
 
-int width, height; // ウィンドウサイズ
+#ifdef GLOBAL_INSTANCE
+#define GLOBAL
+#else
+#define GLOBAL extern 
+#endif
+
+#include "function.h"
+
+GLOBAL int width, height; // ウィンドウサイズ

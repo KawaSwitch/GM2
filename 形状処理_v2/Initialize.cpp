@@ -1,5 +1,4 @@
-#include <gl/freeglut.h>
-#include "Initialize.h"
+#include "GV.h"
 
 void Initialize()
 {

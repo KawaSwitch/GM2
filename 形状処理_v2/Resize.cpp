@@ -1,6 +1,5 @@
-#include <gl/glut.h>
-#include "Callback.h"
 #include "GV.h"
+#include "Callback.h"
 
 void Resize(int w, int h)
 {

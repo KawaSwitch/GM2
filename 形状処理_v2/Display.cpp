@@ -10,6 +10,7 @@ void Display()
     gluLookAt(0.0, 0.0, 9.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
 
+
     // Šô‰½ƒOƒŠƒbƒh•`‰æ
     glPushMatrix();
     DrawGrid(GeoGrid2D());
