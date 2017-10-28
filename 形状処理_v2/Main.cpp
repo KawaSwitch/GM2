@@ -10,13 +10,16 @@ int main(int argc, char* argv[])
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 
     // ウィンドウ設定
-    glutInitWindowSize(960, 960);
+    glutInitWindowSize(DEF_WIN_X, DEF_WIN_Y);
     glutInitWindowPosition(90, 20);
     glutCreateWindow("形状処理");
 
     // 各種コールバック
     glutDisplayFunc(Display);
     glutReshapeFunc(Resize);
+    glutMouseFunc(Mouse);
+    glutMotionFunc(Motion);
+    glutMouseWheelFunc(Wheel);
 
     // 初期化
     Initialize();

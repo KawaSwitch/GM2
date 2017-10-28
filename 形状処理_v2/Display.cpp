@@ -1,4 +1,4 @@
-#include <gl/freeglut.h>
+#include "GV.h"
 #include "Callback.h"
 #include "GeoGrid.h"
 
@@ -9,7 +9,12 @@ void Display()
     glLoadIdentity();
     gluLookAt(0.0, 0.0, 9.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
+    // ˆÚ“®
+    glTranslated(dist_X, -dist_Y, dist_Z);
+    // ‰ñ“]
+    glMultMatrixd(rotate);
 
+    glPopMatrix();
 
     // Šô‰½ƒOƒŠƒbƒh•`‰æ
     glPushMatrix();
