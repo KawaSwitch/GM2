@@ -48,23 +48,15 @@ public:
         {
             if (!_isRendered)
             {
-                CreateVBO();
+                CreateVBO(); // VBOçÏê¨
 
                 _isRendered = true;
-
                 glutPostRedisplay();
             }
             else
             {
-                glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-                glVertexPointer(3, GL_DOUBLE, 0, 0);
-
-                glEnableClientState(GL_VERTEX_ARRAY);
-
-                glDrawArrays(GL_LINE_STRIP, 0, 901);
-
-                glDisableClientState(GL_VERTEX_ARRAY);
-                glBindBuffer(GL_ARRAY_BUFFER, 0);
+                glColor3dv(_color); // êFéwíË
+                DrawVBO(); // ï`âÊ
             }
 
         }
