@@ -1,8 +1,18 @@
 #include "GV.h"
+#include "Scene.h"
 #include "Quaternion.h"
 #include "Axis.h"
 
 extern NormalAxis* axis;
+extern Scene* scene;
+
+void InitScene()
+{
+    scene = new Scene();
+
+    // 各オブジェクト追加
+
+}
 
 void InitQuaternion()
 {
@@ -32,4 +42,5 @@ void Initialize()
     move_flag = GL_FALSE;
 
     InitQuaternion();
+    InitScene();
 }

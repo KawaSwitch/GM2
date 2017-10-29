@@ -1,8 +1,13 @@
 #pragma once
 
+using namespace std;
+
 #include <gl/freeglut.h>
 #include <math.h>
 #include "define.h"
+#include "EPS.h"
+#include "Error.h"
+#include "Color.h"
 
 #ifdef GLOBAL_INSTANCE
 #define GLOBAL
@@ -25,3 +30,10 @@ GLOBAL double rot_mat[16]; // 回転マトリクス
 // 構造体
 GLOBAL Quaternion target;
 GLOBAL Quaternion current;
+
+// 描画アシスト
+template<class Anything> void DrawWithoutSetting(const Anything& obj)
+{
+    // デバグ描画用
+    obj.Draw();
+}

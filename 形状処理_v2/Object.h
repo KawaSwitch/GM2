@@ -26,6 +26,7 @@ private:
 
 protected:
 
+    bool _isUseVBO = false; // VBO‚ðŽg‚¤‚©
     GLdouble _color[4];  // F
 
     // Ž–‘O•`‰æ
@@ -36,20 +37,29 @@ public:
     // •`‰æ
     virtual void Draw()
     {
-        if (!_isRendered)
+        // VBO
+        if (_isUseVBO)
         {
-            // “o˜^
-            glNewList(_displayList, GL_COMPILE);
-            this->PreDraw();
-            glEndList();
 
-            _isRendered = true;
-
-            glutPostRedisplay();
         }
+        // ƒfƒBƒXƒvƒŒƒCƒŠƒXƒg
         else
         {
-            glCallList(_displayList);
+            if (!_isRendered)
+            {
+                // “o˜^
+                glNewList(_displayList, GL_COMPILE);
+                this->PreDraw();
+                glEndList();
+
+                _isRendered = true;
+
+                glutPostRedisplay();
+            }
+            else
+            {
+                glCallList(_displayList);
+            }
         }
     }
 

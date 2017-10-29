@@ -22,6 +22,16 @@ public:
     static GLdouble black[];
     static GLdouble black_alpha[];
 
+    static void GetRandomColor(GLdouble* color)
+    {
+        //srand((unsigned)time(NULL));
+
+        for (int i = 0; i < 3; i++)
+            color[i] = (double)rand() / 32767.0;
+
+        color[3] = 0.5; // ƒ¿’l‚ÍŒÅ’è
+    }
+
 public:
     Color() = delete;
 };
