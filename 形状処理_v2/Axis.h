@@ -3,16 +3,16 @@
 #include "GV.h"
 #include "Object.h"
 
-class Axis : public Object
+class Axis
 {
 protected:
     double _length; // ’·‚³
-    //double _weight; // ‘¾‚³
 
 public:
     Axis(double len) { _length = len; }
 };
 
+// Cggl•—‚ÌŽ²
 class NormalAxis : public Axis
 {
 private:
@@ -20,5 +20,5 @@ private:
 
 public:
     NormalAxis(double len) : Axis(len) { }
-    virtual void PreDraw() override;
+    void Draw();
 };

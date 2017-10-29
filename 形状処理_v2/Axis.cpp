@@ -1,15 +1,35 @@
 #include "Axis.h"
 #include "Color.h"
 
-void NormalAxis::PreDraw()
+void NormalAxis::Draw()
 {
-    // for position
-    glDisable(GL_DEPTH_TEST);
-    this->DrawInternal();
+    // ディスプレイリスト
+    static int displayList;
+    static bool isRendered = false;
 
-    // actual drawing
-    glEnable(GL_DEPTH_TEST);
-    this->DrawInternal();
+    if (isRendered)
+    {
+        // ディスプレイリスト作成済みならコール
+        glCallList(displayList);
+    }
+    else
+    {
+        if (!(displayList = glGenLists(1)))
+            Error::ShowAndExit("ディスプレイリスト作成失敗");
+
+        glNewList(displayList, GL_COMPILE);
+
+        // for position
+        glDisable(GL_DEPTH_TEST);
+        this->DrawInternal();
+
+        // actual drawing
+        glEnable(GL_DEPTH_TEST);
+        this->DrawInternal();
+
+        glEndList();
+        isRendered = true;
+    }
 }
 
 void NormalAxis::DrawInternal()
