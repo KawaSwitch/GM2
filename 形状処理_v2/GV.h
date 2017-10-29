@@ -8,6 +8,7 @@ using namespace std;
 #include "EPS.h"
 #include "Error.h"
 #include "Color.h"
+#include "Vector.h"
 
 #ifdef GLOBAL_INSTANCE
 #define GLOBAL

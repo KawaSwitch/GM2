@@ -1,5 +1,5 @@
 #pragma once
-#include "GV.h"
+#include <gl/freeglut.h>
 
 // êFÇ‹Ç∆Çﬂ
 struct Color

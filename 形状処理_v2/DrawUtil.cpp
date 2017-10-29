@@ -7,8 +7,6 @@ void DrawBsplineFunc(int mord, int ncpnt, int nknot, double* knot, double min_t,
     static int displayList;
     static bool isRendered = false;
 
-    double bf_array[100]; // Šî’êŠÖ”’l
-
     // Œë·–h~
     int MIN = (int)(min_t * 100);
     int MAX = (int)(max_t * 100);

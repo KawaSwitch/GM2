@@ -2,16 +2,31 @@
 #include "Scene.h"
 #include "Quaternion.h"
 #include "Axis.h"
+#include "BsplineCurve.h"
 
 extern NormalAxis* axis;
 extern Scene* scene;
+
+double a[10] = { -3, -2, -1, 0, 1, 2, 3, 4, 5, 6 };
+double b[10] = { 0, 0, 0, 0, 1, 2, 3, 3, 3, 3 };
+double c[10] = { 0, 0, 0, 0, 1, 1, 3, 3, 3, 3 };
 
 void InitScene()
 {
     scene = new Scene();
 
-    // 各オブジェクト追加
+    ControlPoint cp_sample[6] =
+    {
+        ControlPoint(-3, 2, 0),
+        ControlPoint(-5, 4, 0),
+        ControlPoint(-1, 8, 0),
+        ControlPoint(2, 7, 0),
+        ControlPoint(4, 3, 0),
+        ControlPoint(6, 1, 0),
+    };
 
+    // 各オブジェクト追加
+    scene->AddObject(new BsplineCurve(4, cp_sample, 6, b, Color::blue, 2.0));
 }
 
 void InitQuaternion()

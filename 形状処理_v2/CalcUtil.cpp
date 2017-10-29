@@ -5,7 +5,6 @@ double CalcBsplineFunc(int i, int M, double t, double* knot)
 {
     if (M == 1)
     {
-        int a = sizeof(knot);
         // ’[‚Á‚±‚Í“Á•Êˆµ‚¢
         if (fabs(t - knot[0]) < 1e-6)
         {
