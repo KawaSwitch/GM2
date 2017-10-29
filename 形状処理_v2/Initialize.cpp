@@ -13,8 +13,8 @@ void InitQuaternion()
     // クォータニオン
     target.x = 0.0; target.y = 0.0;
     target.z = 0.0; target.w = 0.0;
-    current.x = 1.0; current.y = 0.0;
-    current.z = 0.0; current.w = 0.0;
+    current.x = 0.0; current.y = 0.0;
+    current.z = 0.0; current.w = 1.0;
 
     // クォータニオン初期化
     CalcRotateMatrix(rot_mat, current);
