@@ -22,8 +22,8 @@ void Display()
     glTranslated(dist_X, -dist_Y, dist_Z);
     glMultMatrixd(rot_mat);
 
-    DrawBsplineFunc(4, 6, 10, a, -3.0, 6.0);
-    //DrawBsplineFunc(4, 6, 10, b, 0.0, 3.0);
+    //DrawBsplineFunc(4, 6, 10, a, -3.0, 6.0);
+    DrawBsplineFunc(4, 6, 10, b, 0.0, 3.0);
     //DrawBsplineFunc(4, 6, 10, c, 0.0, 3.0);
 
     // Šô‰½ƒOƒŠƒbƒh•`‰æ

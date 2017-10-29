@@ -27,6 +27,7 @@ void DrawBsplineFunc(int mord, int ncpnt, int nknot, double* knot, double min_t,
 
         glNewList(displayList, GL_COMPILE);
 
+        // Šî’êŠÖ”‚Í§Œä“_”ŒÂ‚ ‚é
         for (int i = 0; i < ncpnt; i++)
         {
             glBegin(GL_LINE_STRIP);
@@ -40,8 +41,8 @@ void DrawBsplineFunc(int mord, int ncpnt, int nknot, double* knot, double min_t,
             {
                 double t = (double)T / 100.0;
 
-                CalcBsplineFunc(t, mord, ncpnt, nknot, knot, mord, bf_array);
-                glVertex3d(t, bf_array[i], 0);
+                double bf = CalcBsplineFunc(i, mord, t, knot);
+                glVertex3d(t, bf, 0);
             }
 
             glEnd();
