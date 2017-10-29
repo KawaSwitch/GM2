@@ -1,4 +1,5 @@
 #pragma once
+#pragma comment(lib,"glew32.lib")
 
 #include "GV.h"
 #include "Scene.h"
@@ -14,6 +15,7 @@ private:
     int _displayList;    // ディスプレイリスト
     bool _isRendered;
     bool _deleteFlag;
+    bool _isSelected = false; // 選択状態にあるか
 
     // ディスプレイリスト設定
     void SetDisplayList()
@@ -27,10 +29,14 @@ private:
 protected:
 
     bool _isUseVBO = false; // VBOを使うか
+    GLuint _vbo;
     GLdouble _color[4];  // 色
 
     // 事前描画
     virtual void PreDraw() = 0;
+    virtual void CreateVBO() { };
+    virtual void ModifyVBO() { };
+    virtual void DrawVBO() { };
 
 public:
 
@@ -40,6 +46,26 @@ public:
         // VBO
         if (_isUseVBO)
         {
+            if (!_isRendered)
+            {
+                CreateVBO();
+
+                _isRendered = true;
+
+                glutPostRedisplay();
+            }
+            else
+            {
+                glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+                glVertexPointer(3, GL_DOUBLE, 0, 0);
+
+                glEnableClientState(GL_VERTEX_ARRAY);
+
+                glDrawArrays(GL_LINE_STRIP, 0, 901);
+
+                glDisableClientState(GL_VERTEX_ARRAY);
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+            }
 
         }
         // ディスプレイリスト
@@ -47,6 +73,8 @@ public:
         {
             if (!_isRendered)
             {
+                SetDisplayList();
+
                 // 登録
                 glNewList(_displayList, GL_COMPILE);
                 this->PreDraw();
@@ -70,6 +98,12 @@ public:
             _color[i] = color[i];
     }
 
+    // 選択状態トグル
+    void SetUnsetSelected()
+    {
+        _isSelected = !_isSelected;
+    }
+
     // deleteフラグ
     void RaiseDeleteFlag() { _deleteFlag = true; }
     bool IsDeleteFlagRaised() { return _deleteFlag == true; }
@@ -78,7 +112,6 @@ public:
 
     Object()
     {
-        this->SetDisplayList();
         _isRendered = false;
         _deleteFlag = false;
 

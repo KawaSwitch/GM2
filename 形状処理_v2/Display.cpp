@@ -2,6 +2,8 @@
 #include "Callback.h"
 #include "GeoGrid.h"
 #include "Axis.h"
+#include "ControlPoint.h"
+#include "BsplineCurve.h"
 
 NormalAxis* axis; // é≤
 Scene* scene; // ÉVÅ[Éì

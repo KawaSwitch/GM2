@@ -2,6 +2,7 @@
 
 using namespace std;
 
+#include <gl/glew.h>
 #include <gl/freeglut.h>
 #include <math.h>
 #include "define.h"

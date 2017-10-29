@@ -26,7 +26,9 @@ void InitScene()
     };
 
     // 各オブジェクト追加
-    scene->AddObject(new BsplineCurve(4, cp_sample, 6, b, Color::blue, 2.0));
+    scene->AddObject(new BsplineCurve(4, cp_sample, 6, a, Color::blue, 2.0));
+    scene->AddObject(new BsplineCurve(4, cp_sample, 6, b, Color::orange, 2.0));
+    scene->AddObject(new BsplineCurve(4, cp_sample, 6, c, Color::green, 2.0));
 }
 
 void InitQuaternion()
@@ -47,6 +49,8 @@ void InitQuaternion()
 
 void Initialize()
 {
+    glewInit(); // glew拡張
+
     glClearColor(1.0, 1.0, 1.0, 1.0);   // 背景色：白
 
     glEnable(GL_DEPTH_TEST); // デプス値 有効化

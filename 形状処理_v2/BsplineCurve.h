@@ -11,9 +11,12 @@ private:
 
     int _nknot; // ノットベクトルサイズ
     vector<double> _knot; // ノットベクトル
+    int _nVertex; // 頂点個数
     
     // 事前描画
     virtual void PreDraw() override;
+    void CreateVBO();
+    void DrawVBO();
 
 public:
 
