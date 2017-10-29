@@ -63,7 +63,7 @@ void Motion(int x, int y)
 
             target = after * current;
 
-            CalcRotateMatrix(rotate, target);
+            CalcRotateMatrix(rot_mat, target);
         }
     }
 

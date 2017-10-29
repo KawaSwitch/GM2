@@ -20,7 +20,7 @@ GLOBAL double dist_X, dist_Y, dist_Z; // 移動距離
 
 GLOBAL bool rotate_flag, move_flag; // 回転, 移動フラグ
 
-GLOBAL double rotate[16]; // 回転マトリクス
+GLOBAL double rot_mat[16]; // 回転マトリクス
 
 // 構造体
 GLOBAL Quaternion target;

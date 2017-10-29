@@ -1,18 +1,14 @@
 #include "GV.h"
 #include "Quaternion.h"
+#include "Axis.h"
 
-void Initialize()
+extern NormalAxis* axis;
+
+void InitQuaternion()
 {
-    glClearColor(1.0, 1.0, 1.0, 1.0);   // 背景色：白
-
-    glEnable(GL_DEPTH_TEST); // デプス値 有効化
-
-    rotate_flag = GL_FALSE;
-    move_flag = GL_FALSE;
-
     // 回転行列
     for (int i = 0; i < 16; i++)
-        rotate[i] = 0.0;
+        rot_mat[i] = 0.0;
 
     // クォータニオン
     target.x = 0.0; target.y = 0.0;
@@ -21,5 +17,19 @@ void Initialize()
     current.z = 0.0; current.w = 0.0;
 
     // クォータニオン初期化
-    CalcRotateMatrix(rotate, current);
+    CalcRotateMatrix(rot_mat, current);
+}
+
+void Initialize()
+{
+    glClearColor(1.0, 1.0, 1.0, 1.0);   // 背景色：白
+
+    glEnable(GL_DEPTH_TEST); // デプス値 有効化
+
+    axis = new NormalAxis(0.4); // 軸
+
+    rotate_flag = GL_FALSE;
+    move_flag = GL_FALSE;
+
+    InitQuaternion();
 }
