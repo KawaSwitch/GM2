@@ -17,6 +17,7 @@ int main(int argc, char* argv[])
     // 各種コールバック
     glutDisplayFunc(Display);
     glutReshapeFunc(Resize);
+    glutKeyboardFunc(Keyboard);
     glutMouseFunc(Mouse);
     glutMotionFunc(Motion);
     glutMouseWheelFunc(Wheel);
