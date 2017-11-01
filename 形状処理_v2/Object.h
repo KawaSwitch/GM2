@@ -39,6 +39,8 @@ protected:
     virtual void ModifyVBO() { };
     virtual void DrawVBO() { };
 
+    bool _isDrawCtrlp = false;
+
 public:
 
     // 描画
@@ -101,6 +103,15 @@ public:
     void SetUnsetSelected()
     {
         _isSelected = !_isSelected;
+    }
+
+    // 制御点線描画
+    virtual void DrawControlPointsAndLines() = 0;
+
+    // 制御点表示トグル
+    void SetUnsetIsDrawCtrlp()
+    {
+        _isDrawCtrlp = !_isDrawCtrlp;
     }
 
     // オブジェクト番号を取得

@@ -36,15 +36,27 @@ void Scene::DeleteObjectEnd()
     (*(--it))->RaiseDeleteFlag();
 }
 
+void Scene::ToggleDrawControlPoints()
+{
+    auto it = ObjList.begin();
+
+    // 制御点表示トグル
+    while (it != ObjList.end())
+    {
+        (*it)->SetUnsetIsDrawCtrlp();
+        it++;
+    }
+}
+
 void Scene::Draw()
 {
-    auto size = ObjList.size();
     auto it = ObjList.begin();
 
     // リスト全描画
     while (it != ObjList.end())
     {
-        (*it)->Draw();
+        (*it)->Draw(); // モデル描画
+        (*it)->DrawControlPointsAndLines(); // 制御点描画
 
         // 削除フラグチェック
         if ((*it)->IsDeleteFlagRaised())
@@ -62,7 +74,6 @@ void Scene::Draw()
 // マウスピッキング用描画
 void Scene::DrawForPick()
 {
-    auto size = ObjList.size();
     auto it = ObjList.begin();
 
     // リスト全描画

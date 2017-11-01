@@ -18,6 +18,8 @@ public:
     void DeleteObjectAll();
     void DeleteObjectEnd();
 
+    void ToggleDrawControlPoints();
+
     void Draw();
     void DrawForPick();
 

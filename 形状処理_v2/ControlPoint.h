@@ -2,22 +2,8 @@
 
 #include "Object.h"
 
-class ControlPoint : public Object
+class ControlPoint
 {
-private:
-
-    // éñëOï`âÊ
-    virtual void PreDraw()
-    {
-        SetColor(Color::red); // ê‘êF
-        glPointSize(10.0);
-
-        // ï`âÊ
-        glBegin(GL_POINTS);
-        glVertex3d(X, Y, Z);
-        glEnd();
-    }
-
 public:
 
     double X, Y, Z;
