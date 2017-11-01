@@ -19,6 +19,7 @@ public:
     void DeleteObjectEnd();
 
     void Draw();
+    void DrawForPick();
 
     ~Scene();
 };

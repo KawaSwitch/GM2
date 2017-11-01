@@ -59,6 +59,22 @@ void Scene::Draw()
     ObjList.remove(NULL);
 }
 
+// マウスピッキング用描画
+void Scene::DrawForPick()
+{
+    auto size = ObjList.size();
+    auto it = ObjList.begin();
+
+    // リスト全描画
+    while (it != ObjList.end())
+    {
+        glLoadName((*it)->GetObjectNumber());
+        (*it)->DrawAsItIs();
+
+        it++;
+    }
+}
+
 Scene::~Scene()
 {
     for (auto it = ObjList.begin(); it != ObjList.end(); it++)

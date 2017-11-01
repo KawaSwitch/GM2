@@ -3,6 +3,7 @@
 #include "Quaternion.h"
 #include "Axis.h"
 #include "BsplineCurve.h"
+#include "Triangle.h"
 
 extern NormalAxis* axis;
 extern Scene* scene;
@@ -56,6 +57,8 @@ void Initialize()
     glEnable(GL_DEPTH_TEST); // デプス値 有効化
 
     axis = new NormalAxis(0.4); // 軸
+
+    obj_number = 1; // 初期識別子は1
 
     rotate_flag = GL_FALSE;
     move_flag = GL_FALSE;

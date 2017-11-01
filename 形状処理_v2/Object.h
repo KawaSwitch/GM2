@@ -16,6 +16,7 @@ private:
     bool _isRendered;
     bool _deleteFlag;
     bool _isSelected = false; // 選択状態にあるか
+    unsigned int _number; // 識別番号
 
     // ディスプレイリスト設定
     void SetDisplayList()
@@ -83,6 +84,12 @@ public:
         }
     }
 
+    // そのまま描画
+    void DrawAsItIs()
+    {
+        this->PreDraw();
+    }
+
     // 色設定
     void SetColor(GLdouble* color)
     {
@@ -96,6 +103,12 @@ public:
         _isSelected = !_isSelected;
     }
 
+    // オブジェクト番号を取得
+    unsigned int GetObjectNumber()
+    {
+        return _number;
+    }
+
     // deleteフラグ
     void RaiseDeleteFlag() { _deleteFlag = true; }
     bool IsDeleteFlagRaised() { return _deleteFlag == true; }
@@ -106,12 +119,14 @@ public:
     {
         _isRendered = false;
         _deleteFlag = false;
+        _number = obj_number++; // 識別子を振る
 
         _color[0] = -1;
     }
 
     virtual ~Object()
     {
+        obj_number--; // 識別子を空ける
         glDeleteLists(_displayList, 1);
     }
 };

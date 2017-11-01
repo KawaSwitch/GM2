@@ -1,8 +1,12 @@
 #define _USE_MATH_DEFINES
 
 #include "GV.h"
+#include "Scene.h"
 #include "Callback.h"
 #include "Quaternion.h"
+#include "Picking.h"
+
+extern Scene* scene;
 
 void Mouse(int button, int state, int x, int y)
 {
@@ -24,6 +28,7 @@ void Mouse(int button, int state, int x, int y)
         current = target;
         rotate_flag = GL_FALSE;
     }
+
     // ホイール：移動
     else if (button == GLUT_MIDDLE_BUTTON && state == GLUT_DOWN)
     {

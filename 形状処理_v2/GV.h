@@ -10,6 +10,7 @@ using namespace std;
 #include "Error.h"
 #include "Color.h"
 #include "Vector.h"
+#include "Point3d.h"
 
 #ifdef GLOBAL_INSTANCE
 #define GLOBAL
@@ -28,6 +29,8 @@ GLOBAL double dist_X, dist_Y, dist_Z; // 移動距離
 GLOBAL bool rotate_flag, move_flag; // 回転, 移動フラグ
 
 GLOBAL double rot_mat[16]; // 回転マトリクス
+
+GLOBAL unsigned int obj_number; // オブジェクト識別子
 
 // 構造体
 GLOBAL Quaternion target;
