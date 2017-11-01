@@ -19,7 +19,7 @@ void BsplineCurve::PreDraw()
 {
     glBegin(GL_LINE_STRIP);
 
-    for (int i = (int)(_knot[0] * 100); i <= (int)(_knot[_nknot - 1] * 100); i++)
+    for (int i = (int)(_knot[_ord - 1] * 100); i <= (int)(_knot[_ncpnt] * 100); i++)
     {
         double t = (double)i / 100;
 
@@ -36,7 +36,7 @@ void BsplineCurve::CreateVBO()
     vector<Vector3d> pnts;
 
     // ’¸“_Žæ“¾
-    for (int i = (int)(_knot[0] * 100); i <= (int)(_knot[_nknot - 1] * 100); i++)
+    for (int i = (int)(_knot[_ord - 1] * 100); i <= (int)(_knot[_ncpnt] * 100); i++)
     {
         double t = (double)i / 100;
         pnts.push_back(GetPositionVector(t));
