@@ -12,7 +12,15 @@ private:
     int _nknot; // ノットベクトルサイズ
     vector<double> _knot; // ノットベクトル
     int _nVertex; // 頂点個数
-    
+
+    // ディスプレイリスト
+    int _fd_displayList = -1;
+    int _sd_displayList = -1;
+    int _box_displayList = -1;
+    int _cur_displayList = -1;
+
+    void DrawFirstDiffVectorsInternal();
+
     // 事前描画
     virtual void PreDraw() override;
     void CreateVBO();
@@ -34,4 +42,7 @@ public:
     }
 
     Vector3d GetPositionVector(double t) override;
+    Vector3d GetFirstDiffVector(double t) override;
+
+    void DrawFirstDiffVectors() override;
 };

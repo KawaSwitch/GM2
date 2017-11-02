@@ -57,6 +57,7 @@ void Scene::Draw()
     {
         (*it)->Draw(); // モデル描画
         (*it)->DrawControlPointsAndLines(); // 制御点描画
+        (*it)->DrawFirstDiffVectors(); // 接線描画
 
         // 削除フラグチェック
         if ((*it)->IsDeleteFlagRaised())

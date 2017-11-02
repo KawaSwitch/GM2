@@ -48,6 +48,7 @@ protected:
     }
 
     virtual Vector3d GetPositionVector(double t) = 0; // 位置ベクトル
+    virtual Vector3d GetFirstDiffVector(double t) = 0; // 接線ベクトル
 
 private:
 

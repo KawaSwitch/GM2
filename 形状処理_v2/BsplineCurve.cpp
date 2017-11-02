@@ -63,6 +63,46 @@ void BsplineCurve::DrawVBO()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+// 接線ベクトル描画
+void BsplineCurve::DrawFirstDiffVectors()
+{
+    if (_isDrawFirstDiff)
+    {
+        if (_fd_displayList == -1)
+        {
+            if (!(_fd_displayList = glGenLists(1)))
+                return;
+
+            // 登録
+            glNewList(_fd_displayList, GL_COMPILE);
+            DrawFirstDiffVectorsInternal();
+            glEndList();
+
+            glutPostRedisplay();
+        }
+        else
+            glCallList(_fd_displayList);
+    }
+}
+void BsplineCurve::DrawFirstDiffVectorsInternal()
+{
+    glColor3dv(Color::red);
+    glLineWidth(1.0);
+    glBegin(GL_LINES);
+
+    for (int i = (int)(_knot[_ord - 1] * 100); i <= (int)(_knot[_ncpnt] * 100); i += 10)
+    {
+        double t = (double)i / 100;
+
+        Vector3d pnt = GetPositionVector(t);
+        Vector3d diff = GetFirstDiffVector(t).Normalize();
+        glVertex3d(pnt);
+        glVertex3d(pnt + diff);
+    }
+
+    glEnd();
+}
+
 // 位置ベクトル取得
 Vector3d BsplineCurve::GetPositionVector(double t)
 {
@@ -78,4 +118,21 @@ Vector3d BsplineCurve::GetPositionVector(double t)
     }
 
     return pnt;
+}
+
+// 接線ベクトル取得
+Vector3d BsplineCurve::GetFirstDiffVector(double t)
+{
+    Vector3d diff;
+
+    for (int i = 0; i < _ncpnt; i++)
+    {
+        double N = Calc1DiffBsplineFunc(i, _ord, t, &_knot[0]);
+
+        diff.X += N * _ctrlp[i].X;
+        diff.Y += N * _ctrlp[i].Y;
+        diff.Z += N * _ctrlp[i].Z;
+    }
+
+    return diff;
 }
