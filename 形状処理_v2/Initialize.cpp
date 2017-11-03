@@ -3,6 +3,7 @@
 #include "Quaternion.h"
 #include "Axis.h"
 #include "BsplineCurve.h"
+#include "BsplineSurface.h"
 #include "Triangle.h"
 
 extern NormalAxis* axis;
@@ -11,6 +12,8 @@ extern Scene* scene;
 double a[10] = { -3, -2, -1, 0, 1, 2, 3, 4, 5, 6 };
 double b[10] = { 0, 0, 0, 0, 1, 2, 3, 3, 3, 3 };
 double c[10] = { 0, 0, 0, 0, 1, 1, 3, 3, 3, 3 };
+double surf1_u[10] = { 0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0, 3.0, 3.0 };
+double surf1_v[7] = { 0.0, 0.0, 1.0, 2.0, 2.0, 2.0 };
 
 void InitScene()
 {
@@ -26,10 +29,42 @@ void InitScene()
         ControlPoint(6, 1, 0),
     };
 
+    ControlPoint cp_surf1[24] =
+    {
+        ControlPoint(0, 0, 0),
+        ControlPoint(10, 0, 5),
+        ControlPoint(20, 0, 0),
+        ControlPoint(30, 0, -5),
+        ControlPoint(40, 0, -5),
+        ControlPoint(50, 0, 0),
+
+        ControlPoint(0, 10, 5),
+        ControlPoint(10, 10, 0),
+        ControlPoint(20, 10, 0),
+        ControlPoint(30, 10, -2),
+        ControlPoint(40, 10, -1),
+        ControlPoint(50, 10, -1),
+
+        ControlPoint(0, 20, -5),
+        ControlPoint(10, 20, -5),
+        ControlPoint(20, 20, -5),
+        ControlPoint(30, 20, 3),
+        ControlPoint(40, 20, 5),
+        ControlPoint(50, 20, 5),
+
+        ControlPoint(0, 30, 0),
+        ControlPoint(10, 30, 0),
+        ControlPoint(20, 30, -5),
+        ControlPoint(30, 30, 3),
+        ControlPoint(40, 30, 7),
+        ControlPoint(50, 30, 7),
+    };
+
     // 各オブジェクト追加
     scene->AddObject(new BsplineCurve(4, cp_sample, 6, a, Color::blue, 2.0));
     scene->AddObject(new BsplineCurve(4, cp_sample, 6, b, Color::orange, 2.0));
     scene->AddObject(new BsplineCurve(4, cp_sample, 6, c, Color::green, 2.0));
+    scene->AddObject(new BsplineSurface(4, 3, cp_surf1, 6, 4, surf1_u, surf1_v, Color::blue_alpha, 1.0));
 }
 
 void InitQuaternion()

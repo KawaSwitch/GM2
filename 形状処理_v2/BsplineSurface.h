@@ -1,14 +1,13 @@
 #pragma once
 
-#include "Curve.h"
+#include "Surface.h"
 
-// Bスプライン曲線
-class BsplineCurve : public Curve
+class BsplineSurface : public Surface
 {
 private:
 
-    int _nknot; // ノットベクトルサイズ
-    vector<double> _knot; // ノットベクトル
+    int _nknotU, _nknotV; // ノットベクトルサイズ
+    vector<double> _knotU, _knotV; // ノットベクトル
     int _nVertex; // 頂点個数
 
     void DrawFirstDiffVectorsInternal() override;
@@ -22,7 +21,7 @@ private:
     void DrawVBO() override;
 
     // ノットベクトル設定
-    void SetKnotVector(double* knot, int size)
+    void SetKnotVector(double* knot, int size, vector<double> _knot)
     {
         if (size <= 0)
             Error::ShowAndExit("ノットベクトル設定失敗", "knot-vector size must be over 0.");
@@ -34,8 +33,8 @@ private:
 
 public:
 
-    BsplineCurve(int mord, ControlPoint* cp, int cp_size, double* knot, GLdouble* color, GLdouble width);
+    BsplineSurface(int u_mord, int v_mord, ControlPoint* cp, int u_cp_size, int v_cp_size, double* u_knot, double* v_knot, GLdouble* color, GLdouble width);
 
-    Vector3d GetPositionVector(double t) override;
-    Vector3d GetFirstDiffVector(double t) override;
+    Vector3d GetPositionVector(double u, double v) override;
+    Vector3d GetFirstDiffVector(double u, double v) override;
 };

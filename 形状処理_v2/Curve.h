@@ -24,8 +24,11 @@ protected:
             _ctrlp.emplace_back(cp[i]);
     }
 
+    // ベクトル取得関数
     virtual Vector3d GetPositionVector(double t) = 0; // 位置ベクトル
     virtual Vector3d GetFirstDiffVector(double t) = 0; // 接線ベクトル
+    virtual Vector3d GetSecondDiffVector(double t) { return Vector3d(); }; // 2階微分ベクトル
+    virtual Vector3d GetCurvatureVector(double t) { return Vector3d(); }; // 曲率ベクトル
 
 private:
 
