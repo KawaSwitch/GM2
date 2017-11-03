@@ -16,6 +16,10 @@ void Keyboard(unsigned char key, int x, int y)
             break;
         case 'f': // 接線トグル
             scene->ToggleDrawFirstDiffVectors();
+            break;
+        case 's': // 2階微分ベクトルトグル
+            scene->ToggleDrawSecondDiffVectors();
+            break;
         default:
             break;
     }

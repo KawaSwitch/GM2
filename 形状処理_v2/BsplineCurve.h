@@ -12,7 +12,7 @@ private:
     int _nVertex; // í∏ì_å¬êî
 
     void DrawFirstDiffVectorsInternal() override;
-    //void DrawSecondDiffVectorsInternal() override;
+    void DrawSecondDiffVectorsInternal() override;
     //void DrawBoxInternal() override;
     //void DrawCurvatureVectorsInternal() override;
 
@@ -38,4 +38,5 @@ public:
 
     Vector3d GetPositionVector(double t) override;
     Vector3d GetFirstDiffVector(double t) override;
+    Vector3d GetSecondDiffVector(double t) override;
 };

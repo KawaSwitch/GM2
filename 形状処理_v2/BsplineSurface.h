@@ -11,7 +11,7 @@ private:
     int _nVertex; // 頂点個数
 
     void DrawFirstDiffVectorsInternal() override;
-    //void DrawSecondDiffVectorsInternal() override;
+    void DrawSecondDiffVectorsInternal() override;
     //void DrawBoxInternal() override;
     //void DrawCurvatureVectorsInternal() override;
 
@@ -26,7 +26,6 @@ private:
         if (size <= 0)
             Error::ShowAndExit("ノットベクトル設定失敗", "knot-vector size must be over 0.");
 
-
         _knot.reserve(size);
         for (int i = 0; i < size; i++)
             _knot.emplace_back(knot[i]);
@@ -39,4 +38,7 @@ public:
     Vector3d GetPositionVector(double u, double v) override;
     Vector3d GetFirstDiffVectorU(double u, double v) override;
     Vector3d GetFirstDiffVectorV(double u, double v) override;
+    Vector3d GetSecondDiffVectorUU(double u, double v) override;
+    Vector3d GetSecondDiffVectorUV(double u, double v) override;
+    Vector3d GetSecondDiffVectorVV(double u, double v) override;
 };

@@ -60,6 +60,18 @@ void Scene::ToggleDrawFirstDiffVectors()
     }
 }
 
+void Scene::ToggleDrawSecondDiffVectors()
+{
+    auto it = ObjList.begin();
+
+    // 2階微分ベクトル表示トグル
+    while (it != ObjList.end())
+    {
+        (*it)->SetUnsetIsDrawSecondDiff();
+        it++;
+    }
+}
+
 void Scene::Draw()
 {
     auto it = ObjList.begin();
@@ -70,6 +82,9 @@ void Scene::Draw()
         (*it)->Draw(); // モデル描画
         (*it)->DrawControlPointsAndLines(); // 制御点描画
         (*it)->DrawFirstDiffVectors(); // 接線描画
+        (*it)->DrawSecondDiffVectors(); // 2階微分ベクトル描画
+        (*it)->DrawBox(); // ミニマクスボックス描画
+        (*it)->DrawCurvatureVectors(); // 曲率ベクトル描画
 
         // 削除フラグチェック
         if ((*it)->IsDeleteFlagRaised())

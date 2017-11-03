@@ -42,8 +42,10 @@ protected:
     // ベクトル取得関数
     virtual Vector3d GetPositionVector(double u, double v) = 0; // 位置ベクトル
     virtual Vector3d GetFirstDiffVectorU(double u, double v) = 0; // 接線ベクトル
-    virtual Vector3d GetFirstDiffVectorV(double u, double v) = 0; // 接線ベクトル
-    virtual Vector3d GetSecondDiffVector(double u, double v) { return Vector3d(); }; // 2階微分ベクトル
+    virtual Vector3d GetFirstDiffVectorV(double u, double v) = 0;
+    virtual Vector3d GetSecondDiffVectorUU(double u, double v) { return Vector3d(); }; // 2階微分ベクトル
+    virtual Vector3d GetSecondDiffVectorUV(double u, double v) { return Vector3d(); };
+    virtual Vector3d GetSecondDiffVectorVV(double u, double v) { return Vector3d(); };
     virtual Vector3d GetCurvatureVector(double u, double v) { return Vector3d(); }; // 曲率ベクトル
 
 public:

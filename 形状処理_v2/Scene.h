@@ -20,6 +20,7 @@ public:
 
     void ToggleDrawControlPoints();
     void ToggleDrawFirstDiffVectors();
+    void ToggleDrawSecondDiffVectors();
 
     void Draw();
     void DrawForPick();

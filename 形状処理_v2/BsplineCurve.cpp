@@ -83,6 +83,26 @@ void BsplineCurve::DrawFirstDiffVectorsInternal()
     glEnd();
 }
 
+// 2階微分ベクトル描画
+void BsplineCurve::DrawSecondDiffVectorsInternal()
+{
+    glColor3dv(Color::blue);
+    glLineWidth(1.0);
+    glBegin(GL_LINES);
+
+    for (int i = (int)(_knot[_ord - 1] * 100); i <= (int)(_knot[_ncpnt] * 100); i += 10)
+    {
+        double t = (double)i / 100;
+
+        Vector3d pnt = GetPositionVector(t);
+        Vector3d diff = GetSecondDiffVector(t).Normalize();
+        glVertex3d(pnt);
+        glVertex3d(pnt + diff);
+    }
+
+    glEnd();
+}
+
 // 位置ベクトル取得
 Vector3d BsplineCurve::GetPositionVector(double t)
 {
@@ -108,6 +128,23 @@ Vector3d BsplineCurve::GetFirstDiffVector(double t)
     for (int i = 0; i < _ncpnt; i++)
     {
         double N = Calc1DiffBsplineFunc(i, _ord, t, &_knot[0]);
+
+        diff.X += N * _ctrlp[i].X;
+        diff.Y += N * _ctrlp[i].Y;
+        diff.Z += N * _ctrlp[i].Z;
+    }
+
+    return diff;
+}
+
+// 2階微分ベクトル取得
+Vector3d BsplineCurve::GetSecondDiffVector(double t)
+{
+    Vector3d diff;
+
+    for (int i = 0; i < _ncpnt; i++)
+    {
+        double N = Calc2DiffBsplineFunc(i, _ord, t, &_knot[0]);
 
         diff.X += N * _ctrlp[i].X;
         diff.Y += N * _ctrlp[i].Y;
