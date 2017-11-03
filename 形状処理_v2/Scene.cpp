@@ -48,6 +48,18 @@ void Scene::ToggleDrawControlPoints()
     }
 }
 
+void Scene::ToggleDrawFirstDiffVectors()
+{
+    auto it = ObjList.begin();
+
+    // Úü•\Ž¦ƒgƒOƒ‹
+    while (it != ObjList.end())
+    {
+        (*it)->SetUnsetIsDrawFisrtDiff();
+        it++;
+    }
+}
+
 void Scene::Draw()
 {
     auto it = ObjList.begin();

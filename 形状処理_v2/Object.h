@@ -41,7 +41,7 @@ protected:
 
     // 表示系ブーリアン
     bool _isDrawCtrlp = true; // 制御点
-    bool _isDrawFirstDiff = true; // 接線
+    bool _isDrawFirstDiff = false; // 接線
     bool _isDrawSecondDiff = false; // 2階微分
     bool _isDrawBox = false; // ミニマクスボックス
     bool _isDrawCurvature = false; // 曲率

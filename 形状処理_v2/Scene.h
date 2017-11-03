@@ -19,6 +19,7 @@ public:
     void DeleteObjectEnd();
 
     void ToggleDrawControlPoints();
+    void ToggleDrawFirstDiffVectors();
 
     void Draw();
     void DrawForPick();

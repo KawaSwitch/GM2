@@ -14,6 +14,8 @@ void Keyboard(unsigned char key, int x, int y)
         case 'c': // 制御点トグル
             scene->ToggleDrawControlPoints();
             break;
+        case 'f': // 接線トグル
+            scene->ToggleDrawFirstDiffVectors();
         default:
             break;
     }
