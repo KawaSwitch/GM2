@@ -108,14 +108,39 @@ void BsplineSurface::DrawVBO()
 // 接線ベクトル描画
 void BsplineSurface::DrawFirstDiffVectorsInternal()
 {
+    Vector3d pnt, diff;
+    glLineWidth(1.0);
 
+    glBegin(GL_LINES);
+
+    for (int i = (int)(_knotU[_ordU - 1] * 100); i <= (int)(_knotU[_ncpntU] * 100); i += 10)
+    {
+        for (int j = (int)(_knotV[_ordV - 1] * 100); j <= (int)(_knotV[_ncpntV] * 100); j += 10)
+        {
+            double u = (double)i / 100;
+            double v = (double)j / 100;
+
+            // U方向
+            glColor3dv(Color::red);
+            pnt = GetPositionVector(u, v);
+            diff = GetFirstDiffVectorU(u, v).Normalize();
+            glVertex3d(pnt);
+            glVertex3d(pnt + diff);
+
+            // V方向
+            glColor3dv(Color::green);
+            diff = GetFirstDiffVectorV(u, v).Normalize();
+            glVertex3d(pnt);
+            glVertex3d(pnt + diff);
+        }
+    }
+
+    glEnd();
 }
 
 // 位置ベクトル取得
 Vector3d BsplineSurface::GetPositionVector(double u, double v)
 {
-    using namespace cpplinq;
-
     Vector3d pnt;
     double temp[100]; // 計算用
 
@@ -148,15 +173,57 @@ Vector3d BsplineSurface::GetFirstDiffVectorU(double u, double v)
 {
     Vector3d diff;
 
+    double temp[100]; // 計算用
 
+    // 基底関数配列(行列計算用)
+    double* N_array_U = new double[_ncpntU];
+    double* N_array_V = new double[_ncpntV];
 
+    // 基底関数配列へ各基底関数を代入
+    for (int i = 0; i < _ncpntU; i++)
+        N_array_U[i] = Calc1DiffBsplineFunc(i, _ordU, u, &_knotU[0]);
+    for (int i = 0; i < _ncpntV; i++)
+        N_array_V[i] = CalcBsplineFunc(i, _ordV, v, &_knotV[0]);
+
+    // 位置ベクトル算出(行列計算)
+    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpX[0], temp);
+    diff.X = MatrixMultiply(_ncpntV, temp, N_array_V);
+
+    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpY[0], temp);
+    diff.Y = MatrixMultiply(_ncpntV, temp, N_array_V);
+
+    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpZ[0], temp);
+    diff.Z = MatrixMultiply(_ncpntV, temp, N_array_V);
+
+    delete[] N_array_U, N_array_V;
     return diff;
 }
 Vector3d BsplineSurface::GetFirstDiffVectorV(double u, double v)
 {
     Vector3d diff;
 
+    double temp[100]; // 計算用
 
+    // 基底関数配列(行列計算用)
+    double* N_array_U = new double[_ncpntU];
+    double* N_array_V = new double[_ncpntV];
 
+    // 基底関数配列へ各基底関数を代入
+    for (int i = 0; i < _ncpntU; i++)
+        N_array_U[i] = CalcBsplineFunc(i, _ordU, u, &_knotU[0]);
+    for (int i = 0; i < _ncpntV; i++)
+        N_array_V[i] = Calc1DiffBsplineFunc(i, _ordV, v, &_knotV[0]);
+
+    // 位置ベクトル算出(行列計算)
+    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpX[0], temp);
+    diff.X = MatrixMultiply(_ncpntV, temp, N_array_V);
+
+    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpY[0], temp);
+    diff.Y = MatrixMultiply(_ncpntV, temp, N_array_V);
+
+    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpZ[0], temp);
+    diff.Z = MatrixMultiply(_ncpntV, temp, N_array_V);
+
+    delete[] N_array_U, N_array_V;
     return diff;
 }
