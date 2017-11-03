@@ -20,6 +20,9 @@ void Keyboard(unsigned char key, int x, int y)
         case 's': // 2階微分ベクトルトグル
             scene->ToggleDrawSecondDiffVectors();
             break;
+        case 'b': // ミニマクスボックス
+            scene->ToggleDrawBox();
+            break;
         default:
             break;
     }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Object.h"
+#include "EPS.h"
 
 class ControlPoint
 {

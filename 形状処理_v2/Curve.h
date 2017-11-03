@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GV.h"
+#include "Object.h"
 #include "ControlPoint.h"
 
 // 曲線インターフェース
@@ -10,7 +10,12 @@ protected:
 
     int _ord; // 階数
     int _ncpnt; // 制御点数
-    vector<ControlPoint> _ctrlp; // 制御点
+
+    // ベクトル取得関数
+    virtual Vector3d GetPositionVector(double t) = 0; // 位置ベクトル
+    virtual Vector3d GetFirstDiffVector(double t) = 0; // 接線ベクトル
+    virtual Vector3d GetSecondDiffVector(double t) { return Vector3d(); }; // 2階微分ベクトル
+    virtual Vector3d GetCurvatureVector(double t) { return Vector3d(); }; // 曲率ベクトル
 
     // 制御点設定
     void SetControlPoint(ControlPoint* cp, int size)
@@ -23,12 +28,6 @@ protected:
         for (int i = 0; i < size; i++)
             _ctrlp.emplace_back(cp[i]);
     }
-
-    // ベクトル取得関数
-    virtual Vector3d GetPositionVector(double t) = 0; // 位置ベクトル
-    virtual Vector3d GetFirstDiffVector(double t) = 0; // 接線ベクトル
-    virtual Vector3d GetSecondDiffVector(double t) { return Vector3d(); }; // 2階微分ベクトル
-    virtual Vector3d GetCurvatureVector(double t) { return Vector3d(); }; // 曲率ベクトル
 
 private:
 

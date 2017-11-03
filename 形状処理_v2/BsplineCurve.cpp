@@ -1,4 +1,5 @@
 #include "BsplineCurve.h"
+#include "ControlPoint.h"
 
 BsplineCurve::BsplineCurve(int mord, ControlPoint* cp, int cp_size, double* knot, GLdouble* color, GLdouble width)
 {

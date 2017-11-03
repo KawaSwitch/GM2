@@ -72,6 +72,18 @@ void Scene::ToggleDrawSecondDiffVectors()
     }
 }
 
+void Scene::ToggleDrawBox()
+{
+    auto it = ObjList.begin();
+
+    // ミニマクスボックス表示トグル
+    while (it != ObjList.end())
+    {
+        (*it)->SetUnsetIsDrawBox();
+        it++;
+    }
+}
+
 void Scene::Draw()
 {
     auto it = ObjList.begin();

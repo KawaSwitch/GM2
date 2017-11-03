@@ -10,7 +10,6 @@ protected:
 
     int _ordU, _ordV; // 階数
     int _ncpntU, _ncpntV; // 制御点数
-    vector<ControlPoint> _ctrlp; // 制御点
     vector<double> _ctrlpX; // 計算用
     vector<double> _ctrlpY;
     vector<double> _ctrlpZ;

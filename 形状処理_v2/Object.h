@@ -4,6 +4,8 @@
 #include "GV.h"
 #include "Scene.h"
 #include "Error.h"
+#include "ControlPoint.h"
+#include "Box.h"
 
 class Scene;
 
@@ -22,13 +24,13 @@ protected:
     bool _isUseVBO = false; // VBOを使うか
     GLuint _vbo = 0;
     GLdouble _color[4];  // 色
+    vector<ControlPoint> _ctrlp; // 制御点
 
     // 事前描画
     virtual void PreDraw() = 0;
     virtual void DrawCPsInternal() = 0;
     virtual void DrawFirstDiffVectorsInternal() { };
     virtual void DrawSecondDiffVectorsInternal() { };
-    virtual void DrawBoxInternal() { };
     virtual void DrawCurvatureVectorsInternal() { };
 
     // VBO
@@ -82,6 +84,13 @@ public:
     void DrawAsItIs()
     {
         this->PreDraw();
+    }
+
+    // ミニマクスボックス描画
+    void DrawBoxInternal()
+    {
+        Box box(_ctrlp);
+        box.Draw(Color::orange, 1.0);
     }
 
     // トグルチェンジ
@@ -146,12 +155,6 @@ public:
     {
         _number = obj_number++; // 識別子を振る
 
-        int _displayList = -1;
-        int _ctrlp_displayList = -1;
-        int _fd_displayList = -1;
-        int _sd_displayList = -1;
-        int _box_displayList = -1;
-        int _cur_displayList = -1;
         _vbo = 0;
         _color[0] = -1;
     }
