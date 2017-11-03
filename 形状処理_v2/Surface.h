@@ -14,6 +14,7 @@ protected:
     vector<double> _ctrlpX; // 計算用
     vector<double> _ctrlpY;
     vector<double> _ctrlpZ;
+    int _mesh_displayList = -1; // メッシュ用ディスプレイリスト
 
     // 制御点設定
     void SetControlPoint(ControlPoint* cp, int size)
@@ -39,6 +40,15 @@ protected:
         }
     }
 
+    // メッシュ表示
+    virtual void DrawMeshInternal() { };
+
+    void DrawMesh()
+    {
+        // メッシュは絶対表示(見栄えのため)
+        DrawUsingDisplayList(&_mesh_displayList, [&] { return (*this).DrawMeshInternal(); });
+    }
+
     // ベクトル取得関数
     virtual Vector3d GetPositionVector(double u, double v) = 0; // 位置ベクトル
     virtual Vector3d GetFirstDiffVectorU(double u, double v) = 0; // 接線ベクトル
@@ -49,6 +59,35 @@ protected:
     virtual Vector3d GetCurvatureVector(double u, double v) { return Vector3d(); }; // 曲率ベクトル
 
 public:
+
+    // オブジェクト描画
+    void Draw() override
+    {
+        // オブジェクト自身はデプス考慮無し(見栄えのため)
+        glDepthMask(GL_FALSE);
+
+        if (_isUseVBO)
+        {
+            // VBO
+            if (_vbo == 0)
+            {
+                CreateVBO(); // VBO作成
+                glutPostRedisplay();
+            }
+            else
+                DrawVBO(); // 描画
+        }
+        else
+        {
+            // ディスプレイリスト
+            DrawUsingDisplayList(&_displayList, [&] { return (*this).PreDraw(); });
+        }
+
+        glDepthMask(GL_TRUE);
+
+        // メッシュはディスプレイリスト
+        DrawMesh();
+    }
 
     // 制御点描画
     void DrawCPsInternal() override
@@ -81,5 +120,5 @@ public:
         }
     }
 
-    ~Surface() { }
+    virtual ~Surface() { glDeleteLists(_mesh_displayList, 1); }
 };

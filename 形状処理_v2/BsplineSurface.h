@@ -14,6 +14,7 @@ private:
     void DrawSecondDiffVectorsInternal() override;
     //void DrawBoxInternal() override;
     //void DrawCurvatureVectorsInternal() override;
+    void DrawMeshInternal() override;
 
     // Ž–‘O•`‰æ
     void PreDraw() override;

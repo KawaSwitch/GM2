@@ -16,13 +16,14 @@ BsplineSurface::BsplineSurface(
     SetKnotVector(u_knot, _nknotU, _knotU);
     SetKnotVector(v_knot, _nknotV, _knotV);
     SetColor(color);
+
+    // VBOを使う
+    _isUseVBO = true;
 }
 
 // 事前描画
 void BsplineSurface::PreDraw()
 {   
-    glDepthMask(GL_FALSE);
-
     // 解像度
     int RES = 15;
 
@@ -51,34 +52,7 @@ void BsplineSurface::PreDraw()
         }
     }
 
-    // メッシュの色はα値関係ないので気にせず大丈夫
     glColor4dv(_color);
-
-    // メッシュ表示
-    // U方向
-    for (int i = u_min; i <= u_max; i++)
-    {
-        glBegin(GL_LINE_STRIP);
-
-        for (int j = v_min; j <= v_max; j++)
-        {
-            glVertex3d(pnt[i - u_min][j - v_min]);
-        }
-
-        glEnd();
-    }
-    // V方向
-    for (int i = v_min; i <= v_max; i++)
-    {
-        glBegin(GL_LINE_STRIP);
-
-        for (int j = u_min; j <= u_max; j++)
-        {
-            glVertex3d(pnt[j - u_min][i - v_min]);
-        }
-
-        glEnd();
-    }
 
     // 三角ポリゴン表示
     for (int i = u_min; i < u_max; i++)
@@ -93,27 +67,127 @@ void BsplineSurface::PreDraw()
             glEnd();
         }
     }
+}
 
-    glDepthMask(GL_TRUE);
+// メッシュ描画
+void BsplineSurface::DrawMeshInternal()
+{
+    Vector3d pnt;
+
+    // メッシュの色は3dvで渡した方が綺麗(α=0)
+    glColor3dv(_color);
+
+    // U方向
+    for (int i = (int)(_knotU[_ordU - 1] * 100); i <= (int)(_knotU[_ncpntU] * 100); i += 10)
+    {
+        glBegin(GL_LINE_STRIP);
+
+        for (int j = (int)(_knotV[_ordV - 1] * 100); j <= (int)(_knotV[_ncpntV] * 100); j += 10)
+        {
+            double u = (double)i / 100;
+            double v = (double)j / 100;
+
+            pnt = GetPositionVector(u, v);
+            glVertex3d(pnt);
+        }
+
+        glEnd();
+    }
+    // V方向
+    for (int i = (int)(_knotV[_ordV - 1] * 100); i <= (int)(_knotV[_ncpntV] * 100); i += 10)
+    {
+        glBegin(GL_LINE_STRIP);
+
+        for (int j = (int)(_knotU[_ordU - 1] * 100); j <= (int)(_knotU[_ncpntU] * 100); j += 10)
+        {
+            double u = (double)i / 100;
+            double v = (double)j / 100;
+
+            pnt = GetPositionVector(v, u);
+            glVertex3d(pnt);
+        }
+
+        glEnd();
+    }
 }
 
 // 頂点バッファ作成
 void BsplineSurface::CreateVBO()
 {
+    // 解像度
+    int RES = 15;
 
+    vector<vector<Vector3d>> pnt;
+    vector<Vector3d> pnt_vbo;
+    GLuint index[3] = { 0, 1, 2 };
+
+    // 描画範囲を予め設定
+    int u_min = (int)(_knotU[_ordU - 1] * RES);
+    int v_min = (int)(_knotV[_ordV - 1] * RES);
+    int u_max = (int)(_knotU[_ncpntU] * RES);
+    int v_max = (int)(_knotV[_ncpntV] * RES);
+    int u_size = u_max - u_min + 1;
+    int v_size = v_max - v_min + 1;
+
+    pnt.resize(u_size);
+    for (int i = 0; i < u_size; i++)
+        pnt[i].resize(v_size);
+
+    for (int i = u_min; i <= u_max; i++)
+    {
+        for (int j = v_min; j <= v_max; j++)
+        {
+            double u = (double)i / RES;
+            double v = (double)j / RES;
+
+            pnt[i - u_min][j - v_min] = GetPositionVector(u, v);
+        }
+    }
+
+    // VBO用の頂点取得
+    for (int i = u_min; i < u_max; i++)
+    {
+        for (int j = v_min; j < v_max; j++)
+        {
+            pnt_vbo.push_back(pnt[i - u_min][j - v_min]);
+            pnt_vbo.push_back(pnt[i + 1 - u_min][j - v_min]);
+            pnt_vbo.push_back(pnt[i - u_min][j + 1 - v_min]);
+
+            pnt_vbo.push_back(pnt[i + 1 - u_min][j - v_min]);
+            pnt_vbo.push_back(pnt[i - u_min][j + 1 - v_min]);
+            pnt_vbo.push_back(pnt[i + 1 - u_min][j + 1 - v_min]);
+        }
+    }
+
+    _nVertex = (int)pnt_vbo.size();
+
+    // VBOの設定
+    glGenBuffers(1, &_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(double) * _nVertex * 3, &pnt_vbo[0], GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 // VBOで描画
 void BsplineSurface::DrawVBO()
 {
+    glColor4dv(_color);
 
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_DOUBLE, 0, 0);
+
+    glDrawArrays(GL_TRIANGLES, 0, _nVertex);
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 // 接線ベクトル描画
 void BsplineSurface::DrawFirstDiffVectorsInternal()
 {
     Vector3d pnt, diff;
-    glLineWidth(1.0);
+    glLineWidth(2.0);
 
     glBegin(GL_LINES);
 

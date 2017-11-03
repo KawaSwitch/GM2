@@ -20,7 +20,7 @@ private:
 protected:
 
     bool _isUseVBO = false; // VBO‚ğg‚¤‚©
-    GLuint _vbo;
+    GLuint _vbo = 0;
     GLdouble _color[4];  // F
 
     // –‘O•`‰æ
@@ -146,6 +146,13 @@ public:
     {
         _number = obj_number++; // ¯•Êq‚ğU‚é
 
+        int _displayList = -1;
+        int _ctrlp_displayList = -1;
+        int _fd_displayList = -1;
+        int _sd_displayList = -1;
+        int _box_displayList = -1;
+        int _cur_displayList = -1;
+        _vbo = 0;
         _color[0] = -1;
     }
 
@@ -160,5 +167,8 @@ public:
         glDeleteLists(_sd_displayList, 1);
         glDeleteLists(_box_displayList, 1);
         glDeleteLists(_cur_displayList, 1);
+
+        // VBO”jŠü
+        glDeleteBuffers(1, &_vbo);
     }
 };
