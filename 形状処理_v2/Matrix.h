@@ -2,7 +2,7 @@
 
 // P~Q ‚Æ Q~R ‚Ìs—ñ‚ÌÏ‚ğŒvZ‚·‚é
 template <class T>
-void MatrixMultiply(int P, int Q, int R, const T* xmat, const T* ymat, T* zmat)
+void MatrixMultiply(int P, int Q, int R, const T* const xmat, const T* const ymat, T* const zmat)
 {
     // ‰Šú‰»
     for (int i = 0; i < P; i++)
@@ -25,7 +25,7 @@ void MatrixMultiply(int P, int Q, int R, const T* xmat, const T* ymat, T* zmat)
 
 // (1sP—ñs—ñ)~(Ps1—ñs—ñ) ‚ÌŒvZ
 template <class T>
-T MatrixMultiply(int P, const T* xmat, const T* ymat)
+T MatrixMultiply(int P, const T* const xmat, const T* const ymat)
 {
     double dot = 0.0;
 
@@ -37,7 +37,7 @@ T MatrixMultiply(int P, const T* xmat, const T* ymat)
 
 // s—ñ‚Ì“]’u‚ğæ“¾‚·‚é
 template <class T>
-void Transpose(int row, int col, const T* mat, T* res_mat)
+void Transpose(int row, int col, const T* const mat, T* const res_mat)
 {
     for (int i = 0; i < row; i++)
     {

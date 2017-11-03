@@ -13,11 +13,21 @@ double a[10] = { -3, -2, -1, 0, 1, 2, 3, 4, 5, 6 };
 double b[10] = { 0, 0, 0, 0, 1, 2, 3, 3, 3, 3 };
 double c[10] = { 0, 0, 0, 0, 1, 1, 3, 3, 3, 3 };
 double surf1_u[10] = { 0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0, 3.0, 3.0 };
-double surf1_v[7] = { 0.0, 0.0, 1.0, 2.0, 2.0, 2.0 };
+double surf1_v[7] = { 0.0, 0.0, 0.0, 1.0, 2.0, 2.0, 2.0 };
+double curve2[8] = { 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0, 3.0 };
 
 void InitScene()
 {
     scene = new Scene();
+
+    ControlPoint cp_curve2[5] =
+    {
+        ControlPoint(-5, 2, 0),
+        ControlPoint(-3, 10, 0),
+        ControlPoint(1, 2, 0),
+        ControlPoint(2, 5, 0),
+        ControlPoint(4, 5, 0),
+    };
 
     ControlPoint cp_sample[6] =
     {

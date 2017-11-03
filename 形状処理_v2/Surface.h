@@ -11,6 +11,9 @@ protected:
     int _ordU, _ordV; // 階数
     int _ncpntU, _ncpntV; // 制御点数
     vector<ControlPoint> _ctrlp; // 制御点
+    vector<double> _ctrlpX; // 計算用
+    vector<double> _ctrlpY;
+    vector<double> _ctrlpZ;
 
     // 制御点設定
     void SetControlPoint(ControlPoint* cp, int size)
@@ -18,15 +21,28 @@ protected:
         if (size <= 0)
             Error::ShowAndExit("制御点設定失敗", "CP size must be over 0.");
 
-        _ctrlp.reserve(size);
+        _ctrlp.reserve(size); _ctrlpX.reserve(size);
+        _ctrlpY.reserve(size); _ctrlpZ.reserve(size);
 
         for (int i = 0; i < size; i++)
             _ctrlp.emplace_back(cp[i]);
+
+        // 計算用に転置する(もっと見栄えがいいやり方が欲しい)
+        for (int i = 0; i < _ncpntU; i++)
+        {
+            for (int j = 0; j < _ncpntV; j++)
+            {
+                _ctrlpX.push_back(_ctrlp[j * _ncpntU + i].X);
+                _ctrlpY.push_back(_ctrlp[j * _ncpntU + i].Y);
+                _ctrlpZ.push_back(_ctrlp[j * _ncpntU + i].Z);
+            }
+        }
     }
 
     // ベクトル取得関数
-    virtual Vector3d GetPositionVector(double u, double v) { return Vector3d(); }; // 位置ベクトル
-    virtual Vector3d GetFirstDiffVector(double u, double v) { return Vector3d(); }; // 接線ベクトル
+    virtual Vector3d GetPositionVector(double u, double v) = 0; // 位置ベクトル
+    virtual Vector3d GetFirstDiffVectorU(double u, double v) = 0; // 接線ベクトル
+    virtual Vector3d GetFirstDiffVectorV(double u, double v) = 0; // 接線ベクトル
     virtual Vector3d GetSecondDiffVector(double u, double v) { return Vector3d(); }; // 2階微分ベクトル
     virtual Vector3d GetCurvatureVector(double u, double v) { return Vector3d(); }; // 曲率ベクトル
 

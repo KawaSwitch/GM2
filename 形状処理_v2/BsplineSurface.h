@@ -21,10 +21,11 @@ private:
     void DrawVBO() override;
 
     // ノットベクトル設定
-    void SetKnotVector(double* knot, int size, vector<double> _knot)
+    void SetKnotVector(double* knot, int size, vector<double>& _knot)
     {
         if (size <= 0)
             Error::ShowAndExit("ノットベクトル設定失敗", "knot-vector size must be over 0.");
+
 
         _knot.reserve(size);
         for (int i = 0; i < size; i++)
@@ -36,5 +37,6 @@ public:
     BsplineSurface(int u_mord, int v_mord, ControlPoint* cp, int u_cp_size, int v_cp_size, double* u_knot, double* v_knot, GLdouble* color, GLdouble width);
 
     Vector3d GetPositionVector(double u, double v) override;
-    Vector3d GetFirstDiffVector(double u, double v) override;
+    Vector3d GetFirstDiffVectorU(double u, double v) override;
+    Vector3d GetFirstDiffVectorV(double u, double v) override;
 };

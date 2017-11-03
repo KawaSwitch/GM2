@@ -15,3 +15,9 @@
 
 // glOverload.cpp
     GLOBAL void glVertex3d(const Vector3d& vec);
+
+    // 1階の基底関数値を取得
+    GLOBAL vector<double> Blending_1ORD(double t, int mord, int ncpnt, int nknot, double* knot);
+
+    // Bスプライン基底関数値
+    GLOBAL void Blending(double t, int mord, int ncpnt, int nknot, double* knot, int reqord, double* bf);
