@@ -101,6 +101,9 @@ void Initialize()
 
     glEnable(GL_DEPTH_TEST); // デプス値 有効化
 
+    glEnable(GL_BLEND); // ブレンド 有効化
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     axis = new NormalAxis(0.4); // 軸
 
     obj_number = 1; // 初期識別子は1

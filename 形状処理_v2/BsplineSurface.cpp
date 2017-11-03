@@ -21,6 +21,8 @@ BsplineSurface::BsplineSurface(
 // 事前描画
 void BsplineSurface::PreDraw()
 {   
+    glDepthMask(GL_FALSE);
+
     // 解像度
     int RES = 15;
 
@@ -50,7 +52,7 @@ void BsplineSurface::PreDraw()
     }
 
     // メッシュの色はα値関係ないので気にせず大丈夫
-    glColor3dv(_color);
+    glColor4dv(_color);
 
     // メッシュ表示
     // U方向
@@ -91,6 +93,8 @@ void BsplineSurface::PreDraw()
             glEnd();
         }
     }
+
+    glDepthMask(GL_TRUE);
 }
 
 // 頂点バッファ作成
