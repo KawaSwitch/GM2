@@ -24,7 +24,7 @@ void BsplineCurve::PreDraw()
         double t = (double)i / 100;
 
         Vector3d pnt = GetPositionVector(t);
-        glVertex3d(pnt.X, pnt.Y, pnt.Z);
+        glVertex3d(pnt);
     }
 
     glEnd();
@@ -67,22 +67,7 @@ void BsplineCurve::DrawVBO()
 void BsplineCurve::DrawFirstDiffVectors()
 {
     if (_isDrawFirstDiff)
-    {
-        if (_fd_displayList == -1)
-        {
-            if (!(_fd_displayList = glGenLists(1)))
-                return;
-
-            // “o˜^
-            glNewList(_fd_displayList, GL_COMPILE);
-            DrawFirstDiffVectorsInternal();
-            glEndList();
-
-            glutPostRedisplay();
-        }
-        else
-            glCallList(_fd_displayList);
-    }
+        DrawUsingDisplayList(&_fd_displayList, [&] { return (*this).DrawFirstDiffVectorsInternal(); });
 }
 void BsplineCurve::DrawFirstDiffVectorsInternal()
 {

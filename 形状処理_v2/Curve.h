@@ -29,22 +29,7 @@ protected:
     virtual void DrawControlPointsAndLines() override
     {
         if (_isDrawCtrlp)
-        {
-            if (_ctrlp_displayList == -1)
-            {
-                if (!(_ctrlp_displayList = glGenLists(1)))
-                    return;
-
-                // “o˜^
-                glNewList(_ctrlp_displayList, GL_COMPILE);
-                DrawCPsInternal();
-                glEndList();
-
-                glutPostRedisplay();
-            }
-            else
-                glCallList(_ctrlp_displayList);
-        }
+            DrawUsingDisplayList(&_ctrlp_displayList, [&] { return (*this).DrawCPsInternal(); });
     }
 
     virtual Vector3d GetPositionVector(double t) = 0; // ˆÊ’uƒxƒNƒgƒ‹

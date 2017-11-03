@@ -51,3 +51,22 @@ void DrawBsplineFunc(int mord, int ncpnt, int nknot, double* knot, double min_t,
         isRendered = true;
     }
 }
+
+// ディスプレイリストと描画関数を用いて描画する
+void DrawUsingDisplayList(int* const displayList, function<void(void)> RegisterDraw)
+{
+    if (*displayList == -1)
+    {
+        if (!(*displayList = glGenLists(1)))
+            return;
+
+        // 登録
+        glNewList(*displayList, GL_COMPILE);
+        RegisterDraw();
+        glEndList();
+
+        glutPostRedisplay();
+    }
+    else
+        glCallList(*displayList);
+}

@@ -12,20 +12,11 @@ class Object
 {
 private:
 
-    int _displayList;    // ディスプレイリスト
+    int _displayList = -1;    // ディスプレイリスト
     bool _isRendered;
     bool _deleteFlag;
     bool _isSelected = false; // 選択状態にあるか
     unsigned int _number; // 識別番号
-
-    // ディスプレイリスト設定
-    void SetDisplayList()
-    {
-        _displayList = glGenLists(1);
-
-        if (_displayList == 0)
-            Error::ShowAndExit("ディスプレイリスト作成失敗");
-    }
 
 protected:
 
@@ -70,25 +61,7 @@ public:
         }
         // ディスプレイリスト
         else
-        {
-            if (!_isRendered)
-            {
-                SetDisplayList();
-
-                // 登録
-                glNewList(_displayList, GL_COMPILE);
-                this->PreDraw();
-                glEndList();
-
-                _isRendered = true;
-
-                glutPostRedisplay();
-            }
-            else
-            {
-                glCallList(_displayList);
-            }
-        }
+            DrawUsingDisplayList(&_displayList, [&] { return (*this).PreDraw(); });
     }
 
     // そのまま描画
