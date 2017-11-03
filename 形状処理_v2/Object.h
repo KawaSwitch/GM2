@@ -14,7 +14,6 @@ class Object
 {
 private:
 
-    bool _isRendered = false;
     bool _deleteFlag = false;
     bool _isSelected = false; // ‘I‘ğó‘Ô‚É‚ ‚é‚©
     unsigned int _number; // ¯•Ê”Ô†
@@ -61,11 +60,9 @@ public:
         // VBO
         if (_isUseVBO)
         {
-            if (!_isRendered)
+            if (_vbo == 0)
             {
                 CreateVBO(); // VBOì¬
-
-                _isRendered = true;
                 glutPostRedisplay();
             }
             else

@@ -15,3 +15,5 @@
 
 // glOverload.cpp
     GLOBAL void glVertex3d(const Vector3d& vec);
+    GLOBAL void glPointSize(double size);
+    GLOBAL void glLineWidth(double width);
