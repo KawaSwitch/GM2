@@ -12,6 +12,7 @@ using namespace std;
 #include "Color.h"
 #include "Vector.h"
 #include "Point3d.h"
+#include "Matrix.h"
 
 #ifdef GLOBAL_INSTANCE
 #define GLOBAL
