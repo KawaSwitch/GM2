@@ -64,11 +64,6 @@ void BsplineCurve::DrawVBO()
 }
 
 // ÚüƒxƒNƒgƒ‹•`‰æ
-void BsplineCurve::DrawFirstDiffVectors()
-{
-    if (_isDrawFirstDiff)
-        DrawUsingDisplayList(&_fd_displayList, [&] { return (*this).DrawFirstDiffVectorsInternal(); });
-}
 void BsplineCurve::DrawFirstDiffVectorsInternal()
 {
     glColor3dv(Color::red);

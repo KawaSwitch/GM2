@@ -11,7 +11,6 @@ protected:
     int _ord; // 階数
     int _ncpnt; // 制御点数
     vector<ControlPoint> _ctrlp; // 制御点
-    int _ctrlp_displayList = -1; // 制御点用ディスプレイリスト
 
     // 制御点設定
     void SetControlPoint(ControlPoint* cp, int size)
@@ -25,19 +24,13 @@ protected:
             _ctrlp.emplace_back(cp[i]);
     }
 
-    // 制御点線描画
-    virtual void DrawControlPointsAndLines() override
-    {
-        if (_isDrawCtrlp)
-            DrawUsingDisplayList(&_ctrlp_displayList, [&] { return (*this).DrawCPsInternal(); });
-    }
-
     virtual Vector3d GetPositionVector(double t) = 0; // 位置ベクトル
     virtual Vector3d GetFirstDiffVector(double t) = 0; // 接線ベクトル
 
 private:
 
-    void DrawCPsInternal()
+    // 制御点描画
+    void DrawCPsInternal() override
     {
         glColor3d(1.0, 0.0, 0.0); // 赤
         glPointSize(5.0);
