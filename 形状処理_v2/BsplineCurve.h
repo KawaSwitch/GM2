@@ -12,6 +12,7 @@ private:
 
     void DrawFirstDiffVectorsInternal() override;
     void DrawSecondDiffVectorsInternal() override;
+    void DrawNormalVectorsInternal() override;
     //void DrawCurvatureVectorsInternal() override;
 
     // Ž–‘O•`‰æ

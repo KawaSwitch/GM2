@@ -113,6 +113,28 @@ void BezierCurve::DrawSecondDiffVectorsInternal()
     glEnd();
 }
 
+// 法線ベクトル描画
+void BezierCurve::DrawNormalVectorsInternal()
+{
+    Vector3d pnt, normal;
+
+    glColor3dv(Color::blue);
+    glLineWidth(1.0);
+    glBegin(GL_LINES);
+
+    for (int i = 0; i <= 100; i += 5)
+    {
+        double t = (double)i / 100;
+
+        pnt = GetPositionVector(t);
+        normal = GetNormalVector(t).Normalize();
+        glVertex3d(pnt);
+        glVertex3d(pnt + normal);
+    }
+
+    glEnd();
+}
+
 // 位置ベクトル取得
 Vector3d BezierCurve::GetPositionVector(double t)
 {

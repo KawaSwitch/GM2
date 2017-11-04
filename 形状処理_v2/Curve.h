@@ -19,6 +19,12 @@ protected:
     virtual Vector3d GetSecondDiffVector(double t) { return Vector3d(); }; // 2階微分ベクトル
     virtual Vector3d GetCurvatureVector(double t) { return Vector3d(); }; // 曲率ベクトル
 
+    // 法線ベクトル取得
+    Vector3d GetNormalVector(double t)
+    {
+        return (Vector3d(0, 0, 1) * GetFirstDiffVector(t)).Normalize();
+    }
+
     // 制御点設定
     void SetControlPoint(ControlPoint* cp, int size)
     {

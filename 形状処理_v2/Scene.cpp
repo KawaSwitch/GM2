@@ -84,6 +84,18 @@ void Scene::ToggleDrawBox()
     }
 }
 
+void Scene::ToggleDrawNormalVectors()
+{
+    auto it = ObjList.begin();
+
+    // 法線表示トグル
+    while (it != ObjList.end())
+    {
+        (*it)->SetUnsetIsDrawNormal();
+        it++;
+    }
+}
+
 void Scene::Draw()
 {
     auto it = ObjList.begin();
@@ -96,6 +108,7 @@ void Scene::Draw()
         (*it)->DrawFirstDiffVectors(); // 接線描画
         (*it)->DrawSecondDiffVectors(); // 2階微分ベクトル描画
         (*it)->DrawBox(); // ミニマクスボックス描画
+        (*it)->DrawNormalVectors(); // 法線描画
         (*it)->DrawCurvatureVectors(); // 曲率ベクトル描画
 
         // 削除フラグチェック

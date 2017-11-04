@@ -116,6 +116,28 @@ void BsplineCurve::DrawSecondDiffVectorsInternal()
     glEnd();
 }
 
+// 法線ベクトル描画
+void BsplineCurve::DrawNormalVectorsInternal()
+{
+    Vector3d pnt, normal;
+
+    glColor3dv(Color::blue);
+    glLineWidth(1.0);
+    glBegin(GL_LINES);
+
+    for (int i = (int)(_knot[_ord - 1] * 100); i <= (int)(_knot[_ncpnt] * 100); i += 10)
+    {
+        double t = (double)i / 100;
+
+        pnt = GetPositionVector(t);
+        normal = GetNormalVector(t).Normalize();
+        glVertex3d(pnt);
+        glVertex3d(pnt + normal);
+    }
+
+    glEnd();
+}
+
 // 位置ベクトル取得
 Vector3d BsplineCurve::GetPositionVector(double t)
 {

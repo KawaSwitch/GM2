@@ -30,6 +30,7 @@ protected:
     virtual void DrawCPsInternal() = 0;
     virtual void DrawFirstDiffVectorsInternal() { };
     virtual void DrawSecondDiffVectorsInternal() { };
+    virtual void DrawNormalVectorsInternal() { };
     virtual void DrawCurvatureVectorsInternal() { };
 
     // VBO
@@ -43,6 +44,7 @@ protected:
     int _fd_displayList = -1;
     int _sd_displayList = -1;
     int _box_displayList = -1;
+    int _nor_displayList = -1;
     int _cur_displayList = -1;
 
     // 表示系ブーリアン
@@ -50,6 +52,7 @@ protected:
     bool _isDrawFirstDiff = false; // 接線
     bool _isDrawSecondDiff = false; // 2階微分
     bool _isDrawBox = false; // ミニマクスボックス
+    bool _isDrawNormal = false; // 法線
     bool _isDrawCurvature = false; // 曲率
 
 public:
@@ -92,6 +95,7 @@ public:
     void SetUnsetIsDrawFisrtDiff() { _isDrawFirstDiff = !_isDrawFirstDiff; }
     void SetUnsetIsDrawSecondDiff() { _isDrawSecondDiff = !_isDrawSecondDiff; }
     void SetUnsetIsDrawBox() { _isDrawBox = !_isDrawBox; }
+    void SetUnsetIsDrawNormal() { _isDrawNormal = !_isDrawNormal; }
     void SetUnsetIsDrawCurvature() { _isDrawCurvature = !_isDrawCurvature; }
 
     // 制御点線描画
@@ -117,6 +121,12 @@ public:
     {
         if (_isDrawBox)
             DrawUsingDisplayList(&_box_displayList, [&] { return (*this).DrawBoxInternal(); });
+    }
+    // 法線ベクトル描画
+    void DrawNormalVectors()
+    {
+        if (_isDrawNormal)
+            DrawUsingDisplayList(&_nor_displayList, [&] { return (*this).DrawNormalVectorsInternal(); });
     }
     // 曲率ベクトル描画
     void DrawCurvatureVectors()

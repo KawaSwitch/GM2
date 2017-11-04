@@ -54,7 +54,7 @@ struct Vector3d
         return { X + other.X, Y + other.Y, Z + other.Z };
     }
     // ·
-    constexpr Vector3d operator-(Vector3d other) const
+    constexpr Vector3d operator-(const Vector3d& other) const
     {
         return { X - other.X, Y - other.Y, Z - other.Z };
     }
@@ -69,6 +69,11 @@ struct Vector3d
     }
     friend 
         constexpr Vector3d operator*(double value, const Vector3d& v);
+    // ŠOÏ
+    constexpr Vector3d operator*(const Vector3d& other) const
+    {
+        return this->Cross(other);
+    }
     // •¡‡‘ã“ü‰‰Z
     Vector3d& operator+=(const Vector3d& other)
     {
