@@ -256,6 +256,7 @@ void BsplineSurface::DrawSecondDiffVectorsInternal()
     glEnd();
 }
 
+// 法線ベクトル描画
 void BsplineSurface::DrawNormalVectorsInternal()
 {
     Vector3d pnt, normal;
@@ -282,6 +283,39 @@ void BsplineSurface::DrawNormalVectorsInternal()
     glEnd();
 }
 
+// 曲率半径描画
+void BsplineSurface::DrawCurvatureVectorsInternal()
+{
+    Vector3d pnt, curv;
+
+    glLineWidth(1.0);
+    glPointSize(5.0);
+
+    for (int i = (int)(_knotU[_ordU - 1] * 100); i <= (int)(_knotU[_ncpntU] * 100); i += 10)
+    {
+        for (int j = (int)(_knotV[_ordV - 1] * 100); j <= (int)(_knotV[_ncpntV] * 100); j += 10)
+        {
+            double u = (double)i / 100;
+            double v = (double)j / 100;
+
+            pnt = GetPositionVector(u, v);
+            curv = GetCurvatureVector(u, v);
+
+            // 曲率半径
+            glColor3dv(Color::pink); // ピンク
+            glBegin(GL_LINES);
+            glVertex3d(pnt);
+            glVertex3d(pnt + curv);
+            glEnd();
+
+            // 曲率中心
+            glColor3dv(Color::light_green); // 黄緑
+            glBegin(GL_POINTS);
+            glVertex3d(pnt + curv);
+            glEnd();
+        }
+    }
+}
 
 // 位置ベクトル取得
 Vector3d BsplineSurface::GetPositionVector(double u, double v)

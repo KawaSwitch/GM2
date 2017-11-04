@@ -1,6 +1,33 @@
 #include "GV.h"
 #include "ControlPoint.h"
 
+// 2Ÿ•û’ö® ax^2 + bx + c = 0 ‚Ì 2‰ğx1,x2 ‚ğ‹‚ß‚é
+// ‹•”‰ğ‚Ìê‡ x1 } x2i ‚ğ–‚½‚· x1,x2 ‚ğ‹‚ß‚é
+void SolveQuadraticEquation(double a, double b, double c, double* x1, double* x2)
+{
+    // ”»•Ê®
+    double D = b * b - 4 * a * c;
+
+    // ˆÙ‚È‚é2‚Â‚ÌÀ”‰ğ
+    if (D > 0)
+    {
+        *x1 = (-b + sqrt(D)) / (2 * a);
+        *x2 = (-b - sqrt(D)) / (2 * a);
+    }
+    // d‰ğ
+    else if (D == 0)
+    {
+        // d‰ğ‚Ì‚Æ‚« x = -(b / 2a)
+        *x1 = *x2 = -b / (2 * a);
+    }
+    // ˆÙ‚È‚é2‚Â‚Ì‹•”‰ğ
+    else
+    {
+        *x1 = -b / (2 * a); // real part
+        *x2 = sqrt(-D) / (2 * a); // imaginary part
+    }
+}
+
 // “ñ€ŒW”‚ğ‹‚ß‚é
 constexpr double Binomial(int n, int k)
 {

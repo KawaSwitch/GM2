@@ -5,6 +5,7 @@
     GLOBAL void Initialize();
 
 // CalcUtil.cpp
+    GLOBAL void SolveQuadraticEquation(double a, double b, double c, double* x1, double* x2);
     GLOBAL double CalcBernsteinFunc(unsigned int i, unsigned int N, double t);
     GLOBAL double Calc1DiffBernsteinFunc(unsigned int i, unsigned int N, double t);
     GLOBAL double Calc2DiffBernsteinFunc(unsigned int i, unsigned int N, double t);

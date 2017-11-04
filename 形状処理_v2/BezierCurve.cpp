@@ -135,7 +135,7 @@ void BezierCurve::DrawNormalVectorsInternal()
     glEnd();
 }
 
-// ‹È—¦ƒxƒNƒgƒ‹•`‰æ
+// ‹È—¦”¼Œa•`‰æ
 void BezierCurve::DrawCurvatureVectorsInternal()
 {
     Vector3d pnt, curv;

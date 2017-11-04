@@ -138,7 +138,7 @@ void BsplineCurve::DrawNormalVectorsInternal()
     glEnd();
 }
 
-// ‹È—¦ƒxƒNƒgƒ‹•`‰æ
+// ‹È—¦”¼Œa•`‰æ
 void BsplineCurve::DrawCurvatureVectorsInternal()
 {
     Vector3d pnt, curv;

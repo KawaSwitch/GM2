@@ -64,12 +64,75 @@ protected:
     virtual Vector3d GetSecondDiffVectorUU(double u, double v) { return Vector3d(); }; // 2階微分ベクトル
     virtual Vector3d GetSecondDiffVectorUV(double u, double v) { return Vector3d(); };
     virtual Vector3d GetSecondDiffVectorVV(double u, double v) { return Vector3d(); };
-    virtual Vector3d GetCurvatureVector(double u, double v) { return Vector3d(); }; // 曲率ベクトル
 
     // 法線ベクトル取得
     Vector3d GetNormalVector(double u, double v)
     {
         return (GetFirstDiffVectorU(u, v) * GetFirstDiffVectorV(u, v));
+    }
+
+    // 描画用曲率ベクトル取得
+    Vector3d GetCurvatureVector(double u, double v)
+    {
+        // 主曲率取得
+        double max_kappa, min_kappa;
+        GetPrincipalCurvatures(u, v, &max_kappa, &min_kappa);
+
+        // 単位法線ベクトル
+        Vector3d e = GetNormalVector(u, v).Normalize();
+
+        // 絶対値が大きい方を返す
+        return (fabs(max_kappa) > fabs(min_kappa)) ?
+            (1 / max_kappa) * e :
+            (1 / min_kappa) * e;
+    }
+
+private:
+
+    // 主曲率を取得
+    void GetPrincipalCurvatures(double u, double v, double* max_kappa, double* min_kappa)
+    {
+        Vector3d e = GetNormalVector(u, v).Normalize(); // 単位法線ベクトル
+
+        // 各自必要な値を計算
+        double L = e.Dot(GetSecondDiffVectorUU(u, v));
+        double M = e.Dot(GetSecondDiffVectorUV(u, v));
+        double N = e.Dot(GetSecondDiffVectorVV(u, v));
+        double E = GetFirstDiffVectorU(u, v).Dot(GetFirstDiffVectorU(u, v));
+        double F = GetFirstDiffVectorU(u, v).Dot(GetFirstDiffVectorV(u, v));
+        double G = GetFirstDiffVectorV(u, v).Dot(GetFirstDiffVectorV(u, v));
+
+        double A = E * G - F * F;
+        double B = 2 * F * M - E * N - G * L;
+        double C = L * N - M * M;
+
+        // 主曲率κを計算する（Aκ^2 + Bκ + C = 0 の2解）
+        double kappa1, kappa2;
+        SolveQuadraticEquation(A, B, C, &kappa1, &kappa2);
+
+        // 最大主曲率と最小主曲率を返す
+        *max_kappa = (kappa1 > kappa2) ? kappa1 : kappa2;
+        *min_kappa = (kappa1 < kappa2) ? kappa1 : kappa2;
+    }
+
+    // 平均曲率取得
+    double GetMeanCurvature(double u, double v)
+    {
+        // 主曲率取得
+        double max_kappa, min_kappa;
+        GetPrincipalCurvatures(u, v, &max_kappa, &min_kappa);
+
+        return (max_kappa + min_kappa) / 2.0;
+    }
+
+    // ガウス曲率取得
+    double GetGaussianCurvature(double u, double v)
+    {
+        // 主曲率取得
+        double max_kappa, min_kappa;
+        GetPrincipalCurvatures(u, v, &max_kappa, &min_kappa);
+
+        return max_kappa * min_kappa;
     }
 
 public:
