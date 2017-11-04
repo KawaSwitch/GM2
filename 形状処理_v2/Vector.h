@@ -6,18 +6,18 @@ struct Vector3d
 {
     double X, Y, Z;
 
-    Vector3d() { X = 0; Y = 0; Z = 0; } // デフォルトは0初期化
-    Vector3d(double x, double y, double z) { X = x; Y = y; Z = z; }
+    constexpr Vector3d() : X(0), Y(0), Z(0) { } // デフォルトは0初期化
+    constexpr Vector3d(double x, double y, double z) : X(x), Y(y), Z(z) { }
 
     // 内積
-    double Dot(const Vector3d& other) const 
+    constexpr double Dot(const Vector3d& other) const 
     {
         return
             (X * other.X) + (Y * other.Y) + (Z * other.Z);
     }
 
     // 外積
-    Vector3d Cross(const Vector3d& other) const
+    constexpr Vector3d Cross(const Vector3d& other) const
     {
         return {
         (Y * other.Z) - (Z * other.Y),
@@ -27,7 +27,7 @@ struct Vector3d
 
     // 長さ
     double Length() const { return sqrt(X*X + Y*Y + Z*Z); }
-    double LengthSquared() const { return Dot(*this); }
+    constexpr double LengthSquared() const { return Dot(*this); }
     
     // 絶対値
     double Absolute() const { return Length(); }
@@ -39,34 +39,36 @@ struct Vector3d
     Vector3d Normalize() const { return *this / Length(); }
 
     // 0確認
-    bool IsZero() const { return (X == 0.0) && (Y == 0.0) && (Z == 0.0); }
+    constexpr bool IsZero() const { return (X == 0.0) && (Y == 0.0) && (Z == 0.0); }
 
     // コピーコンストラクタと代入演算はデフォルトを使用
 
 
 #pragma region operator
 
-    Vector3d operator + () const { return *this; } // 単項+
-    Vector3d operator - () const { return { -X, -Y, -Z }; } // 単項-
+    constexpr Vector3d operator + () const { return *this; } // 単項+
+    constexpr Vector3d operator - () const { return { -X, -Y, -Z }; } // 単項-
     // 和
-    Vector3d operator+(const Vector3d& other) const
+    constexpr Vector3d operator+(const Vector3d& other) const
     {
         return { X + other.X, Y + other.Y, Z + other.Z };
     }
     // 差
-    Vector3d operator-(Vector3d other) const
+    constexpr Vector3d operator-(Vector3d other) const
     {
         return { X - other.X, Y - other.Y, Z - other.Z };
     }
     // 定数倍
-    Vector3d operator*(double value) const
+    constexpr Vector3d operator*(double value) const
     {
         return { X * value, Y * value, Z * value };
     }
-    Vector3d operator/(double value) const
+    constexpr Vector3d operator/(double value) const
     {
-        return{ X / value, Y / value, Z / value };
+        return { X / value, Y / value, Z / value };
     }
+    friend 
+        constexpr Vector3d operator*(double value, const Vector3d& v);
     // 複合代入演算
     Vector3d& operator+=(const Vector3d& other)
     {
@@ -91,3 +93,8 @@ struct Vector3d
 
 #pragma endregion
 };
+
+constexpr Vector3d operator*(double value, const Vector3d& v)
+{
+    return { value * v.X, value * v.Y, value * v.Z };
+}
