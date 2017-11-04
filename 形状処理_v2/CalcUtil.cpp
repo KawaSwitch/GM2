@@ -159,3 +159,12 @@ double Calc2DiffBsplineFunc(unsigned int i, unsigned int M, double t, double* kn
         return (M - 1) * (temp_left - temp_right);
     }
 }
+
+// 3点から成るポリゴンの単位化済み面法線を取得する
+Vector3d CalcPolygonNormal(Vector3d v0, Vector3d v1, Vector3d v2)
+{
+    Vector3d vec01 = v1 - v0;
+    Vector3d vec02 = v2 - v0;
+
+    return (vec01 * vec02).Normalize();
+}

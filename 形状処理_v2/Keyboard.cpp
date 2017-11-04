@@ -26,9 +26,12 @@ void Keyboard(unsigned char key, int x, int y)
         case 'c': // 曲率ベクトルトグル
             scene->ToggleDrawCurvatureVectors();
             break;
-        case 'b': // ミニマクスボックス
+        case 'b': // ミニマクスボックストグル
             scene->ToggleDrawBox();
             break;
+        //case 'l': // ライティングトグル
+        //    isUseLight = !isUseLight;
+        //    break;
         default:
             break;
     }

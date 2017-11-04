@@ -60,11 +60,16 @@ void BsplineSurface::PreDraw()
     {
         for (int j = v_min; j < v_max; j++)
         {
-            glBegin(GL_TRIANGLE_STRIP);
+            glBegin(GL_TRIANGLES);
+
             glVertex3d(pnt[i - u_min][j - v_min]);
             glVertex3d(pnt[i + 1 - u_min][j - v_min]);
             glVertex3d(pnt[i - u_min][j + 1 - v_min]);
+            
+            glVertex3d(pnt[i + 1 - u_min][j - v_min]);
+            glVertex3d(pnt[i - u_min][j + 1 - v_min]);
             glVertex3d(pnt[i + 1 - u_min][j + 1 - v_min]);
+
             glEnd();
         }
     }

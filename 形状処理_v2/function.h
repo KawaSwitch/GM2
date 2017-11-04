@@ -14,6 +14,7 @@
     GLOBAL double Calc2DiffBsplineFunc(unsigned int i, unsigned int M, double t, double* knot);
     GLOBAL constexpr double Binomial(int n, int k);
     GLOBAL constexpr int Factorial(int n);
+    GLOBAL Vector3d CalcPolygonNormal(Vector3d v0, Vector3d v1, Vector3d v2);
 
 
 // DrawUtil.cpp
@@ -22,5 +23,7 @@
 
 // glOverload.cpp
     GLOBAL void glVertex3d(const Vector3d& vec);
-    GLOBAL void glPointSize(double size);
-    GLOBAL void glLineWidth(double width);
+    GLOBAL void glPointSize(const double size);
+    GLOBAL void glLineWidth(const double width);
+    GLOBAL void glNormal3d(const Vector3d& vec);
+    GLOBAL void glMaterialfv(GLenum face, GLenum pname, const GLdouble* params);

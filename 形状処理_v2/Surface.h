@@ -53,8 +53,8 @@ protected:
 
     void DrawMesh()
     {
-        // メッシュは絶対表示(見栄えのため)
-        DrawUsingDisplayList(&_mesh_displayList, [&] { return (*this).DrawMeshInternal(); });
+        if (!isUseLight) // 光源処理なしの場合は見栄えのためメッシュ表示する
+            DrawUsingDisplayList(&_mesh_displayList, [&] { return (*this).DrawMeshInternal(); });
     }
 
     // ベクトル取得関数
@@ -143,6 +143,9 @@ public:
         // オブジェクト自身はデプス考慮無し(見栄えのため)
         glDepthMask(GL_FALSE);
 
+        if (isUseLight)
+            glEnable(GL_LIGHTING);
+
         if (_isUseVBO)
         {
             // VBO
@@ -161,6 +164,7 @@ public:
         }
 
         glDepthMask(GL_TRUE);
+        glDisable(GL_LIGHTING);
 
         // メッシュはディスプレイリスト
         DrawMesh();
