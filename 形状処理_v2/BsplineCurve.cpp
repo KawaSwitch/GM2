@@ -10,6 +10,7 @@ BsplineCurve::BsplineCurve(int mord, ControlPoint* cp, int cp_size, double* knot
     SetControlPoint(cp, cp_size);
     SetKnotVector(knot, _nknot);
     SetColor(color);
+    _width = width;
 
     // VBOŽg‚¤
     _isUseVBO = true;
@@ -21,6 +22,7 @@ void BsplineCurve::PreDraw()
     Vector3d pnt;
 
     glColor3dv(_color);
+    glLineWidth(_width);
     glBegin(GL_LINE_STRIP);
 
     for (int i = (int)(_knot[_ord - 1] * 100); i <= (int)(_knot[_ncpnt] * 100); i++)
@@ -57,6 +59,7 @@ void BsplineCurve::CreateVBO()
 void BsplineCurve::DrawVBO()
 {
     glColor3dv(_color);
+    glLineWidth(_width);
 
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glVertexPointer(3, GL_DOUBLE, 0, 0);

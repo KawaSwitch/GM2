@@ -16,6 +16,7 @@ BsplineSurface::BsplineSurface(
     SetKnotVector(u_knot, _nknotU, _knotU);
     SetKnotVector(v_knot, _nknotV, _knotV);
     SetColor(color);
+    _mesh_width = width;
 
     // VBOを使う
     _isUseVBO = true;
@@ -76,6 +77,7 @@ void BsplineSurface::DrawMeshInternal()
 
     // メッシュの色は3dvで渡した方が綺麗(α=0)
     glColor3dv(_color);
+    glLineWidth(_mesh_width);
 
     // U方向
     for (int i = (int)(_knotU[_ordU - 1] * 100); i <= (int)(_knotU[_ncpntU] * 100); i += 10)

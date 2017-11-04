@@ -104,11 +104,11 @@ void InitScene()
     };
 
     // 各オブジェクト追加
-    scene->AddObject(new BsplineCurve(4, cp_sample, 6, a, Color::blue, 2.0));
-    scene->AddObject(new BsplineCurve(4, cp_sample, 6, b, Color::orange, 2.0));
-    scene->AddObject(new BsplineCurve(4, cp_sample, 6, c, Color::green, 2.0));
+    scene->AddObject(new BsplineCurve(4, cp_sample, 6, a, Color::blue, 1.0));
+    scene->AddObject(new BsplineCurve(4, cp_sample, 6, b, Color::orange, 1.0));
+    scene->AddObject(new BsplineCurve(4, cp_sample, 6, c, Color::green, 1.0));
     scene->AddObject(new BsplineSurface(4, 3, cp_surf1, 6, 4, surf1_u, surf1_v, Color::blue_alpha, 1.0));
-    scene->AddObject(new BezierCurve(4, cp_bezierC, 4, Color::blue, 2.0));
+    scene->AddObject(new BezierCurve(4, cp_bezierC, 4, Color::blue, 1.0));
     scene->AddObject(new BezierSurface(4, 4, cp_bezierS, 4, 4, Color::green_alpha, 1.0));
 }
 

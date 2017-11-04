@@ -9,6 +9,7 @@ BezierSurface::BezierSurface(
 
     SetControlPoint(cp, u_cp_size * v_cp_size);
     SetColor(color);
+    _mesh_width = width;
 
     // VBOを使う
     _isUseVBO = true;
@@ -58,6 +59,7 @@ void BezierSurface::DrawMeshInternal()
 
     // メッシュの色は3dvで渡した方が綺麗(α=0)
     glColor3dv(_color);
+    glLineWidth(_mesh_width);
 
     // U方向
     for (int i = 0; i <= 100; i += 5)

@@ -15,6 +15,7 @@ protected:
     vector<double> _ctrlpY;
     vector<double> _ctrlpZ;
     int _mesh_displayList = -1; // メッシュ用ディスプレイリスト
+    double _mesh_width; // メッシュ線の幅
 
     // 制御点設定
     void SetControlPoint(ControlPoint* cp, int size)

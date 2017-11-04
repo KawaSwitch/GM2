@@ -8,6 +8,7 @@ BezierCurve::BezierCurve(int mord, ControlPoint* cp, int cp_size, GLdouble* colo
 
     SetControlPoint(cp, cp_size);
     SetColor(color);
+    _width = width;
 
     // VBO使う
     _isUseVBO = true;
@@ -17,6 +18,7 @@ BezierCurve::BezierCurve(int mord, ControlPoint* cp, int cp_size, GLdouble* colo
 void BezierCurve::PreDraw()
 {
     glColor3dv(_color);
+    glLineWidth(_width);
 
     glBegin(GL_LINE_STRIP);
 
@@ -54,6 +56,7 @@ void BezierCurve::CreateVBO()
 void BezierCurve::DrawVBO()
 {
     glColor3dv(_color);
+    glLineWidth(_width);
 
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glVertexPointer(3, GL_DOUBLE, 0, 0);
@@ -91,21 +94,23 @@ void BezierCurve::DrawFirstDiffVectorsInternal()
 // 2階微分ベクトル描画
 void BezierCurve::DrawSecondDiffVectorsInternal()
 {
-    //glColor3dv(Color::blue);
-    //glLineWidth(1.0);
-    //glBegin(GL_LINES);
+    Vector3d pnt, diff;
 
-    //for (int i = (int)(_knot[_ord - 1] * 100); i <= (int)(_knot[_ncpnt] * 100); i += 10)
-    //{
-    //    double t = (double)i / 100;
+    glColor3dv(Color::blue);
+    glLineWidth(1.0);
+    glBegin(GL_LINES);
 
-    //    Vector3d pnt = GetPositionVector(t);
-    //    Vector3d diff = GetSecondDiffVector(t).Normalize();
-    //    glVertex3d(pnt);
-    //    glVertex3d(pnt + diff);
-    //}
+    for (int i = 0; i <= 100; i += 5)
+    {
+        double t = (double)i / 100;
 
-    //glEnd();
+        pnt = GetPositionVector(t);
+        diff = GetSecondDiffVector(t).Normalize();
+        glVertex3d(pnt);
+        glVertex3d(pnt + diff);
+    }
+
+    glEnd();
 }
 
 // 位置ベクトル取得
@@ -135,14 +140,8 @@ Vector3d BezierCurve::GetSecondDiffVector(double t)
 {
     Vector3d diff;
 
-    //for (int i = 0; i < _ncpnt; i++)
-    //{
-    //    double N = Calc2DiffBsplineFunc(i, _ord, t, &_knot[0]);
-
-    //    diff.X += N * _ctrlp[i].X;
-    //    diff.Y += N * _ctrlp[i].Y;
-    //    diff.Z += N * _ctrlp[i].Z;
-    //}
+    for (int i = 0; i < _ncpnt; i++)
+        diff += Calc2DiffBernsteinFunc(i, _ord - 1, t) * _ctrlp[i];
 
     return diff;
 }
