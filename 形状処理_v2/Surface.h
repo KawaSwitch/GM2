@@ -66,6 +66,12 @@ protected:
     virtual Vector3d GetSecondDiffVectorVV(double u, double v) { return Vector3d(); };
     virtual Vector3d GetCurvatureVector(double u, double v) { return Vector3d(); }; // 曲率ベクトル
 
+    // 法線ベクトル取得
+    Vector3d GetNormalVector(double u, double v)
+    {
+        return (GetFirstDiffVectorU(u, v) * GetFirstDiffVectorV(u, v));
+    }
+
 public:
 
     // オブジェクト描画

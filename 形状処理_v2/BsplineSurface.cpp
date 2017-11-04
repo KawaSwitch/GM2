@@ -217,7 +217,7 @@ void BsplineSurface::DrawFirstDiffVectorsInternal()
     glEnd();
 }
 
-// 2階微分ベクトルベクトル描画
+// 2階微分ベクトル描画
 void BsplineSurface::DrawSecondDiffVectorsInternal()
 {
     Vector3d pnt, diff;
@@ -255,6 +255,33 @@ void BsplineSurface::DrawSecondDiffVectorsInternal()
 
     glEnd();
 }
+
+void BsplineSurface::DrawNormalVectorsInternal()
+{
+    Vector3d pnt, normal;
+    glLineWidth(1.0);
+
+    glBegin(GL_LINES);
+
+    for (int i = (int)(_knotU[_ordU - 1] * 100); i <= (int)(_knotU[_ncpntU] * 100); i += 10)
+    {
+        for (int j = (int)(_knotV[_ordV - 1] * 100); j <= (int)(_knotV[_ncpntV] * 100); j += 10)
+        {
+            double u = (double)i / 100;
+            double v = (double)j / 100;
+
+            // 法線
+            glColor3dv(Color::blue); // 青
+            pnt = GetPositionVector(u, v);
+            normal = GetNormalVector(u, v).Normalize();
+            glVertex3d(pnt);
+            glVertex3d(pnt + normal);
+        }
+    }
+
+    glEnd();
+}
+
 
 // 位置ベクトル取得
 Vector3d BsplineSurface::GetPositionVector(double u, double v)

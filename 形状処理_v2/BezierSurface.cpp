@@ -188,7 +188,7 @@ void BezierSurface::DrawFirstDiffVectorsInternal()
     glEnd();
 }
 
-// 2階微分ベクトルベクトル描画
+// 2階微分ベクトル描画
 void BezierSurface::DrawSecondDiffVectorsInternal()
 {
     Vector3d pnt, diff;
@@ -221,6 +221,33 @@ void BezierSurface::DrawSecondDiffVectorsInternal()
             diff = GetSecondDiffVectorVV(u, v).Normalize();
             glVertex3d(pnt);
             glVertex3d(pnt + diff);
+        }
+    }
+
+    glEnd();
+}
+
+// 法線ベクトル描画
+void BezierSurface::DrawNormalVectorsInternal()
+{
+    Vector3d pnt, normal;
+    glLineWidth(1.0);
+
+    glBegin(GL_LINES);
+
+    for (int i = 0; i <= 100; i += 5)
+    {
+        for (int j = 0; j <= 100; j += 5)
+        {
+            double u = (double)i / 100;
+            double v = (double)j / 100;
+
+            // 法線
+            glColor3dv(Color::blue); // 青
+            pnt = GetPositionVector(u, v);
+            normal = GetNormalVector(u, v).Normalize();
+            glVertex3d(pnt);
+            glVertex3d(pnt + normal);
         }
     }
 

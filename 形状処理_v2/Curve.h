@@ -22,7 +22,7 @@ protected:
     // 法線ベクトル取得
     Vector3d GetNormalVector(double t)
     {
-        return (Vector3d(0, 0, 1) * GetFirstDiffVector(t)).Normalize();
+        return (Vector3d(0, 0, 1) * GetFirstDiffVector(t));
     }
 
     // 制御点設定
