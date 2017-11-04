@@ -96,6 +96,18 @@ void Scene::ToggleDrawNormalVectors()
     }
 }
 
+void Scene::ToggleDrawCurvatureVectors()
+{
+    auto it = ObjList.begin();
+
+    // 曲率ベクトル表示トグル
+    while (it != ObjList.end())
+    {
+        (*it)->SetUnsetIsDrawCurvature();
+        it++;
+    }
+}
+
 void Scene::Draw()
 {
     auto it = ObjList.begin();

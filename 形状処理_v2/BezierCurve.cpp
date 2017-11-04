@@ -135,6 +135,36 @@ void BezierCurve::DrawNormalVectorsInternal()
     glEnd();
 }
 
+// ‹È—¦ƒxƒNƒgƒ‹•`‰æ
+void BezierCurve::DrawCurvatureVectorsInternal()
+{
+    Vector3d pnt, curv;
+
+    glLineWidth(1.0);
+    glPointSize(5.0);
+
+    for (int i = 0; i <= 100; i += 2)
+    {
+        double t = (double)i / 100;
+
+        pnt = GetPositionVector(t);
+        curv = GetCurvatureVector(t);
+
+        // ‹È—¦”¼Œa•`‰æ
+        glColor3dv(Color::pink);
+        glBegin(GL_LINES);
+        glVertex3d(pnt);
+        glVertex3d(pnt + curv);
+        glEnd();
+
+        // ‹È—¦’†S•`‰æ
+        glColor3dv(Color::light_green);
+        glBegin(GL_POINTS);
+        glVertex3d(pnt + curv);
+        glEnd();
+    }
+}
+
 // ˆÊ’uƒxƒNƒgƒ‹Žæ“¾
 Vector3d BezierCurve::GetPositionVector(double t)
 {

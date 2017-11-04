@@ -23,6 +23,7 @@ public:
     void ToggleDrawSecondDiffVectors();
     void ToggleDrawBox();
     void ToggleDrawNormalVectors();
+    void ToggleDrawCurvatureVectors();
 
     void Draw();
     void DrawForPick();

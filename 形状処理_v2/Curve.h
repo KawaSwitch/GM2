@@ -16,13 +16,25 @@ protected:
     // ベクトル取得関数
     virtual Vector3d GetPositionVector(double t) = 0; // 位置ベクトル
     virtual Vector3d GetFirstDiffVector(double t) = 0; // 接線ベクトル
-    virtual Vector3d GetSecondDiffVector(double t) { return Vector3d(); }; // 2階微分ベクトル
-    virtual Vector3d GetCurvatureVector(double t) { return Vector3d(); }; // 曲率ベクトル
+    virtual Vector3d GetSecondDiffVector(double t) = 0; // 2階微分ベクトル
 
     // 法線ベクトル取得
     Vector3d GetNormalVector(double t)
     {
         return (Vector3d(0, 0, 1) * GetFirstDiffVector(t));
+    }
+
+    // 曲率ベクトル取得
+    Vector3d GetCurvatureVector(double t)
+    {
+        double kappa =  // κ = |Pt×Ptt| / |Pt|^3
+            (GetFirstDiffVector(t) * GetSecondDiffVector(t)).Length() // |Pt×Ptt|
+            / pow(GetFirstDiffVector(t).Length(), 3); // |Pt|^3
+
+        // 法線方向N = (Pt × Ptt) × Pt
+        Vector3d direct = (GetFirstDiffVector(t) * GetSecondDiffVector(t)) * GetFirstDiffVector(t);
+
+        return (1 / kappa) * direct.Normalize();
     }
 
     // 制御点設定

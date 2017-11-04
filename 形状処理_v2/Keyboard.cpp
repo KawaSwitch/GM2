@@ -11,7 +11,7 @@ void Keyboard(unsigned char key, int x, int y)
         case '\033': // 終了
             exit(0);
             break;
-        case 'c': // 制御点トグル
+        case 'p': // 制御点トグル
             scene->ToggleDrawControlPoints();
             break;
         case 'f': // 接線トグル
@@ -22,6 +22,9 @@ void Keyboard(unsigned char key, int x, int y)
             break;
         case 'n': // 法線トグル
             scene->ToggleDrawNormalVectors();
+            break;
+        case 'c': // 曲率ベクトルトグル
+            scene->ToggleDrawCurvatureVectors();
             break;
         case 'b': // ミニマクスボックス
             scene->ToggleDrawBox();

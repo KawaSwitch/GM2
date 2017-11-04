@@ -138,6 +138,38 @@ void BsplineCurve::DrawNormalVectorsInternal()
     glEnd();
 }
 
+// ‹È—¦ƒxƒNƒgƒ‹•`‰æ
+void BsplineCurve::DrawCurvatureVectorsInternal()
+{
+    Vector3d pnt, curv;
+
+    glLineWidth(1.0);
+    glPointSize(5.0);
+
+    for (int i = (int)(_knot[_ord - 1] * 100); i <= (int)(_knot[_ncpnt] * 100); i += 10)
+    {
+        double t = (double)i / 100;
+
+        pnt = GetPositionVector(t);
+        curv = GetCurvatureVector(t);
+
+        // ‹È—¦”¼Œa•`‰æ
+        glColor3dv(Color::pink);
+        glBegin(GL_LINES);
+        glVertex3d(pnt);
+        glVertex3d(pnt + curv);
+        glEnd();
+
+        // ‹È—¦’†S•`‰æ
+        glColor3dv(Color::light_green);
+        glBegin(GL_POINTS);
+        glVertex3d(pnt + curv);
+        glEnd();
+    }
+
+    glEnd();
+}
+
 // ˆÊ’uƒxƒNƒgƒ‹Žæ“¾
 Vector3d BsplineCurve::GetPositionVector(double t)
 {
