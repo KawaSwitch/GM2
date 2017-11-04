@@ -119,7 +119,6 @@ void BsplineSurface::CreateVBO()
 
     vector<vector<Vector3d>> pnt;
     vector<Vector3d> pnt_vbo;
-    GLuint index[3] = { 0, 1, 2 };
 
     // •`‰æ”ÍˆÍ‚ğ—\‚ßİ’è
     int u_min = (int)(_knotU[_ordU - 1] * RES);

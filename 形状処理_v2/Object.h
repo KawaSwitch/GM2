@@ -66,11 +66,7 @@ public:
                 glutPostRedisplay();
             }
             else
-            {
-                glColor3dv(_color); // 色指定
                 DrawVBO(); // 描画
-            }
-
         }
         // ディスプレイリスト
         else

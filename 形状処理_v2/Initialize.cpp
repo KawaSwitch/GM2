@@ -2,6 +2,8 @@
 #include "Scene.h"
 #include "Quaternion.h"
 #include "Axis.h"
+#include "BezierCurve.h"
+#include "BezierSurface.h"
 #include "BsplineCurve.h"
 #include "BsplineSurface.h"
 #include "Triangle.h"
@@ -70,11 +72,44 @@ void InitScene()
         ControlPoint(50, 30, 7),
     };
 
+    ControlPoint cp_bezierC[4] =
+    {
+        ControlPoint(1, 2, 0),
+        ControlPoint(2, 3, 1),
+        ControlPoint(3, 1, 2),
+        ControlPoint(5, 1, 2),
+    };
+
+    ControlPoint cp_bezierS[16] =
+    {
+        ControlPoint(0, 0, 0),
+        ControlPoint(10, 0, 10),
+        ControlPoint(20, 0, 10),
+        ControlPoint(30, 0, 0),
+
+        ControlPoint(0, 10, 10),
+        ControlPoint(10, 10, 20),
+        ControlPoint(20, 10, 20),
+        ControlPoint(30, 10, 20),
+
+        ControlPoint(0, 20, 10),
+        ControlPoint(10, 20, 10),
+        ControlPoint(20, 20, 20),
+        ControlPoint(30, 20, 20),
+        
+        ControlPoint(0, 30, 10),
+        ControlPoint(10, 30, 20),
+        ControlPoint(20, 30, 10),
+        ControlPoint(30, 30, 20),
+    };
+
     // 各オブジェクト追加
     scene->AddObject(new BsplineCurve(4, cp_sample, 6, a, Color::blue, 2.0));
     scene->AddObject(new BsplineCurve(4, cp_sample, 6, b, Color::orange, 2.0));
     scene->AddObject(new BsplineCurve(4, cp_sample, 6, c, Color::green, 2.0));
     scene->AddObject(new BsplineSurface(4, 3, cp_surf1, 6, 4, surf1_u, surf1_v, Color::blue_alpha, 1.0));
+    scene->AddObject(new BezierCurve(4, cp_bezierC, 4, Color::blue, 2.0));
+    scene->AddObject(new BezierSurface(4, 4, cp_bezierS, 4, 4, Color::green_alpha, 1.0));
 }
 
 void InitQuaternion()

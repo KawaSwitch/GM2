@@ -10,6 +10,7 @@ protected:
 
     int _ord; // 階数
     int _ncpnt; // 制御点数
+    int _nVertex; // 頂点個数
 
     // ベクトル取得関数
     virtual Vector3d GetPositionVector(double t) = 0; // 位置ベクトル

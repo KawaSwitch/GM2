@@ -9,6 +9,7 @@ class Surface : public Object
 protected:
 
     int _ordU, _ordV; // ŠK”
+    int _nVertex; // ’¸“_ŒÂ”
     int _ncpntU, _ncpntV; // §Œä“_”
     vector<double> _ctrlpX; // ŒvZ—p
     vector<double> _ctrlpY;
@@ -25,7 +26,14 @@ protected:
         _ctrlpY.reserve(size); _ctrlpZ.reserve(size);
 
         for (int i = 0; i < size; i++)
+        {
             _ctrlp.emplace_back(cp[i]);
+
+            //// “]’u‚È‚µ
+            //_ctrlpX.emplace_back(cp[i].X); 
+            //_ctrlpY.emplace_back(cp[i].Y);
+            //_ctrlpZ.emplace_back(cp[i].Z);
+        }
 
         // ŒvZ—p‚É“]’u‚·‚é(‚à‚Á‚ÆŒ©‰h‚¦‚ª‚¢‚¢‚â‚è•û‚ª—~‚µ‚¢)
         for (int i = 0; i < _ncpntU; i++)

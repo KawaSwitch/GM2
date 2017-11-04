@@ -9,7 +9,6 @@ private:
 
     int _nknot; // ノットベクトルサイズ
     vector<double> _knot; // ノットベクトル
-    int _nVertex; // 頂点個数
 
     void DrawFirstDiffVectorsInternal() override;
     void DrawSecondDiffVectorsInternal() override;
