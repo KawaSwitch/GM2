@@ -2,6 +2,7 @@
 
 #include "Object.h"
 #include "ControlPoint.h"
+#include "Curve.h"
 
 // 曲面インターフェース
 class Surface : public Object
@@ -14,6 +15,8 @@ protected:
     vector<double> _ctrlpX; // 計算用
     vector<double> _ctrlpY;
     vector<double> _ctrlpZ;
+    double _min_draw_param_U, _max_draw_param_U; // 描画範囲パラメータ
+    double _min_draw_param_V, _max_draw_param_V;
     int _mesh_displayList = -1; // メッシュ用ディスプレイリスト
     double _mesh_width; // メッシュ線の幅
 
@@ -199,6 +202,73 @@ public:
                 glVertex3d(_ctrlp[j * _ncpntU + i].X, _ctrlp[j * _ncpntU + i].Y, _ctrlp[j * _ncpntU + i].Z);
             glEnd();
         }
+    }
+
+    // 指定したパラメータのアイソ曲線を取得する
+    //virtual Curve* GetIsoCurve(ParamUV direct, double param) = 0;
+
+    // 参照点からの最近点を取得(アイソが取れないので今は曲面からはみ出ない範囲のみ可能)
+    Vector3d GetNearestPointFromRef(Vector3d ref)
+    {
+        // 許容値
+        const double EPS = 10e-6;
+
+        // 初期パラメータ
+        double u = (_min_draw_param_U + _max_draw_param_U) / 2.0;
+        double v = (_min_draw_param_V + _max_draw_param_V) / 2.0;
+
+        // 正射影法(DAP法)
+        Vector3d p = GetPositionVector(u, v);
+        Vector3d pu = GetFirstDiffVectorU(u, v);
+        Vector3d pv = GetFirstDiffVectorV(u, v);
+
+        double delta_u = (ref - p).Dot(pu) / pow(pu.Length(), 2.0) * 0.7;
+        double delta_v = (ref - p).Dot(pv) / pow(pv.Length(), 2.0) * 0.7;
+
+        while (fabs(delta_u) > EPS || fabs(delta_v) > EPS)
+        {
+            u += delta_u;
+            v += delta_v;
+
+            ///// u, v方向ともにはみ出る場合も片方の判定だけで十分
+            //// u方向がはみ出る場合
+            //if (u < 0.0 || u > 1.0)
+            //{
+            //    if (u < 0.0)
+            //    {
+            //        Curve* edge = GetIsoCurve(V, 0.0);
+            //        return edge->GetNearestPointFromRef(ref);
+            //    }
+            //    else
+            //    {
+            //        Curve* edge = GetIsoCurve(V, 1.0);
+            //        return edge->GetNearestPointFromRef(ref);
+            //    }
+            //}
+            //// v方向がはみ出る場合
+            //else if (v < 0.0 || v > 1.0)
+            //{
+            //    if (v < 0.0)
+            //    {
+            //        Curve* edge = GetIsoCurve(U, 0.0);
+            //        return edge->GetNearestPointFromRef(ref);
+            //    }
+            //    else
+            //    {
+            //        Curve* edge = GetIsoCurve(U, 1.0);
+            //        return  edge->GetNearestPointFromRef(ref);
+            //    }
+            //}
+
+            p = GetPositionVector(u, v);
+            pu = GetFirstDiffVectorU(u, v);
+            pv = GetFirstDiffVectorV(u, v);
+
+            delta_u = (ref - p).Dot(pu) / pow(pu.Length(), 2.0) * 0.7;
+            delta_v = (ref - p).Dot(pv) / pow(pv.Length(), 2.0) * 0.7;
+        }
+
+        return GetPositionVector(u, v);
     }
 
     virtual ~Surface() { glDeleteLists(_mesh_displayList, 1); }

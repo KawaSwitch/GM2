@@ -28,4 +28,6 @@ public:
     Vector3d GetSecondDiffVectorUU(double u, double v) override;
     Vector3d GetSecondDiffVectorUV(double u, double v) override;
     Vector3d GetSecondDiffVectorVV(double u, double v) override;
+
+    Curve* GetIsoCurve(ParamUV direct, double param);
 };

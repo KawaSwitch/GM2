@@ -6,6 +6,8 @@ BezierSurface::BezierSurface(
 {
     _ordU = u_mord; _ordV = v_mord;
     _ncpntU = u_cp_size; _ncpntV = v_cp_size;
+    _min_draw_param_U = 0.0;  _max_draw_param_U = 1.0;
+    _min_draw_param_V = 0.0;  _max_draw_param_V = 1.0;
 
     SetControlPoint(cp, u_cp_size * v_cp_size);
     SetColor(color);

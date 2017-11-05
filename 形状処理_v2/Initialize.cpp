@@ -21,7 +21,9 @@ void InitScene()
         scene->AddObject(objs[i]);
 
     // 明示的ファイル読み込み
+    scene->AddObject(reader->GetObjectFromFile("CGS_bspline_curve_1.kjs"));
     scene->AddObject(reader->GetObjectFromFile("CGS_bezier_surface_A.kjs"));
+    scene->AddObject(reader->GetObjectFromFile("CGS_bspline_surface_1.kjs"));
 }
 
 void InitQuaternion()

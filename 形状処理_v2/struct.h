@@ -19,6 +19,13 @@ struct Point
     T y;
 };
 
+// 曲面のUVパラメータ
+enum ParamUV
+{
+    U,
+    V,
+};
+
 // 選択データ
 struct SelectionData
 {

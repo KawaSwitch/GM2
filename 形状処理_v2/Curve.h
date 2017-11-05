@@ -74,5 +74,61 @@ private:
 
 public:
 
+    // 参照点からの最近点を取得する
+    Vector3d GetNearestPointFromRef(Vector3d ref)
+    {
+        const double EPS = 10e-12;
+        double left = _min_draw_param;
+        double right = _max_draw_param;
+        double middle = (left + right) / 2;
+        int count = 0;
+
+        Vector3d pnt = GetPositionVector(middle);
+        Vector3d ref_pnt = pnt - ref;
+        Vector3d tan = GetFirstDiffVector(middle);
+        double dot = tan.Dot(ref_pnt); // 内積値
+
+        // 二分探索
+        // 端対策のために更新の際EPSを増減させる
+        while (left <= right)
+        {
+            if (-EPS < dot && dot < EPS)
+            {
+                // 十分な精度なので見つかったことにする
+                return pnt;
+            }
+            else if (dot >= EPS)
+            {
+                // 右端更新
+                right = middle - EPS;
+            }
+            else if (dot <= -EPS)
+            {
+                // 左端更新
+                left = middle + EPS;
+            }
+
+            // 中心更新
+            middle = (left + right) / 2.0;
+
+            // 端っこが一番近い
+            if (middle < _min_draw_param)
+                return GetPositionVector(_min_draw_param);
+            if (middle > _max_draw_param)
+                return GetPositionVector(_max_draw_param);
+                
+            // 再計算
+            pnt = GetPositionVector(middle);
+            ref_pnt = pnt - ref;
+            tan = GetFirstDiffVector(middle);
+            dot = tan.Dot(ref_pnt); // 内積値
+
+            count++;
+        }
+
+        // 見つかった
+        return pnt;
+    }
+
     virtual ~Curve() { };
 };

@@ -11,6 +11,8 @@ BsplineSurface::BsplineSurface(
     _ncpntV = v_cp_size;
     _nknotU = u_mord + u_cp_size;
     _nknotV = v_mord + v_cp_size;
+    _min_draw_param_U = u_knot[_ordU - 1];  _max_draw_param_U = u_knot[_ncpntU];
+    _min_draw_param_V = v_knot[_ordV - 1];  _max_draw_param_V = v_knot[_ncpntV];
 
     SetControlPoint(cp, u_cp_size * v_cp_size);
     SetKnotVector(u_knot, _nknotU, _knotU);
@@ -72,7 +74,7 @@ void BsplineSurface::PreDraw()
 
             glEnd();
         }
-    }
+    };
 }
 
 // ÉÅÉbÉVÉÖï`âÊ
