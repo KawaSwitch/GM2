@@ -160,6 +160,19 @@ double Calc2DiffBsplineFunc(unsigned int i, unsigned int M, double t, double* kn
     }
 }
 
+// 文字列の中から数字のみを取り出す
+void GetNumberOnly(char *dest, const char *src)
+{
+    while (*src)
+    {
+        if ('0' <= *src && *src <= '9') 
+            *dest++ = *src;
+        
+        src++;
+        *dest = 0;
+    }
+}
+
 // 3点から成るポリゴンの単位化済み面法線を取得する
 Vector3d CalcPolygonNormal(Vector3d v0, Vector3d v1, Vector3d v2)
 {

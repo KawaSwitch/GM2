@@ -15,6 +15,7 @@
     GLOBAL constexpr double Binomial(int n, int k);
     GLOBAL constexpr int Factorial(int n);
     GLOBAL Vector3d CalcPolygonNormal(Vector3d v0, Vector3d v1, Vector3d v2);
+    GLOBAL void GetNumberOnly(char *dest, const char *src);
 
 
 // DrawUtil.cpp

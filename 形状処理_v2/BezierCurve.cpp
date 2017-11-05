@@ -5,6 +5,8 @@ BezierCurve::BezierCurve(int mord, ControlPoint* cp, int cp_size, GLdouble* colo
 {
     _ord = mord;
     _ncpnt = cp_size;
+    _min_draw_param = 0.0;
+    _max_draw_param = 1.0;
 
     SetControlPoint(cp, cp_size);
     SetColor(color);

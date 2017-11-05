@@ -12,6 +12,7 @@ protected:
     int _ncpnt; // 制御点数
     int _nVertex; // 頂点個数
     double _width; // 曲線の幅
+    double _min_draw_param, _max_draw_param; // 描画範囲パラメータ
 
     // ベクトル取得関数
     virtual Vector3d GetPositionVector(double t) = 0; // 位置ベクトル
