@@ -17,7 +17,7 @@ protected:
     vector<double> _ctrlpZ;
     double _min_draw_param_U, _max_draw_param_U; // 描画範囲パラメータ
     double _min_draw_param_V, _max_draw_param_V;
-    int _mesh_displayList = -1; // メッシュ用ディスプレイリスト
+    int _mesh_displayList = 0; // メッシュ用ディスプレイリスト
     double _mesh_width; // メッシュ線の幅
 
     // 制御点設定

@@ -4,6 +4,7 @@
 #include "Axis.h"
 #include "ControlPoint.h"
 #include "BsplineCurve.h"
+#include "Test.h"
 
 NormalAxis* axis; // 軸
 Scene* scene; // シーン
@@ -20,7 +21,10 @@ void Display()
     glTranslated(dist_X, -dist_Y, dist_Z);
     glMultMatrixd(rot_mat);
 
-    scene->Draw();
+    //scene->Draw();
+
+    // テスト描画
+    TestDraw();
 
     // 基底関数描画
     //DrawBsplineFunc(4, 6, 10, a, -3.0, 6.0);

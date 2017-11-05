@@ -4,8 +4,7 @@
 void DrawBsplineFunc(int mord, int ncpnt, int nknot, double* knot, double min_t, double max_t)
 {
     // ディスプレイリスト
-    static int displayList;
-    static bool isRendered = false;
+    static int displayList = 0;
 
     // 誤差防止
     int MIN = (int)(min_t * 100);
@@ -13,7 +12,7 @@ void DrawBsplineFunc(int mord, int ncpnt, int nknot, double* knot, double min_t,
 
     glLineWidth(1.5);
 
-    if (isRendered)
+    if (displayList != 0)
     {
         // ディスプレイリスト作成済みならコール
         glCallList(displayList);
@@ -47,15 +46,13 @@ void DrawBsplineFunc(int mord, int ncpnt, int nknot, double* knot, double min_t,
         }
 
         glEndList();
-
-        isRendered = true;
     }
 }
 
 // ディスプレイリストと描画関数を用いて描画する
 void DrawUsingDisplayList(int* const displayList, function<void(void)> RegisterDraw)
 {
-    if (*displayList == -1)
+    if (*displayList == 0)
     {
         if (!(*displayList = glGenLists(1)))
             return;

@@ -39,13 +39,13 @@ protected:
     virtual void DrawVBO() { };
     
     // ディスプレイリスト
-    int _displayList = -1; // オブジェクト用
-    int _ctrlp_displayList = -1;
-    int _fd_displayList = -1;
-    int _sd_displayList = -1;
-    int _box_displayList = -1;
-    int _nor_displayList = -1;
-    int _cur_displayList = -1;
+    int _displayList = 0; // オブジェクト用
+    int _ctrlp_displayList = 0;
+    int _fd_displayList = 0;
+    int _sd_displayList = 0;
+    int _box_displayList = 0;
+    int _nor_displayList = 0;
+    int _cur_displayList = 0;
 
     // 表示系ブーリアン
     bool _isDrawCtrlp = true; // 制御点
@@ -80,6 +80,11 @@ public:
     void DrawAsItIs()
     {
         this->PreDraw();
+    }
+    void DrawAsItIsWithCPs()
+    {
+        this->PreDraw();
+        this->DrawCPsInternal();
     }
 
     // ミニマクスボックス描画

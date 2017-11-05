@@ -1,7 +1,5 @@
 #pragma once
 
-//using namespace std;
-
 #include <gl/glew.h>
 #include <gl/freeglut.h>
 #include <cpplinq.hpp>
