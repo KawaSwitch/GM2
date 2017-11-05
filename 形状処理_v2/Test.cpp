@@ -1,5 +1,7 @@
 #include "Test.h"
 #include "Model.h"
+#include "Reader.h"
+#include "Scene.h"
 
 #define DISPLAY_LIST_MAX 128
 
@@ -7,22 +9,46 @@ static int current_size; // 現在のテスト用のディスプレイリスト数
 static int* displayLists; // ディスプレイリスト保管用ポインタ
 static bool isFirst = true;
 
+Scene* test_scene;
+
 // 描画したいのをおく
 static vector<function<void(void)>> TestRegisterDraw
 {
-    DrawBsplineFunctions,
-    DrawBsplineCurves,
+    TestGetNearestPointCurveToCurve_CGS04,
+    TestGetNearestPointCurveToSurface_CGS04,
 };
 
 // 参照曲線上に離散点を生成し, それを外部点として最近点を求める
 // レジメ第04回_05月A.docx
 void TestGetNearestPointCurveToCurve_CGS04()
 {
+    auto reader = new KjsReader("KJS_FILE/");
 
+    // 対象曲線/曲面
+    auto curve1 = reader->GetObjectFromFile("CGS_bspline_curve_1.kjs");
+    // 参照曲線
+    auto curveC = reader->GetObjectFromFile("CGS_bspline_curve_C.kjs");
+
+    if (isFirst)
+    {
+        test_scene->AddObject(curve1);
+        test_scene->AddObject(curveC);
+    }
 }
 void TestGetNearestPointCurveToSurface_CGS04()
 {
+    auto reader = new KjsReader("KJS_FILE/");
 
+    // 対象曲線/曲面
+    auto surf1 = reader->GetObjectFromFile("CGS_bspline_surface_1.kjs");
+    // 参照曲線
+    auto curveS = reader->GetObjectFromFile("CGS_bspline_curve_S.kjs");
+
+    if (isFirst)
+    {
+        test_scene->AddObject(surf1);
+        test_scene->AddObject(curveS);
+    }
 }
 
 // 基底関数およびその関数を使ってBスプライン曲線を描画する

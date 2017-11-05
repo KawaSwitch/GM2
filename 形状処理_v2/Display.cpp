@@ -8,6 +8,7 @@
 
 NormalAxis* axis; // 軸
 Scene* scene; // シーン
+extern Scene* test_scene;
 
 void Display()
 {
@@ -21,10 +22,11 @@ void Display()
     glTranslated(dist_X, -dist_Y, dist_Z);
     glMultMatrixd(rot_mat);
 
-    //scene->Draw();
+    scene->Draw();
 
     // テスト描画
     TestDraw();
+    test_scene->Draw();
 
     // 基底関数描画
     //DrawBsplineFunc(4, 6, 10, a, -3.0, 6.0);

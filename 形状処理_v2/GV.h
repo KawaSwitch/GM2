@@ -39,7 +39,7 @@ GLOBAL bool isUseLight; // ライティング処理を行うか
 // 構造体
 GLOBAL Quaternion target;
 GLOBAL Quaternion current;
-GLOBAL Light mainLight;
+GLOBAL Light mainLight; // メインライト
 
 // 描画アシスト
 template<class Anything> void DrawWithoutSetting(const Anything& obj)

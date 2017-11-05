@@ -8,22 +8,19 @@
 
 extern NormalAxis* axis;
 extern Scene* scene;
+extern Scene* test_scene;
 
 void InitScene()
 {
     scene = new Scene();
+    test_scene = new Scene(); // テスト用もここで初期化
 
     // ファイル読み込み
-    KjsReader* reader = new KjsReader("KJS_FILE/");
+    auto reader = new KjsReader("KJS_FILE/");
     auto objs = reader->GetObjectsFromKjsFolder();
 
     for (unsigned int i = 0; i < objs.size(); i++)
         scene->AddObject(objs[i]);
-
-    // 明示的ファイル読み込み
-    scene->AddObject(reader->GetObjectFromFile("CGS_bspline_curve_1.kjs"));
-    scene->AddObject(reader->GetObjectFromFile("CGS_bezier_surface_A.kjs"));
-    scene->AddObject(reader->GetObjectFromFile("CGS_bspline_surface_1.kjs"));
 }
 
 void InitQuaternion()
@@ -65,9 +62,11 @@ void Initialize()
 
     obj_number = 1; // 初期識別子は1
 
+    // 回転移動系初期化
     rotate_flag = GL_FALSE;
     move_flag = GL_FALSE;
-
     InitQuaternion();
+
+    // シーン初期化
     InitScene();
 }
