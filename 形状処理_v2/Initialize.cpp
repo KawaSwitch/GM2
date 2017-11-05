@@ -15,10 +15,13 @@ void InitScene()
 
     // ファイル読み込み
     KjsReader* reader = new KjsReader("KJS_FILE/");
-    auto objs = reader->GetObjects();
+    auto objs = reader->GetObjectsFromKjsFolder();
 
     for (unsigned int i = 0; i < objs.size(); i++)
         scene->AddObject(objs[i]);
+
+    // 明示的ファイル読み込み
+    scene->AddObject(reader->GetObjectFromFile("CGS_bezier_surface_A.kjs"));
 }
 
 void InitQuaternion()

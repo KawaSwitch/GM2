@@ -36,7 +36,8 @@ private:
 
 public:
 
-    vector<Object *> GetObjects();
+    vector<Object *> GetObjectsFromKjsFolder();
+    Object* GetObjectFromFile(string file_name);
 
     using Reader::Reader;
 };

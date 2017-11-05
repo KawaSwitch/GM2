@@ -72,9 +72,48 @@ vector<string> Reader::ReadAllLines(string filepath)
     return returnLines;
 }
 
-vector<Object *> KjsReader::GetObjects()
+// ファイルからオブジェクトを取得する
+Object* KjsReader::GetObjectFromFile(string file_name)
 {
-    string folderName = "KJS_FILE";
+    string file_path = KJS_FILE_NAME + "/" + file_name;
+    auto lines = ReadAllLines(file_path);
+
+    if (lines.size() < 5) // 明らかにおかしいとき
+        return nullptr;
+
+    // 大文字変換
+    transform(lines[0].begin(), lines[0].end(), lines[0].begin(), ::toupper);
+    transform(lines[1].begin(), lines[1].end(), lines[1].begin(), ::toupper);
+
+    if (lines[0] == "BEZIER")
+    {
+        if (lines[1] == "CURVE")
+            return BezierCurveReader(lines);
+        else
+            return BezierSurfaceReader(lines);
+    }
+    else if (lines[0] == "BSPLINE")
+    {
+        if (lines[1] == "CURVE")
+            return BsplineCurveReader(lines);
+        else
+            return BsplineSurfaceReader(lines);
+    }
+    else if (lines[0] == "NURBS")
+    {
+        // Nurbs未対応
+        return nullptr;
+    }
+    else
+    {
+        Error::ShowMessage("kjsファイル読み込み失敗");
+        return nullptr;
+    }
+}
+
+// KJSフォルダ内の先頭に@のついた.kjsファイルすべてからオブジェクトを取得する
+vector<Object *> KjsReader::GetObjectsFromKjsFolder()
+{
     vector<Object *> returnObjs;
 
     // kjs拡張子ファイルを取得
@@ -86,38 +125,8 @@ vector<Object *> KjsReader::GetObjects()
         if (kjsFiles[i].front() != '@')
             continue;
 
-        auto lines = ReadAllLines(folderName + "/" + kjsFiles[i]);
-
-        if (lines.size() < 5) // 明らかにおかしいとき
-            continue;
-
-        // 大文字変換
-        transform(lines[0].begin(), lines[0].end(), lines[0].begin(), ::toupper);
-        transform(lines[1].begin(), lines[1].end(), lines[1].begin(), ::toupper);
-
-        if (lines[0] == "BEZIER")
-        {
-            if (lines[1] == "CURVE")
-                returnObjs.push_back(BezierCurveReader(lines));
-            else
-                returnObjs.push_back(BezierSurfaceReader(lines));
-        }
-        else if (lines[0] == "BSPLINE")
-        {
-            if (lines[1] == "CURVE")
-                returnObjs.push_back(BsplineCurveReader(lines));
-            else
-                returnObjs.push_back(BsplineSurfaceReader(lines));
-        }
-        else if (lines[0] == "NURBS")
-        {
-            // Nurbs未対応
-        }
-        else
-        {
-            Error::ShowMessage("kjsファイル読み込み失敗");
-            break;
-        }
+        // ファイルからオブジェクトを取得する
+        returnObjs.push_back(GetObjectFromFile(kjsFiles[i]));
     }
 
     return returnObjs;
@@ -125,6 +134,7 @@ vector<Object *> KjsReader::GetObjects()
 
 Scene* _scene;
 
+// 以下各オブジェクトのリーダー(ゲッター)関数
 Object* KjsReader::BezierCurveReader(vector<string> lines)
 {
     int current = 2; // 3行目から読み込む
