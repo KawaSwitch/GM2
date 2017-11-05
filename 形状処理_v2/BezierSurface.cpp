@@ -1,4 +1,5 @@
 #include "BezierSurface.h"
+#include "BezierCurve.h"
 
 BezierSurface::BezierSurface(
     int u_mord, int v_mord, ControlPoint* cp,
@@ -462,4 +463,13 @@ Vector3d BezierSurface::GetSecondDiffVectorVV(double u, double v)
 
     delete[] N_array_U, N_array_V;
     return diff;
+}
+
+// w’è‚µ‚½’[‚Ì‹Èü‚ğæ“¾‚·‚é
+Curve* BezierSurface::GetEdgeCurve(SurfaceEdge edge)
+{
+    vector<ControlPoint> edge_cp = GetEdgeCurveControlPoint(edge);
+    int edge_ord = (edge == U_min || edge == U_max) ? _ordU : _ordV;
+
+    return new BezierCurve(edge_ord, &edge_cp[0], (int)edge_cp.size(), _color, _mesh_width);
 }

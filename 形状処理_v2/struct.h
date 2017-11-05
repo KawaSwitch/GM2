@@ -26,6 +26,15 @@ enum ParamUV
     V,
 };
 
+// 曲面の端(曲線)
+enum SurfaceEdge
+{
+    U_min, // Uパラメータが最小のときのアイソ曲線
+    U_max, // 以下同様
+    V_min,
+    V_max,
+};
+
 // 選択データ
 struct SelectionData
 {

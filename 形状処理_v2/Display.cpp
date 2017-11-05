@@ -28,7 +28,7 @@ void Display()
     //DrawBsplineFunc(4, 6, 10, c, 0.0, 3.0);
 
     // Šô‰½ƒOƒŠƒbƒh•`‰æ
-    DrawGrid(GeoGrid2D());
+    //DrawGrid(GeoGrid2D());
 
     glPopMatrix();
 

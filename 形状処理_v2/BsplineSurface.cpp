@@ -1,4 +1,5 @@
 #include "BsplineSurface.h"
+#include "BsplineCurve.h"
 
 BsplineSurface::BsplineSurface(
     int u_mord, int v_mord, ControlPoint* cp, 
@@ -501,4 +502,14 @@ Vector3d BsplineSurface::GetSecondDiffVectorVV(double u, double v)
 
     delete[] N_array_U, N_array_V;
     return diff;
+}
+
+// w’è‚µ‚½’[‚Ì‹Èü‚ğæ“¾‚·‚é
+Curve* BsplineSurface::GetEdgeCurve(SurfaceEdge edge)
+{
+    vector<ControlPoint> edge_cp = GetEdgeCurveControlPoint(edge);
+    int edge_ord = (edge == U_min || edge == U_max) ? _ordU : _ordV;
+    vector<double> edge_knot = (edge == U_min || edge == U_max) ? _knotU : _knotV;
+
+    return new BsplineCurve(edge_ord, &edge_cp[0], (int)edge_cp.size(), &edge_knot[0], _color, _mesh_width);
 }

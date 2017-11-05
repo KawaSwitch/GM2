@@ -90,6 +90,36 @@ protected:
             (1 / min_kappa) * e;
     }
 
+    // 指定した端の曲線の制御点を取得する
+    vector<ControlPoint> GetEdgeCurveControlPoint(SurfaceEdge edge)
+    {
+        int count = 0;
+        vector<ControlPoint> edge_cp;
+
+        if (edge == SurfaceEdge::U_min)
+        {
+            for (int i = 0; i <_ncpntU * _ncpntV; i += _ncpntV)
+                edge_cp.push_back(_ctrlp[count++]);
+        }
+        else if (edge == SurfaceEdge::U_max)
+        {
+            for (int i = _ncpntV - 1; i < _ncpntU * _ncpntV; i += _ncpntV)
+                edge_cp.push_back(_ctrlp[count++]);
+        }
+        else if (edge == SurfaceEdge::V_min)
+        {
+            for (int i = 0; i < _ncpntV; i++)
+                edge_cp.push_back(_ctrlp[count++]);
+        }
+        else if (edge == SurfaceEdge::V_max)
+        {
+            for (int i = (_ncpntU - 1) * _ncpntV - 1; i < _ncpntU * _ncpntV; i++)
+                edge_cp.push_back(_ctrlp[count++]);
+        }
+
+        return edge_cp;
+    }
+
 private:
 
     // 主曲率を取得
@@ -207,9 +237,14 @@ public:
     // 指定したパラメータのアイソ曲線を取得する
     //virtual Curve* GetIsoCurve(ParamUV direct, double param) = 0;
 
+    // 指定した端の曲線を取得する
+    virtual Curve* GetEdgeCurve(SurfaceEdge edge) = 0;
+
     // 参照点からの最近点を取得(アイソが取れないので今は曲面からはみ出ない範囲のみ可能)
     Vector3d GetNearestPointFromRef(Vector3d ref)
     {
+        int count = 0;
+
         // 許容値
         const double EPS = 10e-6;
 
@@ -230,35 +265,35 @@ public:
             u += delta_u;
             v += delta_v;
 
-            ///// u, v方向ともにはみ出る場合も片方の判定だけで十分
-            //// u方向がはみ出る場合
-            //if (u < 0.0 || u > 1.0)
-            //{
-            //    if (u < 0.0)
-            //    {
-            //        Curve* edge = GetIsoCurve(V, 0.0);
-            //        return edge->GetNearestPointFromRef(ref);
-            //    }
-            //    else
-            //    {
-            //        Curve* edge = GetIsoCurve(V, 1.0);
-            //        return edge->GetNearestPointFromRef(ref);
-            //    }
-            //}
-            //// v方向がはみ出る場合
-            //else if (v < 0.0 || v > 1.0)
-            //{
-            //    if (v < 0.0)
-            //    {
-            //        Curve* edge = GetIsoCurve(U, 0.0);
-            //        return edge->GetNearestPointFromRef(ref);
-            //    }
-            //    else
-            //    {
-            //        Curve* edge = GetIsoCurve(U, 1.0);
-            //        return  edge->GetNearestPointFromRef(ref);
-            //    }
-            //}
+            // u, v方向ともにはみ出る場合も片方の判定だけで十分
+            // u方向がはみ出る場合
+            if (u < _min_draw_param_U || u > _max_draw_param_U)
+            {
+                if (u < _min_draw_param_U)
+                {
+                    Curve* edge = GetEdgeCurve(SurfaceEdge::V_min);
+                    return edge->GetNearestPointFromRef(ref);
+                }
+                else
+                {
+                    Curve* edge = GetEdgeCurve(SurfaceEdge::V_max);
+                    return edge->GetNearestPointFromRef(ref);
+                }
+            }
+            // v方向がはみ出る場合
+            else if (v < _min_draw_param_V || v > _max_draw_param_V)
+            {
+                if (v < _min_draw_param_V)
+                {
+                    Curve* edge = GetEdgeCurve(SurfaceEdge::U_min);
+                    return edge->GetNearestPointFromRef(ref);
+                }
+                else
+                {
+                    Curve* edge = GetEdgeCurve(SurfaceEdge::U_max);
+                    return  edge->GetNearestPointFromRef(ref);
+                }
+            }
 
             p = GetPositionVector(u, v);
             pu = GetFirstDiffVectorU(u, v);
@@ -266,6 +301,9 @@ public:
 
             delta_u = (ref - p).Dot(pu) / pow(pu.Length(), 2.0) * 0.7;
             delta_v = (ref - p).Dot(pv) / pow(pv.Length(), 2.0) * 0.7;
+
+            if (count++ > 1000)
+                break;
         }
 
         return GetPositionVector(u, v);

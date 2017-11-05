@@ -6,6 +6,7 @@ BsplineCurve::BsplineCurve(int mord, ControlPoint* cp, int cp_size, double* knot
     _ord = mord;
     _ncpnt = cp_size;
     _nknot = mord + cp_size;
+
     _min_draw_param = knot[_ord - 1];
     _max_draw_param = knot[_ncpnt];
 
