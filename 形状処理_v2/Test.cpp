@@ -1,3 +1,4 @@
+#include "GV.h"
 #include "Test.h"
 #include "Model.h"
 #include "Reader.h"
@@ -16,7 +17,18 @@ static vector<function<void(void)>> TestRegisterDraw
     //DrawBsplineCurves, // Bスプライン曲線描画
     TestGetNearestPointCurveToCurve_CGS04, // 曲線と曲線の最近点群描画
     TestGetNearestPointCurveToSurface_CGS04, // 曲線と曲面の最近点群描画
+    ShowLUDecomp, // LU分解の結果を確かめる
 };
+
+// LU分解の結果を表示する
+void ShowLUDecomp()
+{
+    double A[2][2] = { { 2, 1 }, { 3, 1 } };
+    double B[2] = { 5, 6 };
+
+    auto x = LUDecomposition<2>(A, B);
+    printf("%f %f\n", x[0], x[1]);
+}
 
 // 参照曲線上に離散点を生成し, それを外部点として最近点を求める
 // レジメ第04回_05月A.docx

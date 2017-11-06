@@ -11,3 +11,6 @@ void TestGetNearestPointCurveToSurface_CGS04();
 // ’†‹‰•Ò‘æ1‰ñ‰Û‘è
 void DrawBsplineFunctions();
 void DrawBsplineCurves();
+
+// LU•ª‰ð‚ðŠm‚©‚ß‚é
+void ShowLUDecomp();
