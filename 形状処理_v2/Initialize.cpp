@@ -15,7 +15,7 @@ void InitScene()
     scene = new Scene();
     test_scene = new Scene(); // テスト用もここで初期化
 
-    // ファイル読み込み
+    // @ファイル読み込み
     auto reader = new KjsReader("KJS_FILE/");
     auto objs = reader->GetObjectsFromKjsFolder();
 

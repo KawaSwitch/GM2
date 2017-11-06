@@ -3,8 +3,6 @@
 #include "Reader.h"
 #include "Scene.h"
 
-#define DISPLAY_LIST_MAX 128
-
 static int current_size; // 現在のテスト用のディスプレイリスト数
 static int* displayLists; // ディスプレイリスト保管用ポインタ
 static bool isFirst = true;
@@ -14,8 +12,10 @@ Scene* test_scene;
 // 描画したいのをおく
 static vector<function<void(void)>> TestRegisterDraw
 {
-    TestGetNearestPointCurveToCurve_CGS04,
-    TestGetNearestPointCurveToSurface_CGS04,
+    //DrawBsplineFunctions, // Bスプライン基底関数描画
+    //DrawBsplineCurves, // Bスプライン曲線描画
+    TestGetNearestPointCurveToCurve_CGS04, // 曲線と曲線の最近点群描画
+    TestGetNearestPointCurveToSurface_CGS04, // 曲線と曲面の最近点群描画
 };
 
 // 参照曲線上に離散点を生成し, それを外部点として最近点を求める
@@ -25,9 +25,39 @@ void TestGetNearestPointCurveToCurve_CGS04()
     auto reader = new KjsReader("KJS_FILE/");
 
     // 対象曲線/曲面
-    auto curve1 = reader->GetObjectFromFile("CGS_bspline_curve_1.kjs");
+    Curve* curve1 = (Curve *)reader->GetObjectFromFile("CGS_bspline_curve_1.kjs");
     // 参照曲線
-    auto curveC = reader->GetObjectFromFile("CGS_bspline_curve_C.kjs");
+    Curve* curveC = (Curve *)reader->GetObjectFromFile("CGS_bspline_curve_C.kjs");
+
+    // 参照点群を取得
+    auto ref_pnts = curveC->GetPositionVectors(20);
+    vector<Vector3d> nearest_pnts; // 最近点群
+
+    // 最近点取得
+    for (int i = 0; i < (int)ref_pnts.size(); i++)
+        nearest_pnts.push_back(curve1->GetNearestPointFromRef(ref_pnts[i]));
+
+    // 描画
+    glLineWidth(1.0);
+    glPointSize(5.0);
+    glBegin(GL_LINES);
+    glColor3dv(Color::orange);
+    for (int i = 0; i < (int)ref_pnts.size(); i++)
+    {
+        glVertex3d(ref_pnts[i]);
+        glVertex3d(nearest_pnts[i]);
+    }
+    glEnd();
+
+    glBegin(GL_POINTS);
+    glColor3dv(Color::red);
+    for (int i = 0; i < (int)ref_pnts.size(); i++)
+        glVertex3d(ref_pnts[i]);
+
+    glColor3dv(Color::light_green);
+    for (int i = 0; i < (int)nearest_pnts.size(); i++)
+        glVertex3d(nearest_pnts[i]);
+    glEnd();
 
     if (isFirst)
     {
@@ -40,9 +70,39 @@ void TestGetNearestPointCurveToSurface_CGS04()
     auto reader = new KjsReader("KJS_FILE/");
 
     // 対象曲線/曲面
-    auto surf1 = reader->GetObjectFromFile("CGS_bspline_surface_1.kjs");
+    Surface* surf1 = (Surface *)reader->GetObjectFromFile("CGS_bspline_surface_1.kjs");
     // 参照曲線
-    auto curveS = reader->GetObjectFromFile("CGS_bspline_curve_S.kjs");
+    Curve* curveS = (Curve *)reader->GetObjectFromFile("CGS_bspline_curve_S.kjs");
+
+    // 参照点群を取得
+    auto ref_pnts = curveS->GetPositionVectors(20);
+    vector<Vector3d> nearest_pnts; // 最近点群
+
+    // 最近点取得
+    for (int i = 0; i < (int)ref_pnts.size(); i++)
+        nearest_pnts.push_back(surf1->GetNearestPointFromRef(ref_pnts[i]));
+
+    // 描画
+    glLineWidth(1.0);
+    glPointSize(5.0);
+    glBegin(GL_LINES);
+    glColor3dv(Color::orange);
+    for (int i = 0; i < (int)ref_pnts.size(); i++)
+    {
+        glVertex3d(ref_pnts[i]);
+        glVertex3d(nearest_pnts[i]);
+    }
+    glEnd();
+
+    glBegin(GL_POINTS);
+    glColor3dv(Color::red);
+    for (int i = 0; i < (int)ref_pnts.size(); i++)
+        glVertex3d(ref_pnts[i]);
+
+    glColor3dv(Color::light_green);
+    for (int i = 0; i < (int)nearest_pnts.size(); i++)
+        glVertex3d(nearest_pnts[i]);
+    glEnd();
 
     if (isFirst)
     {
@@ -59,8 +119,8 @@ static double knot_c[10] = { 0, 0, 0, 0, 1, 1, 3, 3, 3, 3 };
 void DrawBsplineFunctions()
 {
     // 別のとこでディスプレイリストをstaticで使ってるので同時には書けない
-    DrawBsplineFunc(4, 6, 10, knot_a, -3.0, 6.0);
-    //DrawBsplineFunc(4, 6, 10, knot_b, 0.0, 3.0);
+    //DrawBsplineFunc(4, 6, 10, knot_a, -3.0, 6.0);
+    DrawBsplineFunc(4, 6, 10, knot_b, 0.0, 3.0);
     //DrawBsplineFunc(4, 6, 10, knot_c, 0.0, 3.0);
 }
 void DrawBsplineCurves()

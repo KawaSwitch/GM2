@@ -48,7 +48,7 @@ protected:
     int _cur_displayList = 0;
 
     // 表示系ブーリアン
-    bool _isDrawCtrlp = true; // 制御点
+    bool _isDrawCtrlp = false; // 制御点
     bool _isDrawFirstDiff = false; // 接線
     bool _isDrawSecondDiff = false; // 2階微分
     bool _isDrawBox = false; // ミニマクスボックス

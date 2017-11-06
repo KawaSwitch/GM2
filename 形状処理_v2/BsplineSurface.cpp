@@ -508,8 +508,8 @@ Vector3d BsplineSurface::GetSecondDiffVectorVV(double u, double v)
 Curve* BsplineSurface::GetEdgeCurve(SurfaceEdge edge)
 {
     vector<ControlPoint> edge_cp = GetEdgeCurveControlPoint(edge);
-    int edge_ord = (edge == U_min || edge == U_max) ? _ordU : _ordV;
-    vector<double> edge_knot = (edge == U_min || edge == U_max) ? _knotU : _knotV;
+    int edge_ord = (edge == U_min || edge == U_max) ? _ordV : _ordU;
+    vector<double> edge_knot = (edge == U_min || edge == U_max) ? _knotV : _knotU;
 
-    return new BsplineCurve(edge_ord, &edge_cp[0], (int)edge_cp.size(), &edge_knot[0], _color, _mesh_width);
+    return new BsplineCurve(edge_ord, &edge_cp[0], (int)edge_cp.size(), &edge_knot[0], Color::red, _mesh_width);
 }

@@ -4,6 +4,8 @@
 #include "ControlPoint.h"
 #include "Curve.h"
 
+extern Scene* test_scene;
+
 // 曲面インターフェース
 class Surface : public Object
 {
@@ -93,28 +95,27 @@ protected:
     // 指定した端の曲線の制御点を取得する
     vector<ControlPoint> GetEdgeCurveControlPoint(SurfaceEdge edge)
     {
-        int count = 0;
         vector<ControlPoint> edge_cp;
 
         if (edge == SurfaceEdge::U_min)
         {
-            for (int i = 0; i <_ncpntU * _ncpntV; i += _ncpntV)
-                edge_cp.push_back(_ctrlp[count++]);
+            for (int i = 0; i <_ncpntU * _ncpntV; i += _ncpntU)
+                edge_cp.push_back(_ctrlp[i]);
         }
         else if (edge == SurfaceEdge::U_max)
         {
-            for (int i = _ncpntV - 1; i < _ncpntU * _ncpntV; i += _ncpntV)
-                edge_cp.push_back(_ctrlp[count++]);
+            for (int i = _ncpntU - 1; i < _ncpntU * _ncpntV; i += _ncpntU)
+                edge_cp.push_back(_ctrlp[i]);
         }
         else if (edge == SurfaceEdge::V_min)
         {
-            for (int i = 0; i < _ncpntV; i++)
-                edge_cp.push_back(_ctrlp[count++]);
+            for (int i = 0; i < _ncpntU; i++)
+                edge_cp.push_back(_ctrlp[i]);
         }
         else if (edge == SurfaceEdge::V_max)
         {
-            for (int i = (_ncpntU - 1) * _ncpntV - 1; i < _ncpntU * _ncpntV; i++)
-                edge_cp.push_back(_ctrlp[count++]);
+            for (int i = _ncpntU * (_ncpntV - 1) - 1; i < _ncpntU * _ncpntV; i++)
+                edge_cp.push_back(_ctrlp[i]);
         }
 
         return edge_cp;
@@ -248,7 +249,7 @@ public:
         // 許容値
         const double EPS = 10e-6;
 
-        // 初期パラメータ
+        // 初期パラメータ とりあえず中心で
         double u = (_min_draw_param_U + _max_draw_param_U) / 2.0;
         double v = (_min_draw_param_V + _max_draw_param_V) / 2.0;
 
@@ -271,12 +272,12 @@ public:
             {
                 if (u < _min_draw_param_U)
                 {
-                    Curve* edge = GetEdgeCurve(SurfaceEdge::V_min);
+                    Curve* edge = GetEdgeCurve(SurfaceEdge::U_min);
                     return edge->GetNearestPointFromRef(ref);
                 }
                 else
                 {
-                    Curve* edge = GetEdgeCurve(SurfaceEdge::V_max);
+                    Curve* edge = GetEdgeCurve(SurfaceEdge::U_max);
                     return edge->GetNearestPointFromRef(ref);
                 }
             }
@@ -285,12 +286,12 @@ public:
             {
                 if (v < _min_draw_param_V)
                 {
-                    Curve* edge = GetEdgeCurve(SurfaceEdge::U_min);
+                    Curve* edge = GetEdgeCurve(SurfaceEdge::V_min);
                     return edge->GetNearestPointFromRef(ref);
                 }
                 else
                 {
-                    Curve* edge = GetEdgeCurve(SurfaceEdge::U_max);
+                    Curve* edge = GetEdgeCurve(SurfaceEdge::V_max);
                     return  edge->GetNearestPointFromRef(ref);
                 }
             }

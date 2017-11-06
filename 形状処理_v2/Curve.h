@@ -130,5 +130,20 @@ public:
         return pnt;
     }
 
+    // 描画範囲をsplit_num個に分割するような位置ベクトルを取得する
+    vector<Vector3d> GetPositionVectors(int split_num)
+    {
+        vector<Vector3d> pos;
+
+        // 分割区間を計算
+        double skip = (fabs(_min_draw_param) + fabs(_max_draw_param)) / split_num;
+      
+        // double型の誤差考慮
+        for (double t = _min_draw_param; t < _max_draw_param + skip / 2; t += skip)
+            pos.push_back(GetPositionVector(t));
+
+        return pos;
+    }
+
     virtual ~Curve() { };
 };

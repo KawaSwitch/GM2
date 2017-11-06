@@ -178,6 +178,7 @@ Vector3d BsplineCurve::GetPositionVector(double t)
 {
     Vector3d pnt;
 
+    // •W€“I
     for (int i = 0; i < _ncpnt; i++)
         pnt += CalcBsplineFunc(i, _ord, t, &_knot[0]) * _ctrlp[i];
 
