@@ -258,13 +258,17 @@ public:
         Vector3d pu = GetFirstDiffVectorU(u, v);
         Vector3d pv = GetFirstDiffVectorV(u, v);
 
-        double delta_u = (ref - p).Dot(pu) / pow(pu.Length(), 2.0) * 0.7;
-        double delta_v = (ref - p).Dot(pv) / pow(pv.Length(), 2.0) * 0.7;
+        double delta_u = (ref - p).Dot(pu) / pow(pu.Length(), 2.0) * 0.5; // 0.7掛けだとおかしいときがある
+        double delta_v = (ref - p).Dot(pv) / pow(pv.Length(), 2.0) * 0.5; // CGS_bspline_surface_1.kjs
 
         while (fabs(delta_u) > EPS || fabs(delta_v) > EPS)
         {
             u += delta_u;
             v += delta_v;
+
+            // 注目ベクトルとPuが直角 かつ 注目ベクトルとPvが直角
+            if (fabs((ref - p).Dot(pu)) < EPS && fabs((ref - p).Dot(pv) < EPS))
+                break;
 
             // u, v方向ともにはみ出る場合も片方の判定だけで十分
             // u方向がはみ出る場合
@@ -300,9 +304,10 @@ public:
             pu = GetFirstDiffVectorU(u, v);
             pv = GetFirstDiffVectorV(u, v);
 
-            delta_u = (ref - p).Dot(pu) / pow(pu.Length(), 2.0) * 0.7;
-            delta_v = (ref - p).Dot(pv) / pow(pv.Length(), 2.0) * 0.7;
+            delta_u = (ref - p).Dot(pu) / pow(pu.Length(), 2.0) * 0.7; // 更新は0.7でも問題なかった
+            delta_v = (ref - p).Dot(pv) / pow(pv.Length(), 2.0) * 0.7; // CGS_bspline_surface_1.kjs
 
+            // 繰り返し数が十分なら最近点とする
             if (count++ > 1000)
                 break;
         }
