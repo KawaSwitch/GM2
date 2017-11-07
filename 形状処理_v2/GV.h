@@ -21,6 +21,7 @@
 #endif
 
 #include "function.h"
+#include "template.h"
 
 GLOBAL int width, height; // ウィンドウサイズ
 
@@ -40,10 +41,3 @@ GLOBAL bool isUseLight; // ライティング処理を行うか
 GLOBAL Quaternion target;
 GLOBAL Quaternion current;
 GLOBAL Light mainLight; // メインライト
-
-// 描画アシスト
-template<class Anything> void DrawWithoutSetting(const Anything& obj)
-{
-    // デバグ描画用
-    obj.Draw();
-}
