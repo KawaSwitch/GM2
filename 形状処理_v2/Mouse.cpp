@@ -20,13 +20,14 @@ void Mouse(int button, int state, int x, int y)
     }
     else if (button == GLUT_RIGHT_BUTTON && state == GLUT_UP)
     {
+        rotate_flag = GL_FALSE;
+
         // 移動していなければ保存の必要なし
         if (x == mouse_X && y == mouse_Y)
             return;
 
         // 姿勢を保存
         current = target;
-        rotate_flag = GL_FALSE;
     }
 
     // ホイール：移動
