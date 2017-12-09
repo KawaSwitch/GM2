@@ -13,6 +13,7 @@ protected:
 
     int _ordU, _ordV; // 階数
     int _nVertex; // 頂点個数
+    GLuint _vbo_nor = 0; // 法線用vbo
     int _ncpntU, _ncpntV; // 制御点数
     vector<double> _ctrlpX; // 計算用
     vector<double> _ctrlpY;
@@ -174,9 +175,6 @@ public:
     // オブジェクト描画
     void Draw() override
     {
-        // オブジェクト自身はデプス考慮無し(見栄えのため)
-        glDepthMask(GL_FALSE);
-
         if (isUseLight)
             glEnable(GL_LIGHTING);
 
@@ -197,11 +195,7 @@ public:
             DrawUsingDisplayList(&_displayList, [&] { return (*this).PreDraw(); });
         }
 
-        glDepthMask(GL_TRUE);
         glDisable(GL_LIGHTING);
-
-        // メッシュはディスプレイリスト
-        DrawMesh();
     }
 
     // 制御点描画

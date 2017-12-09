@@ -22,10 +22,15 @@ BezierSurface::BezierSurface(
 void BezierSurface::PreDraw()
 {
     vector<vector<Vector3d>> pnt;
+    vector<vector<Vector3d>> nor;
 
     pnt.resize(101);
     for (int i = 0; i < 101; i++)
         pnt[i].resize(101);
+
+    nor.resize(101);
+    for (int i = 0; i < 101; i++)
+        nor[i].resize(101);
 
     for (int i = 0; i < 101; i++)
     {
@@ -35,10 +40,12 @@ void BezierSurface::PreDraw()
             double v = (double)j / 100;
 
             pnt[i][j] = GetPositionVector(u, v);
+            nor[i][j] = GetNormalVector(u, v).Normalize();
         }
     }
 
-    glColor4dv(_color);
+    //glColor4dv(_color);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, _color);
 
     // ŽOŠpƒ|ƒŠƒSƒ“•\Ž¦
     for (int i = 0; i <= 99; i += 1)
@@ -46,10 +53,19 @@ void BezierSurface::PreDraw()
         for (int j = 0; j <= 99; j += 1)
         {
             glBegin(GL_TRIANGLE_STRIP);
+
+            glNormal3d(nor[i][j]);
             glVertex3d(pnt[i][j]);
+
+            glNormal3d(nor[i + 1][j]);
             glVertex3d(pnt[i + 1][j]);
+
+            glNormal3d(nor[i][j + 1]);
             glVertex3d(pnt[i][j + 1]);
+            
+            glNormal3d(nor[i + 1][j + 1]);
             glVertex3d(pnt[i + 1][j + 1]);
+            
             glEnd();
         }
     }
@@ -102,11 +118,17 @@ void BezierSurface::DrawMeshInternal()
 void BezierSurface::CreateVBO()
 {
     vector<vector<Vector3d>> pnt;
+    vector<vector<Vector3d>> nor;
     vector<Vector3d> pnt_vbo;
+    vector<Vector3d> nor_vbo;
 
     pnt.resize(101);
     for (int i = 0; i < 101; i++)
         pnt[i].resize(101);
+
+    nor.resize(101);
+    for (int i = 0; i < 101; i++)
+        nor[i].resize(101);
 
     for (int i = 0; i < 101; i++)
     {
@@ -116,6 +138,7 @@ void BezierSurface::CreateVBO()
             double v = (double)j / 100;
 
             pnt[i][j] = GetPositionVector(u, v);
+            nor[i][j] = GetNormalVector(u, v).Normalize();
         }
     }
 
@@ -131,6 +154,15 @@ void BezierSurface::CreateVBO()
             pnt_vbo.push_back(pnt[i][j]);
             pnt_vbo.push_back(pnt[i][j + 1]);
             pnt_vbo.push_back(pnt[i + 1][j + 1]);
+
+            // –@ü
+            nor_vbo.push_back(nor[i][j]);
+            nor_vbo.push_back(nor[i + 1][j]);
+            nor_vbo.push_back(nor[i + 1][j + 1]);
+
+            nor_vbo.push_back(nor[i][j]);
+            nor_vbo.push_back(nor[i][j + 1]);
+            nor_vbo.push_back(nor[i + 1][j + 1]);
         }
     }
 
@@ -141,20 +173,35 @@ void BezierSurface::CreateVBO()
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(double) * _nVertex * 3, &pnt_vbo[0], GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glGenBuffers(1, &_vbo_nor);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo_nor);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(double) * _nVertex * 3, &nor_vbo[0], GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 // VBO‚Å•`‰æ
 void BezierSurface::DrawVBO()
 {
-    glColor4dv(_color);
+    //glColor4dv(_color);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, _color);
 
+    // ’¸“_
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(3, GL_DOUBLE, 0, 0);
 
+    // –@ü
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo_nor);
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glNormalPointer(GL_DOUBLE, 0, (void *)0);
+
+    // •`‰æ
     glDrawArrays(GL_TRIANGLES, 0, _nVertex);
 
+    // clean up
     glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 

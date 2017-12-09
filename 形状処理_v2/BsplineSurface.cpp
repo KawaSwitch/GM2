@@ -32,6 +32,7 @@ void BsplineSurface::PreDraw()
     int RES = 15;
 
     vector<vector<Vector3d>> pnt;
+    vector<vector<Vector3d>> nor;
 
     // •`‰æ”ÍˆÍ‚ğ—\‚ßİ’è
     int u_min = (int)(_knotU[_ordU - 1] * RES);
@@ -45,6 +46,10 @@ void BsplineSurface::PreDraw()
     for (int i = 0; i < u_size; i++)
         pnt[i].resize(v_size);
 
+    nor.resize(u_size);
+    for (int i = 0; i < u_size; i++)
+        nor[i].resize(v_size);
+
     for (int i = u_min; i <= u_max; i++)
     {
         for (int j = v_min; j <= v_max; j++)
@@ -53,10 +58,12 @@ void BsplineSurface::PreDraw()
             double v = (double)j / RES;
 
             pnt[i - u_min][j - v_min] = GetPositionVector(u, v);
+            nor[i - u_min][j - v_min] = GetNormalVector(u, v).Normalize();
         }
     }
 
-    glColor4dv(_color);
+    //glColor4dv(_color);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, _color);
 
     // OŠpƒ|ƒŠƒSƒ“•\¦
     for (int i = u_min; i < u_max; i++)
@@ -65,12 +72,24 @@ void BsplineSurface::PreDraw()
         {
             glBegin(GL_TRIANGLES);
 
+            // ãOŠp
+            glNormal3d(nor[i - u_min][j - v_min]);
             glVertex3d(pnt[i - u_min][j - v_min]);
+
+            glNormal3d(nor[i + 1 - u_min][j - v_min]);
             glVertex3d(pnt[i + 1 - u_min][j - v_min]);
+
+            glNormal3d(nor[i - u_min][j + 1 - v_min]);
             glVertex3d(pnt[i - u_min][j + 1 - v_min]);
             
+            // ‰ºOŠp
+            glNormal3d(nor[i + 1 - u_min][j - v_min]);
             glVertex3d(pnt[i + 1 - u_min][j - v_min]);
+            
+            glNormal3d(nor[i - u_min][j + 1 - v_min]);
             glVertex3d(pnt[i - u_min][j + 1 - v_min]);
+            
+            glNormal3d(nor[i + 1 - u_min][j + 1 - v_min]);
             glVertex3d(pnt[i + 1 - u_min][j + 1 - v_min]);
 
             glEnd();
@@ -128,7 +147,9 @@ void BsplineSurface::CreateVBO()
     int RES = 15;
 
     vector<vector<Vector3d>> pnt;
+    vector<vector<Vector3d>> nor;
     vector<Vector3d> pnt_vbo;
+    vector<Vector3d> nor_vbo;
 
     // •`‰æ”ÍˆÍ‚ğ—\‚ßİ’è
     int u_min = (int)(_knotU[_ordU - 1] * RES);
@@ -142,6 +163,10 @@ void BsplineSurface::CreateVBO()
     for (int i = 0; i < u_size; i++)
         pnt[i].resize(v_size);
 
+    nor.resize(u_size);
+    for (int i = 0; i < u_size; i++)
+        nor[i].resize(v_size);
+
     for (int i = u_min; i <= u_max; i++)
     {
         for (int j = v_min; j <= v_max; j++)
@@ -150,6 +175,7 @@ void BsplineSurface::CreateVBO()
             double v = (double)j / RES;
 
             pnt[i - u_min][j - v_min] = GetPositionVector(u, v);
+            nor[i - u_min][j - v_min] = GetNormalVector(u, v).Normalize();
         }
     }
 
@@ -165,6 +191,15 @@ void BsplineSurface::CreateVBO()
             pnt_vbo.push_back(pnt[i + 1 - u_min][j - v_min]);
             pnt_vbo.push_back(pnt[i - u_min][j + 1 - v_min]);
             pnt_vbo.push_back(pnt[i + 1 - u_min][j + 1 - v_min]);
+
+            // –@ü
+            nor_vbo.push_back(nor[i - u_min][j - v_min]);
+            nor_vbo.push_back(nor[i + 1 - u_min][j - v_min]);
+            nor_vbo.push_back(nor[i - u_min][j + 1 - v_min]);
+
+            nor_vbo.push_back(nor[i + 1 - u_min][j - v_min]);
+            nor_vbo.push_back(nor[i - u_min][j + 1 - v_min]);
+            nor_vbo.push_back(nor[i + 1 - u_min][j + 1 - v_min]);
         }
     }
 
@@ -175,20 +210,35 @@ void BsplineSurface::CreateVBO()
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(double) * _nVertex * 3, &pnt_vbo[0], GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glGenBuffers(1, &_vbo_nor);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo_nor);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(double) * _nVertex * 3, &nor_vbo[0], GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 // VBO‚Å•`‰æ
 void BsplineSurface::DrawVBO()
 {
-    glColor4dv(_color);
+    //glColor4dv(_color);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, _color);
 
+    // ’¸“_
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(3, GL_DOUBLE, 0, 0);
 
+    // –@ü
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo_nor);
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glNormalPointer(GL_DOUBLE, 0, (void *)0);
+
+    // •`‰æ
     glDrawArrays(GL_TRIANGLES, 0, _nVertex);
 
+    // clean up
     glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
