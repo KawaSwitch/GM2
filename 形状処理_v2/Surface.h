@@ -205,6 +205,8 @@ public:
         glPointSize(5.0);
         glLineWidth(1.0);
 
+        glDisable(GL_DEPTH_TEST);
+
         // 点群
         glBegin(GL_POINTS);
         for (unsigned int i = 0; i < _ctrlp.size(); i++)
@@ -227,6 +229,8 @@ public:
                 glVertex3d(_ctrlp[j * _ncpntU + i].X, _ctrlp[j * _ncpntU + i].Y, _ctrlp[j * _ncpntU + i].Z);
             glEnd();
         }
+
+        glEnable(GL_DEPTH_TEST);
     }
 
     // 指定したパラメータのアイソ曲線を取得する

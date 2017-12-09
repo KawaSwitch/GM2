@@ -59,6 +59,8 @@ private:
         glPointSize(5.0);
         glLineWidth(1.0);
 
+        glDisable(GL_DEPTH_TEST);
+
         // “_ŒQ
         glBegin(GL_POINTS);
         for (unsigned int i = 0; i < _ctrlp.size(); i++)
@@ -70,6 +72,8 @@ private:
         for (unsigned int i = 0; i < _ctrlp.size(); i++)
             glVertex3d(_ctrlp[i].X, _ctrlp[i].Y, _ctrlp[i].Z);
         glEnd();
+
+        glEnable(GL_DEPTH_TEST);
     }
 
 public:
