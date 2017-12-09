@@ -116,12 +116,17 @@ void Scene::Draw()
     while (it != ObjList.end())
     {
         (*it)->Draw(); // モデル描画
+
+        glDisable(GL_DEPTH_TEST);
+
         (*it)->DrawControlPointsAndLines(); // 制御点描画
         (*it)->DrawFirstDiffVectors(); // 接線描画
         (*it)->DrawSecondDiffVectors(); // 2階微分ベクトル描画
         (*it)->DrawBox(); // ミニマクスボックス描画
         (*it)->DrawNormalVectors(); // 法線描画
         (*it)->DrawCurvatureVectors(); // 曲率ベクトル描画
+
+        glEnable(GL_DEPTH_TEST);
 
         // 削除フラグチェック
         if ((*it)->IsDeleteFlagRaised())
