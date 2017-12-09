@@ -199,3 +199,38 @@ Vector3d BezierCurve::GetSecondDiffVector(double t)
 
     return diff;
 }
+
+// 通過点から逆変換して曲線を取得
+Curve* BezierCurve::GetCurveFromPoints(vector<Vector3d> pnts, GLdouble* color, GLdouble width)
+{
+    vector<ControlPoint> new_cps;
+    new_cps.resize(_ncpnt);
+
+    //double dist0 = pnts[0].GetDistance(sample_pnt[1]);
+    //double dist1 = sample_pnt[1].GetDistance(sample_pnt[2]);
+    //double dist2 = sample_pnt[2].GetDistance(sample_pnt[3]);
+
+    //// 通過点のサンプル位置
+    //double sample_t[4] =
+    //{
+    //    0.0,
+    //    dist0 / (dist0 + dist1 + dist2),
+    //    (dist0 + dist1) / (dist0 + dist1 + dist2),
+    //    1.0,
+    //};
+
+    //// 新しい制御点を求める
+    //// 基底関数用行列
+    //double **B_matrix = new double*[_ncpnt];
+    //for (int i = 0; i < _ncpnt; i++)
+    //    B_matrix[i] = new double[_ncpnt];
+
+    //// 基底関数行列を作成
+    //for (int i = 0; i < _ncpnt; i++)
+    //{
+    //    for (int j = 0; j < _ncpnt; j++)
+    //        B_matrix[i][j] = CalcBernsteinFunc(j, _ord - 1, )
+    //}
+
+    return new BezierCurve(_ord, &new_cps[0], _ncpnt, color, width);
+}

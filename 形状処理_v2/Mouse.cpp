@@ -7,12 +7,24 @@
 #include "Picking.h"
 
 extern Scene* scene;
+Point3d center;
 
 void Mouse(int button, int state, int x, int y)
 {
     // 右：回転
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
     {
+        // ピクセルのデプス値を取得
+        float z = GetDepth(x, y);
+
+        // 画面中心の座標値を取得
+        if (fabs(z - 1.0) < EPS::DIST)
+            center = Point3d();
+        else
+            center = GetWorldCoord(x, y, z);
+
+        glutPostRedisplay();
+
         // マウスボタンを押した位置を記憶
         mouse_X = x;
         mouse_Y = y;
@@ -65,10 +77,14 @@ void Motion(int x, int y)
             double theta = sin(radian) / length;
 
             // 回転後の姿勢
-            Quaternion after = { cos(radian), dy * theta, dx * theta, 0.0 };
+            Quaternion after = { dy * theta, dx * theta, 0.0, cos(radian) };
 
+            //after = after.Normalize();
+            //current = current.Normalize();
             target = after * current;
+            //target = target.Normalize();
 
+            //scene_mat = scene_mat.RotateAt(after, center);
             CalcRotateMatrix(rot_mat, target);
         }
     }
@@ -89,6 +105,8 @@ void Motion(int x, int y)
 
         xStart = x;
         yStart = y;
+
+        scene_mat = scene_mat.Translate(dist_X, -dist_Y, 0);
     }
 
     glutPostRedisplay();
@@ -101,6 +119,8 @@ void Wheel(int wheel_num, int direction, int x, int y)
         dist_Z += 2.0;
     else if (direction == -1)
         dist_Z -= 2.0;
+
+    scene_mat = scene_mat.Translate(0, 0, dist_Z);
 
     glutPostRedisplay();
 }

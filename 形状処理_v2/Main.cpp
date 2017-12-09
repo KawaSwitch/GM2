@@ -7,7 +7,7 @@ int main(int argc, char* argv[])
 {
     // gl初期化
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+    glutInitDisplayMode(GLUT_RGBA | GLUT_ALPHA | GLUT_DOUBLE | GLUT_DEPTH);
 
     // ウィンドウ設定
     glutInitWindowSize(DEF_WIN_X, DEF_WIN_Y);

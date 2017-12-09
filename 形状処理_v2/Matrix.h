@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Point3d.h"
+
 // P~Q ‚Æ Q~R ‚Ìs—ñ‚ÌÏ‚ğŒvZ‚·‚é
 template <class T>
 void MatrixMultiply(int P, int Q, int R, const T* const xmat, const T* const ymat, T* const zmat)

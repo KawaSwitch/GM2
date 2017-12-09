@@ -5,10 +5,26 @@
 // クォータニオン
 struct Quaternion
 {
-    double w;
     double x;
     double y;
     double z;
+    double w;
+
+    // 長さ
+    double Length() const { return sqrt(x*x + y*y + z*z + w*w); }
+
+    // 単位化
+    Quaternion Normalize() const { return *this / Length(); }
+
+    // 定数倍
+    constexpr Quaternion operator*(double value) const
+    {
+        return{ x * value, y * value, z * value, w * value };
+    }
+    constexpr Quaternion operator/(double value) const
+    {
+        return{ x / value, y / value, z / value, w / value };
+    }
 };
 
 // 2次元点

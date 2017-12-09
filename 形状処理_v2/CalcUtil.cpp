@@ -181,3 +181,17 @@ Vector3d CalcPolygonNormal(Vector3d v0, Vector3d v1, Vector3d v2)
 
     return (vec01 * vec02).Normalize();
 }
+
+// 3éüå≥ì_ÇäÙâΩäwïœä∑Ç∑ÇÈ
+Point3d Transform(const Point3d point, const double matrix[16]/* 4 Å~ 4çsóÒ */)
+{
+    return
+    {
+        point.X * matrix[0 * 4 + 0] + point.Y * matrix[1 * 4 + 0] + point.Z * matrix[2 * 4 + 0] + matrix[3 * 4 + 0],
+        point.X * matrix[0 * 4 + 1] + point.Y * matrix[1 * 4 + 1] + point.Z * matrix[2 * 4 + 1] + matrix[3 * 4 + 1],
+        point.X * matrix[0 * 4 + 2] + point.Y * matrix[1 * 4 + 2] + point.Z * matrix[2 * 4 + 2] + matrix[3 * 4 + 2],
+        //point.X * matrix[0 * 4 + 0] + point.Y * matrix[0 * 4 + 1] + point.Z * matrix[0 * 4 + 2] + matrix[0 * 4 + 3],
+        //point.X * matrix[1 * 4 + 0] + point.Y * matrix[1 * 4 + 1] + point.Z * matrix[1 * 4 + 2] + matrix[1 * 4 + 3],
+        //point.X * matrix[2 * 4 + 0] + point.Y * matrix[2 * 4 + 1] + point.Z * matrix[2 * 4 + 2] + matrix[2 * 4 + 3],
+    };
+}

@@ -13,7 +13,9 @@ float GetDepth(int x, int y)
     // デバイス座標系とウィンドウ座標系の変換
     glGetIntegerv(GL_VIEWPORT, viewport);
 
-    glReadPixels(x, viewport[3] - y, 1, 1,
+    glReadBuffer(GL_BACK);
+
+    glReadPixels(x, viewport[3] - y - 1, 1, 1,
         GL_DEPTH_COMPONENT,
         GL_FLOAT,
         &z);
@@ -32,9 +34,9 @@ Point3d GetWorldCoord(int x, int y, float depth)
     glGetIntegerv(GL_VIEWPORT, viewport);
     glGetDoublev(GL_MODELVIEW_MATRIX, mvMatrix);
     glGetDoublev(GL_PROJECTION_MATRIX, pjMatrix);
-    
+
     // 世界座標を取得する
-    gluUnProject((double)x, (double)viewport[3] - y, depth,
+    gluUnProject((double)x, (double)viewport[3] - y - 1, depth,
         mvMatrix,
         pjMatrix,
         viewport,

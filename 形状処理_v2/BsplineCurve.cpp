@@ -206,3 +206,41 @@ Vector3d BsplineCurve::GetSecondDiffVector(double t)
 
     return diff;
 }
+
+// 通過点から逆変換して曲線を取得
+Curve* BsplineCurve::GetCurveFromPoints(vector<Vector3d> pnts, GLdouble* color, GLdouble width)
+{
+    vector<ControlPoint> new_cps;
+    new_cps.resize(_ncpnt);
+
+    vector<double> new_knots;
+    new_knots.resize(_nknot);
+
+    // 新しい制御点を求める
+    // 基底関数用行列
+    double **N_matrix = new double*[_ncpnt];
+    for (int i = 0; i < _ncpnt; i++)
+        N_matrix[i] = new double[_ncpnt];
+
+    // 零行列に初期化
+    for (int i = 0; i < _ncpnt; i++)
+    {
+        for (int j = 0; j < _ncpnt; j++)
+            N_matrix[i][j] = 0;
+    }
+
+    // 基底関数行列を作成
+    for (int i = 0; i < _ncpnt; i++)
+    {
+        if (i == 0) // 最上行
+            N_matrix[i][0] = 1; // 一番左のみ1
+        else if (i > 0 && i < _ncpnt - 1)
+        {
+
+        }
+        else // 最下行
+            N_matrix[i][_ncpnt - 1] = 1; // 一番右のみ1
+    }
+
+    return new BsplineCurve(_ord, &new_cps[0], _ncpnt, &new_knots[0], color, width);
+}

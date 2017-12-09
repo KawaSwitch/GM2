@@ -21,4 +21,6 @@ public:
     Vector3d GetPositionVector(double t) override;
     Vector3d GetFirstDiffVector(double t) override;
     Vector3d GetSecondDiffVector(double t) override;
+
+    Curve* GetCurveFromPoints(vector<Vector3d> pnts, GLdouble* color, GLdouble width) override; // ‹t•ÏŠ·
 };

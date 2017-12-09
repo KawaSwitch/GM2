@@ -15,9 +15,9 @@ static vector<function<void(void)>> TestRegisterDraw
 {
     //DrawBsplineFunctions, // BƒXƒvƒ‰ƒCƒ“Šî’êŠÖ”•`‰æ
     //DrawBsplineCurves, // BƒXƒvƒ‰ƒCƒ“‹Èü•`‰æ
-    TestGetNearestPointCurveToCurve_CGS04, // ‹Èü‚Æ‹Èü‚ÌÅ‹ß“_ŒQ•`‰æ
-    TestGetNearestPointCurveToSurface_CGS04, // ‹Èü‚Æ‹È–Ê‚ÌÅ‹ß“_ŒQ•`‰æ
-    ShowLUDecomp, // LU•ª‰ð‚ÌŒ‹‰Ê‚ðŠm‚©‚ß‚é
+    //TestGetNearestPointCurveToCurve_CGS04, // ‹Èü‚Æ‹Èü‚ÌÅ‹ß“_ŒQ•`‰æ
+    //TestGetNearestPointCurveToSurface_CGS04, // ‹Èü‚Æ‹È–Ê‚ÌÅ‹ß“_ŒQ•`‰æ
+    //ShowLUDecomp, // LU•ª‰ð‚ÌŒ‹‰Ê‚ðŠm‚©‚ß‚é
 };
 
 // LU•ª‰ð‚ÌŒ‹‰Ê‚ð•\Ž¦‚·‚é
@@ -185,4 +185,7 @@ void TestDraw()
                 glCallList(displayLists[i]);
         }
     }
+
+    // ƒeƒXƒgƒV[ƒ“•`‰æ
+    test_scene->Draw();
 }

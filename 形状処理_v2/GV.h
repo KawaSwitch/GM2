@@ -12,6 +12,7 @@
 #include "Vector.h"
 #include "Point3d.h"
 #include "Matrix.h"
+#include "Matrix3d.h"
 #include "Light.h"
 
 #ifdef GLOBAL_INSTANCE
@@ -36,6 +37,8 @@ GLOBAL double rot_mat[16]; // 回転マトリクス
 GLOBAL unsigned int obj_number; // オブジェクト識別子
 
 GLOBAL bool isUseLight; // ライティング処理を行うか
+
+GLOBAL Matrix3d scene_mat; // シーン用同時変換行列
 
 // 構造体
 GLOBAL Quaternion target;

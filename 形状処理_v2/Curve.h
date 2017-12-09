@@ -145,5 +145,8 @@ public:
         return pos;
     }
 
+    // ’Ê‰ß“_‚©‚ç‹t•ÏŠ·‚µ‚Ä‹Èü‚ğæ“¾‚·‚é
+    virtual Curve* GetCurveFromPoints(vector<Vector3d> pnts, GLdouble* color, GLdouble width) = 0;
+
     virtual ~Curve() { };
 };
