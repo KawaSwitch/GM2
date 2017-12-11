@@ -115,10 +115,6 @@ void Scene::Draw()
     // ƒŠƒXƒg‘S•`‰æ
     while (it != ObjList.end())
     {
-        (*it)->Draw(); // ƒ‚ƒfƒ‹•`‰æ
-
-        glDisable(GL_DEPTH_TEST);
-
         (*it)->DrawControlPointsAndLines(); // §Œä“_•`‰æ
         (*it)->DrawFirstDiffVectors(); // Úü•`‰æ
         (*it)->DrawSecondDiffVectors(); // 2ŠK”÷•ªƒxƒNƒgƒ‹•`‰æ
@@ -126,7 +122,7 @@ void Scene::Draw()
         (*it)->DrawNormalVectors(); // –@ü•`‰æ
         (*it)->DrawCurvatureVectors(); // ‹È—¦ƒxƒNƒgƒ‹•`‰æ
 
-        glEnable(GL_DEPTH_TEST);
+        (*it)->Draw(); // ƒ‚ƒfƒ‹•`‰æ
 
         // íœƒtƒ‰ƒOƒ`ƒFƒbƒN
         if ((*it)->IsDeleteFlagRaised())
