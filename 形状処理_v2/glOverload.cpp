@@ -14,7 +14,7 @@ void glMultMatrixd(const Matrix3d& mat)
         mat.M41, mat.M42, mat.M43, mat.M44,
     };
 
-    glLoadMatrixd(mat_arr);
+    glMultMatrixd(mat_arr);
 }
 void glLoadMatrixd(const Matrix3d& mat)
 {
