@@ -22,7 +22,7 @@ BsplineSurface::BsplineSurface(
     _mesh_width = width;
 
     // VBOÇégÇ§
-    _isUseVBO = true;
+    //_isUseVBO = true;
 }
 
 // éñëOï`âÊ
@@ -86,11 +86,11 @@ void BsplineSurface::PreDraw()
             glNormal3d(nor[i + 1 - u_min][j - v_min]);
             glVertex3d(pnt[i + 1 - u_min][j - v_min]);
             
-            glNormal3d(nor[i - u_min][j + 1 - v_min]);
-            glVertex3d(pnt[i - u_min][j + 1 - v_min]);
-            
             glNormal3d(nor[i + 1 - u_min][j + 1 - v_min]);
             glVertex3d(pnt[i + 1 - u_min][j + 1 - v_min]);
+
+            glNormal3d(nor[i - u_min][j + 1 - v_min]);
+            glVertex3d(pnt[i - u_min][j + 1 - v_min]);
 
             glEnd();
         }
@@ -291,20 +291,20 @@ void BsplineSurface::DrawSecondDiffVectorsInternal()
             double v = (double)j / 100;
 
             // UUî˜ï™
-            glColor3dv(Color::blue); // ê¬
+            glColor3d(1.0, 0.2, 0.2); // ê‘
             pnt = GetPositionVector(u, v);
             diff = GetSecondDiffVectorUU(u, v).Normalize();
             glVertex3d(pnt);
             glVertex3d(pnt + diff);
 
             // UVî˜ï™
-            glColor3dv(Color::blue); // ê¬
+            glColor3d(0.2, 1.0, 0.2); // óŒ
             diff = GetSecondDiffVectorUV(u, v).Normalize();
             glVertex3d(pnt);
             glVertex3d(pnt + diff);
 
             // VVî˜ï™
-            glColor3dv(Color::blue); // ê¬
+            glColor3d(0.2, 0.2, 1.0); // ê¬
             diff = GetSecondDiffVectorVV(u, v).Normalize();
             glVertex3d(pnt);
             glVertex3d(pnt + diff);
