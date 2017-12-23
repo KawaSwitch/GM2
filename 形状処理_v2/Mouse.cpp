@@ -9,6 +9,8 @@
 extern Scene* scene;
 Point3d center;
 
+extern void SetMatrix(Matrix3d);
+
 void Mouse(int button, int state, int x, int y)
 {
     // âEÅFâÒì]
@@ -83,8 +85,10 @@ void Motion(int x, int y)
             //current = current.Normalize();
             target = after * current;
             //target = target.Normalize();
+            //target = after;
 
-            //scene_mat = scene_mat.RotateAt(after, center);
+
+            //SetMatrix(scene_mat.RotateAt(after, center));
             CalcRotateMatrix(rot_mat, target);
         }
     }
@@ -106,7 +110,7 @@ void Motion(int x, int y)
         xStart = x;
         yStart = y;
 
-        scene_mat = scene_mat.Translate(dist_X, -dist_Y, 0);
+        //SetMatrix(scene_mat.Translate(dist_X, -dist_Y, 0));
     }
 
     glutPostRedisplay();
@@ -120,7 +124,7 @@ void Wheel(int wheel_num, int direction, int x, int y)
     else if (direction == -1)
         dist_Z -= 2.0;
 
-    scene_mat = scene_mat.Translate(0, 0, dist_Z);
+    //SetMatrix(scene_mat.Translate(0, 0, dist_Z));
 
     glutPostRedisplay();
 }

@@ -23,6 +23,8 @@ BsplineSurface::BsplineSurface(
 
     // VBOを使う
     //_isUseVBO = true;
+    // IBOを使う
+    _isUseIBO = true;
 }
 
 // 事前描画
@@ -140,7 +142,7 @@ void BsplineSurface::DrawMeshInternal()
     }
 }
 
-// 頂点バッファ作成
+// 頂点バッファ(VBO)作成
 void BsplineSurface::CreateVBO()
 {
     // 解像度
@@ -189,8 +191,8 @@ void BsplineSurface::CreateVBO()
             pnt_vbo.push_back(pnt[i - u_min][j + 1 - v_min]);
 
             pnt_vbo.push_back(pnt[i + 1 - u_min][j - v_min]);
-            pnt_vbo.push_back(pnt[i - u_min][j + 1 - v_min]);
             pnt_vbo.push_back(pnt[i + 1 - u_min][j + 1 - v_min]);
+            pnt_vbo.push_back(pnt[i - u_min][j + 1 - v_min]);
 
             // 法線
             nor_vbo.push_back(nor[i - u_min][j - v_min]);
@@ -198,8 +200,8 @@ void BsplineSurface::CreateVBO()
             nor_vbo.push_back(nor[i - u_min][j + 1 - v_min]);
 
             nor_vbo.push_back(nor[i + 1 - u_min][j - v_min]);
-            nor_vbo.push_back(nor[i - u_min][j + 1 - v_min]);
             nor_vbo.push_back(nor[i + 1 - u_min][j + 1 - v_min]);
+            nor_vbo.push_back(nor[i - u_min][j + 1 - v_min]);
         }
     }
 
@@ -220,7 +222,6 @@ void BsplineSurface::CreateVBO()
 // VBOで描画
 void BsplineSurface::DrawVBO()
 {
-    //glColor4dv(_color);
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, _color);
 
     // 頂点
@@ -240,6 +241,116 @@ void BsplineSurface::DrawVBO()
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+// 頂点バッファ(IBO)作成
+void BsplineSurface::CreateIBO()
+{
+    // 解像度
+    int RES = 15;
+
+    vector<vector<Vector3d>> pnt;
+    vector<vector<Vector3d>> nor;
+    vector<Vector3d> pnt_vbo;
+    vector<Vector3d> nor_vbo;
+    vector<GLushort> pnt_ibo;
+
+    // 描画範囲を予め設定
+    int u_min = (int)(_knotU[_ordU - 1] * RES);
+    int v_min = (int)(_knotV[_ordV - 1] * RES);
+    int u_max = (int)(_knotU[_ncpntU] * RES);
+    int v_max = (int)(_knotV[_ncpntV] * RES);
+    int u_size = u_max - u_min + 1;
+    int v_size = v_max - v_min + 1;
+
+    pnt.resize(u_size);
+    for (int i = 0; i < u_size; i++)
+        pnt[i].resize(v_size);
+
+    nor.resize(u_size);
+    for (int i = 0; i < u_size; i++)
+        nor[i].resize(v_size);
+
+    for (int i = u_min; i <= u_max; i++)
+    {
+        for (int j = v_min; j <= v_max; j++)
+        {
+            double u = (double)i / RES;
+            double v = (double)j / RES;
+
+            pnt[i - u_min][j - v_min] = GetPositionVector(u, v);
+            nor[i - u_min][j - v_min] = GetNormalVector(u, v).Normalize();
+        }
+    }
+
+    // IBO用の頂点取得
+    for (int i = u_min; i < u_max; i++)
+    {
+        for (int j = v_min; j < v_max; j++)
+        {
+            //pnt_ibo.push
+
+            //pnt_vbo.push_back(pnt[i - u_min][j - v_min]);
+            //pnt_vbo.push_back(pnt[i + 1 - u_min][j - v_min]);
+            //pnt_vbo.push_back(pnt[i - u_min][j + 1 - v_min]);
+
+            //pnt_vbo.push_back(pnt[i + 1 - u_min][j - v_min]);
+            //pnt_vbo.push_back(pnt[i + 1 - u_min][j + 1 - v_min]);
+            //pnt_vbo.push_back(pnt[i - u_min][j + 1 - v_min]);
+
+            //// 法線
+            //nor_vbo.push_back(nor[i - u_min][j - v_min]);
+            //nor_vbo.push_back(nor[i + 1 - u_min][j - v_min]);
+            //nor_vbo.push_back(nor[i - u_min][j + 1 - v_min]);
+
+            //nor_vbo.push_back(nor[i + 1 - u_min][j - v_min]);
+            //nor_vbo.push_back(nor[i + 1 - u_min][j + 1 - v_min]);
+            //nor_vbo.push_back(nor[i - u_min][j + 1 - v_min]);
+        }
+    }
+
+    _nVertex = (int)pnt_vbo.size();
+
+    // VBOの設定
+    glGenBuffers(1, &_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(double) * _nVertex * 3, &pnt_vbo[0], GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // IBOの設定
+    glGenBuffers(1, &_ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(double) * _nVertex * 3, &pnt_vbo[0], GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    //glGenBuffers(1, &_vbo_nor);
+    //glBindBuffer(GL_ARRAY_BUFFER, _vbo_nor);
+    //glBufferData(GL_ARRAY_BUFFER, sizeof(double) * _nVertex * 3, &nor_vbo[0], GL_DYNAMIC_DRAW);
+    //glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+// IBOで描画
+void BsplineSurface::DrawIBO()
+{
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, _color);
+
+    // 頂点
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo);
+    //glEnableClientState(GL_VERTEX_ARRAY);
+    //glVertexPointer(3, GL_DOUBLE, 0, 0);
+
+    //// 法線
+    //glBindBuffer(GL_ARRAY_BUFFER, _vbo_nor);
+    //glEnableClientState(GL_NORMAL_ARRAY);
+    //glNormalPointer(GL_DOUBLE, 0, (void *)0);
+
+    // 描画
+    glDrawElements(GL_TRIANGLES, _nVertex, GL_UNSIGNED_INT, (void *)0);
+
+    // clean up
+    //glDisableClientState(GL_VERTEX_ARRAY);
+    //glDisableClientState(GL_NORMAL_ARRAY);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 // 接線ベクトル描画

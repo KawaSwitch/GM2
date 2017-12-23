@@ -14,6 +14,7 @@ protected:
     int _ordU, _ordV; // 階数
     int _nVertex; // 頂点個数
     GLuint _vbo_nor = 0; // 法線用vbo
+    GLuint _ibo_nor = 0; // 法線用ibo
     int _ncpntU, _ncpntV; // 制御点数
     vector<double> _ctrlpX; // 計算用
     vector<double> _ctrlpY;

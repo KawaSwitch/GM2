@@ -19,6 +19,8 @@ private:
     void PreDraw() override;
     void CreateVBO() override;
     void DrawVBO() override;
+    void CreateIBO() override;
+    void DrawIBO() override;
 
     // ノットベクトル設定
     void SetKnotVector(double* knot, int size, vector<double>& _knot)

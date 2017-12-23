@@ -21,7 +21,8 @@ private:
 protected:
 
     bool _isUseVBO = false; // VBOを使うか
-    GLuint _vbo = 0;
+    bool _isUseIBO = false; // IBOを使うか
+    GLuint _vbo, _ibo;
     GLdouble _color[4];  // 色
     vector<ControlPoint> _ctrlp; // 制御点
 
@@ -37,6 +38,11 @@ protected:
     virtual void CreateVBO() { };
     virtual void ModifyVBO() { };
     virtual void DrawVBO() { };
+
+    // IBO
+    virtual void CreateIBO() { };
+    virtual void ModifyIBO() { };
+    virtual void DrawIBO() { };
     
     // ディスプレイリスト
     int _displayList = 0; // オブジェクト用
@@ -70,6 +76,17 @@ public:
             }
             else
                 DrawVBO(); // 描画
+        }
+        // IBO
+        else if (_isUseIBO)
+        {
+            if (_ibo == 0)
+            {
+                CreateIBO(); // IBO作成
+                glutPostRedisplay();
+            }
+            else
+                DrawIBO(); // 描画
         }
         // ディスプレイリスト
         else
@@ -164,6 +181,7 @@ public:
         _number = obj_number++; // 識別子を振る
 
         _vbo = 0;
+        _ibo = 0;
         _color[0] = -1;
     }
 
@@ -181,5 +199,8 @@ public:
 
         // VBO破棄
         glDeleteBuffers(1, &_vbo);
+
+        // IBO破棄
+        glDeleteBuffers(1, &_ibo);
     }
 };
