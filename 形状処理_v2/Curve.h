@@ -3,7 +3,7 @@
 #include "Object.h"
 #include "ControlPoint.h"
 
-// 曲線インターフェース
+// 曲線基底クラス
 class Curve : public Object
 {
 protected:

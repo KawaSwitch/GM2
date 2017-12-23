@@ -8,6 +8,7 @@ void Surface::SetControlPoint(ControlPoint* cp, int size)
 
     _ctrlp.reserve(size); _ctrlpX.reserve(size);
     _ctrlpY.reserve(size); _ctrlpZ.reserve(size);
+    _weight.reserve(size);
 
     for (int i = 0; i < size; i++)
         _ctrlp.emplace_back(cp[i]);
@@ -20,6 +21,7 @@ void Surface::SetControlPoint(ControlPoint* cp, int size)
             _ctrlpX.push_back(_ctrlp[j * _ncpntU + i].X);
             _ctrlpY.push_back(_ctrlp[j * _ncpntU + i].Y);
             _ctrlpZ.push_back(_ctrlp[j * _ncpntU + i].Z);
+            _weight.push_back(_ctrlp[j * _ncpntU + i].W);
         }
     }
 }
@@ -39,6 +41,36 @@ Vector3d Surface::GetCurvatureVector(double u, double v)
         (1 / max_kappa) * e :
         (1 / min_kappa) * e;
 }
+
+// Σ[i=1tok]Σ[j=1toL] Q(i,j)N[i,n](u)N[j,m](v) を計算する
+// <!>非有理曲面の位置ベクトル, 有理曲面の分子
+Vector3d Surface::CalcVectorWithBasisFunctions(double* BF_array_U, double* BF_array_V)
+{
+    Vector3d retVec;
+    double temp[100]; // 計算用
+
+    MatrixMultiply(1, _ncpntU, _ncpntV, BF_array_U, &_ctrlpX[0], temp);
+    retVec.X = MatrixMultiply(_ncpntV, temp, BF_array_V);
+
+    MatrixMultiply(1, _ncpntU, _ncpntV, BF_array_U, &_ctrlpY[0], temp);
+    retVec.Y = MatrixMultiply(_ncpntV, temp, BF_array_V);
+
+    MatrixMultiply(1, _ncpntU, _ncpntV, BF_array_U, &_ctrlpZ[0], temp);
+    retVec.Z = MatrixMultiply(_ncpntV, temp, BF_array_V);
+
+    return retVec;
+}
+
+// Σ[i=1tok]Σ[j=1toL] w(i,j)N[i,n](u)N[j,m](v) を計算する
+// <!>有理曲面の分母
+double Surface::CalcWeightWithBasisFunctions(double* BF_array_U, double* BF_array_V)
+{
+    double temp[100]; // 計算用
+
+    MatrixMultiply(1, _ncpntU, _ncpntV, BF_array_U, &_weight[0], temp);
+    return MatrixMultiply(_ncpntV, temp, BF_array_V);
+}
+
 
 // 指定した端の曲線の制御点を取得する
 vector<ControlPoint> Surface::GetEdgeCurveControlPoint(SurfaceEdge edge)

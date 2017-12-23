@@ -27,6 +27,27 @@ BsplineSurface::BsplineSurface(
     //_isUseIBO = true;
 }
 
+// ノットベクトル設定
+void BsplineSurface::SetKnotVector(double* knot, int size, vector<double>& _knot)
+{
+    if (size <= 0)
+        Error::ShowAndExit("ノットベクトル設定失敗", "knot-vector size must be over 0.");
+
+    _knot.reserve(size);
+    for (int i = 0; i < size; i++)
+        _knot.emplace_back(knot[i]);
+}
+
+// 指定した端の曲線を取得する
+Curve* BsplineSurface::GetEdgeCurve(SurfaceEdge edge)
+{
+    vector<ControlPoint> edge_cp = GetEdgeCurveControlPoint(edge);
+    int edge_ord = (edge == U_min || edge == U_max) ? _ordV : _ordU;
+    vector<double> edge_knot = (edge == U_min || edge == U_max) ? _knotV : _knotU;
+
+    return new BsplineCurve(edge_ord, &edge_cp[0], (int)edge_cp.size(), &edge_knot[0], Color::red, _mesh_width);
+}
+
 // 事前描画
 void BsplineSurface::PreDraw()
 {   
@@ -64,7 +85,6 @@ void BsplineSurface::PreDraw()
         }
     }
 
-    //glColor4dv(_color);
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, _color);
 
     // 三角ポリゴン表示
@@ -486,11 +506,13 @@ void BsplineSurface::DrawCurvatureVectorsInternal()
     }
 }
 
-// 位置ベクトル取得
-Vector3d BsplineSurface::GetPositionVector(double u, double v)
+// 指定パラメータのベクトルを基底関数から算出する
+Vector3d BsplineSurface::CalcVector(
+    double u, double v,
+    function<double(unsigned, unsigned, double, double *)> BasisFuncU,
+    function<double(unsigned, unsigned, double, double *)> BasisFuncV)
 {
-    Vector3d pnt;
-    double temp[100]; // 計算用
+    Vector3d vector;
 
     // 基底関数配列(行列計算用)
     double* N_array_U = new double[_ncpntU];
@@ -498,179 +520,49 @@ Vector3d BsplineSurface::GetPositionVector(double u, double v)
 
     // 基底関数配列へ各基底関数を代入
     for (int i = 0; i < _ncpntU; i++)
-        N_array_U[i] = CalcBsplineFunc(i, _ordU, u, &_knotU[0]);
+        N_array_U[i] = BasisFuncU(i, _ordU, u, &_knotU[0]);
     for (int i = 0; i < _ncpntV; i++)
-        N_array_V[i] = CalcBsplineFunc(i, _ordV, v, &_knotV[0]);
+        N_array_V[i] = BasisFuncV(i, _ordV, v, &_knotV[0]);
 
-    // 位置ベクトル算出(行列計算)
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpX[0], temp);
-    pnt.X = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpY[0], temp);
-    pnt.Y = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpZ[0], temp);
-    pnt.Z = MatrixMultiply(_ncpntV, temp, N_array_V);
+    // ベクトル算出(行列計算)
+    vector = CalcVectorWithBasisFunctions(N_array_U, N_array_V);
 
     delete[] N_array_U, N_array_V;
-    return pnt;
+    return vector;
+}
+
+// 位置ベクトル取得
+Vector3d BsplineSurface::GetPositionVector(double u, double v)
+{
+    // u:0-diff v:0-diff
+    return CalcVector(u, v, CalcBsplineFunc, CalcBsplineFunc);
 }
 
 // 接線ベクトル取得
 Vector3d BsplineSurface::GetFirstDiffVectorU(double u, double v)
 {
-    Vector3d diff;
-
-    double temp[100]; // 計算用
-
-    // 基底関数配列(行列計算用)
-    double* N_array_U = new double[_ncpntU];
-    double* N_array_V = new double[_ncpntV];
-
-    // 基底関数配列へ各基底関数を代入
-    for (int i = 0; i < _ncpntU; i++)
-        N_array_U[i] = Calc1DiffBsplineFunc(i, _ordU, u, &_knotU[0]);
-    for (int i = 0; i < _ncpntV; i++)
-        N_array_V[i] = CalcBsplineFunc(i, _ordV, v, &_knotV[0]);
-
-    // 位置ベクトル算出(行列計算)
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpX[0], temp);
-    diff.X = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpY[0], temp);
-    diff.Y = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpZ[0], temp);
-    diff.Z = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    delete[] N_array_U, N_array_V;
-    return diff;
+    // u:1-diff v:0-diff
+    return CalcVector(u, v, Calc1DiffBsplineFunc, CalcBsplineFunc);
 }
 Vector3d BsplineSurface::GetFirstDiffVectorV(double u, double v)
 {
-    Vector3d diff;
-
-    double temp[100]; // 計算用
-
-    // 基底関数配列(行列計算用)
-    double* N_array_U = new double[_ncpntU];
-    double* N_array_V = new double[_ncpntV];
-
-    // 基底関数配列へ各基底関数を代入
-    for (int i = 0; i < _ncpntU; i++)
-        N_array_U[i] = CalcBsplineFunc(i, _ordU, u, &_knotU[0]);
-    for (int i = 0; i < _ncpntV; i++)
-        N_array_V[i] = Calc1DiffBsplineFunc(i, _ordV, v, &_knotV[0]);
-
-    // 位置ベクトル算出(行列計算)
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpX[0], temp);
-    diff.X = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpY[0], temp);
-    diff.Y = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpZ[0], temp);
-    diff.Z = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    delete[] N_array_U, N_array_V;
-    return diff;
+    // u:0-diff v:1-diff
+    return CalcVector(u, v, CalcBsplineFunc, Calc1DiffBsplineFunc);
 }
 
 // 2階微分ベクトル取得
 Vector3d BsplineSurface::GetSecondDiffVectorUU(double u, double v)
 {
-    Vector3d diff;
-
-    double temp[100]; // 計算用
-
-    // 基底関数配列(行列計算用)
-    double* N_array_U = new double[_ncpntU];
-    double* N_array_V = new double[_ncpntV];
-
-    // 基底関数配列へ各基底関数を代入
-    for (int i = 0; i < _ncpntU; i++)
-        N_array_U[i] = Calc2DiffBsplineFunc(i, _ordU, u, &_knotU[0]);
-    for (int i = 0; i < _ncpntV; i++)
-        N_array_V[i] = CalcBsplineFunc(i, _ordV, v, &_knotV[0]);
-
-    // 位置ベクトル算出(行列計算)
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpX[0], temp);
-    diff.X = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpY[0], temp);
-    diff.Y = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpZ[0], temp);
-    diff.Z = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    delete[] N_array_U, N_array_V;
-    return diff;
+    // u:2diff v:0-diff
+    return CalcVector(u, v, Calc2DiffBsplineFunc, CalcBsplineFunc);
 }
 Vector3d BsplineSurface::GetSecondDiffVectorUV(double u, double v)
 {
-    Vector3d diff;
-
-    double temp[100]; // 計算用
-
-    // 基底関数配列(行列計算用)
-    double* N_array_U = new double[_ncpntU];
-    double* N_array_V = new double[_ncpntV];
-
-    // 基底関数配列へ各基底関数を代入
-    for (int i = 0; i < _ncpntU; i++)
-        N_array_U[i] = Calc1DiffBsplineFunc(i, _ordU, u, &_knotU[0]);
-    for (int i = 0; i < _ncpntV; i++)
-        N_array_V[i] = Calc1DiffBsplineFunc(i, _ordV, v, &_knotV[0]);
-
-    // 位置ベクトル算出(行列計算)
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpX[0], temp);
-    diff.X = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpY[0], temp);
-    diff.Y = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpZ[0], temp);
-    diff.Z = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    delete[] N_array_U, N_array_V;
-    return diff;
+    // u:1-diff v:1-diff
+    return CalcVector(u, v, Calc1DiffBsplineFunc, Calc1DiffBsplineFunc);
 }
 Vector3d BsplineSurface::GetSecondDiffVectorVV(double u, double v)
 {
-    Vector3d diff;
-
-    double temp[100]; // 計算用
-
-    // 基底関数配列(行列計算用)
-    double* N_array_U = new double[_ncpntU];
-    double* N_array_V = new double[_ncpntV];
-
-    // 基底関数配列へ各基底関数を代入
-    for (int i = 0; i < _ncpntU; i++)
-        N_array_U[i] = CalcBsplineFunc(i, _ordU, u, &_knotU[0]);
-    for (int i = 0; i < _ncpntV; i++)
-        N_array_V[i] = Calc2DiffBsplineFunc(i, _ordV, v, &_knotV[0]);
-
-    // 位置ベクトル算出(行列計算)
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpX[0], temp);
-    diff.X = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpY[0], temp);
-    diff.Y = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpZ[0], temp);
-    diff.Z = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    delete[] N_array_U, N_array_V;
-    return diff;
-}
-
-// 指定した端の曲線を取得する
-Curve* BsplineSurface::GetEdgeCurve(SurfaceEdge edge)
-{
-    vector<ControlPoint> edge_cp = GetEdgeCurveControlPoint(edge);
-    int edge_ord = (edge == U_min || edge == U_max) ? _ordV : _ordU;
-    vector<double> edge_knot = (edge == U_min || edge == U_max) ? _knotV : _knotU;
-
-    return new BsplineCurve(edge_ord, &edge_cp[0], (int)edge_cp.size(), &edge_knot[0], Color::red, _mesh_width);
+    // u:0-diff v:2-diff
+    return CalcVector(u, v, CalcBsplineFunc, Calc2DiffBsplineFunc);
 }

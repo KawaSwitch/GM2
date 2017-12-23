@@ -18,6 +18,15 @@ BezierSurface::BezierSurface(
     _isUseVBO = true;
 }
 
+// 指定した端の曲線を取得する
+Curve* BezierSurface::GetEdgeCurve(SurfaceEdge edge)
+{
+    vector<ControlPoint> edge_cp = GetEdgeCurveControlPoint(edge);
+    int edge_ord = (edge == U_min || edge == U_max) ? _ordU : _ordV;
+
+    return new BezierCurve(edge_ord, &edge_cp[0], (int)edge_cp.size(), _color, _mesh_width);
+}
+
 // 事前描画
 void BezierSurface::PreDraw()
 {
@@ -254,20 +263,20 @@ void BezierSurface::DrawSecondDiffVectorsInternal()
             double v = (double)j / 100;
 
             // UU微分
-            glColor3dv(Color::blue); // 青
+            glColor3d(1.0, 0.2, 0.2); // 赤
             pnt = GetPositionVector(u, v);
             diff = GetSecondDiffVectorUU(u, v).Normalize();
             glVertex3d(pnt);
             glVertex3d(pnt + diff);
 
             // UV微分
-            glColor3dv(Color::blue); // 青
+            glColor3d(0.2, 1.0, 0.2); // 緑
             diff = GetSecondDiffVectorUV(u, v).Normalize();
             glVertex3d(pnt);
             glVertex3d(pnt + diff);
 
             // VV微分
-            glColor3dv(Color::blue); // 青
+            glColor3d(0.2, 0.2, 1.0); // 青
             diff = GetSecondDiffVectorVV(u, v).Normalize();
             glVertex3d(pnt);
             glVertex3d(pnt + diff);
@@ -338,11 +347,13 @@ void BezierSurface::DrawCurvatureVectorsInternal()
     }
 }
 
-// 位置ベクトル取得
-Vector3d BezierSurface::GetPositionVector(double u, double v)
+// 指定パラメータのベクトルを基底関数から算出する
+Vector3d BezierSurface::CalcVector(
+    double u, double v,
+    function<double(unsigned, unsigned, double)> BasisFuncU,
+    function<double(unsigned, unsigned, double)> BasisFuncV)
 {
-    Vector3d pnt;
-    double temp[100]; // 計算用
+    Vector3d vector;
 
     // 基底関数配列(行列計算用)
     double* N_array_U = new double[_ncpntU];
@@ -350,173 +361,49 @@ Vector3d BezierSurface::GetPositionVector(double u, double v)
 
     // 基底関数配列へ各基底関数を代入
     for (int i = 0; i < _ncpntU; i++)
-        N_array_U[i] = CalcBernsteinFunc(i, _ordU - 1, u);
+        N_array_U[i] = BasisFuncU(i, _ordU - 1, u);
     for (int i = 0; i < _ncpntV; i++)
-        N_array_V[i] = CalcBernsteinFunc(i, _ordV - 1, v);
+        N_array_V[i] = BasisFuncV(i, _ordV - 1, v);
 
-    // 位置ベクトル算出(行列計算)
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpX[0], temp);
-    pnt.X = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpY[0], temp);
-    pnt.Y = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpZ[0], temp);
-    pnt.Z = MatrixMultiply(_ncpntV, temp, N_array_V);
+    // ベクトル算出(行列計算)
+    vector = CalcVectorWithBasisFunctions(N_array_U, N_array_V);
 
     delete[] N_array_U, N_array_V;
-    return pnt;
+    return vector;
+}
+
+// 位置ベクトル取得
+Vector3d BezierSurface::GetPositionVector(double u, double v)
+{
+    // u:0-diff v:0-diff
+    return CalcVector(u, v, CalcBernsteinFunc, CalcBernsteinFunc);
 }
 
 // 接線ベクトル取得
 Vector3d BezierSurface::GetFirstDiffVectorU(double u, double v)
 {
-    Vector3d diff;
-    double temp[100]; // 計算用
-
-    // 基底関数配列(行列計算用)
-    double* N_array_U = new double[_ncpntU];
-    double* N_array_V = new double[_ncpntV];
-
-    // 基底関数配列へ各基底関数を代入
-    for (int i = 0; i < _ncpntU; i++)
-        N_array_U[i] = Calc1DiffBernsteinFunc(i, _ordU - 1, u);
-    for (int i = 0; i < _ncpntV; i++)
-        N_array_V[i] = CalcBernsteinFunc(i, _ordV - 1, v);
-
-    // 位置ベクトル算出(行列計算)
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpX[0], temp);
-    diff.X = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpY[0], temp);
-    diff.Y = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpZ[0], temp);
-    diff.Z = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    delete[] N_array_U, N_array_V;
-    return diff;
+    // u:1-diff v:0-diff
+    return CalcVector(u, v, Calc1DiffBernsteinFunc, CalcBernsteinFunc);
 }
 Vector3d BezierSurface::GetFirstDiffVectorV(double u, double v)
 {
-    Vector3d diff;
-    double temp[100]; // 計算用
-
-    // 基底関数配列(行列計算用)
-    double* N_array_U = new double[_ncpntU];
-    double* N_array_V = new double[_ncpntV];
-
-    // 基底関数配列へ各基底関数を代入
-    for (int i = 0; i < _ncpntU; i++)
-        N_array_U[i] = CalcBernsteinFunc(i, _ordU - 1, u);
-    for (int i = 0; i < _ncpntV; i++)
-        N_array_V[i] = Calc1DiffBernsteinFunc(i, _ordV - 1, v);
-
-    // 位置ベクトル算出(行列計算)
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpX[0], temp);
-    diff.X = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpY[0], temp);
-    diff.Y = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpZ[0], temp);
-    diff.Z = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    delete[] N_array_U, N_array_V;
-    return diff;
+    // u:0-diff v:1-diff
+    return CalcVector(u, v, CalcBernsteinFunc, Calc1DiffBernsteinFunc);
 }
 
 // 2階微分ベクトル取得
 Vector3d BezierSurface::GetSecondDiffVectorUU(double u, double v)
 {
-    Vector3d diff;
-    double temp[100]; // 計算用
-
-    // 基底関数配列(行列計算用)
-    double* N_array_U = new double[_ncpntU];
-    double* N_array_V = new double[_ncpntV];
-
-    // 基底関数配列へ各基底関数を代入
-    for (int i = 0; i < _ncpntU; i++)
-        N_array_U[i] = Calc2DiffBernsteinFunc(i, _ordU - 1, u);
-    for (int i = 0; i < _ncpntV; i++)
-        N_array_V[i] = CalcBernsteinFunc(i, _ordV - 1, v);
-
-    // 位置ベクトル算出(行列計算)
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpX[0], temp);
-    diff.X = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpY[0], temp);
-    diff.Y = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpZ[0], temp);
-    diff.Z = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    delete[] N_array_U, N_array_V;
-    return diff;
+    // u:2diff v:0-diff
+    return CalcVector(u, v, Calc2DiffBernsteinFunc, CalcBernsteinFunc);
 }
 Vector3d BezierSurface::GetSecondDiffVectorUV(double u, double v)
 {
-    Vector3d diff;
-    double temp[100]; // 計算用
-
-    // 基底関数配列(行列計算用)
-    double* N_array_U = new double[_ncpntU];
-    double* N_array_V = new double[_ncpntV];
-
-    // 基底関数配列へ各基底関数を代入
-    for (int i = 0; i < _ncpntU; i++)
-        N_array_U[i] = Calc1DiffBernsteinFunc(i, _ordU - 1, u);
-    for (int i = 0; i < _ncpntV; i++)
-        N_array_V[i] = Calc1DiffBernsteinFunc(i, _ordV - 1, v);
-
-    // 位置ベクトル算出(行列計算)
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpX[0], temp);
-    diff.X = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpY[0], temp);
-    diff.Y = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpZ[0], temp);
-    diff.Z = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    delete[] N_array_U, N_array_V;
-    return diff;
+    // u:1-diff v:1-diff
+    return CalcVector(u, v, Calc1DiffBernsteinFunc, Calc1DiffBernsteinFunc);
 }
 Vector3d BezierSurface::GetSecondDiffVectorVV(double u, double v)
 {
-    Vector3d diff;
-    double temp[100]; // 計算用
-
-    // 基底関数配列(行列計算用)
-    double* N_array_U = new double[_ncpntU];
-    double* N_array_V = new double[_ncpntV];
-
-    // 基底関数配列へ各基底関数を代入
-    for (int i = 0; i < _ncpntU; i++)
-        N_array_U[i] = CalcBernsteinFunc(i, _ordU - 1, u);
-    for (int i = 0; i < _ncpntV; i++)
-        N_array_V[i] = Calc2DiffBernsteinFunc(i, _ordV - 1, v);
-
-    // 位置ベクトル算出(行列計算)
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpX[0], temp);
-    diff.X = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpY[0], temp);
-    diff.Y = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    MatrixMultiply(1, _ncpntU, _ncpntV, N_array_U, &_ctrlpZ[0], temp);
-    diff.Z = MatrixMultiply(_ncpntV, temp, N_array_V);
-
-    delete[] N_array_U, N_array_V;
-    return diff;
-}
-
-// 指定した端の曲線を取得する
-Curve* BezierSurface::GetEdgeCurve(SurfaceEdge edge)
-{
-    vector<ControlPoint> edge_cp = GetEdgeCurveControlPoint(edge);
-    int edge_ord = (edge == U_min || edge == U_max) ? _ordU : _ordV;
-
-    return new BezierCurve(edge_ord, &edge_cp[0], (int)edge_cp.size(), _color, _mesh_width);
+    // u:0-diff v:2-diff
+    return CalcVector(u, v, CalcBernsteinFunc, Calc2DiffBernsteinFunc);
 }

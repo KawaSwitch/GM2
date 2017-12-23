@@ -6,7 +6,7 @@
 
 extern Scene* test_scene;
 
-// 曲面インターフェース
+// 曲面基底クラス
 class Surface : public Object
 {
 protected:
@@ -18,6 +18,7 @@ protected:
     vector<double> _ctrlpX; // 計算用
     vector<double> _ctrlpY;
     vector<double> _ctrlpZ;
+    vector<double> _weight;
 
     GLuint _vbo_nor = 0; // 法線用vbo
     GLuint _ibo_nor = 0; // 法線用ibo
@@ -53,6 +54,12 @@ protected:
     virtual void DrawMeshInternal() { };
     void DrawMesh() { DrawUsingDisplayList(&_mesh_displayList, [&] { return (*this).DrawMeshInternal(); }); }
 
+    // Σ[i=1tok]Σ[j=1toL] Q(i,j)N[i,n](u)N[j,m](v) を計算する
+    Vector3d CalcVectorWithBasisFunctions(double* BF_array_U, double* BF_array_V);
+
+    // Σ[i=1tok]Σ[j=1toL] w(i,j)N[i,n](u)N[j,m](v) を計算する
+    double CalcWeightWithBasisFunctions(double* BF_array_U, double* BF_array_V);
+
 private:
 
     // オブジェクト描画
@@ -70,11 +77,11 @@ private:
 
 public:
 
+    // 指定した端の曲線を取得する(アイソ曲線実装したら削除)
+    virtual Curve* GetEdgeCurve(SurfaceEdge edge) = 0;
+
     // 指定したパラメータのアイソ曲線を取得する
     //virtual Curve* GetIsoCurve(ParamUV direct, double param) = 0;
-
-    // 指定した端の曲線を取得する
-    virtual Curve* GetEdgeCurve(SurfaceEdge edge) = 0;
 
     // 参照点からの最近点を取得
     Vector3d GetNearestPointFromRef(Vector3d ref);
