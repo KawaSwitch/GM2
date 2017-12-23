@@ -7,7 +7,7 @@ class NurbsSurface : public BsplineSurface
 private:
 
     // w’è‚µ‚½’[‚Ì‹Èü‚ğæ“¾‚·‚é
-    //Curve* GetEdgeCurve(SurfaceEdge edge) override;
+    Curve* GetEdgeCurve(SurfaceEdge edge) override;
 
 public:
 

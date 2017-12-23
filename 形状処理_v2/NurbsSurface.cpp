@@ -1,4 +1,5 @@
 #include "NurbsSurface.h"
+#include "NurbsCurve.h"
 
 // Bsplineと同じ
 NurbsSurface::NurbsSurface(
@@ -8,15 +9,15 @@ NurbsSurface::NurbsSurface(
     GLdouble* color, GLdouble width)
         : BsplineSurface(u_mord, v_mord, cp, u_cp_size, v_cp_size, u_knot, v_knot, color, width) { }
 
-//// 指定した端の曲線を取得する
-//Curve* NurbsSurface::GetEdgeCurve(SurfaceEdge edge)
-//{
-//    vector<ControlPoint> edge_cp = GetEdgeCurveControlPoint(edge);
-//    int edge_ord = (edge == U_min || edge == U_max) ? _ordV : _ordU;
-//    vector<double> edge_knot = (edge == U_min || edge == U_max) ? _knotV : _knotU;
-//
-//    return new NurbsSurface(edge_ord, &edge_cp[0], (int)edge_cp.size(), &edge_knot[0], Color::red, _mesh_width);
-//}
+// 指定した端の曲線を取得する
+Curve* NurbsSurface::GetEdgeCurve(SurfaceEdge edge)
+{
+    vector<ControlPoint> edge_cp = GetEdgeCurveControlPoint(edge);
+    int edge_ord = (edge == U_min || edge == U_max) ? _ordV : _ordU;
+    vector<double> edge_knot = (edge == U_min || edge == U_max) ? _knotV : _knotU;
+
+    return new NurbsCurve(edge_ord, &edge_cp[0], (int)edge_cp.size(), &edge_knot[0], Color::red, _mesh_width);
+}
 
 // 位置ベクトル取得
 Vector3d NurbsSurface::GetPositionVector(double u, double v)
