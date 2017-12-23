@@ -2,14 +2,18 @@
 
 #include "EPS.h"
 
+// 制御点クラス
+// 同次座標考慮
 class ControlPoint
 {
 public:
 
-    double X, Y, Z;
+    double X, Y, Z; // 座標
+    double W; // ウェイト
 
-    constexpr ControlPoint() : X(0), Y(0), Z(0) { }
-    constexpr ControlPoint(double x, double y, double z) : X(x), Y(y), Z(z) { }
+    constexpr ControlPoint() : X(0), Y(0), Z(0), W(1.0) { }
+    constexpr ControlPoint(double x, double y, double z) : X(x), Y(y), Z(z), W(1.0) { }
+    constexpr ControlPoint(double x, double y, double z, double w) : X(x), Y(y), Z(z), W(w) { }
 
     bool operator == (const ControlPoint& other)
     {
