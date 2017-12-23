@@ -7,6 +7,9 @@ void NormalAxis::Draw()
     static int displayList;
     static bool isRendered = false;
 
+    if (isUseLight)
+        glEnable(GL_LIGHTING);
+
     if (isRendered)
     {
         // ディスプレイリスト作成済みならコール
@@ -30,15 +33,26 @@ void NormalAxis::Draw()
         glEndList();
         isRendered = true;
     }
+
+    if (isUseLight)
+        glDisable(GL_LIGHTING);
 }
 
 void NormalAxis::DrawInternal()
 {
     GLUquadricObj* base_arrows[3];
     GLUquadricObj* arrows[3];
+    GLdouble specular[4] = { 0.125, 0.125, 0.125, 1.0 };
 
     // X - axis
-    glColor4dv(Color::red);
+    if (isUseLight)
+    {
+        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, Color::red);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
+    }
+    else
+        glColor4dv(Color::red);
+
     glPushMatrix();
     base_arrows[0] = gluNewQuadric();
     gluQuadricDrawStyle(base_arrows[0], GLU_FILL);
@@ -55,7 +69,14 @@ void NormalAxis::DrawInternal()
     glPopMatrix();
 
     // Y - axis
-    glColor4dv(Color::green);
+    if (isUseLight)
+    {
+        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, Color::green);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
+    }
+    else
+        glColor4dv(Color::green);
+
     glPushMatrix();
     base_arrows[0] = gluNewQuadric();
     gluQuadricDrawStyle(base_arrows[0], GLU_FILL);
@@ -72,7 +93,14 @@ void NormalAxis::DrawInternal()
     glPopMatrix();
 
     // Z - axis
-    glColor4dv(Color::blue);
+    if (isUseLight)
+    {
+        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, Color::blue);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
+    }
+    else
+        glColor4dv(Color::blue);
+
     glPushMatrix();
     base_arrows[0] = gluNewQuadric();
     gluQuadricDrawStyle(base_arrows[0], GLU_FILL);
