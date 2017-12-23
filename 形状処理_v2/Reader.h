@@ -27,12 +27,14 @@ class KjsReader : public Reader
 {
 private:
 
-    string KJS_FILE_NAME = "KJS_FILE"; // .kjsファイルの格納フォルダ名
+    const string KJS_FILE_NAME = "KJS_FILE"; // .kjsファイルの格納フォルダ名
 
     Object* BezierCurveReader(vector<string> lines); // ベジエ曲線
     Object* BezierSurfaceReader(vector<string> lines); // ベジエ曲面
     Object* BsplineCurveReader(vector<string> lines); // Bスプライン曲線
     Object* BsplineSurfaceReader(vector<string> lines); // Bスプライン曲面
+    Object* NurbsCurveReader(vector<string> lines); // Nurbs曲線
+    Object* NurbsSurfaceReader(vector<string> lines); // Nurbs曲面
 
 public:
 

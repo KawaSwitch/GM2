@@ -101,8 +101,10 @@ Object* KjsReader::GetObjectFromFile(string file_name)
     }
     else if (lines[0] == "NURBS")
     {
-        // Nurbs未対応
-        return nullptr;
+        if (lines[1] == "CURVE")
+            return NurbsCurveReader(lines);
+        else
+            return NurbsSurfaceReader(lines);
     }
     else
     {
@@ -131,8 +133,6 @@ vector<Object *> KjsReader::GetObjectsFromKjsFolder()
 
     return returnObjs;
 }
-
-Scene* _scene;
 
 // 以下各オブジェクトのリーダー(ゲッター)関数
 Object* KjsReader::BezierCurveReader(vector<string> lines)
@@ -262,6 +262,8 @@ Object* KjsReader::BsplineCurveReader(vector<string> lines)
         stringstream ss(lines[current++]);
         ss >> buf[0] >> x >> y >> z;
 
+
+
         ControlPoint cp(x, y, z);
         cps[i] = cp;
     }
@@ -321,7 +323,7 @@ Object* KjsReader::BsplineSurfaceReader(vector<string> lines)
         int row, col;
 
         stringstream ss(lines[current++]);
-        ss >> row >> col >> x >> y >> z;  //ウェイト後で
+        ss >> row >> col >> x >> y >> z;
 
         ControlPoint cp(x, y, z);
         cps[i] = cp;
@@ -355,6 +357,142 @@ Object* KjsReader::BsplineSurfaceReader(vector<string> lines)
 
     BsplineSurface* surf = 
         new BsplineSurface(atoi(uord), atoi(vord), &cps[0], atoi(ucpnt), atoi(vcpnt), &knotU[0], &knotV[0], color, width);
+
+    return surf;
+}
+Object* KjsReader::NurbsCurveReader(vector<string> lines)
+{
+    // まだ
+    int current = 2; // 3行目から読み込む
+    char mord[8]; // 階数
+    char ncpnt[8]; // 制御点数
+    GLdouble color[4]; // 色
+    GLdouble width; // 幅
+
+                    // 色
+    {
+        stringstream ss(lines[current++]);
+        ss >> color[0] >> color[1] >> color[2] >> color[3];
+    }
+
+    // 幅
+    {
+        stringstream ss(lines[current++]);
+        ss >> width;
+    }
+
+    // 各プロパティ取得
+    GetNumberOnly(mord, lines[current++].c_str());
+    GetNumberOnly(ncpnt, lines[current++].c_str());
+
+    vector<ControlPoint> cps;
+    cps.resize(atoi(ncpnt));
+    current++; // CONTROL POINT宣言
+
+               // 制御点取得
+    for (int i = 0; i < cps.size(); i++)
+    {
+        double x, y, z;
+        double buf[8];
+
+        stringstream ss(lines[current++]);
+        ss >> buf[0] >> x >> y >> z;
+
+
+
+        ControlPoint cp(x, y, z);
+        cps[i] = cp;
+    }
+
+    vector<double> knot;
+    knot.resize(atoi(mord) + atoi(ncpnt));
+    current++; // KNOTS宣言
+
+               // ノット列取得
+    for (int i = 0; i < knot.size(); i++)
+    {
+        double buf[4];
+
+        stringstream ss(lines[current++]);
+        ss >> buf[0] >> knot[i];
+    }
+
+    BsplineCurve* curve = new BsplineCurve(atoi(mord), &cps[0], atoi(ncpnt), &knot[0], color, width);
+    return curve;
+}
+Object* KjsReader::NurbsSurfaceReader(vector<string> lines)
+{
+    int current = 2; // 3行目から読み込む
+    char uord[8]; // u階数
+    char ucpnt[8]; // u制御点数
+    char vord[8]; // v階数
+    char vcpnt[8]; // v制御点数
+    GLdouble color[4]; // 色
+    GLdouble width; // 幅
+
+                    // 色
+    {
+        stringstream ss(lines[current++]);
+        ss >> color[0] >> color[1] >> color[2] >> color[3];
+    }
+
+    // 幅
+    {
+        stringstream ss(lines[current++]);
+        ss >> width;
+    }
+
+    // 各プロパティ取得
+    GetNumberOnly(uord, lines[current++].c_str());
+    GetNumberOnly(ucpnt, lines[current++].c_str());
+    GetNumberOnly(vord, lines[current++].c_str());
+    GetNumberOnly(vcpnt, lines[current++].c_str());
+
+    vector<ControlPoint> cps;
+    cps.resize(atoi(ucpnt) * atoi(vcpnt));
+    current++; // CONTROL POINT宣言
+
+               // 制御点取得
+    for (int i = 0; i < cps.size(); i++)
+    {
+        double x, y, z, w;
+        int row, col;
+
+        stringstream ss(lines[current++]);
+        ss >> row >> col >> x >> y >> z >> w;
+
+        ControlPoint cp(x, y, z, w);
+        cps[i] = cp;
+    }
+
+    vector<double> knotU;
+    knotU.resize(atoi(uord) + atoi(ucpnt));
+    current++; // U KNOTS宣言
+
+               // Uノット列取得
+    for (int i = 0; i < knotU.size(); i++)
+    {
+        double buf[4];
+
+        stringstream ss(lines[current++]);
+        ss >> buf[0] >> knotU[i];
+    }
+
+    vector<double> knotV;
+    knotV.resize(atoi(vord) + atoi(vcpnt));
+    current++; // V KNOTS宣言
+
+               // Vノット列取得
+    for (int i = 0; i < knotV.size(); i++)
+    {
+        double buf[4];
+
+        stringstream ss(lines[current++]);
+        ss >> buf[0] >> knotV[i];
+    }
+
+    NurbsSurface* surf =
+        new NurbsSurface(atoi(uord), atoi(vord), &cps[0], atoi(ucpnt), atoi(vcpnt), &knotU[0], &knotV[0], color, width);
 
     return surf;
 }
