@@ -77,7 +77,7 @@ public:
             else
                 DrawVBO(); // ï`âÊ
         }
-        // IBO
+        // IBO(ñ¢äÆê¨)
         else if (_isUseIBO)
         {
             if (_ibo == 0)

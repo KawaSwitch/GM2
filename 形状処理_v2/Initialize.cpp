@@ -51,7 +51,7 @@ void Initialize()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     mainLight.InitLight(); // メインライト初期化
-    isUseLight = true; // デフォルトはオフ → とりあえずオン
+    isUseLight = true; // デフォルトはオフ → とりあえずオン(必要なところのみ処理を施す)
 
     //// カリング処理
     //glFrontFace(GL_CCW);

@@ -22,9 +22,9 @@ BsplineSurface::BsplineSurface(
     _mesh_width = width;
 
     // VBO‚ðŽg‚¤
-    //_isUseVBO = true;
+    _isUseVBO = true;
     // IBO‚ðŽg‚¤
-    _isUseIBO = true;
+    //_isUseIBO = true;
 }
 
 // Ž–‘O•`‰æ
