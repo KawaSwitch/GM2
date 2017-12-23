@@ -7,11 +7,11 @@ NurbsCurve::NurbsCurve(int mord, ControlPoint* cp, int cp_size, double* knot, GL
 Vector3d NurbsCurve::GetPositionVector(double t)
 {
     Vector3d Q;
-    double W = 0.0;
+    double w = 0.0, W = 0.0;
 
     // 必要な値を計算する
     for (int i = 0; i < _ncpnt; i++)
-        Q += CalcBsplineFunc(i, _ord, t, &_knot[0]) * _ctrlp[i];
+        Q += CalcBsplineFunc(i, _ord, t, &_knot[0]) * (_ctrlp[i] * _ctrlp[i].W); // 制御点を同次座標に変換
 
     for (int i = 0; i < _ncpnt; i++)
         W += CalcBsplineFunc(i, _ord, t, &_knot[0]) * _ctrlp[i].W;
@@ -29,7 +29,7 @@ Vector3d NurbsCurve::GetFirstDiffVector(double t)
     P = this->GetPositionVector(t);
 
     for (int i = 0; i < _ncpnt; i++)
-        Qt += Calc1DiffBsplineFunc(i, _ord, t, &_knot[0]) * _ctrlp[i];
+        Qt += Calc1DiffBsplineFunc(i, _ord, t, &_knot[0]) * (_ctrlp[i] * _ctrlp[i].W);
 
     for (int i = 0; i < _ncpnt; i++)
         W += CalcBsplineFunc(i, _ord, t, &_knot[0]) * _ctrlp[i].W;
@@ -50,7 +50,7 @@ Vector3d NurbsCurve::GetSecondDiffVector(double t)
     Pt = this->GetFirstDiffVector(t);
 
     for (int i = 0; i < _ncpnt; i++)
-        Qtt += Calc2DiffBsplineFunc(i, _ord, t, &_knot[0]) * _ctrlp[i];
+        Qtt += Calc2DiffBsplineFunc(i, _ord, t, &_knot[0]) * (_ctrlp[i] * _ctrlp[i].W);
 
     for (int i = 0; i < _ncpnt; i++)
         W += CalcBsplineFunc(i, _ord, t, &_knot[0]) * _ctrlp[i].W;

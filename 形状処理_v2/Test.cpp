@@ -18,7 +18,52 @@ static vector<function<void(void)>> TestRegisterDraw
     //TestGetNearestPointCurveToCurve_CGS04, // ‹Èü‚Æ‹Èü‚ÌÅ‹ß“_ŒQ•`‰æ
     //TestGetNearestPointCurveToSurface_CGS04, // ‹Èü‚Æ‹È–Ê‚ÌÅ‹ß“_ŒQ•`‰æ
     //ShowLUDecomp, // LU•ª‰ð‚ÌŒ‹‰Ê‚ðŠm‚©‚ß‚é
+    TestDrawCircleWithNurbsCurve_CGS3, // Nurbs‹Èü‚Å‰~•`‚­
 };
+
+// Nurbs‹Èü‚Å‰~‚ð•`‚­
+void TestDrawCircleWithNurbsCurve_CGS3()
+{
+    ControlPoint cp0[3]
+    {
+        ControlPoint(5, 0, 0, 1.0),
+        ControlPoint(5, 5, 0, 1 / sqrt(2)),
+        ControlPoint(0, 5, 0, 1.0),
+    };
+    ControlPoint cp1[3]
+    {
+        ControlPoint(0, 5, 0, 1.0),
+        ControlPoint(-5, 5, 0, 1 / sqrt(2)),
+        ControlPoint(-5, 0, 0, 1.0),
+    };
+    ControlPoint cp2[3]
+    {
+        ControlPoint(-5, 0, 0, 1.0),
+        ControlPoint(-5, -5, 0, 1 / sqrt(2)),
+        ControlPoint(0, -5, 0, 1.0),
+    };
+    ControlPoint cp3[3]
+    {
+        ControlPoint(0, -5, 0, 1.0),
+        ControlPoint(5, -5, 0, 1 / sqrt(2)),
+        ControlPoint(5, 0, 0, 1.0),
+    };
+
+    double knot[6] = { 0, 0, 0, 1, 1, 1 };
+
+    NurbsCurve* curve0 = new NurbsCurve(3, cp0, 3, knot, Color::blue, 2.0);
+    NurbsCurve* curve1 = new NurbsCurve(3, cp1, 3, knot, Color::blue, 2.0);
+    NurbsCurve* curve2 = new NurbsCurve(3, cp2, 3, knot, Color::blue, 2.0);
+    NurbsCurve* curve3 = new NurbsCurve(3, cp3, 3, knot, Color::blue, 2.0);
+
+    if (isFirst)
+    {
+        test_scene->AddObject(curve0);
+        test_scene->AddObject(curve1);
+        test_scene->AddObject(curve2);
+        test_scene->AddObject(curve3);
+    }
+}
 
 // LU•ª‰ð‚ÌŒ‹‰Ê‚ð•\Ž¦‚·‚é
 void ShowLUDecomp()
