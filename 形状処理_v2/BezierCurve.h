@@ -4,6 +4,9 @@
 
 class BezierCurve : public Curve
 {
+private:
+
+    // 各種ベクトル描画 
     void DrawFirstDiffVectorsInternal() override;
     void DrawSecondDiffVectorsInternal() override;
     void DrawNormalVectorsInternal() override;
@@ -11,6 +14,8 @@ class BezierCurve : public Curve
 
     // 事前描画
     void PreDraw() override;
+
+    // バッファオブジェクト
     void CreateVBO() override;
     void DrawVBO() override;
 
@@ -18,9 +23,11 @@ public:
 
     BezierCurve(int mord, ControlPoint* cp, int cp_size, GLdouble* color, GLdouble width);
 
+    // 各種ベクトル取得
     Vector3d GetPositionVector(double t) override;
     Vector3d GetFirstDiffVector(double t) override;
     Vector3d GetSecondDiffVector(double t) override;
 
-    Curve* GetCurveFromPoints(vector<Vector3d> pnts, GLdouble* color, GLdouble width) override; // 逆変換
+    // 逆変換
+    Curve* GetCurveFromPoints(vector<Vector3d> pnts, GLdouble* color, GLdouble width) override;
 };

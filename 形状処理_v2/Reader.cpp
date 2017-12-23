@@ -135,6 +135,7 @@ vector<Object *> KjsReader::GetObjectsFromKjsFolder()
 }
 
 // 以下各オブジェクトのリーダー(ゲッター)関数
+// 長々しいのでまとめれたらまとめたい
 Object* KjsReader::BezierCurveReader(vector<string> lines)
 {
     int current = 2; // 3行目から読み込む
@@ -362,14 +363,13 @@ Object* KjsReader::BsplineSurfaceReader(vector<string> lines)
 }
 Object* KjsReader::NurbsCurveReader(vector<string> lines)
 {
-    // まだ
     int current = 2; // 3行目から読み込む
     char mord[8]; // 階数
     char ncpnt[8]; // 制御点数
     GLdouble color[4]; // 色
     GLdouble width; // 幅
 
-                    // 色
+    // 色
     {
         stringstream ss(lines[current++]);
         ss >> color[0] >> color[1] >> color[2] >> color[3];
@@ -389,18 +389,16 @@ Object* KjsReader::NurbsCurveReader(vector<string> lines)
     cps.resize(atoi(ncpnt));
     current++; // CONTROL POINT宣言
 
-               // 制御点取得
+    // 制御点取得
     for (int i = 0; i < cps.size(); i++)
     {
-        double x, y, z;
+        double x, y, z, w;
         double buf[8];
 
         stringstream ss(lines[current++]);
-        ss >> buf[0] >> x >> y >> z;
+        ss >> buf[0] >> x >> y >> z >> w;
 
-
-
-        ControlPoint cp(x, y, z);
+        ControlPoint cp(x, y, z, w);
         cps[i] = cp;
     }
 
@@ -408,7 +406,7 @@ Object* KjsReader::NurbsCurveReader(vector<string> lines)
     knot.resize(atoi(mord) + atoi(ncpnt));
     current++; // KNOTS宣言
 
-               // ノット列取得
+    // ノット列取得
     for (int i = 0; i < knot.size(); i++)
     {
         double buf[4];
@@ -417,7 +415,7 @@ Object* KjsReader::NurbsCurveReader(vector<string> lines)
         ss >> buf[0] >> knot[i];
     }
 
-    BsplineCurve* curve = new BsplineCurve(atoi(mord), &cps[0], atoi(ncpnt), &knot[0], color, width);
+    NurbsCurve* curve = new NurbsCurve(atoi(mord), &cps[0], atoi(ncpnt), &knot[0], color, width);
     return curve;
 }
 Object* KjsReader::NurbsSurfaceReader(vector<string> lines)
@@ -430,7 +428,7 @@ Object* KjsReader::NurbsSurfaceReader(vector<string> lines)
     GLdouble color[4]; // 色
     GLdouble width; // 幅
 
-                    // 色
+    // 色
     {
         stringstream ss(lines[current++]);
         ss >> color[0] >> color[1] >> color[2] >> color[3];
@@ -452,7 +450,7 @@ Object* KjsReader::NurbsSurfaceReader(vector<string> lines)
     cps.resize(atoi(ucpnt) * atoi(vcpnt));
     current++; // CONTROL POINT宣言
 
-               // 制御点取得
+    // 制御点取得
     for (int i = 0; i < cps.size(); i++)
     {
         double x, y, z, w;
@@ -469,7 +467,7 @@ Object* KjsReader::NurbsSurfaceReader(vector<string> lines)
     knotU.resize(atoi(uord) + atoi(ucpnt));
     current++; // U KNOTS宣言
 
-               // Uノット列取得
+    // Uノット列取得
     for (int i = 0; i < knotU.size(); i++)
     {
         double buf[4];
@@ -482,7 +480,7 @@ Object* KjsReader::NurbsSurfaceReader(vector<string> lines)
     knotV.resize(atoi(vord) + atoi(vcpnt));
     current++; // V KNOTS宣言
 
-               // Vノット列取得
+    // Vノット列取得
     for (int i = 0; i < knotV.size(); i++)
     {
         double buf[4];

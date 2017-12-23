@@ -19,6 +19,17 @@ BsplineCurve::BsplineCurve(int mord, ControlPoint* cp, int cp_size, double* knot
     _isUseVBO = true;
 }
 
+// ノットベクトル設定
+void BsplineCurve::SetKnotVector(double* knot, int size)
+{
+    if (size <= 0)
+        Error::ShowAndExit("ノットベクトル設定失敗", "knot-vector size must be over 0.");
+
+    _knot.reserve(size);
+    for (int i = 0; i < size; i++)
+        _knot.emplace_back(knot[i]);
+}
+
 // 事前描画
 void BsplineCurve::PreDraw()
 {
