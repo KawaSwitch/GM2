@@ -1,4 +1,7 @@
+#define _USE_MATH_DEFINES
+
 #include "GV.h"
+#include <math.h>
 #include "Test.h"
 #include "Model.h"
 #include "Reader.h"
@@ -19,8 +22,63 @@ static vector<function<void(void)>> TestRegisterDraw
     //TestGetNearestPointCurveToSurface_CGS04, // ‹Èü‚Æ‹È–Ê‚ÌÅ‹ß“_ŒQ•`‰æ
     //ShowLUDecomp, // LU•ª‰ð‚ÌŒ‹‰Ê‚ðŠm‚©‚ß‚é
     //DrawCircle_CGS3, // Nurbs‹Èü‚Å‰~•`‚­
-    DrawSphere_CGS3, // Nurbs‹È–Ê‚Å‹…‚ð•`‚­
+    //DrawSphere_CGS3, // Nurbs‹È–Ê‚Å‹…‚ð•`‚­
+    DrawCylinder_CGS3, // Nurbs‹È–Ê‚Å‰~’Œ‚ð•`‚­
 };
+
+// Nurbs‹È–Ê‚Å‰~’Œ‚ð•`‚­
+void DrawCylinder_CGS3()
+{
+    // ‚æ‚­‚È‚¢‚¯‚Ç–³—‚â‚è‹‚ß‚½
+    double cp1_p[2] = { 5, 5 * sqrt(3) };
+    RotateCoord2DAroundOrigin(cp1_p, (double)2 / 3 * M_PI);
+
+    ControlPoint cp0[9]
+    {
+        ControlPoint(5, 0, 0, 1.0),
+        ControlPoint(5, 5 * sqrt(3), 0, (double)1 / 2),
+        ControlPoint(-(double)5 / 2, 5 * (sqrt(3) / 2), 0, 1.0),
+
+        ControlPoint(5, 0, 10, 1.0),
+        ControlPoint(5, 5 * sqrt(3), 10, (double)1 / 2),
+        ControlPoint(-(double)5 / 2, 5 * (sqrt(3) / 2), 10, 1.0),
+    };
+    ControlPoint cp1[9]
+    {
+        ControlPoint(-(double)5 / 2, 5 * (sqrt(3) / 2), 0, 1.0),
+        ControlPoint(cp1_p[0], cp1_p[1], 0, (double)1 / 2),
+        ControlPoint(-(double)5 / 2, -5 * (sqrt(3) / 2), 0, 1.0),
+
+        ControlPoint(-(double)5 / 2, 5 * (sqrt(3) / 2), 10, 1.0),
+        ControlPoint(cp1_p[0], cp1_p[1], 10, (double)1 / 2),
+        ControlPoint(-(double)5 / 2, -5 * (sqrt(3) / 2), 10, 1.0),
+    };
+    ControlPoint cp2[9]
+    {
+        ControlPoint(-(double)5 / 2, -5 * (sqrt(3) / 2), 0, 1.0),
+        ControlPoint(5, -5 * sqrt(3), 0, (double)1 / 2),
+        ControlPoint(5, 0, 0, 1.0),
+
+        ControlPoint(-(double)5 / 2, -5 * (sqrt(3) / 2), 10, 1.0),
+        ControlPoint(5, -5 * sqrt(3), 10, (double)1 / 2),
+        ControlPoint(5, 0, 10, 1.0),
+    };
+
+
+    double knotU[6] = { 0, 0, 0, 1, 1, 1 };
+    double knotV[4] = { 0, 0, 1, 1 };
+
+    NurbsSurface* surf0 = new NurbsSurface(3, 2, cp0, 3, 2, knotU, knotV, Color::green_alpha, 1.0);
+    NurbsSurface* surf1 = new NurbsSurface(3, 2, cp1, 3, 2, knotU, knotV, Color::green_alpha, 1.0);
+    NurbsSurface* surf2 = new NurbsSurface(3, 2, cp2, 3, 2, knotU, knotV, Color::green_alpha, 1.0);
+
+    if (isFirst)
+    {
+        test_scene->AddObject(surf0);
+        test_scene->AddObject(surf1);
+        test_scene->AddObject(surf2);
+    }
+}
 
 // Nurbs‹È–Ê‚Å‹…‚ð•`‚­
 void DrawSphere_CGS3()

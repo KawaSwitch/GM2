@@ -16,6 +16,7 @@ void DrawBsplineCurves();
 // ’†‹‰•Ò‘æ3‰ñ
 void DrawCircle_CGS3();
 void DrawSphere_CGS3();
+void DrawCylinder_CGS3();
 
 // LU•ª‰ð‚ðŠm‚©‚ß‚é
 void ShowLUDecomp();

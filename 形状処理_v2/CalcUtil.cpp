@@ -195,3 +195,32 @@ Point3d Transform(const Point3d point, const double matrix[16]/* 4 × 4行列 */)
         //point.X * matrix[2 * 4 + 0] + point.Y * matrix[2 * 4 + 1] + point.Z * matrix[2 * 4 + 2] + matrix[2 * 4 + 3],
     };
 }
+
+// 2D:指定座標中心に指定rad回転させる
+void RotateCoord2DAroundCenter(double* const coord_2d, const double* const center, const double rad)
+{
+    // 2 × 2の回転行列
+    double rotate_mat[2 * 2] =
+    {
+        cos(rad), -sin(rad),
+        sin(rad), cos(rad),
+    };
+
+    coord_2d[0] -= center[0];
+    coord_2d[1] -= center[1];
+
+    double temp[2];
+
+    MatrixMultiply(2, 2, 1, rotate_mat, coord_2d, temp);
+
+    // 結果代入
+    coord_2d[0] = temp[0] + center[0];
+    coord_2d[1] = temp[1] + center[1];
+}
+
+// 2D:原点中心に指定rad回転させる
+void RotateCoord2DAroundOrigin(double* const coord_2d, const double rad)
+{
+    double origin[2] = { 0, 0 }; // 原点
+    RotateCoord2DAroundCenter(coord_2d, origin, rad);
+}
