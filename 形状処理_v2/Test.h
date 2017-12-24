@@ -12,9 +12,10 @@ void TestGetNearestPointCurveToSurface_CGS04();
 void DrawBsplineFunctions();
 void DrawBsplineCurves();
 
-// Nurbs‹Èü‚ğ—p‚¢‚Ä‰~‚ğ•`‰æ‚·‚é
+// Nurbs‹Èü/‹È–Ê‚ğ—p‚¢‚Ä‰~‚â‹…‚ğ•`‰æ‚·‚é
 // ’†‹‰•Ò‘æ3‰ñ
-void TestDrawCircleWithNurbsCurve_CGS3();
+void DrawCircle_CGS3();
+void DrawSphere_CGS3();
 
 // LU•ª‰ğ‚ğŠm‚©‚ß‚é
 void ShowLUDecomp();

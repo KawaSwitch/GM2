@@ -166,7 +166,7 @@ void BsplineSurface::DrawMeshInternal()
 void BsplineSurface::CreateVBO()
 {
     // ‰ð‘œ“x
-    int RES = 15;
+    int RES = 20;
 
     vector<vector<Vector3d>> pnt;
     vector<vector<Vector3d>> nor;
@@ -206,10 +206,12 @@ void BsplineSurface::CreateVBO()
     {
         for (int j = v_min; j < v_max; j++)
         {
+            // ãŽOŠp
             pnt_vbo.push_back(pnt[i - u_min][j - v_min]);
             pnt_vbo.push_back(pnt[i + 1 - u_min][j - v_min]);
             pnt_vbo.push_back(pnt[i - u_min][j + 1 - v_min]);
 
+            // ‰ºŽOŠp
             pnt_vbo.push_back(pnt[i + 1 - u_min][j - v_min]);
             pnt_vbo.push_back(pnt[i + 1 - u_min][j + 1 - v_min]);
             pnt_vbo.push_back(pnt[i - u_min][j + 1 - v_min]);

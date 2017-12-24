@@ -49,13 +49,23 @@ Vector3d Surface::CalcVectorWithBasisFunctions(double* BF_array_U, double* BF_ar
     Vector3d retVec;
     double temp[100]; // 計算用
 
-    MatrixMultiply(1, _ncpntU, _ncpntV, BF_array_U, &_ctrlpX[0], temp);
+    vector<double> ctrlpX_w, ctrlpY_w, ctrlpZ_w;
+
+    // 同次座標変換を行う
+    for (int i = 0; i < _ncpntU * _ncpntV; i++)
+    {
+        ctrlpX_w.push_back(_ctrlpX[i] * _weight[i]);
+        ctrlpY_w.push_back(_ctrlpY[i] * _weight[i]);
+        ctrlpZ_w.push_back(_ctrlpZ[i] * _weight[i]);
+    }
+    
+    MatrixMultiply(1, _ncpntU, _ncpntV, BF_array_U, &ctrlpX_w[0], temp);
     retVec.X = MatrixMultiply(_ncpntV, temp, BF_array_V);
 
-    MatrixMultiply(1, _ncpntU, _ncpntV, BF_array_U, &_ctrlpY[0], temp);
+    MatrixMultiply(1, _ncpntU, _ncpntV, BF_array_U, &ctrlpY_w[0], temp);
     retVec.Y = MatrixMultiply(_ncpntV, temp, BF_array_V);
 
-    MatrixMultiply(1, _ncpntU, _ncpntV, BF_array_U, &_ctrlpZ[0], temp);
+    MatrixMultiply(1, _ncpntU, _ncpntV, BF_array_U, &ctrlpZ_w[0], temp);
     retVec.Z = MatrixMultiply(_ncpntV, temp, BF_array_V);
 
     return retVec;
@@ -106,7 +116,7 @@ void Surface::GetPrincipalCurvatures(double u, double v, double* max_kappa, doub
 {
     Vector3d e = GetNormalVector(u, v).Normalize(); // 単位法線ベクトル
 
-                                                    // 各自必要な値を計算
+    // 各自必要な値を計算
     double L = e.Dot(GetSecondDiffVectorUU(u, v));
     double M = e.Dot(GetSecondDiffVectorUV(u, v));
     double N = e.Dot(GetSecondDiffVectorVV(u, v));

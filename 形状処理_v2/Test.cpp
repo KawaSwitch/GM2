@@ -18,35 +18,177 @@ static vector<function<void(void)>> TestRegisterDraw
     //TestGetNearestPointCurveToCurve_CGS04, // ã»ê¸Ç∆ã»ê¸ÇÃç≈ãﬂì_åQï`âÊ
     //TestGetNearestPointCurveToSurface_CGS04, // ã»ê¸Ç∆ã»ñ ÇÃç≈ãﬂì_åQï`âÊ
     //ShowLUDecomp, // LUï™âÇÃåãâ ÇämÇ©ÇﬂÇÈ
-    TestDrawCircleWithNurbsCurve_CGS3, // Nurbsã»ê¸Ç≈â~ï`Ç≠
+    //DrawCircle_CGS3, // Nurbsã»ê¸Ç≈â~ï`Ç≠
+    DrawSphere_CGS3, // Nurbsã»ñ Ç≈ãÖÇï`Ç≠
 };
 
+// Nurbsã»ñ Ç≈ãÖÇï`Ç≠
+void DrawSphere_CGS3()
+{
+    ControlPoint cp0[9]
+    {
+        ControlPoint(5, 0, 0, 1.0),
+        ControlPoint(5, 0, -5, 1 / sqrt(2)),
+        ControlPoint(0, 0, -5, 1.0),
+
+        ControlPoint(5, 5, 0, 1 / sqrt(2)),
+        ControlPoint(5, 5, -5, (double)1 / 2),
+        ControlPoint(0, 5, -5, 1 / sqrt(2)),
+
+        ControlPoint(0, 5, 0, 1.0),
+        ControlPoint(0, 5, 0, 1 / sqrt(2)),
+        ControlPoint(0, 5, 0, 1.0),
+    };
+    ControlPoint cp1[9]
+    {
+        ControlPoint(0, 0, 5, 1.0),
+        ControlPoint(5, 0, 5, 1 / sqrt(2)),
+        ControlPoint(5, 0, 0, 1.0),
+
+        ControlPoint(0, 5, 5, 1 / sqrt(2)),
+        ControlPoint(5, 5, 5, (double)1 / 2),
+        ControlPoint(5, 5, 0, 1 / sqrt(2)),
+
+        ControlPoint(0, 5, 0, 1.0),
+        ControlPoint(0, 5, 0, 1 / sqrt(2)),
+        ControlPoint(0, 5, 0, 1.0),
+    };
+    ControlPoint cp2[9]
+    {
+        ControlPoint(0, 0, -5, 1.0),
+        ControlPoint(-5, 0, -5, 1 / sqrt(2)),
+        ControlPoint(-5, 0, 0, 1.0),
+
+        ControlPoint(0, 5, -5, 1 / sqrt(2)),
+        ControlPoint(-5, 5, -5, (double)1 / 2),
+        ControlPoint(-5, 5, 0, 1 / sqrt(2)),
+
+        ControlPoint(0, 5, 0, 1.0),
+        ControlPoint(0, 5, 0, 1 / sqrt(2)),
+        ControlPoint(0, 5, 0, 1.0),
+    };
+    ControlPoint cp3[9]
+    {
+        ControlPoint(-5, 0, 0, 1.0),
+        ControlPoint(-5, 0, 5, 1 / sqrt(2)),
+        ControlPoint(0, 0, 5, 1.0),
+
+        ControlPoint(-5, 5, 0, 1 / sqrt(2)),
+        ControlPoint(-5, 5, 5, (double)1 / 2),
+        ControlPoint(0, 5, 5, 1 / sqrt(2)),
+
+        ControlPoint(0, 5, 0, 1.0),
+        ControlPoint(0, 5, 0, 1 / sqrt(2)),
+        ControlPoint(0, 5, 0, 1.0),
+    };
+    ControlPoint cp4[9]
+    {
+        ControlPoint(0, 0, -5, 1.0),
+        ControlPoint(5, 0, -5, 1 / sqrt(2)),
+        ControlPoint(5, 0, 0, 1.0),
+
+        ControlPoint(0, -5, -5, 1 / sqrt(2)),
+        ControlPoint(5, -5, -5, (double)1 / 2),
+        ControlPoint(5, -5, 0, 1 / sqrt(2)),
+
+        ControlPoint(0, -5, 0, 1.0),
+        ControlPoint(0, -5, 0, 1 / sqrt(2)),
+        ControlPoint(0, -5, 0, 1.0),
+    };
+    ControlPoint cp5[9]
+    {
+        ControlPoint(5, 0, 0, 1.0),
+        ControlPoint(5, 0, 5, 1 / sqrt(2)),
+        ControlPoint(0, 0, 5, 1.0),
+
+        ControlPoint(5, -5, 0, 1 / sqrt(2)),
+        ControlPoint(5, -5, 5, (double)1 / 2),
+        ControlPoint(0, -5, 5, 1 / sqrt(2)),
+
+        ControlPoint(0, -5, 0, 1.0),
+        ControlPoint(0, -5, 0, 1 / sqrt(2)),
+        ControlPoint(0, -5, 0, 1.0),
+    };
+    ControlPoint cp6[9]
+    {
+        ControlPoint(-5, 0, 0, 1.0),
+        ControlPoint(-5, 0, -5, 1 / sqrt(2)),
+        ControlPoint(0, 0, -5, 1.0),
+
+        ControlPoint(-5, -5, 0, 1 / sqrt(2)),
+        ControlPoint(-5, -5, -5, (double)1 / 2),
+        ControlPoint(0, -5, -5, 1 / sqrt(2)),
+
+        ControlPoint(0, -5, 0, 1.0),
+        ControlPoint(0, -5, 0, 1 / sqrt(2)),
+        ControlPoint(0, -5, 0, 1.0),
+    };
+    ControlPoint cp7[9]
+    {
+        ControlPoint(0, 0, 5, 1.0),
+        ControlPoint(-5, 0, 5, 1 / sqrt(2)),
+        ControlPoint(-5, 0, 0, 1.0),
+
+        ControlPoint(0, -5, 5, 1 / sqrt(2)),
+        ControlPoint(-5, -5, 5, (double)1 / 2),
+        ControlPoint(-5, -5, 0, 1 / sqrt(2)),
+
+        ControlPoint(0, -5, 0, 1.0),
+        ControlPoint(0, -5, 0, 1 / sqrt(2)),
+        ControlPoint(0, -5, 0, 1.0),
+    };
+
+    double knotU[6] = { 0, 0, 0, 1, 1, 1 };
+    double knotV[6] = { 0, 0, 0, 1, 1, 1 };
+
+    NurbsSurface* surf0 = new NurbsSurface(3, 3, cp0, 3, 3, knotU, knotV, Color::green_alpha, 1.0);
+    NurbsSurface* surf1 = new NurbsSurface(3, 3, cp1, 3, 3, knotU, knotV, Color::green_alpha, 1.0);
+    NurbsSurface* surf2 = new NurbsSurface(3, 3, cp2, 3, 3, knotU, knotV, Color::green_alpha, 1.0);
+    NurbsSurface* surf3 = new NurbsSurface(3, 3, cp3, 3, 3, knotU, knotV, Color::green_alpha, 1.0);
+    NurbsSurface* surf4 = new NurbsSurface(3, 3, cp4, 3, 3, knotU, knotV, Color::green_alpha, 1.0);
+    NurbsSurface* surf5 = new NurbsSurface(3, 3, cp5, 3, 3, knotU, knotV, Color::green_alpha, 1.0);
+    NurbsSurface* surf6 = new NurbsSurface(3, 3, cp6, 3, 3, knotU, knotV, Color::green_alpha, 1.0);
+    NurbsSurface* surf7 = new NurbsSurface(3, 3, cp7, 3, 3, knotU, knotV, Color::green_alpha, 1.0);
+
+    if (isFirst)
+    {
+        test_scene->AddObject(surf0);
+        test_scene->AddObject(surf1);
+        test_scene->AddObject(surf2);
+        test_scene->AddObject(surf3);
+        test_scene->AddObject(surf4);
+        test_scene->AddObject(surf5);
+        test_scene->AddObject(surf6);
+        test_scene->AddObject(surf7);
+    }
+}
+
 // Nurbsã»ê¸Ç≈â~Çï`Ç≠
-void TestDrawCircleWithNurbsCurve_CGS3()
+void DrawCircle_CGS3()
 {
     ControlPoint cp0[3]
     {
-        ControlPoint(5, 0, 0, 1.0),
-        ControlPoint(5, 5, 0, 1 / sqrt(2)),
-        ControlPoint(0, 5, 0, 1.0),
+        ControlPoint(5, 0, 0, sqrt(2)),
+        ControlPoint(5, 5, 0, 1),
+        ControlPoint(0, 5, 0, sqrt(2)),
     };
     ControlPoint cp1[3]
     {
-        ControlPoint(0, 5, 0, 1.0),
-        ControlPoint(-5, 5, 0, 1 / sqrt(2)),
-        ControlPoint(-5, 0, 0, 1.0),
+        ControlPoint(0, 5, 0, sqrt(2)),
+        ControlPoint(-5, 5, 0, 1),
+        ControlPoint(-5, 0, 0, sqrt(2)),
     };
     ControlPoint cp2[3]
     {
-        ControlPoint(-5, 0, 0, 1.0),
-        ControlPoint(-5, -5, 0, 1 / sqrt(2)),
-        ControlPoint(0, -5, 0, 1.0),
+        ControlPoint(-5, 0, 0, sqrt(2)),
+        ControlPoint(-5, -5, 0, 1),
+        ControlPoint(0, -5, 0, sqrt(2)),
     };
     ControlPoint cp3[3]
     {
-        ControlPoint(0, -5, 0, 1.0),
-        ControlPoint(5, -5, 0, 1 / sqrt(2)),
-        ControlPoint(5, 0, 0, 1.0),
+        ControlPoint(0, -5, 0, sqrt(2)),
+        ControlPoint(5, -5, 0, 1),
+        ControlPoint(5, 0, 0, sqrt(2)),
     };
 
     double knot[6] = { 0, 0, 0, 1, 1, 1 };

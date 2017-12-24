@@ -53,11 +53,6 @@ void Initialize()
     mainLight.InitLight(); // メインライト初期化
     isUseLight = true; // デフォルトはオフ → とりあえずオン(必要なところのみ処理を施す)
 
-    //// カリング処理
-    //glFrontFace(GL_CCW);
-    //glEnable(GL_CULL_FACE);
-    //glCullFace(GL_BACK);
-
     axis = new NormalAxis(0.4); // 軸
 
     obj_number = 1; // 初期識別子は1
