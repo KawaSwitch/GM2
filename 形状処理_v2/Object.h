@@ -25,6 +25,7 @@ protected:
     GLuint _vbo, _ibo;
     GLdouble _color[4];  // 色
     vector<ControlPoint> _ctrlp; // 制御点
+    double _resolution; // 解像度
 
     // 事前描画
     virtual void PreDraw() = 0;

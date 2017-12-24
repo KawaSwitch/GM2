@@ -6,8 +6,8 @@ NurbsSurface::NurbsSurface(
     int u_mord, int v_mord,
     ControlPoint* cp, int u_cp_size, int v_cp_size,
     double* u_knot, double* v_knot,
-    GLdouble* color, GLdouble width)
-        : BsplineSurface(u_mord, v_mord, cp, u_cp_size, v_cp_size, u_knot, v_knot, color, width) { }
+    GLdouble* color, GLdouble resol)
+        : BsplineSurface(u_mord, v_mord, cp, u_cp_size, v_cp_size, u_knot, v_knot, color, resol) { }
 
 // w’è‚µ‚½’[‚Ì‹Èü‚ğæ“¾‚·‚é
 Curve* NurbsSurface::GetEdgeCurve(SurfaceEdge edge)

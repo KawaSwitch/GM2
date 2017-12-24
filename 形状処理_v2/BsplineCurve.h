@@ -28,7 +28,7 @@ protected:
 
 public:
 
-    BsplineCurve(int mord, ControlPoint* cp, int cp_size, double* knot, GLdouble* color, GLdouble width);
+    BsplineCurve(int mord, ControlPoint* cp, int cp_size, double* knot, GLdouble* color, GLdouble width = 1.0, double resol = 20);
 
     // 各種ベクトル取得
     Vector3d GetPositionVector(double t) override;

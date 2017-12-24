@@ -1,7 +1,7 @@
 #include "BezierCurve.h"
 #include "ControlPoint.h"
 
-BezierCurve::BezierCurve(int mord, ControlPoint* cp, int cp_size, GLdouble* color, GLdouble width)
+BezierCurve::BezierCurve(int mord, ControlPoint* cp, int cp_size, GLdouble* color, GLdouble width, double resol)
 {
     _ord = mord;
     _ncpnt = cp_size;
@@ -11,6 +11,7 @@ BezierCurve::BezierCurve(int mord, ControlPoint* cp, int cp_size, GLdouble* colo
     SetControlPoint(cp, cp_size);
     SetColor(color);
     _width = width;
+    _resolution = resol;
 
     // VBOŽg‚¤
     _isUseVBO = true;

@@ -1,7 +1,7 @@
 #include "BsplineCurve.h"
 #include "ControlPoint.h"
 
-BsplineCurve::BsplineCurve(int mord, ControlPoint* cp, int cp_size, double* knot, GLdouble* color, GLdouble width)
+BsplineCurve::BsplineCurve(int mord, ControlPoint* cp, int cp_size, double* knot, GLdouble* color, GLdouble width, double resol)
 {
     _ord = mord;
     _ncpnt = cp_size;
@@ -14,6 +14,7 @@ BsplineCurve::BsplineCurve(int mord, ControlPoint* cp, int cp_size, double* knot
     SetKnotVector(knot, _nknot);
     SetColor(color);
     _width = width;
+    _resolution = resol;
 
     // VBOŽg‚¤
     _isUseVBO = true;

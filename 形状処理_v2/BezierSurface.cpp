@@ -3,7 +3,7 @@
 
 BezierSurface::BezierSurface(
     int u_mord, int v_mord, ControlPoint* cp,
-    int u_cp_size, int v_cp_size, GLdouble* color, GLdouble width)
+    int u_cp_size, int v_cp_size, GLdouble* color, GLdouble resol)
 {
     _ordU = u_mord; _ordV = v_mord;
     _ncpntU = u_cp_size; _ncpntV = v_cp_size;
@@ -12,7 +12,7 @@ BezierSurface::BezierSurface(
 
     SetControlPoint(cp, u_cp_size * v_cp_size);
     SetColor(color);
-    _mesh_width = width;
+    _resolution = resol;
 
     // VBO‚ðŽg‚¤
     _isUseVBO = true;

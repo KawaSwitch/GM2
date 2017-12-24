@@ -4,7 +4,7 @@
 BsplineSurface::BsplineSurface(
     int u_mord, int v_mord, ControlPoint* cp, 
     int u_cp_size, int v_cp_size, double* u_knot, double* v_knot,
-    GLdouble* color, GLdouble width)
+    GLdouble* color, GLdouble resol)
 {
     _ordU = u_mord;
     _ordV = v_mord;
@@ -19,7 +19,7 @@ BsplineSurface::BsplineSurface(
     SetKnotVector(u_knot, _nknotU, _knotU);
     SetKnotVector(v_knot, _nknotV, _knotV);
     SetColor(color);
-    _mesh_width = width;
+    _resolution = resol;
 
     // VBO‚ðŽg‚¤
     _isUseVBO = true;
@@ -52,7 +52,7 @@ Curve* BsplineSurface::GetEdgeCurve(SurfaceEdge edge)
 void BsplineSurface::PreDraw()
 {   
     // ‰ð‘œ“x
-    int RES = 15;
+    int RES = (int)_resolution;
 
     vector<vector<Vector3d>> pnt;
     vector<vector<Vector3d>> nor;
@@ -166,7 +166,7 @@ void BsplineSurface::DrawMeshInternal()
 void BsplineSurface::CreateVBO()
 {
     // ‰ð‘œ“x
-    int RES = 20;
+    int RES = (int)_resolution;
 
     vector<vector<Vector3d>> pnt;
     vector<vector<Vector3d>> nor;

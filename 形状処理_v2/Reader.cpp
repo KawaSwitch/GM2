@@ -187,7 +187,7 @@ Object* KjsReader::BezierSurfaceReader(vector<string> lines)
     char vord[8]; // v階数
     char vcpnt[8]; // v制御点数
     GLdouble color[4]; // 色
-    GLdouble width; // 幅
+    GLdouble resol; // 解像度
 
     // 色
     {
@@ -195,10 +195,10 @@ Object* KjsReader::BezierSurfaceReader(vector<string> lines)
         ss >> color[0] >> color[1] >> color[2] >> color[3];
     }
 
-    // 幅
+    // 解像度
     {
         stringstream ss(lines[current++]);
-        ss >> width;
+        ss >> resol;
     }
 
     // 各プロパティ取得
@@ -223,7 +223,7 @@ Object* KjsReader::BezierSurfaceReader(vector<string> lines)
         cps[i] = cp;
     }
 
-    BezierSurface* surf = new BezierSurface(atoi(uord), atoi(vord), &cps[0], atoi(ucpnt), atoi(vcpnt), color, width);
+    BezierSurface* surf = new BezierSurface(atoi(uord), atoi(vord), &cps[0], atoi(ucpnt), atoi(vcpnt), color, resol);
     return surf;
 }
 Object* KjsReader::BsplineCurveReader(vector<string> lines)
@@ -293,7 +293,7 @@ Object* KjsReader::BsplineSurfaceReader(vector<string> lines)
     char vord[8]; // v階数
     char vcpnt[8]; // v制御点数
     GLdouble color[4]; // 色
-    GLdouble width; // 幅
+    GLdouble resol; // 解像度
 
     // 色
     {
@@ -301,10 +301,10 @@ Object* KjsReader::BsplineSurfaceReader(vector<string> lines)
         ss >> color[0] >> color[1] >> color[2] >> color[3];
     }
 
-    // 幅
+    // 解像度
     {
         stringstream ss(lines[current++]);
-        ss >> width;
+        ss >> resol;
     }
 
     // 各プロパティ取得
@@ -357,7 +357,7 @@ Object* KjsReader::BsplineSurfaceReader(vector<string> lines)
     }
 
     BsplineSurface* surf = 
-        new BsplineSurface(atoi(uord), atoi(vord), &cps[0], atoi(ucpnt), atoi(vcpnt), &knotU[0], &knotV[0], color, width);
+        new BsplineSurface(atoi(uord), atoi(vord), &cps[0], atoi(ucpnt), atoi(vcpnt), &knotU[0], &knotV[0], color, resol);
 
     return surf;
 }
@@ -426,7 +426,7 @@ Object* KjsReader::NurbsSurfaceReader(vector<string> lines)
     char vord[8]; // v階数
     char vcpnt[8]; // v制御点数
     GLdouble color[4]; // 色
-    GLdouble width; // 幅
+    GLdouble resol; // 解像度
 
     // 色
     {
@@ -434,10 +434,10 @@ Object* KjsReader::NurbsSurfaceReader(vector<string> lines)
         ss >> color[0] >> color[1] >> color[2] >> color[3];
     }
 
-    // 幅
+    // 解像度
     {
         stringstream ss(lines[current++]);
-        ss >> width;
+        ss >> resol;
     }
 
     // 各プロパティ取得
@@ -490,7 +490,7 @@ Object* KjsReader::NurbsSurfaceReader(vector<string> lines)
     }
 
     NurbsSurface* surf =
-        new NurbsSurface(atoi(uord), atoi(vord), &cps[0], atoi(ucpnt), atoi(vcpnt), &knotU[0], &knotV[0], color, width);
+        new NurbsSurface(atoi(uord), atoi(vord), &cps[0], atoi(ucpnt), atoi(vcpnt), &knotU[0], &knotV[0], color, resol);
 
     return surf;
 }

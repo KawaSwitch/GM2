@@ -43,7 +43,10 @@ private:
 
 public:
 
-    BsplineSurface(int u_mord, int v_mord, ControlPoint* cp, int u_cp_size, int v_cp_size, double* u_knot, double* v_knot, GLdouble* color, GLdouble width);
+    BsplineSurface(int u_mord, int v_mord,
+        ControlPoint* cp, int u_cp_size, int v_cp_size, 
+        double* u_knot, double* v_knot,
+        GLdouble* color, GLdouble resol = 20);
 
     // 各種ベクトル取得
     Vector3d GetPositionVector(double u, double v) override;
