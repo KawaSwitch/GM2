@@ -12,8 +12,6 @@ struct GeoGrid2D
 {
     void Draw() const
     {
-        glDisable(GL_DEPTH_TEST);
-
         // 色：グレー
         glColor4d(0.8, 0.8, 0.8, 1.0);
         glLineWidth(2.0);
@@ -37,8 +35,6 @@ struct GeoGrid2D
         }
 
         glLineWidth(1.0);
-
-        glEnable(GL_DEPTH_TEST);
     }
 };
 

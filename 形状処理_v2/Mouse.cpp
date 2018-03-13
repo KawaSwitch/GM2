@@ -20,10 +20,9 @@ void Mouse(int button, int state, int x, int y)
         float z = GetDepth(x, y);
 
         // ‰æ–Ê’†S‚ÌÀ•W’l‚ğæ“¾
-        if (fabs(z - 1.0) < EPS::DIST)
-            center = Point3d();
-        else
-            center = GetWorldCoord(x, y, z);
+        center = GetWorldCoord(x, y, z);
+
+        printf("%f %f %f\n", center.X, center.Y, center.Z);
 
         glutPostRedisplay();
 

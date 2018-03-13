@@ -35,7 +35,7 @@ void Display()
     // TODO: ビューポート別
     if (isShowAxis)
     {
-        // 軸描画の型取り
+        // 軸の型取り
         glStencilFunc(GL_ALWAYS, static_cast<int>(StencilRef::Axis), 0xFF);
         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
@@ -50,28 +50,37 @@ void Display()
     // 2. 形状描画
     glPushMatrix();
 
-    // 形状描画の型取り
+    // 形状の型取り
+    // 軸を除いて描画
     glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::Entity), 0xFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     glTranslated(dist_X, -dist_Y, dist_Z); // 移動
     glMultMatrixd(rot_mat); // 回転
 
-    // 幾何グリッド描画
-    DrawGrid(GeoGrid2D());
-
     // 形状描画
     scene->Draw();
     // テスト描画
     TestDraw();
 
+
+    // 3. グリッド描画
+    
+    // グリッドの型取り
+    // 上の全部が描画されていない所にグリッドを描画
+    glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::Grid), 0xFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+    // 幾何グリッド描画
+    DrawGrid(GeoGrid2D());
+
     glPopMatrix();
 
 
-    // 3. 背景描画
+    // 4. 背景描画
     glPushMatrix();
 
-    // 形状が描画されていない箇所は背景を描画
+    // 上の全部が描画されていない箇所は背景を描画
     glStencilFunc(GL_EQUAL, static_cast<int>(StencilRef::Background), 0xFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
     
