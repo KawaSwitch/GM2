@@ -67,4 +67,7 @@ void Initialize()
 
     // シーン初期化
     InitScene();
+
+    // コンソール出力
+    ConsoleDiscription();
 }

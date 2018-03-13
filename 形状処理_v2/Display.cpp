@@ -79,3 +79,31 @@ void Display()
 
     glutSwapBuffers();
 }
+
+// コンソールに説明を表示します
+void ConsoleDiscription()
+{
+    puts("形状処理C++ 操作方法\n");
+
+    puts("ESC : 終了\n");
+
+    puts("$ ファイル起動時読み込み");
+    puts("./KJS_FILE内で名前の先頭に@をつけた.kjsファイルを起動時に読み込みます\n");
+
+    // エンティティ操作ボタン説明
+    puts("$ ボタントグル表示系");
+    ShowButtonDiscription('B', "ミニマクスボックス");
+    ShowButtonDiscription('P', "制御点");
+    ShowButtonDiscription('F', "一階微分(接線)ベクトル");
+    ShowButtonDiscription('S', "二階微分ベクトル");
+    ShowButtonDiscription('C', "曲率ベクトル");
+    ShowButtonDiscription('N', "法線ベクトル");
+}
+
+// ボタンの説明を表示します
+void ShowButtonDiscription(char button, string disc)
+{
+    printf("    ");
+    printf("%c : ", button);
+    printf("%s\n", disc.c_str());
+}

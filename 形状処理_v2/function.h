@@ -3,6 +3,8 @@
 
 // Initialize.cpp
     GLOBAL void Initialize();
+    GLOBAL void ShowButtonDiscription(char button, string disc);
+    GLOBAL void ConsoleDiscription();
 
 // CalcUtil.cpp
     GLOBAL void SolveQuadraticEquation(double a, double b, double c, double* x1, double* x2);
