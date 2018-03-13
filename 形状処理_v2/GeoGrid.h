@@ -1,5 +1,6 @@
 #pragma once
 
+// TODO: 試したかったけど意味ないので時間あったらもうちょっと考える
 template<class GeoGrid> void DrawGrid(const GeoGrid& grid)
 {
     // 幾何グリッド描画

@@ -66,3 +66,13 @@ struct SelectionData
         name = n;
     }
 };
+
+// ステンシル参照値
+// TODO: 名前衝突が怖かったのでとりあえずenum classで一時対処
+enum class StencilRef
+{
+    Background = 0, // 背景は0(初期値)
+    Axis,
+    Entity, // 曲線・曲面用
+    Ignore, // 意味なし Keepして使うのを想定
+};

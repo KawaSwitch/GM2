@@ -44,6 +44,7 @@ void Initialize()
     glewInit(); // glew拡張
 
     glClearColor(1.0, 1.0, 1.0, 1.0);   // 背景色：白
+    glClearStencil(0); // ステンシル値は0で初期化
 
     glEnable(GL_DEPTH_TEST); // デプス値 有効化
 
@@ -51,7 +52,7 @@ void Initialize()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     mainLight.InitLight(); // メインライト初期化
-    isUseLight = true; // デフォルトはオフ → とりあえずオン(必要なところのみ処理を施す)
+    isUseLight = true; // とりあえずオン(必要なところのみ処理を施す)
 
     axis = new NormalAxis(0.4); // 軸
 
@@ -61,6 +62,8 @@ void Initialize()
     rotate_flag = GL_FALSE;
     move_flag = GL_FALSE;
     InitQuaternion();
+
+    glShadeModel(GL_SMOOTH);
 
     // シーン初期化
     InitScene();

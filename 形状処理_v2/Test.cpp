@@ -20,10 +20,10 @@ static vector<function<void(void)>> TestRegisterDraw
     //DrawBsplineCurves, // BƒXƒvƒ‰ƒCƒ“‹Èü•`‰æ
     //TestGetNearestPointCurveToCurve_CGS04, // ‹Èü‚Æ‹Èü‚ÌÅ‹ß“_ŒQ•`‰æ
     //TestGetNearestPointCurveToSurface_CGS04, // ‹Èü‚Æ‹È–Ê‚ÌÅ‹ß“_ŒQ•`‰æ
-    //ShowLUDecomp, // LU•ª‰ğ‚ÌŒ‹‰Ê‚ğŠm‚©‚ß‚é
-    //DrawCircle_CGS3, // Nurbs‹Èü‚Å‰~•`‚­
+    //ShowLUDecomp, // LU•ª‰ğ‚ÌŒ‹‰Ê‚ğŠm‚©‚ß‚é TODO: ƒeƒXƒgƒvƒƒWƒFƒNƒgì‚é
+    DrawCircle_CGS3, // Nurbs‹Èü‚Å‰~•`‚­
     //DrawSphere_CGS3, // Nurbs‹È–Ê‚Å‹…‚ğ•`‚­
-    DrawCylinder_CGS3, // Nurbs‹È–Ê‚Å‰~’Œ‚ğ•`‚­
+    //DrawCylinder_CGS3, // Nurbs‹È–Ê‚Å‰~’Œ‚ğ•`‚­
 };
 
 // Nurbs‹È–Ê‚Å‰~’Œ‚ğ•`‚­
@@ -226,9 +226,9 @@ void DrawCircle_CGS3()
 {
     ControlPoint cp0[3]
     {
-        ControlPoint(5, 0, 0, sqrt(2)),
-        ControlPoint(5, 5, 0, 1),
-        ControlPoint(0, 5, 0, sqrt(2)),
+        ControlPoint(5, 0, 0, 1),
+        ControlPoint(5, 5, 0, 1 / sqrt(2)),
+        ControlPoint(0, 5, 0, 1),
     };
     ControlPoint cp1[3]
     {
