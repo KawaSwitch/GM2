@@ -5,8 +5,10 @@
 // ローカル座標のデプス値を取得する
 float GetDepth(int x, int y);
 
-// デプス値からワールド座標を取得する
+// ローカル座標 -> ワールド座標
 Point3d GetWorldCoord(int x, int y, float depth);
+// ワールド座標 -> ローカル座標
+Point3d GetLocalCoord(int x, int y, int z);
 
 unsigned int GetObjNumberOnMousePointer(int x, int y);
 

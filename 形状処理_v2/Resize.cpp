@@ -1,5 +1,6 @@
 #include "GV.h"
 #include "Callback.h"
+#include "Background.h"
 
 void Resize(int w, int h)
 {
