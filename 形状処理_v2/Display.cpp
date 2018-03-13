@@ -55,20 +55,6 @@ void Display()
     // 2. ”wŒi•`‰æ
     glPushMatrix();
 
-    // 
-    //glMatrixMode(GL_PROJECTION);
-    //glLoadIdentity();
-    //glOrtho(...);
-
-    //glMatrixMode(GL_MODELVIEW);
-
-    //glLoadIdentity();
-    //gluLookAt(
-    //    0.0, 0.0, 0.0,  // ‹“_ˆÊ’u
-    //    0.0, 0.0, -1.0,  // ’‹ˆÊ’u
-    //    0.0, 1.0, 0.0   // ã•ûŒü : y
-    //);
-
     // Œ`ó‚ª•`‰æ‚³‚ê‚Ä‚¢‚È‚¢‰ÓŠ‚Í”wŒi‚ğ•`‰æ
     glStencilFunc(GL_EQUAL, static_cast<int>(StencilRef::Background), 0xFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);

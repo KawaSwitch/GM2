@@ -1,10 +1,10 @@
 #pragma once
 #include "Picking.h"
 
-static GLdouble color_topLeft[4] = { 1.0, 0.8, 0.8, 1.0 };
-static GLdouble color_topRight[4] = { 0.8, 1.0, 0.8, 1.0 };
-static GLdouble color_btmRight[4] = { 0.8, 0.8, 1.0, 1.0 };
-static GLdouble color_btmLeft[4] = { 1.0, 0.8, 0.3, 1.0 };
+static GLdouble color_topLeft[4] = { 1.0, 0.9, 0.9, 1.0 };
+static GLdouble color_topRight[4] = { 0.9, 1.0, 0.9, 1.0 };
+static GLdouble color_btmRight[4] = { 0.9, 0.9, 1.0, 1.0 };
+static GLdouble color_btmLeft[4] = { 1.0, 0.9, 0.7, 1.0 };
 static GLdouble color_back[4] = { 0.9, 0.9, 1.0, 1.0 };
 
 template<class IBackGround> void DrawBackground(const IBackGround& grid)
