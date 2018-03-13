@@ -13,36 +13,19 @@ static bool isFirst = true;
 
 Scene* test_scene;
 
+// テストというか仮描画！！！！！
+
 // 描画したいのをおく
 static vector<function<void(void)>> TestRegisterDraw
 {
     //DrawBsplineFunctions, // Bスプライン基底関数描画
     //DrawBsplineCurves, // Bスプライン曲線描画
     //TestGetNearestPointCurveToCurve_CGS04, // 曲線と曲線の最近点群描画
-    //TestGetNearestPointCurveToSurface_CGS04, // 曲線と曲面の最近点群描画
-    //ShowLUDecomp, // LU分解の結果を確かめる TODO: テストプロジェクト作る
-    ShowCurveDifferency,
+    TestGetNearestPointCurveToSurface_CGS04, // 曲線と曲面の最近点群描画
     DrawCircle_CGS3, // Nurbs曲線で円描く
     //DrawSphere_CGS3, // Nurbs曲面で球を描く
     //DrawCylinder_CGS3, // Nurbs曲面で円柱を描く
 };
-
-// 曲線の類似度を確かめる
-void ShowCurveDifferency()
-{
-    auto reader = new KjsReader("KJS_FILE/");
-
-    // 同じ曲線
-    Curve* curve1 = (Curve *)reader->GetObjectFromFile("CGS_bspline_curve_S.kjs");
-    Curve* curve2 = (Curve *)reader->GetObjectFromFile("CGS_bspline_curve_S.kjs");
-
-    printf("相違度: %f\n", curve1->CalcDifferency(curve2));
-
-    curve1 = (Curve *)reader->GetObjectFromFile("CGS_bspline_curve_S.kjs");
-    curve2 = (Curve *)reader->GetObjectFromFile("CGS_bspline_curve_C.kjs");
-
-    printf("相違度: %f\n", curve1->CalcDifferency(curve2));
-}
 
 // Nurbs曲面で円柱を描く
 void DrawCylinder_CGS3()
@@ -283,26 +266,16 @@ void DrawCircle_CGS3()
     }
 }
 
-// LU分解の結果を表示する
-void ShowLUDecomp()
-{
-    double A[2][2] = { { 2, 1 }, { 3, 1 } };
-    double B[2] = { 5, 6 };
-
-    auto x = LUDecomposition<2>(A, B);
-    printf("%f %f\n", x[0], x[1]);
-}
-
 // 参照曲線上に離散点を生成し, それを外部点として最近点を求める
 // レジメ第04回_05月A.docx
 void TestGetNearestPointCurveToCurve_CGS04()
 {
-    auto reader = new KjsReader("KJS_FILE/");
+    auto reader = new KjsReader("");
 
     // 対象曲線/曲面
-    Curve* curve1 = (Curve *)reader->GetObjectFromFile("CGS_bspline_curve_1.kjs");
+    Curve* curve1 = (Curve *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_curve_1.kjs");
     // 参照曲線
-    Curve* curveC = (Curve *)reader->GetObjectFromFile("CGS_bspline_curve_C.kjs");
+    Curve* curveC = (Curve *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_curve_C.kjs");
 
     // 参照点群を取得
     auto ref_pnts = curveC->GetPositionVectors(20);
@@ -342,12 +315,12 @@ void TestGetNearestPointCurveToCurve_CGS04()
 }
 void TestGetNearestPointCurveToSurface_CGS04()
 {
-    auto reader = new KjsReader("KJS_FILE/");
+    auto reader = new KjsReader("");
 
     // 対象曲線/曲面
-    Surface* surf1 = (Surface *)reader->GetObjectFromFile("CGS_bspline_surface_1.kjs");
+    Surface* surf1 = (Surface *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_surface_1.kjs");
     // 参照曲線
-    Curve* curveS = (Curve *)reader->GetObjectFromFile("CGS_bspline_curve_S.kjs");
+    Curve* curveS = (Curve *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_curve_S.kjs");
 
     // 参照点群を取得
     auto ref_pnts = curveS->GetPositionVectors(20);

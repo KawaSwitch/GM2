@@ -2,7 +2,6 @@
 
 #include <gl/glew.h>
 #include <gl/freeglut.h>
-#include <cpplinq.hpp>
 #include <math.h>
 #include <functional>
 #include "define.h"

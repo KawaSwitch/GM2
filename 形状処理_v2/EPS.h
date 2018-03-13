@@ -8,4 +8,7 @@ struct EPS
 
     // 体積トレランス
     static const double VOLUME;
+
+    // 相違トレランス
+    static const double DIFF;
 };

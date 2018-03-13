@@ -75,7 +75,8 @@ vector<string> Reader::ReadAllLines(string filepath)
 // ファイルからオブジェクトを取得する
 Object* KjsReader::GetObjectFromFile(string file_name)
 {
-    string file_path = KJS_FILE_NAME + "/" + file_name;
+    string file_path = /*KJS_FILE_NAME + "/" + */file_name;
+
     auto lines = ReadAllLines(file_path);
 
     if (lines.size() < 5) // 明らかにおかしいとき
