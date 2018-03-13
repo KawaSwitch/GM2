@@ -66,6 +66,8 @@ void Initialize()
 
     glShadeModel(GL_SMOOTH);
 
+    isViewInitRequested = false; // s—ñŒ³‚É–ß‚·‚©
+
     // ƒV[ƒ“‰Šú‰»
     InitScene();
 

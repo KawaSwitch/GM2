@@ -41,6 +41,8 @@ GLOBAL Matrix3d scene_mat; // シーン用同時変換行列
 
 GLOBAL bool isShowAxis; // 軸を描画するか
 
+GLOBAL bool isViewInitRequested; // 画面表示を初期に戻すか
+
 // 構造体
 GLOBAL Quaternion target;
 GLOBAL Quaternion current;

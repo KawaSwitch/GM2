@@ -36,8 +36,12 @@ void Keyboard(unsigned char key, int x, int y)
             scene->ToggleDrawBox();
             test_scene->ToggleDrawBox();
             break;
-        case 'a':
+
+        case 'a': // 軸表示トグル 
             isShowAxis = !isShowAxis;
+            break;
+        case 'i': // 初期位置の表示に戻す
+            isViewInitRequested = true;
             break;
         //case 'l': // ライティングトグル
         //    isUseLight = !isUseLight;

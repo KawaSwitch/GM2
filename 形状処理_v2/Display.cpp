@@ -29,6 +29,16 @@ void Display()
 
     // ---- モデル行列 ----
 
+    // リクエストがあれば表示を初期位置に戻す
+    if (isViewInitRequested)
+    {
+        InitQuaternion(); // 回転姿勢を初期化
+        dist_X = dist_Y = dist_Z = 0.0; // 移動を初期化
+
+        glutPostRedisplay();
+        isViewInitRequested = false;
+    }
+
     glEnable(GL_STENCIL_TEST); // ステンシル有効化
 
     // 1.軸描画
@@ -124,6 +134,7 @@ void ConsoleDiscription()
     puts("$ その他表示系");
     ShowButtonDiscription("ESC", "終了");
     ShowButtonDiscription("A", "軸表示トグル");
+    ShowButtonDiscription("I", "回転/移動を元に戻す");
     //ShowButtonDiscription("L", "ライティングトグル");
 
     puts("\n");

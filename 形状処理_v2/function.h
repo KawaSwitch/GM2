@@ -5,6 +5,7 @@
     GLOBAL void Initialize();
     GLOBAL void ShowButtonDiscription(char* button, char* disc);
     GLOBAL void ConsoleDiscription();
+    GLOBAL void InitQuaternion();
 
 // CalcUtil.cpp
     GLOBAL void SolveQuadraticEquation(double a, double b, double c, double* x1, double* x2);
