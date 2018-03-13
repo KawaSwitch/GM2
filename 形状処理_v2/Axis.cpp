@@ -23,8 +23,8 @@ void NormalAxis::Draw()
         glNewList(displayList, GL_COMPILE);
 
         // for position
-        glDisable(GL_DEPTH_TEST);
-        this->DrawInternal();
+        //glDisable(GL_DEPTH_TEST);
+        //this->DrawInternal();
 
         // actual drawing
         glEnable(GL_DEPTH_TEST);

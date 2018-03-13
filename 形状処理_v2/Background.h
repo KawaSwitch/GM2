@@ -26,7 +26,7 @@ struct BackgroundNormal : IBackGround
     void Draw() const override
     {
         // ƒfƒvƒX’l‚Í–³Œø
-        glDisable(GL_DEPTH_TEST);
+        //glDisable(GL_DEPTH_TEST);
 
         const double R = 2.5; // •`‰æ”¼Œa
         double aspect = (double)width / height;
@@ -51,6 +51,6 @@ struct BackgroundNormal : IBackGround
 
         glEnd();
 
-       glEnable(GL_DEPTH_TEST);
+       //glEnable(GL_DEPTH_TEST);
     }
 };

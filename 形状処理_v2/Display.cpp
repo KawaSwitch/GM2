@@ -31,12 +31,28 @@ void Display()
 
     glEnable(GL_STENCIL_TEST); // ステンシル有効化
 
-    // 1. 形状描画
+    // 1.軸描画
+    // TODO: ビューポート別
+    if (isShowAxis)
+    {
+        // 軸描画の型取り
+        glStencilFunc(GL_ALWAYS, static_cast<int>(StencilRef::Axis), 0xFF);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+        glPushMatrix();
+        glScaled(1.3, 1.3, 1.3);
+        glTranslated(-1.6, -1.6, -1.6);
+        glMultMatrixd(rot_mat);
+        axis->Draw();
+        glPopMatrix();
+    }
+
+    // 2. 形状描画
     glPushMatrix();
 
     // 形状描画の型取り
-    glStencilFunc(GL_ALWAYS, static_cast<int>(StencilRef::Entity), 0xFF);
-    glStencilOp(GL_KEEP, GL_REPLACE, GL_REPLACE);
+    glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::Entity), 0xFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     glTranslated(dist_X, -dist_Y, dist_Z); // 移動
     glMultMatrixd(rot_mat); // 回転
@@ -52,7 +68,7 @@ void Display()
     glPopMatrix();
 
 
-    // 2. 背景描画
+    // 3. 背景描画
     glPushMatrix();
 
     // 形状が描画されていない箇所は背景を描画
@@ -64,19 +80,6 @@ void Display()
     glPopMatrix();
 
     glDisable(GL_STENCIL_TEST); // ステンシル無効化
-
-
-    // 3.軸描画
-    // TODO: ビューポート別
-    if (isShowAxis)
-    {
-        glPushMatrix();
-        glScaled(1.3, 1.3, 1.3);
-        glTranslated(-1.6, -1.6, -1.6);
-        glMultMatrixd(rot_mat);
-        axis->Draw();
-        glPopMatrix();
-    }
 
     // --------
 
