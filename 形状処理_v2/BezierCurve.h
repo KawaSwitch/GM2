@@ -24,7 +24,7 @@ public:
     BezierCurve(int mord, ControlPoint* cp, int cp_size, GLdouble* color, GLdouble width = 1.0, double resol = 20);
 
     // 各種ベクトル取得
-    Vector3d GetPositionVector(double t) override;
+    Vector3d GetPositionVector(const double t) override;
     Vector3d GetFirstDiffVector(double t) override;
     Vector3d GetSecondDiffVector(double t) override;
 

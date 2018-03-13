@@ -20,3 +20,6 @@ void DrawCylinder_CGS3();
 
 // LU•ª‰ğ‚ğŠm‚©‚ß‚é
 void ShowLUDecomp();
+
+// ‹Èü‚Ì—Ş—“x‚ğŠm‚©‚ß‚é
+void ShowCurveDifferency();

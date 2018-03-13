@@ -186,7 +186,7 @@ void BsplineCurve::DrawCurvatureVectorsInternal()
 }
 
 // 位置ベクトル取得
-Vector3d BsplineCurve::GetPositionVector(double t)
+Vector3d BsplineCurve::GetPositionVector(const double t)
 {
     Vector3d pnt;
 

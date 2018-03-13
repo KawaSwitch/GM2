@@ -15,7 +15,7 @@ protected:
     double _min_draw_param, _max_draw_param; // 描画範囲パラメータ
 
     // ベクトル取得関数
-    virtual Vector3d GetPositionVector(double t) = 0; // 位置ベクトル
+    virtual Vector3d GetPositionVector(const double t) = 0; // 位置ベクトル
     virtual Vector3d GetFirstDiffVector(double t) = 0; // 接線ベクトル
     virtual Vector3d GetSecondDiffVector(double t) = 0; // 2階微分ベクトル
 
@@ -35,6 +35,9 @@ private:
 
 public:
 
+    double GetMinDrawParam() const { return this->_min_draw_param; }
+    double GetMaxDrawParam() const { return this->_max_draw_param; }
+
     // 参照点からの最近点を取得する
     Vector3d GetNearestPointFromRef(Vector3d ref);
 
@@ -43,6 +46,9 @@ public:
 
     // 通過点から逆変換して曲線を取得する
     virtual Curve* GetCurveFromPoints(vector<Vector3d> pnts, GLdouble* color, GLdouble width) = 0;
+
+    // 他曲線との相違度を計算します
+    double CalcDifferency(Curve* other);
 
     virtual ~Curve() { };
 };

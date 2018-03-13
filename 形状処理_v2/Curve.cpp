@@ -115,3 +115,26 @@ Vector3d Curve::GetNearestPointFromRef(Vector3d ref)
     // 見つかった
     return pnt;
 }
+
+// 他曲線との相違度を計算します
+double Curve::CalcDifferency(Curve* other)
+{
+    int checkCnt = 100; // 距離を測る点の数
+    double sumDistance = 0.0; // 相違距離の合計
+    double minParam[2], maxParam[2]; // 端のパラメータ
+
+    minParam[0] = this->GetMinDrawParam();
+    maxParam[0] = this->GetMaxDrawParam();
+    minParam[1] = other->GetMinDrawParam();
+    maxParam[1] = other->GetMaxDrawParam();
+
+    // 分割区間を計算
+    double skip = (fabs(_min_draw_param) + fabs(_max_draw_param)) / checkCnt;
+
+    // double型の誤差考慮
+    for (double t = _min_draw_param; t < _max_draw_param + skip / 2; t += skip)
+        sumDistance += this->GetPositionVector(t).DistanceFrom(other->GetPositionVector(t));
+
+    // 相違距離の平均を返す
+    return sumDistance / (double)checkCnt;
+}

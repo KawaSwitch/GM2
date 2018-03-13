@@ -169,7 +169,7 @@ void BezierCurve::DrawCurvatureVectorsInternal()
 }
 
 // 位置ベクトル取得
-Vector3d BezierCurve::GetPositionVector(double t)
+Vector3d BezierCurve::GetPositionVector(const double t)
 {
     Vector3d pnt;
 

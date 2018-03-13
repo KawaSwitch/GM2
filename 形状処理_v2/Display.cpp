@@ -125,6 +125,10 @@ void ConsoleDiscription()
     ShowButtonDiscription("ESC", "終了");
     ShowButtonDiscription("A", "軸表示トグル");
     //ShowButtonDiscription("L", "ライティングトグル");
+
+    puts("\n");
+
+    puts("デバグ用出力↓\n");
 }
 
 // ボタンの説明を表示します

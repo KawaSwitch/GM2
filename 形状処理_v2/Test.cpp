@@ -21,10 +21,28 @@ static vector<function<void(void)>> TestRegisterDraw
     //TestGetNearestPointCurveToCurve_CGS04, // ‹Èü‚Æ‹Èü‚ÌÅ‹ß“_ŒQ•`‰æ
     //TestGetNearestPointCurveToSurface_CGS04, // ‹Èü‚Æ‹È–Ê‚ÌÅ‹ß“_ŒQ•`‰æ
     //ShowLUDecomp, // LU•ª‰ð‚ÌŒ‹‰Ê‚ðŠm‚©‚ß‚é TODO: ƒeƒXƒgƒvƒƒWƒFƒNƒgì‚é
+    ShowCurveDifferency,
     DrawCircle_CGS3, // Nurbs‹Èü‚Å‰~•`‚­
     //DrawSphere_CGS3, // Nurbs‹È–Ê‚Å‹…‚ð•`‚­
     //DrawCylinder_CGS3, // Nurbs‹È–Ê‚Å‰~’Œ‚ð•`‚­
 };
+
+// ‹Èü‚Ì—ÞŽ—“x‚ðŠm‚©‚ß‚é
+void ShowCurveDifferency()
+{
+    auto reader = new KjsReader("KJS_FILE/");
+
+    // “¯‚¶‹Èü
+    Curve* curve1 = (Curve *)reader->GetObjectFromFile("CGS_bspline_curve_S.kjs");
+    Curve* curve2 = (Curve *)reader->GetObjectFromFile("CGS_bspline_curve_S.kjs");
+
+    printf("‘Šˆá“x: %f\n", curve1->CalcDifferency(curve2));
+
+    curve1 = (Curve *)reader->GetObjectFromFile("CGS_bspline_curve_S.kjs");
+    curve2 = (Curve *)reader->GetObjectFromFile("CGS_bspline_curve_C.kjs");
+
+    printf("‘Šˆá“x: %f\n", curve1->CalcDifferency(curve2));
+}
 
 // Nurbs‹È–Ê‚Å‰~’Œ‚ð•`‚­
 void DrawCylinder_CGS3()

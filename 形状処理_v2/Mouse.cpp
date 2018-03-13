@@ -19,10 +19,10 @@ void Mouse(int button, int state, int x, int y)
         // ピクセルのデプス値を取得
         float z = GetDepth(x, y);
 
-        // 画面中心の座標値を取得
+        // 押下場所の座標値を取得
         center = GetWorldCoord(x, y, z);
 
-        printf("%f %f %f\n", center.X, center.Y, center.Z);
+        //printf("%f %f %f\n", center.X, center.Y, center.Z);
 
         glutPostRedisplay();
 
