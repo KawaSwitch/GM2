@@ -68,12 +68,15 @@ void Display()
 
     // 3.軸描画
     // TODO: ビューポート別
-    glPushMatrix();
-    glScaled(1.3, 1.3, 1.3);
-    glTranslated(-1.6, -1.6, -1.6);
-    glMultMatrixd(rot_mat);
-    axis->Draw();
-    glPopMatrix();
+    if (isShowAxis)
+    {
+        glPushMatrix();
+        glScaled(1.3, 1.3, 1.3);
+        glTranslated(-1.6, -1.6, -1.6);
+        glMultMatrixd(rot_mat);
+        axis->Draw();
+        glPopMatrix();
+    }
 
     // --------
 
@@ -85,25 +88,37 @@ void ConsoleDiscription()
 {
     puts("形状処理C++ 操作方法\n");
 
-    puts("ESC : 終了\n");
-
     puts("$ ファイル起動時読み込み");
     puts("./KJS_FILE内で名前の先頭に@をつけた.kjsファイルを起動時に読み込みます\n");
 
+    puts("$ マウス操作");
+    ShowButtonDiscription("右ドラッグ", "回転");
+    ShowButtonDiscription("中ドラッグ", "移動");
+    ShowButtonDiscription("ホイール", "拡大/縮小");
+
+    puts("");
+
     // エンティティ操作ボタン説明
-    puts("$ ボタントグル表示系");
-    ShowButtonDiscription('B', "ミニマクスボックス");
-    ShowButtonDiscription('P', "制御点");
-    ShowButtonDiscription('F', "一階微分(接線)ベクトル");
-    ShowButtonDiscription('S', "二階微分ベクトル");
-    ShowButtonDiscription('C', "曲率ベクトル");
-    ShowButtonDiscription('N', "法線ベクトル");
+    puts("$ エンティティトグル表示系");
+    ShowButtonDiscription("B", "ミニマクスボックス");
+    ShowButtonDiscription("P", "制御点");
+    ShowButtonDiscription("F", "一階微分(接線)ベクトル");
+    ShowButtonDiscription("S", "二階微分ベクトル");
+    ShowButtonDiscription("C", "曲率ベクトル");
+    ShowButtonDiscription("N", "法線ベクトル");
+
+    puts("");
+
+    puts("$ その他表示系");
+    ShowButtonDiscription("ESC", "終了");
+    ShowButtonDiscription("A", "軸表示トグル");
+    //ShowButtonDiscription("L", "ライティングトグル");
 }
 
 // ボタンの説明を表示します
-void ShowButtonDiscription(char button, string disc)
+void ShowButtonDiscription(char* button, char* disc)
 {
     printf("    ");
-    printf("%c : ", button);
-    printf("%s\n", disc.c_str());
+    printf("%s : ", button);
+    printf("%s\n", disc);
 }

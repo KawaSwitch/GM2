@@ -40,6 +40,8 @@ GLOBAL bool isUseLight; // ライティング処理を行うか
 
 GLOBAL Matrix3d scene_mat; // シーン用同時変換行列
 
+GLOBAL bool isShowAxis; // 軸を描画するか
+
 // 構造体
 GLOBAL Quaternion target;
 GLOBAL Quaternion current;

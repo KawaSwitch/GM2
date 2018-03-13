@@ -36,6 +36,9 @@ void Keyboard(unsigned char key, int x, int y)
             scene->ToggleDrawBox();
             test_scene->ToggleDrawBox();
             break;
+        case 'a':
+            isShowAxis = !isShowAxis;
+            break;
         //case 'l': // ライティングトグル
         //    isUseLight = !isUseLight;
         //    break;

@@ -3,7 +3,7 @@
 
 // Initialize.cpp
     GLOBAL void Initialize();
-    GLOBAL void ShowButtonDiscription(char button, string disc);
+    GLOBAL void ShowButtonDiscription(char* button, char* disc);
     GLOBAL void ConsoleDiscription();
 
 // CalcUtil.cpp

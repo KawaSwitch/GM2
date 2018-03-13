@@ -54,6 +54,7 @@ void Initialize()
     mainLight.InitLight(); // メインライト初期化
     isUseLight = true; // とりあえずオン(必要なところのみ処理を施す)
 
+    isShowAxis = true;
     axis = new NormalAxis(0.4); // 軸
 
     obj_number = 1; // 初期識別子は1
