@@ -30,6 +30,8 @@ public:
 
     BsplineCurve(int mord, ControlPoint* cp, int cp_size, double* knot, GLdouble* color, GLdouble width = 1.0, double resol = 20);
 
+    vector<double> GetKnotVector() const { return this->_knot; }
+
     // 各種ベクトル取得
     Vector3d GetPositionVector(const double t) override;
     Vector3d GetFirstDiffVector(double t) override;

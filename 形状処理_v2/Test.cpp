@@ -21,11 +21,111 @@ static vector<function<void(void)>> TestRegisterDraw
     //DrawBsplineFunctions, // BÉXÉvÉâÉCÉìäÓíÍä÷êîï`âÊ
     //DrawBsplineCurves, // BÉXÉvÉâÉCÉìã»ê¸ï`âÊ
     //TestGetNearestPointCurveToCurve_CGS04, // ã»ê¸Ç∆ã»ê¸ÇÃç≈ãﬂì_åQï`âÊ
-    TestGetNearestPointCurveToSurface_CGS04, // ã»ê¸Ç∆ã»ñ ÇÃç≈ãﬂì_åQï`âÊ
-    DrawCircle_CGS3, // Nurbsã»ê¸Ç≈â~ï`Ç≠
+    //TestGetNearestPointCurveToSurface_CGS04, // ã»ê¸Ç∆ã»ñ ÇÃç≈ãﬂì_åQï`âÊ
+    //DrawCircle_CGS3, // Nurbsã»ê¸Ç≈â~ï`Ç≠
     //DrawSphere_CGS3, // Nurbsã»ñ Ç≈ãÖÇï`Ç≠
     //DrawCylinder_CGS3, // Nurbsã»ñ Ç≈â~íåÇï`Ç≠
+    DrawApproxCurve_CGS4, // ãﬂéóã»ê¸Çï`âÊ
 };
+
+// ãﬂéóÇµÇƒã»ê¸Çï`âÊ
+void DrawApproxCurve_CGS4()
+{
+    auto reader = new KjsReader("");
+
+    BsplineCurve* curve1 = (BsplineCurve *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_curve_1.kjs");
+    BsplineCurve* curve2 = (BsplineCurve *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_curve_2.kjs");
+
+    // ã»ê¸1ÇÃãﬂéó(ÉmÉbÉgà íuÇÃÇ›)
+    vector<Vector3d> passPnts;
+    vector<double> knots = ((BsplineCurve *)curve1)->GetKnotVector();
+    size_t size = knots.size();
+    int ord = curve1->GetOrd();
+
+    for (int i = 0; i < knots.size(); ++i)
+    {
+        if ((i > 0 && i < ord) || (i >= knots.size() - ord && i < knots.size() - 1))
+            continue;
+
+        passPnts.push_back(curve1->GetPositionVector(knots[i]));
+    }
+
+    auto curve1_remake = curve1->GetCurveFromPoints(passPnts, Color::red, 3);
+    passPnts.clear();
+
+    // ã»ê¸2ÇÃãﬂéó(ÉmÉbÉgà íuÇÃÇ›)
+    knots = ((BsplineCurve *)curve2)->GetKnotVector();
+    size = knots.size();
+    ord = curve2->GetOrd();
+
+    for (int i = 0; i < knots.size(); ++i)
+    {
+        if ((i > 0 && i < ord) || (i >= knots.size() - ord && i < knots.size() - 1))
+            continue;
+
+        passPnts.push_back(curve2->GetPositionVector(knots[i]));
+    }
+
+    auto curve2_remake = curve2->GetCurveFromPoints(passPnts, Color::red, 3);
+    passPnts.clear();
+
+    // ã»ê¸1ÇÃãﬂéó(ÉmÉbÉgà íuÇÃÇ› + ÉZÉOÉÅÉìÉgà íu3ï™äÑ)
+    knots = ((BsplineCurve *)curve1)->GetKnotVector();
+    size = knots.size();
+    ord = curve1->GetOrd();
+    auto seg_splitCnt = 3;
+    auto skip = (knots[ord] - knots[0]) / (double)seg_splitCnt;
+
+    for (int i = 0; i < knots.size(); ++i)
+    {
+        if ((i > 0 && i < ord) || (i >= knots.size() - ord && i < knots.size() - 1))
+            continue;
+
+        passPnts.push_back(curve1->GetPositionVector(knots[i]));
+        if (i != knots.size() - 1)
+        {
+            for (int j = 1; j < seg_splitCnt; j++)
+                passPnts.push_back(curve1->GetPositionVector(knots[i] + skip * j));
+        }
+    }
+
+    auto curve1_remake_high = curve1->GetCurveFromPoints(passPnts, Color::pink, 3);
+    passPnts.clear();
+
+    // ã»ê¸2ÇÃãﬂéó(ÉmÉbÉgà íuÇÃÇ› + ÉZÉOÉÅÉìÉgà íu3ï™äÑ)
+    knots = ((BsplineCurve *)curve2)->GetKnotVector();
+    size = knots.size();
+    ord = curve2->GetOrd();
+    seg_splitCnt = 3;
+    skip = (knots[ord] - knots[0]) / (double)seg_splitCnt;
+
+    for (int i = 0; i < knots.size(); ++i)
+    {
+        if ((i > 0 && i < ord) || (i >= knots.size() - ord && i < knots.size() - 1))
+            continue;
+
+        passPnts.push_back(curve2->GetPositionVector(knots[i]));
+        if (i != knots.size() - 1)
+        {
+            for (int j = 1; j < seg_splitCnt; j++)
+                passPnts.push_back(curve2->GetPositionVector(knots[i] + skip * j));
+        }
+    }
+
+    auto curve2_remake_high = curve2->GetCurveFromPoints(passPnts, Color::pink, 3);
+    passPnts.clear();
+
+
+    if (isFirst)
+    {
+        test_scene->AddObject(curve1);
+        test_scene->AddObject(curve2);
+        test_scene->AddObject(curve1_remake);
+        test_scene->AddObject(curve2_remake);
+        test_scene->AddObject(curve1_remake_high);
+        test_scene->AddObject(curve2_remake_high);
+    }
+}
 
 // Nurbsã»ñ Ç≈â~íåÇï`Ç≠
 void DrawCylinder_CGS3()

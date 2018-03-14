@@ -1,5 +1,6 @@
 #pragma once
 #include <math.h>
+#include <cstdio>
 
 // double型3次元ベクトルクラス
 struct Vector3d
@@ -8,6 +9,8 @@ struct Vector3d
 
     constexpr Vector3d() : X(0), Y(0), Z(0) { } // デフォルトは0初期化
     constexpr Vector3d(double x, double y, double z) : X(x), Y(y), Z(z) { }
+
+   void Show() const { std::cout << X << " " << Y << " " << Z << endl; }
 
     // 内積
     constexpr double Dot(const Vector3d& other) const 
@@ -40,6 +43,9 @@ struct Vector3d
 
     // 0確認
     constexpr bool IsZero() const { return (X == 0.0) && (Y == 0.0) && (Z == 0.0); }
+
+    // 0ベクトル
+    constexpr static Vector3d Zero() { return { 0, 0, 0 }; }
 
     // コピーコンストラクタと代入演算はデフォルトを使用
 

@@ -1,5 +1,6 @@
 #include "BsplineCurve.h"
 #include "ControlPoint.h"
+#include <iterator>
 
 BsplineCurve::BsplineCurve(int mord, ControlPoint* cp, int cp_size, double* knot, GLdouble* color, GLdouble width, double resol)
 {
@@ -220,39 +221,147 @@ Vector3d BsplineCurve::GetSecondDiffVector(double t)
 }
 
 // 通過点から逆変換して曲線を取得
+// TODO: 時間があったら整理する
 Curve* BsplineCurve::GetCurveFromPoints(vector<Vector3d> pnts, GLdouble* color, GLdouble width)
 {
-    vector<ControlPoint> new_cps;
-    new_cps.resize(_ncpnt);
+    // TODO: 曲線外から生成
 
+    int passPntsCnt = (int)pnts.size(); // 通過点数
+    // _ord = ord;    // 階数はもとの曲線と同じにする
+    int new_ncpnt = (passPntsCnt - 1) + (_ord - 1); // 新しい制御点数
+    int new_nknot = _ord + new_ncpnt; // 新しいノットベクトルの大きさ
+
+    // ---- ノットベクトルの決定 ----
+    
     vector<double> new_knots;
-    new_knots.resize(_nknot);
+    new_knots.resize(new_nknot);
 
-    // 新しい制御点を求める
-    // 基底関数用行列
-    double **N_matrix = new double*[_ncpnt];
-    for (int i = 0; i < _ncpnt; i++)
-        N_matrix[i] = new double[_ncpnt];
+    vector<double> seg_dist; // セグメント間の距離
+    seg_dist.resize(passPntsCnt - 1);
 
-    // 零行列に初期化
-    for (int i = 0; i < _ncpnt; i++)
+    double minParam = this->GetMinDrawParam();
+    double maxParam = this->GetMaxDrawParam();
+    double paramRange = fabs(maxParam - minParam);
+
+    // 通過点間の距離の総和
+    double sum = 0.0;
+    for (int i = 0; i < passPntsCnt - 1; ++i)
     {
-        for (int j = 0; j < _ncpnt; j++)
-            N_matrix[i][j] = 0;
+        seg_dist[i] = pnts[i].DistanceFrom(pnts[i + 1]);
+        sum += seg_dist[i];
     }
 
-    // 基底関数行列を作成
-    for (int i = 0; i < _ncpnt; i++)
+    // ノット間隔の割合は通過点間の距離に比例させる
+    for (int i = 0; i < new_nknot; i++)
     {
-        if (i == 0) // 最上行
-            N_matrix[i][0] = 1; // 一番左のみ1
-        else if (i > 0 && i < _ncpnt - 1)
+        if (i < _ord) // 最初は階数分重ねる
+            new_knots[i] = minParam;
+        else if (i < new_nknot - _ord) // 距離に比例
         {
-
+            new_knots[i] = new_knots[i - 1] + (seg_dist[i - _ord] / sum) * paramRange;
         }
-        else // 最下行
-            N_matrix[i][_ncpnt - 1] = 1; // 一番右のみ1
+        else // 最後も階数分重ねる
+            new_knots[i] = maxParam;
     }
 
-    return new BsplineCurve(_ord, &new_cps[0], _ncpnt, &new_knots[0], color, width);
+    // ---------------------------------
+
+    // ---- 新しい制御点を求めるための連立方程式の準備 ----
+
+    // 1. 連立方程式を解く用の通過点ベクトル
+        vector<Vector3d> P_array;
+
+        P_array.push_back(pnts[0]);
+        P_array.push_back(Vector3d::Zero());
+        for (int i = 1; i < passPntsCnt - 1; ++i)
+            P_array.push_back(pnts[i]);
+        P_array.push_back(Vector3d::Zero());
+        P_array.push_back(pnts[passPntsCnt - 1]);
+
+        // それぞれの要素を射影(selectのC++でのいいやり方が思いつかない)
+        vector<double> P_array_x, P_array_y, P_array_z;
+
+        for (auto it = P_array.begin(); it != P_array.end(); ++it)
+        {
+            P_array_x.push_back((*it).X);
+            P_array_y.push_back((*it).Y);
+            P_array_z.push_back((*it).Z);
+        }
+
+    // 2. 基底関数用行列
+        // 行列
+        double **N_matrix = new double*[new_ncpnt];
+        for (int i = 0; i < new_ncpnt; i++)
+            N_matrix[i] = new double[new_ncpnt];
+
+        // 零行列に初期化
+        for (int i = 0; i < new_ncpnt; i++)
+        {
+            for (int j = 0; j < new_ncpnt; j++)
+                N_matrix[i][j] = 0;
+        }
+
+        // 基底関数行列を作成
+        for (int i = 0; i < new_ncpnt; i++)
+        {
+            if (i == 0) // 終端条件 前
+            {
+                // 一番左のみ1
+                N_matrix[i][0] = 1;
+            }
+            else if (i == 1) // 2階微分終端条件 前
+            {
+                for (int j = i - 1; j < _ord - 1; ++j)
+                    N_matrix[i][j] = Calc2DiffBsplineFunc(j, _ord, new_knots[_ord - 1], &new_knots[0]);
+            }
+            else if (i > 1 && i < new_ncpnt - 2)
+            {
+                for (int j = i - 1; j < (_ord - 1) + (i - 1); ++j)
+                    N_matrix[i][j] = CalcBsplineFunc(j, _ord, new_knots[(_ord - 1) + (i - 1)], &new_knots[0]);
+            }
+            else if (i == new_ncpnt - 2) // 2階微分終端条件 後
+            {
+                for (int j = i - 1; j < (_ord - 1) + (i - 1); ++j)
+                    N_matrix[i][j] = Calc2DiffBsplineFunc(j, _ord, new_knots[(_ord - 1) + (i - 1)], &new_knots[0]);
+            }
+            else // 終端条件 後
+            {
+                // 一番右のみ1
+                N_matrix[i][new_ncpnt - 1] = 1;
+            }
+        }
+
+        // 引数に合わせて1次元化
+        vector<double> N_matrix_flat;
+        N_matrix_flat.resize(new_ncpnt * new_ncpnt);
+
+        for (int i = 0; i < new_ncpnt; i++)
+        {
+            for (int j = 0; j < new_ncpnt; j++)
+                N_matrix_flat[i * new_ncpnt + j] = N_matrix[i][j];
+        }
+
+    // ------------------------------------------------
+
+    // ----- 新しい制御点を求める -----
+
+    vector<double> N_matrix_flat_x, N_matrix_flat_y, N_matrix_flat_z;
+    copy(N_matrix_flat.begin(), N_matrix_flat.end(), back_inserter(N_matrix_flat_x));
+    copy(N_matrix_flat.begin(), N_matrix_flat.end(), back_inserter(N_matrix_flat_y));
+    copy(N_matrix_flat.begin(), N_matrix_flat.end(), back_inserter(N_matrix_flat_z));
+
+    vector<ControlPoint> new_cps;
+    vector<double> new_cps_X, new_cps_Y, new_cps_Z;
+
+    // 連立方程式を解く
+    new_cps_X = LUDecomposition(new_ncpnt, &N_matrix_flat_x[0], &P_array_x[0]);
+    new_cps_Y = LUDecomposition(new_ncpnt, &N_matrix_flat_y[0], &P_array_y[0]);
+    new_cps_Z = LUDecomposition(new_ncpnt, &N_matrix_flat_z[0], &P_array_z[0]);
+
+    for (int i = 0; i < new_ncpnt; ++i)
+        new_cps.push_back(ControlPoint(new_cps_X[i], new_cps_Y[i], new_cps_Z[i]));
+
+    // ---------------------------------
+
+    return new BsplineCurve(_ord, &new_cps[0], new_ncpnt, &new_knots[0], color, width);
 }

@@ -16,15 +16,15 @@ void Mouse(int button, int state, int x, int y)
     // 右：回転
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
     {
-        // ピクセルのデプス値を取得
-        float z = GetDepth(x, y);
+        //// ピクセルのデプス値を取得
+        //float z = GetDepth(x, y);
 
-        // 押下場所の座標値を取得
-        center = GetWorldCoord(x, y, z);
+        //// 押下場所の座標値を取得
+        //center = GetWorldCoord(x, y, z);
 
         //printf("%f %f %f\n", center.X, center.Y, center.Z);
 
-        glutPostRedisplay();
+        //glutPostRedisplay();
 
         // マウスボタンを押した位置を記憶
         mouse_X = x;

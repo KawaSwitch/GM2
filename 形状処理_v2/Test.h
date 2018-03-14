@@ -18,8 +18,6 @@ void DrawCircle_CGS3();
 void DrawSphere_CGS3();
 void DrawCylinder_CGS3();
 
-// LU•ª‰ğ‚ğŠm‚©‚ß‚é
-void ShowLUDecomp();
-
-// ‹Èü‚Ì—Ş—“x‚ğŠm‚©‚ß‚é
-void ShowCurveDifferency();
+// ‹Èü‚ğ‹ß—‚µ‚Ä•`‰æ‚·‚é
+// ’†‹‰•Ò‘æ4‰ñ
+void DrawApproxCurve_CGS4();

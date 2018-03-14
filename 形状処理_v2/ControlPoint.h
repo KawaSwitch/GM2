@@ -25,6 +25,11 @@ public:
         return !(*this == other);
     }
 
+    void Show()
+    {
+        cout << X << " " << Y << " " << Z << " " << W << endl;
+    }
+
     double GetDistanceTo(ControlPoint other)
     {
         return sqrt(

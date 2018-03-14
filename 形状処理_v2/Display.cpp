@@ -66,6 +66,7 @@ void Display()
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     glTranslated(dist_X, -dist_Y, dist_Z); // ˆÚ“®
+
     glMultMatrixd(rot_mat); // ‰ñ“]
 
     // Œ`ó•`‰æ

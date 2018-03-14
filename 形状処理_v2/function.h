@@ -22,6 +22,7 @@
     GLOBAL Point3d Transform(const Point3d point, const double matrix[16]);
     GLOBAL void RotateCoord2DAroundCenter(double* const coord_2d, const double* const center, const double rad);
     GLOBAL void RotateCoord2DAroundOrigin(double* const coord_2d, const double rad);
+    GLOBAL vector<double> LUDecomposition(int size, double* aMatrix, double* b);
 
 // DrawUtil.cpp
     GLOBAL void DrawBsplineFunc(int mord, int ncpnt, int nknot, double* knot, double min_t = 0.0, double max_t = 1.0);

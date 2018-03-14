@@ -15,8 +15,8 @@ void Curve::SetControlPoint(ControlPoint* cp, int size)
 // 制御点描画
 void Curve::DrawCPsInternal()
 {
-    glColor3d(1.0, 0.0, 0.0); // 赤
-    glPointSize(5.0);
+    //glColor3d(1.0, 0.0, 0.0); // 赤
+    glPointSize(10.0);
     glLineWidth(1.0);
 
     // 点群
@@ -39,7 +39,7 @@ Vector3d Curve::GetCurvatureVector(double t)
         (GetFirstDiffVector(t) * GetSecondDiffVector(t)).Length() // |Pt×Ptt|
         / pow(GetFirstDiffVector(t).Length(), 3); // |Pt|^3
 
-                                                  // 法線方向N = (Pt × Ptt) × Pt
+    // 法線方向N = (Pt × Ptt) × Pt
     Vector3d direct = (GetFirstDiffVector(t) * GetSecondDiffVector(t)) * GetFirstDiffVector(t);
 
     return (1 / kappa) * direct.Normalize();
@@ -74,8 +74,8 @@ Vector3d Curve::GetNearestPointFromRef(Vector3d ref)
     Vector3d tan = GetFirstDiffVector(middle);
     double dot = tan.Dot(ref_pnt); // 内積値
 
-                                   // 二分探索
-                                   // 端対策のために更新の際EPSを増減させる
+    // 二分探索
+    // 端対策のために更新の際EPSを増減させる
     while (left <= right)
     {
         if (-EPS < dot && dot < EPS)
