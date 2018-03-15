@@ -51,8 +51,15 @@ void Initialize()
     glEnable(GL_BLEND); // ブレンド 有効化
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    mainLight.InitLight(); // メインライト初期化
-    isUseLight = true; // とりあえずオン(必要なところのみ処理を施す)
+    // メインライト初期化
+    {
+        mainLight = new Light(GL_LIGHT0, 0, 0, 100);
+
+        for (int i = 0; i < 1; i++)
+            mainLight->On();
+
+        isUseLight = true; // 必要なところのみ処理を施す
+    }
 
     isShowAxis = true;
     axis = new NormalAxis(0.4); // 軸

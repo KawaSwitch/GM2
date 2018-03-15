@@ -46,4 +46,6 @@ GLOBAL bool isViewInitRequested; // 画面表示を初期に戻すか
 // 構造体
 GLOBAL Quaternion target;
 GLOBAL Quaternion current;
-GLOBAL Light mainLight; // メインライト
+
+// メインライト
+GLOBAL Light* mainLight;
