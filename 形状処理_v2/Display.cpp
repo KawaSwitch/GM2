@@ -42,19 +42,53 @@ void Display()
     glEnable(GL_STENCIL_TEST); // ステンシル有効化
 
     // 1.軸描画
-    // TODO: ビューポート別
     if (isShowAxis)
     {
         // 軸の型取り
         glStencilFunc(GL_ALWAYS, static_cast<int>(StencilRef::Axis), 0xFF);
         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
+        // 軸用ビューポートサイズを計算
+        int axisViewWidth = width / 5;
+        int axisViewHeight = height / 5;
+        int axisViewSize = (axisViewWidth < axisViewHeight) ? axisViewWidth : axisViewHeight;
+
+        // 軸用に変換行列を指定しなおす
         glPushMatrix();
-        glScaled(1.3, 1.3, 1.3);
-        glTranslated(-1.6, -1.6, -1.6);
-        glMultMatrixd(rot_mat);
+
+        glViewport(axisViewSize / 10, axisViewSize / 10, axisViewSize, axisViewSize);
+
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        gluPerspective(30.0, 1.0, 0.1, 10.0); // 軸はアス比固定(1.0)
+
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        gluLookAt(
+            0.0, 0.0, 2.0,  // 視点位置
+            0.0, 0.0, 0.0,  // 注視位置
+            0.0, 1.0, 0.0   // 上方向 : y
+        );
+
+        glMultMatrixd(rot_mat); // 回転量はモデルと等しく
         axis->Draw();
+
         glPopMatrix();
+
+        // 元に戻す
+        glViewport(0, 0, width, height);
+
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity(); // TODO: この辺nearとかfarとかも変数置いて一括管理がいい
+        gluPerspective(30.0, (GLdouble)width / height, 0.1, 10000.0);
+
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        gluLookAt(
+            0.0, 0.0, 9.0,  // 視点位置
+            0.0, 0.0, 0.0,  // 注視位置
+            0.0, 1.0, 0.0   // 上方向 : y
+        );
     }
 
     // 2. 形状描画
