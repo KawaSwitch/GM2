@@ -12,7 +12,7 @@ NormalAxis* axis; // 軸
 Scene* scene; // シーン
 extern Scene* test_scene;
 
-extern Point3d center;
+Point3d rotateCenter; // 回転中心
 
 void Display()
 {
@@ -91,6 +91,7 @@ void Display()
         );
     }
 
+
     // 2. 形状描画
     glPushMatrix();
 
@@ -101,12 +102,19 @@ void Display()
 
     glTranslated(dist_X, -dist_Y, dist_Z); // 移動
 
+    // 回転中心を指定して回転
+    // モデルを原点に戻して回転する(行列の掛け算は逆!)
+    glTranslated(rotateCenter.X, rotateCenter.Y, 0);
     glMultMatrixd(rot_mat); // 回転
+    glTranslated(-rotateCenter.X, -rotateCenter.Y, 0);
 
     // 形状描画
     scene->Draw();
     // テスト描画
     TestDraw();
+
+    // 回転中心描画
+    ShowRotateCenter(rotate_flag);
 
 
     // 3. グリッド描画
@@ -138,6 +146,51 @@ void Display()
     // --------
 
     glutSwapBuffers();
+}
+
+// 回転中心を設定します
+void SetRotateCenter()
+{
+    vector<Box> sceneBoxes;
+
+    // 回転中心を決める
+    // すべての形状の中心を回転中心とする
+    // TODO: いつか画面中心で回転させたい
+    sceneBoxes.push_back(scene->GetCoverBound());
+    sceneBoxes.push_back(test_scene->GetCoverBound());
+
+    auto center = Box(sceneBoxes).Center();
+    rotateCenter = Point3d(center.X, center.Y, center.Z);
+}
+// 回転中心を表示します
+void ShowRotateCenter(bool isRotating)
+{
+    if (rotate_flag)
+    {
+        SetRotateCenter();
+
+        // ライティングは切っておく
+        if (glIsEnabled(GL_LIGHTING))
+            glDisable(GL_LIGHTING);
+
+        // 形状の型取り
+        // 軸を除いて描画
+        glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::RotateCenter), 0xFF);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+        // 描画
+        glColor3dv(Color::orange);
+        glPointSize(10.0);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, Color::orange);
+
+        glDisable(GL_DEPTH_TEST);
+        glBegin(GL_POINTS);
+        glVertex3d(rotateCenter);
+        glEnd();
+        glEnable(GL_DEPTH_TEST);
+
+        glPointSize(1.0);
+    }
 }
 
 // コンソールに説明を表示します

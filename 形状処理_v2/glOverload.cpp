@@ -1,6 +1,7 @@
 #include "GV.h"
 
 void glVertex3d(const Vector3d& vec) { glVertex3d(vec.X, vec.Y, vec.Z); }
+void glVertex3d(const Point3d& pnt) { glVertex3d(pnt.X, pnt.Y, pnt.Z); }
 void glPointSize(const double size) { glPointSize((GLfloat)size); }
 void glLineWidth(const double width) { glLineWidth((GLfloat)width); }
 void glNormal3d(const Vector3d& vec) { glNormal3d(vec.X, vec.Y, vec.Z); }

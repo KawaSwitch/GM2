@@ -177,6 +177,13 @@ public:
 
 public:
 
+    // ミニマクスボックス取得
+    Box GetBound() const
+    {
+        Box box(_ctrlp);
+        return box;
+    }
+
     Object()
     {
         _number = obj_number++; // 識別子を振る

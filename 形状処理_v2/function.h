@@ -3,9 +3,13 @@
 
 // Initialize.cpp
     GLOBAL void Initialize();
+    GLOBAL void InitQuaternion();
+
+// Display.cpp
     GLOBAL void ShowButtonDiscription(char* button, char* disc);
     GLOBAL void ConsoleDiscription();
-    GLOBAL void InitQuaternion();
+    GLOBAL void SetRotateCenter();
+    GLOBAL void ShowRotateCenter(bool isRotating);
 
 // CalcUtil.cpp
     GLOBAL void SolveQuadraticEquation(double a, double b, double c, double* x1, double* x2);
@@ -33,6 +37,7 @@
 
 // glOverload.cpp
     GLOBAL void glVertex3d(const Vector3d& vec);
+    GLOBAL void glVertex3d(const Point3d& pnt);
     GLOBAL void glPointSize(const double size);
     GLOBAL void glLineWidth(const double width);
     GLOBAL void glNormal3d(const Vector3d& vec);

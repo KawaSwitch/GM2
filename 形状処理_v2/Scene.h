@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Object.h"
+#include "Box.h"
 #include <list>
 using namespace std;
 
@@ -27,6 +28,8 @@ public:
 
     void Draw();
     void DrawForPick();
+
+    Box GetCoverBound();
 
     ~Scene();
 };

@@ -78,6 +78,7 @@ public:
         glLineWidth(1.0f);
     }
 
+    // 制御点を囲むボックスを取得(バウンディングボックス)
     Box(vector<ControlPoint> cp)
     {
         double xmin, ymin, zmin;
@@ -94,6 +95,30 @@ public:
             if (cp[i].X > xmax) xmax = cp[i].X;
             if (cp[i].Y > ymax) ymax = cp[i].Y;
             if (cp[i].Z > zmax) zmax = cp[i].Z;
+        }
+
+        _xmin = xmin; _ymin = ymin; _zmin = zmin;
+        _xmax = xmax; _ymax = ymax;  _zmax = zmax;
+    }
+
+    // すべてのボックスを囲むボックスを取得
+    Box(vector<Box> box)
+    {
+        double xmin, ymin, zmin;
+        double xmax, ymax, zmax;
+        xmin = ymin = zmin = DBL_MAX;
+        xmax = ymax = zmax = -DBL_MAX;
+
+        // 最小/最大を見つける
+        for (unsigned int i = 0; i < box.size(); i++)
+        {
+            // 疑: C++って同クラスだったら引数のメンバにアクセスしてよかったっけ?
+            if (box[i]._xmin < xmin) xmin = box[i]._xmin;
+            if (box[i]._ymin < ymin) ymin = box[i]._ymin;
+            if (box[i]._zmin < zmin) zmin = box[i]._zmin;
+            if (box[i]._xmax > xmax) xmax = box[i]._xmax;
+            if (box[i]._ymax > ymax) ymax = box[i]._ymax;
+            if (box[i]._zmax > zmax) zmax = box[i]._zmax;
         }
 
         _xmin = xmin; _ymin = ymin; _zmin = zmin;

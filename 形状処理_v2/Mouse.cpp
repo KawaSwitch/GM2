@@ -7,7 +7,6 @@
 #include "Picking.h"
 
 extern Scene* scene;
-Point3d center;
 
 extern void SetMatrix(Matrix3d);
 
@@ -16,15 +15,16 @@ void Mouse(int button, int state, int x, int y)
     // 右：回転
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
     {
-        //// ピクセルのデプス値を取得
-        //float z = GetDepth(x, y);
+#ifdef _DEBUG
+        // ピクセルのデプス値を取得
+        float z = GetDepth(x, y);
 
-        //// 押下場所の座標値を取得
-        //center = GetWorldCoord(x, y, z);
+        // 押下場所の座標値を取得
+        auto coord = GetWorldCoord(x, y, z);
 
-        //printf("%f %f %f\n", center.X, center.Y, center.Z);
-
-        //glutPostRedisplay();
+        printf("mouse : x, y, depth : %d %d %f\n", x, y, z);
+        printf("world : x, y, z : %f %f %f\n\n", coord.X, coord.Y, coord.Z);
+#endif
 
         // マウスボタンを押した位置を記憶
         mouse_X = x;
@@ -43,19 +43,26 @@ void Mouse(int button, int state, int x, int y)
         current = target;
     }
 
-    // ホイール：移動
-    else if (button == GLUT_MIDDLE_BUTTON && state == GLUT_DOWN)
+    // 左：移動
+    else if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
         xStart = x;
         yStart = y;
         move_flag = GL_TRUE;
     }
+    else if (button == GLUT_LEFT_BUTTON && state == GLUT_UP)
+    {
+        move_flag = GL_FALSE;
+    }
+
+    // それ以外はどちらでもない
     else
     {
         rotate_flag = GL_FALSE;
         move_flag = GL_FALSE;
-        return;
     }
+
+    glutPostRedisplay();
 }
 
 void Motion(int x, int y)

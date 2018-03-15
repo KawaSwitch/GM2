@@ -153,6 +153,17 @@ void Scene::DrawForPick()
     }
 }
 
+// すべてのMMボックスを囲むボックスを取得する
+Box Scene::GetCoverBound()
+{
+    vector<Box> allBound;
+
+    for (auto it = ObjList.begin(); it != ObjList.end(); ++it)
+        allBound.push_back((*it)->GetBound());
+
+    return Box(allBound);
+}
+
 Scene::~Scene()
 {
     for (auto it = ObjList.begin(); it != ObjList.end(); it++)
