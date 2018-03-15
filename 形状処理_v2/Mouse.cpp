@@ -35,12 +35,12 @@ void Mouse(int button, int state, int x, int y)
     {
         rotate_flag = GL_FALSE;
 
-        // ˆÚ“®‚µ‚Ä‚¢‚È‚¯‚ê‚Î•Û‘¶‚Ì•K—v‚È‚µ
-        if (x == mouse_X && y == mouse_Y)
-            return;
-
-        // p¨‚ğ•Û‘¶
-        current = target;
+        // ˆÚ“®‚µ‚Ä‚¢‚é‚Æ‚«‚¾‚¯‰ñ“]•Û‘¶
+        if (!(x == mouse_X && y == mouse_Y))
+        {
+            // p¨‚ğ•Û‘¶
+            current = target;
+        }
     }
 
     // ¶FˆÚ“®
@@ -62,7 +62,7 @@ void Mouse(int button, int state, int x, int y)
         move_flag = GL_FALSE;
     }
 
-    glutPostRedisplay();
+    glutPostRedisplay(); // “r’†‚Åreturn‚Å”²‚¯‚é‚Æ‚±‚±‚Ü‚Å—ˆ‚¸‚ÉÄ•`‰æ‚Å‚«‚È‚¢‚Ì‚Å’ˆÓ!
 }
 
 void Motion(int x, int y)
