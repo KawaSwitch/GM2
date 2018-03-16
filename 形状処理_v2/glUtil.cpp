@@ -1,5 +1,8 @@
 #include "GV.h"
 
+// OpenGLに関するユーティリティを定義します
+// 描画系はDrawUtil.cppで定義してください
+
 void glVertex3d(const Vector3d& vec) { glVertex3d(vec.X, vec.Y, vec.Z); }
 void glVertex3d(const Point3d& pnt) { glVertex3d(pnt.X, pnt.Y, pnt.Z); }
 void glPointSize(const double size) { glPointSize((GLfloat)size); }

@@ -31,6 +31,9 @@
 // DrawUtil.cpp
     GLOBAL void DrawBsplineFunc(int mord, int ncpnt, int nknot, double* knot, double min_t = 0.0, double max_t = 1.0);
     GLOBAL void DrawUsingDisplayList(int* const displayList, function<void(void)> RegisterDraw);
+    GLOBAL void DrawPoints(vector<Vector3d> vec, GLdouble* color, GLdouble pSize);
+    GLOBAL void DrawPoints(vector<Point3d> pnt, GLdouble* color, GLdouble pSize);
+
 
 // NurbsPrimitive.cpp
     //GLOBAL 
@@ -43,7 +46,7 @@
     GLOBAL void glNormal3d(const Vector3d& vec);
     GLOBAL void glLoadMatrixd(const Matrix3d& mat);
     GLOBAL void glMultMatrixd(const Matrix3d& mat);
-    GLOBAL void glMaterialfv(GLenum face, GLenum pname, const GLdouble* params);
+    GLOBAL void glMaterialfv(GLenum face, GLenum pname, const GLdouble params[4]);
 
 // glUtil.cpp
     GLOBAL void glVertex(const vector<Vector3d> vec);

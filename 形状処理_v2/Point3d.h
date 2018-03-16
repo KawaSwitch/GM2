@@ -1,5 +1,6 @@
 #pragma once
 
+// Vector3d‚ÌŽcŠ[ ˆê‰žŽc‚µ‚Ä‚é
 struct Point3d
 {
     double X, Y, Z;
