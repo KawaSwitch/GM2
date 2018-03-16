@@ -91,34 +91,38 @@ void Display()
         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
         glPushMatrix();
-
-        glTranslated(dist_X, -dist_Y, dist_Z); // 移動
-
-        // 回転中心を指定して回転
-        // モデルを原点に戻して回転する(行列の掛け算は逆!)
-        glTranslated(rotateCenter.X, rotateCenter.Y, 0);
-        glMultMatrixd(rot_mat); // 回転
-        glTranslated(-rotateCenter.X, -rotateCenter.Y, 0);
-
-        // 形状描画
-        scene->Draw();
-        // テスト描画
-        TestDraw();
-
-        // 回転中心描画
-        ShowRotateCenter(rotate_flag);
-
-        // グリッド描画
         {
-            // グリッドの型取り
-            // 上の全部が描画されていない所にグリッドを描画
-            glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::Grid), 0xFF);
-            glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+            // 起動最初の描画で回転中心をウィンドウ中心にする
+            SetRotateCenter();
+            glTranslated(-rotateCenter.X, -rotateCenter.Y, -rotateCenter.Z);
 
-            // 幾何グリッド描画
-            DrawGrid(GeoGrid2D());
+            glTranslated(dist_X, -dist_Y, dist_Z); // 移動
+
+            // 回転中心を指定して回転
+            // モデルを原点に戻して回転する(行列の掛け算は逆!)
+            glTranslated(rotateCenter.X, rotateCenter.Y, 0);
+            glMultMatrixd(rot_mat); // 回転
+            glTranslated(-rotateCenter.X, -rotateCenter.Y, 0);
+
+            // 形状描画
+            scene->Draw();
+            // テスト描画
+            TestDraw();
+
+            // 回転中心描画
+            ShowRotateCenter(rotate_flag);
+
+            // グリッド描画
+            {
+                // グリッドの型取り
+                // 上の全部が描画されていない所にグリッドを描画
+                glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::Grid), 0xFF);
+                glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+                // 幾何グリッド描画
+                DrawGrid(GeoGrid2D());
+            }
         }
-
         glPopMatrix();
     }
 
@@ -135,6 +139,7 @@ void Display()
 
     glDisable(GL_STENCIL_TEST); // ステンシル無効化
 
+    //isFirst = false;
     glutSwapBuffers();
 }
 
