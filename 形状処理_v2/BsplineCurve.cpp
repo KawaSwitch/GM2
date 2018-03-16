@@ -32,6 +32,32 @@ void BsplineCurve::SetKnotVector(double* knot, int size)
         _knot.emplace_back(knot[i]);
 }
 
+// ノットベクトルをもとにして点群を取得する
+// splitSegCnt: セグメントを何分割するかの回数(デフォルトは1 = 分割しない)
+vector<Vector3d> BsplineCurve::GetPointsByKnots(int splitSegCnt)
+{
+    vector<Vector3d> pnts;
+    double skip = (_knot[_ord] - _knot[0]) / (double)splitSegCnt;
+
+    for (int i = 0; i < _knot.size(); ++i)
+    {
+        // ノットの階数端の非描画部分or重複は省く
+        if ((i > 0 && i < _ord) || (i >= _knot.size() - _ord && i < _knot.size() - 1))
+            continue;
+
+        pnts.push_back(this->GetPositionVector(_knot[i]));
+
+        // 最後は追加しない
+        if (i != _knot.size() - 1)
+        {
+            for (int j = 1; j < splitSegCnt; j++)
+                pnts.push_back(this->GetPositionVector(_knot[i] + skip * j));
+        }
+    }
+
+    return pnts;
+}
+
 // 事前描画
 void BsplineCurve::PreDraw()
 {
