@@ -40,8 +40,21 @@ void Keyboard(unsigned char key, int x, int y)
         case 'a': // 軸表示トグル 
             isShowAxis = !isShowAxis;
             break;
-        case 'g': // グリッド表示トグル
-            isShowGrid = !isShowGrid;
+        case 'g': // グリッド表示変更
+            switch (gridType)
+            {
+                case GridType::InVisible:
+                    gridType = GridType::NonAxis;
+                    break;
+                case GridType::NonAxis:
+                    gridType = GridType::WithAxis;
+                    break;
+                case GridType::WithAxis:
+                    gridType = GridType::InVisible;
+                    break;
+                default:
+                    break;
+            }
             break;
         case 'i': // 初期位置の表示に戻す
             isViewInitRequested = true;

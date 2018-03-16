@@ -13,7 +13,6 @@
 #include "Matrix.h"
 #include "Matrix3d.h"
 #include "Light.h"
-#include "GeoGrid.h"
 
 #ifdef GLOBAL_INSTANCE
 #define GLOBAL
@@ -41,7 +40,7 @@ GLOBAL bool isUseLight; // ライティング処理を行うか
 GLOBAL Matrix3d scene_mat; // シーン用同時変換行列
 
 GLOBAL bool isShowAxis; // 軸を描画するか
-GLOBAL bool isShowGrid; // グリッドを描画するか
+GLOBAL GridType gridType; // グリッド描画タイプ
 
 GLOBAL bool isViewInitRequested; // 画面表示を初期に戻すか
 

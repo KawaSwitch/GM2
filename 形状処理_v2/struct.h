@@ -77,3 +77,11 @@ enum class StencilRef
     Axis,
     Ignore, // 意味なし Keepして使うのを想定
 };
+
+// グリッドの表示法
+enum GridType
+{
+    NonAxis,
+    WithAxis,
+    InVisible,
+};

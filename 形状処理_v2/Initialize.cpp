@@ -66,7 +66,7 @@ void Initialize()
     }
 
     // ƒOƒŠƒbƒh‰Šú‰»
-    isShowGrid = true;
+    gridType = GridType::WithAxis;
     grid = new GeoGrid2D(200, 5);
 
     // ²‰Šú‰»

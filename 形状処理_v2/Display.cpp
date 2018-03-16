@@ -121,7 +121,7 @@ void Display()
                 glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
                 // 幾何グリッド描画
-                if (isShowGrid)
+                if (gridType != GridType::InVisible)
                     grid->Draw();
             }
         }
@@ -218,7 +218,7 @@ void ConsoleDiscription()
     puts("$ その他表示系");
     ShowButtonDiscription("ESC", "終了");
     ShowButtonDiscription("A", "軸表示トグル");
-    ShowButtonDiscription("G", "グリッド表示トグル");
+    ShowButtonDiscription("G", "グリッド表示変更");
     ShowButtonDiscription("I", "回転/移動を元に戻す");
     //ShowButtonDiscription("L", "ライティングトグル");
 
