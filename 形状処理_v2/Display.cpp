@@ -78,7 +78,7 @@ void Display()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(
-        0.0, 0.0, 9.0,  // 視点位置
+        0.0, 0.0, 100.0,  // 視点位置
         0.0, 0.0, 0.0,  // 注視位置
         0.0, 1.0, 0.0   // 上方向 : y
     );

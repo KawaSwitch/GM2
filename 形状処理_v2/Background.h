@@ -28,7 +28,7 @@ struct BackgroundNormal : IBackGround
         // ƒfƒvƒX’l‚Í–³Œø
         //glDisable(GL_DEPTH_TEST);
 
-        const double R = 2.5; // •`‰æ”¼Œa
+        const double R = 2.5 * ((double)100 / 9); // •`‰æ”¼Œa
         double aspect = (double)width / height;
         double aspectForWidth = aspect;
         double aspectForHeight = (aspect > 1.0) ? aspect : (double)1 / aspect;
