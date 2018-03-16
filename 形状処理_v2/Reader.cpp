@@ -75,7 +75,18 @@ vector<string> Reader::ReadAllLines(string filepath)
 // ファイルからオブジェクトを取得する
 Object* KjsReader::GetObjectFromFile(string file_name)
 {
-    string file_path = /*KJS_FILE_NAME + "/" + */file_name;
+    string file_path = file_name;
+
+    std::ifstream ifs(file_path);
+    bool canOpen = ifs.is_open();
+    if (!canOpen)
+    {
+        auto detail = file_name + "というファイルは存在しません.";
+        Error::ShowAndExit(
+            "ファイル読み込みに失敗しました.",
+            detail.c_str());
+    }
+        
 
     auto lines = ReadAllLines(file_path);
 
@@ -129,7 +140,7 @@ vector<Object *> KjsReader::GetObjectsFromKjsFolder()
             continue;
 
         // ファイルからオブジェクトを取得する
-        returnObjs.push_back(GetObjectFromFile(kjsFiles[i]));
+        returnObjs.push_back(GetObjectFromFile(KJS_FILE_NAME + "/" + kjsFiles[i]));
     }
 
     return returnObjs;
