@@ -48,4 +48,4 @@ GLOBAL Quaternion target;
 GLOBAL Quaternion current;
 
 // ƒƒCƒ“ƒ‰ƒCƒg
-GLOBAL Light* mainLight;
+GLOBAL Light* mainLight[3];

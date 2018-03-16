@@ -6,10 +6,13 @@
 class Axis
 {
 protected:
-    double _length; // ’·‚³
+    double _length; // “·‘Ì•”•ª‚Ì’·‚³
 
 public:
     Axis(double len) { _length = len; }
+
+    // –îˆó•”•ª‚ðŠÜ‚ß‚½’·‚³‚ð•Ô‚·
+    double GetLength() { return _length + _length / 4; }
 };
 
 // Cggl•—‚ÌŽ²

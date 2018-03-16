@@ -18,17 +18,6 @@ void Display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-    // ---- ビュー行列 ----
-    glLoadIdentity();
-    gluLookAt(
-        0.0, 0.0, 9.0,  // 視点位置
-        0.0, 0.0, 0.0,  // 注視位置
-        0.0, 1.0, 0.0   // 上方向 : y
-    );
-    // --------
-
-    // ---- モデル行列 ----
-
     // リクエストがあれば表示を初期位置に戻す
     if (isViewInitRequested)
     {
@@ -53,97 +42,98 @@ void Display()
         int axisViewHeight = height / 5;
         int axisViewSize = (axisViewWidth < axisViewHeight) ? axisViewWidth : axisViewHeight;
 
-        // 軸用に変換行列を指定しなおす
-        glPushMatrix();
-
+        // 軸用ビューポートを設定
+        double axisLength = axis->GetLength();
         glViewport(axisViewSize / 10, axisViewSize / 10, axisViewSize, axisViewSize);
 
+        // 軸用に変換行列を指定する
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        gluPerspective(30.0, 1.0, 0.1, 10.0); // 軸はアス比固定(1.0)
+        glOrtho(
+            -axisLength, axisLength,
+            -axisLength, axisLength,
+            -axisLength, axisLength);
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        gluLookAt(
-            0.0, 0.0, 2.0,  // 視点位置
-            0.0, 0.0, 0.0,  // 注視位置
-            0.0, 1.0, 0.0   // 上方向 : y
-        );
+
+        glPushMatrix();
 
         glMultMatrixd(rot_mat); // 回転量はモデルと等しく
         axis->Draw();
 
         glPopMatrix();
-
-        // 元に戻す
-        glViewport(0, 0, width, height);
-
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity(); // TODO: この辺nearとかfarとかも変数置いて一括管理がいい
-        gluPerspective(30.0, (GLdouble)width / height, 0.1, 10000.0);
-
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-        gluLookAt(
-            0.0, 0.0, 9.0,  // 視点位置
-            0.0, 0.0, 0.0,  // 注視位置
-            0.0, 1.0, 0.0   // 上方向 : y
-        );
     }
 
 
+    // ビューポートをウィンドウ全体に設定
+    glViewport(0, 0, width, height);
+
+    // 変換行列を全体用に指定しなおす
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity(); // TODO: この辺nearとかfarとかも変数置いて一括管理がいい
+    gluPerspective(30.0, (GLdouble)width / height, 0.1, 10000.0);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(
+        0.0, 0.0, 9.0,  // 視点位置
+        0.0, 0.0, 0.0,  // 注視位置
+        0.0, 1.0, 0.0   // 上方向 : y
+    );
+
+
     // 2. 形状描画
-    glPushMatrix();
+    {
+        // 形状の型取り
+        // 軸を除いて描画
+        glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::Entity), 0xFF);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-    // 形状の型取り
-    // 軸を除いて描画
-    glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::Entity), 0xFF);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+        glPushMatrix();
 
-    glTranslated(dist_X, -dist_Y, dist_Z); // 移動
+        glTranslated(dist_X, -dist_Y, dist_Z); // 移動
 
-    // 回転中心を指定して回転
-    // モデルを原点に戻して回転する(行列の掛け算は逆!)
-    glTranslated(rotateCenter.X, rotateCenter.Y, 0);
-    glMultMatrixd(rot_mat); // 回転
-    glTranslated(-rotateCenter.X, -rotateCenter.Y, 0);
+        // 回転中心を指定して回転
+        // モデルを原点に戻して回転する(行列の掛け算は逆!)
+        glTranslated(rotateCenter.X, rotateCenter.Y, 0);
+        glMultMatrixd(rot_mat); // 回転
+        glTranslated(-rotateCenter.X, -rotateCenter.Y, 0);
 
-    // 形状描画
-    scene->Draw();
-    // テスト描画
-    TestDraw();
+        // 形状描画
+        scene->Draw();
+        // テスト描画
+        TestDraw();
 
-    // 回転中心描画
-    ShowRotateCenter(rotate_flag);
+        // 回転中心描画
+        ShowRotateCenter(rotate_flag);
 
+        // グリッド描画
+        {
+            // グリッドの型取り
+            // 上の全部が描画されていない所にグリッドを描画
+            glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::Grid), 0xFF);
+            glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-    // 3. グリッド描画
-    
-    // グリッドの型取り
-    // 上の全部が描画されていない所にグリッドを描画
-    glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::Grid), 0xFF);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+            // 幾何グリッド描画
+            DrawGrid(GeoGrid2D());
+        }
 
-    // 幾何グリッド描画
-    DrawGrid(GeoGrid2D());
-
-    glPopMatrix();
+        glPopMatrix();
+    }
 
 
-    // 4. 背景描画
-    glPushMatrix();
+    // 3. 背景描画
+    {
+        // 上の全部が描画されていない箇所は背景を描画
+        glStencilFunc(GL_EQUAL, static_cast<int>(StencilRef::Background), 0xFF);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
-    // 上の全部が描画されていない箇所は背景を描画
-    glStencilFunc(GL_EQUAL, static_cast<int>(StencilRef::Background), 0xFF);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-    
-    DrawBackground(BackgroundNormal());
+        DrawBackground(BackgroundNormal());
+    }
 
-    glPopMatrix();
 
     glDisable(GL_STENCIL_TEST); // ステンシル無効化
-
-    // --------
 
     glutSwapBuffers();
 }
@@ -173,8 +163,6 @@ void ShowRotateCenter(bool isRotating)
         if (glIsEnabled(GL_LIGHTING))
             glDisable(GL_LIGHTING);
 
-        // 形状の型取り
-        // 軸を除いて描画
         glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::RotateCenter), 0xFF);
         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
@@ -183,6 +171,7 @@ void ShowRotateCenter(bool isRotating)
         glPointSize(10.0);
         glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, Color::orange);
 
+        // デプス値は評価しない
         glDisable(GL_DEPTH_TEST);
         glBegin(GL_POINTS);
         glVertex3d(rotateCenter);

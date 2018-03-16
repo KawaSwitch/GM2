@@ -53,16 +53,18 @@ void Initialize()
 
     // メインライト初期化
     {
-        mainLight = new Light(GL_LIGHT0, 0, 0, 100);
+        mainLight[0] = new Light(GL_LIGHT0, 50, 0, 0);
+        mainLight[1] = new Light(GL_LIGHT0, 0, 50, 0);
+        mainLight[2] = new Light(GL_LIGHT0, 0, 0, 50);
 
         for (int i = 0; i < 1; i++)
-            mainLight->On();
+            mainLight[i]->On();
 
         isUseLight = true; // 必要なところのみ処理を施す
     }
 
     isShowAxis = true;
-    axis = new NormalAxis(0.4); // 軸
+    axis = new NormalAxis(10); // 軸
 
     obj_number = 1; // 初期識別子は1
 

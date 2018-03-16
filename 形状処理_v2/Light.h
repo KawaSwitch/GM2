@@ -12,8 +12,8 @@ private:
 
     // “K“–
     GLfloat lightDiffuse[4] = { 1.0, 1.0, 1.0, 1.0 }; // ŠgŽUŒõ
-    GLfloat lightAmbient[4] = { 0.0, 0.0, 0.0, 1.0 }; // ŠÂ‹«Œõ
-    GLfloat lightSpecular[4] = { 1.0, 1.0, 1.0, 1.0 }; // ‹¾–ÊŒõ
+    GLfloat lightAmbient[4] = { 1.0, 1.0, 1.0, 1.0 }; // ŠÂ‹«Œõ
+    GLfloat lightSpecular[4] = { 0.1f, 0.1f, 0.1f, 1.0 }; // ‹¾–ÊŒõ
     GLfloat* lightPosition; // ˆÊ’u
 
 public:
