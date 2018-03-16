@@ -140,6 +140,7 @@ public:
             }
 
             isRendered = true;
+            glutPostRedisplay();
         }
     }
 };
