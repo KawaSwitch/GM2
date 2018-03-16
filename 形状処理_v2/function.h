@@ -44,3 +44,8 @@
     GLOBAL void glLoadMatrixd(const Matrix3d& mat);
     GLOBAL void glMultMatrixd(const Matrix3d& mat);
     GLOBAL void glMaterialfv(GLenum face, GLenum pname, const GLdouble* params);
+
+// glUtil.cpp
+    GLOBAL void glVertex(const vector<Vector3d> vec);
+    GLOBAL void glVertex(const vector<Point3d> pnt);
+

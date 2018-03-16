@@ -5,6 +5,7 @@ void glVertex3d(const Point3d& pnt) { glVertex3d(pnt.X, pnt.Y, pnt.Z); }
 void glPointSize(const double size) { glPointSize((GLfloat)size); }
 void glLineWidth(const double width) { glLineWidth((GLfloat)width); }
 void glNormal3d(const Vector3d& vec) { glNormal3d(vec.X, vec.Y, vec.Z); }
+
 void glMultMatrixd(const Matrix3d& mat)
 {
     const double mat_arr[16] =
@@ -29,8 +30,21 @@ void glLoadMatrixd(const Matrix3d& mat)
 
     glLoadMatrixd(mat_arr);
 }
+
 void glMaterialfv(GLenum face, GLenum pname, const GLdouble params[4])
 {
     GLfloat color[4] = { (GLfloat)params[0], (GLfloat)params[1], (GLfloat)params[2], (GLfloat)params[3] };
     glMaterialfv(face, pname, color);
 }
+
+void glVertex(const vector<Vector3d> vec)
+{
+    for (auto it = vec.begin(); it != vec.end(); ++it)
+        glVertex3d(*it);
+}
+void glVertex(const vector<Point3d> pnt)
+{
+    for (auto it = pnt.begin(); it != pnt.end(); ++it)
+        glVertex3d(*it);
+}
+
