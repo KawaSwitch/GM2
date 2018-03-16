@@ -9,6 +9,7 @@
 #include "Picking.h"
 
 NormalAxis* axis; // 軸
+GeoGrid2D* grid; // グリッド
 Scene* scene; // シーン
 extern Scene* test_scene;
 
@@ -120,7 +121,8 @@ void Display()
                 glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
                 // 幾何グリッド描画
-                DrawGrid(GeoGrid2D());
+                if (isShowGrid)
+                    grid->Draw();
             }
         }
         glPopMatrix();
@@ -216,6 +218,7 @@ void ConsoleDiscription()
     puts("$ その他表示系");
     ShowButtonDiscription("ESC", "終了");
     ShowButtonDiscription("A", "軸表示トグル");
+    ShowButtonDiscription("G", "グリッド表示トグル");
     ShowButtonDiscription("I", "回転/移動を元に戻す");
     //ShowButtonDiscription("L", "ライティングトグル");
 

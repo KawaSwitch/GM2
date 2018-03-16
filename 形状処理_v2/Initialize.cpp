@@ -2,11 +2,13 @@
 #include "Scene.h"
 #include "Quaternion.h"
 #include "Axis.h"
+#include "GeoGrid.h"
 #include "Model.h"
 #include "Triangle.h"
 #include "Reader.h"
 
 extern NormalAxis* axis;
+extern GeoGrid2D* grid;
 extern Scene* scene;
 extern Scene* test_scene;
 
@@ -63,6 +65,11 @@ void Initialize()
         isUseLight = true; // 必要なところのみ処理を施す
     }
 
+    // グリッド初期化
+    isShowGrid = true;
+    grid = new GeoGrid2D(200, 5);
+
+    // 軸初期化
     isShowAxis = true;
     axis = new NormalAxis(10); // 軸
 

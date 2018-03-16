@@ -40,6 +40,9 @@ void Keyboard(unsigned char key, int x, int y)
         case 'a': // 軸表示トグル 
             isShowAxis = !isShowAxis;
             break;
+        case 'g': // グリッド表示トグル
+            isShowGrid = !isShowGrid;
+            break;
         case 'i': // 初期位置の表示に戻す
             isViewInitRequested = true;
             break;
