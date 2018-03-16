@@ -21,7 +21,7 @@ static vector<function<void(void)>> TestRegisterDraw
     //DrawBsplineFunctions, // Bスプライン基底関数描画
     //DrawBsplineCurves, // Bスプライン曲線描画
     //TestGetNearestPointCurveToCurve_CGS04, // 曲線と曲線の最近点群描画
-    TestGetNearestPointCurveToSurface_CGS04, // 曲線と曲面の最近点群描画
+    //TestGetNearestPointCurveToSurface_CGS04, // 曲線と曲面の最近点群描画
     //DrawCircle_CGS3, // Nurbs曲線で円描く
     //DrawSphere_CGS3, // Nurbs曲面で球を描く
     //DrawCylinder_CGS3, // Nurbs曲面で円柱を描く
@@ -36,101 +36,59 @@ void DrawApproxCurve_CGS4()
     BsplineCurve* curve1 = (BsplineCurve *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_curve_1.kjs");
     BsplineCurve* curve2 = (BsplineCurve *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_curve_2.kjs");
 
-    vector<Vector3d> passPnts;
-    vector<double> knots;
-    size_t size;
-    int ord;
+    // 近似曲線
+    Curve *curve1_remake, *curve2_remake;
+    Curve *curve1_remake_split, *curve2_remake_split;
 
     // 曲線1の近似(ノット位置のみ)
-    //knots = ((BsplineCurve *)curve1)->GetKnotVector();
-    //size = knots.size();
-    //ord = curve1->GetOrd();
-
-    //for (int i = 0; i < knots.size(); ++i)
-    //{
-    //    if ((i > 0 && i < ord) || (i >= knots.size() - ord && i < knots.size() - 1))
-    //        continue;
-
-    //    passPnts.push_back(curve1->GetPositionVector(knots[i]));
-    //}
-
-    //auto curve1_remake = curve1->GetCurveFromPoints(passPnts, Color::red, 3);
-    //passPnts.clear();
-
-    // 曲線2の近似(ノット位置のみ)
-    knots = ((BsplineCurve *)curve2)->GetKnotVector();
-    size = knots.size();
-    ord = curve2->GetOrd();
-
-    for (int i = 0; i < knots.size(); ++i)
     {
-        if ((i > 0 && i < ord) || (i >= knots.size() - ord && i < knots.size() - 1))
-            continue;
+        vector<Vector3d> passPnts;
+        passPnts = curve1->GetPointsByKnots();
+        DrawPoints(passPnts, Color::green, 10);
 
-        passPnts.push_back(curve2->GetPositionVector(knots[i]));
+        curve1_remake = curve1->GetCurveFromPoints(passPnts, Color::red, 3);
     }
-
-    auto curve2_remake = curve2->GetCurveFromPoints(passPnts, Color::red, 3);
-    passPnts.clear();
-
-    int seg_splitCnt;
-    double skip;
-
     // 曲線1の近似(ノット位置のみ + セグメント位置3分割)
-    //knots = ((BsplineCurve *)curve1)->GetKnotVector();
-    //size = knots.size();
-    //ord = curve1->GetOrd();
-    //auto seg_splitCnt = 3;
-    //auto skip = (knots[ord] - knots[0]) / (double)seg_splitCnt;
-
-    //for (int i = 0; i < knots.size(); ++i)
-    //{
-    //    if ((i > 0 && i < ord) || (i >= knots.size() - ord && i < knots.size() - 1))
-    //        continue;
-
-    //    passPnts.push_back(curve1->GetPositionVector(knots[i]));
-    //    if (i != knots.size() - 1)
-    //    {
-    //        for (int j = 1; j < seg_splitCnt; j++)
-    //            passPnts.push_back(curve1->GetPositionVector(knots[i] + skip * j));
-    //    }
-    //}
-
-    //auto curve1_remake_high = curve1->GetCurveFromPoints(passPnts, Color::pink, 3);
-    //passPnts.clear();
-
-    // 曲線2の近似(ノット位置のみ + セグメント位置3分割)
-    knots = ((BsplineCurve *)curve2)->GetKnotVector();
-    size = knots.size();
-    ord = curve2->GetOrd();
-    seg_splitCnt = 3;
-    skip = (knots[ord] - knots[0]) / (double)seg_splitCnt;
-
-    for (int i = 0; i < knots.size(); ++i)
     {
-        if ((i > 0 && i < ord) || (i >= knots.size() - ord && i < knots.size() - 1))
-            continue;
+        vector<Vector3d> passPnts;
+        passPnts = curve1->GetPointsByKnots(3);
+        vector<Vector3d> passPntsOnlyKnot;
+        passPntsOnlyKnot = curve1->GetPointsByKnots();
+        DrawPoints(passPntsOnlyKnot, Color::green, 10);
+        DrawPoints(passPnts, Color::pink, 10);
 
-        passPnts.push_back(curve2->GetPositionVector(knots[i]));
-        if (i != knots.size() - 1)
-        {
-            for (int j = 1; j < seg_splitCnt; j++)
-                passPnts.push_back(curve2->GetPositionVector(knots[i] + skip * j));
-        }
+        curve1_remake_split = curve1->GetCurveFromPoints(passPnts, Color::orange, 3);
     }
 
-    auto curve2_remake_high = curve2->GetCurveFromPoints(passPnts, Color::pink, 3);
-    passPnts.clear();
+    //// 曲線2の近似(ノット位置のみ)
+    //{
+    //    vector<Vector3d> passPnts;
+    //    passPnts = curve2->GetPointsByKnots();
+    //    DrawPoints(passPnts, Color::green, 10);
 
+    //    curve2_remake = curve2->GetCurveFromPoints(passPnts, Color::red, 3);
+    //}
+    //// 曲線2の近似(ノット位置のみ + セグメント位置3分割)
+    //{
+    //    vector<Vector3d> passPnts;
+    //    passPnts = curve2->GetPointsByKnots(3);
+    //    vector<Vector3d> passPntsOnlyKnot;
+    //    passPntsOnlyKnot = curve2->GetPointsByKnots();
+    //    DrawPoints(passPntsOnlyKnot, Color::green, 10);
+    //    DrawPoints(passPnts, Color::pink, 10);
+
+    //    curve2_remake_split = curve2->GetCurveFromPoints(passPnts, Color::orange, 3);
+    //}
 
     if (isFirst)
     {
-        //test_scene->AddObject(curve1);
-        test_scene->AddObject(curve2);
-        //test_scene->AddObject(curve1_remake);
-        test_scene->AddObject(curve2_remake);
-        //test_scene->AddObject(curve1_remake_high);
-        test_scene->AddObject(curve2_remake_high);
+        test_scene->AddObject(curve1);
+        test_scene->AddObject(curve1_remake);
+        test_scene->AddObject(curve1_remake_split);
+
+        //test_scene->AddObject(curve2);
+        //test_scene->AddObject(curve2_remake);
+        //test_scene->AddObject(curve2_remake_split);
     }
 }
 
