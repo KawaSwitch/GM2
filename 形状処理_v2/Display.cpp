@@ -112,10 +112,7 @@ void Display()
             glTranslated(dist_X, -dist_Y, dist_Z); // ˆÚ“®
 
             // ‰ñ“]’†S‚ðŽw’è‚µ‚Ä‰ñ“]
-            // ƒ‚ƒfƒ‹‚ðŒ´“_‚É–ß‚µ‚Ä‰ñ“]‚·‚é(s—ñ‚ÌŠ|‚¯ŽZ‚Í‹t!)
-            glTranslated(rotateCenter.X, rotateCenter.Y, rotateCenter.Z);
-            glMultMatrixd(rot_mat); // ‰ñ“]
-            glTranslated(-rotateCenter.X, -rotateCenter.Y, -rotateCenter.Z);
+            RotateAt(rot_mat, rotateCenter);
 
             // Œ`ó•`‰æ
             scene->Draw();

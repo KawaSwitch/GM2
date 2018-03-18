@@ -51,4 +51,5 @@
 // glUtil.cpp
     GLOBAL void glVertex(const vector<Vector3d> vec);
     GLOBAL void glVertex(const vector<Point3d> pnt);
+    GLOBAL void RotateAt(const double* mat, const Point3d center);
 

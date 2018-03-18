@@ -51,3 +51,11 @@ void glVertex(const vector<Point3d> pnt)
         glVertex3d(*it);
 }
 
+// ‰ñ“]’†S‚ğw’è‚µ‚Ä‰ñ“]
+void RotateAt(const double* mat, const Point3d center)
+{
+    // Œ´“_‚É–ß‚µ‚Ä‰ñ“]‚·‚é(s—ñ‚ÌŠ|‚¯Z‚Í‹t!)
+    glTranslated(center.X, center.Y, center.Z);
+    glMultMatrixd(mat);
+    glTranslated(-center.X, -center.Y, -center.Z);
+}
