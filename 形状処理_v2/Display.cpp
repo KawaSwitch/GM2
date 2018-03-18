@@ -58,6 +58,12 @@ void Display()
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
+        // 軸用ライトのみオンにする
+        for (const auto& light : modelLight)
+            light->Off();
+        for (const auto& light : axisLight)
+            light->On();
+
         glPushMatrix();
 
         glMultMatrixd(rot_mat); // 回転量はモデルと等しく
@@ -82,6 +88,12 @@ void Display()
         0.0, 0.0, 0.0,  // 注視位置
         0.0, 1.0, 0.0   // 上方向 : y
     );
+
+    // 形状用ライトのみオンにする
+    for (const auto& light : axisLight)
+        light->Off();
+    for (const auto& light : modelLight)
+        light->On();
 
 
     // 2. 形状描画

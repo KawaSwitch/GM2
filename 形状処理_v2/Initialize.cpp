@@ -55,12 +55,21 @@ void Initialize()
 
     // メインライト初期化
     {
-        mainLight[0] = new Light(GL_LIGHT0, 50, 0, 0);
-        mainLight[1] = new Light(GL_LIGHT0, 0, 50, 0);
-        mainLight[2] = new Light(GL_LIGHT0, 0, 0, 50);
+        lights.push_back(new Light(GL_LIGHT0, 50, 50, -50));
+        lights.push_back(new Light(GL_LIGHT1, 50, 0, 50));
+        lights.push_back(new Light(GL_LIGHT2, -50, -50, 0));
+        lights.push_back(new Light(GL_LIGHT3, 50, 50, 50));
+        lights.push_back(new Light(GL_LIGHT4, -50, -50, -50));
+        lights.push_back(new Light(GL_LIGHT4, -50, 0, 0));
 
-        for (int i = 0; i < 1; i++)
-            mainLight[i]->On();
+        // 軸用ライトの設定
+        for (const auto light : lights)
+            axisLight.push_back(light);
+        // 形状用ライトの設定
+        {
+            modelLight.push_back(lights[0]);
+            modelLight.push_back(lights[1]);
+        }
 
         isUseLight = true; // 必要なところのみ処理を施す
     }

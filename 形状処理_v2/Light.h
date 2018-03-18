@@ -11,21 +11,21 @@ private:
     GLenum lightNum;
 
     // 適当
-    GLfloat lightDiffuse[4] = { 1.0, 1.0, 1.0, 1.0 }; // 拡散光
-    GLfloat lightAmbient[4] = { 1.0, 1.0, 1.0, 1.0 }; // 環境光
-    GLfloat lightSpecular[4] = { 0.1f, 0.1f, 0.1f, 1.0 }; // 鏡面光
+    GLfloat lightDiffuse[4] = { 0.7f, 0.7f, 0.7f, 1.0f }; // 拡散光
+    GLfloat lightAmbient[4] = { 0.1f, 0.1f, 0.1f, 1.0f }; // 環境光
+    GLfloat lightSpecular[4] = { 0.2f, 0.2f, 0.2f, 1.0f }; // 鏡面光
     GLfloat* lightPosition; // 位置
 
 public:
 
     // 光源オン
-    void On()
+    void On() const
     {
         glEnable(lightNum);
     }
 
     // 光源オフ
-    void Off()
+    void Off() const
     {
         glDisable(lightNum);
     }
@@ -37,6 +37,7 @@ public:
         GLfloat pos[4] = { (GLfloat)posX, (GLfloat)posY, (GLfloat)posZ, 1.0 };
         lightPosition = pos;
 
+        // ライト設定
         glLightfv(lightNum, GL_POSITION, lightPosition);
         glLightfv(lightNum, GL_DIFFUSE, lightDiffuse);
         glLightfv(lightNum, GL_AMBIENT, lightAmbient);

@@ -48,5 +48,6 @@ GLOBAL bool isViewInitRequested; // 画面表示を初期に戻すか
 GLOBAL Quaternion target;
 GLOBAL Quaternion current;
 
-// メインライト
-GLOBAL Light* mainLight[3];
+// ライト
+GLOBAL vector<Light *> lights;
+GLOBAL vector<Light *> axisLight, modelLight;
