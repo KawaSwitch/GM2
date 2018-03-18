@@ -148,3 +148,7 @@ $RECYCLE.BIN/
 
 # original
 KJS_FILE/
+UnitTestCalc/
+*.VC.VC.opendb
+*.VC.db
+packages/
