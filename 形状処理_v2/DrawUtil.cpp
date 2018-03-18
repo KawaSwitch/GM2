@@ -3,7 +3,7 @@
 // “_ŒQ‚ð•`‰æ‚·‚é
 void DrawPoints(vector<Vector3d> vec, GLdouble* color, GLdouble pSize)
 {
-    glColor3dv(color);
+    glColor4dv(color);
     glPointSize(pSize);
 
     glBegin(GL_POINTS);
@@ -17,7 +17,7 @@ void DrawPoints(vector<Vector3d> vec, GLdouble* color, GLdouble pSize)
 }
 void DrawPoints(vector<Point3d> pnt, GLdouble* color, GLdouble pSize)
 {
-    glColor3dv(color);
+    glColor4dv(color);
     glPointSize(pSize);
 
     glBegin(GL_POINTS);

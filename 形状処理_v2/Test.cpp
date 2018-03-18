@@ -363,7 +363,7 @@ void TestGetNearestPointCurveToCurve_CGS04()
     glLineWidth(1.0);
     glPointSize(5.0);
     glBegin(GL_LINES);
-    glColor3dv(Color::orange);
+    glColor4dv(Color::orange);
     for (int i = 0; i < (int)ref_pnts.size(); i++)
     {
         glVertex3d(ref_pnts[i]);
@@ -372,11 +372,11 @@ void TestGetNearestPointCurveToCurve_CGS04()
     glEnd();
 
     glBegin(GL_POINTS);
-    glColor3dv(Color::red);
+    glColor4dv(Color::red);
     for (int i = 0; i < (int)ref_pnts.size(); i++)
         glVertex3d(ref_pnts[i]);
 
-    glColor3dv(Color::light_green);
+    glColor4dv(Color::light_green);
     for (int i = 0; i < (int)nearest_pnts.size(); i++)
         glVertex3d(nearest_pnts[i]);
     glEnd();
@@ -408,7 +408,7 @@ void TestGetNearestPointCurveToSurface_CGS04()
     glLineWidth(1.0);
     glPointSize(5.0);
     glBegin(GL_LINES);
-    glColor3dv(Color::orange);
+    glColor4dv(Color::orange);
     for (int i = 0; i < (int)ref_pnts.size(); i++)
     {
         glVertex3d(ref_pnts[i]);
@@ -417,11 +417,11 @@ void TestGetNearestPointCurveToSurface_CGS04()
     glEnd();
 
     glBegin(GL_POINTS);
-    glColor3dv(Color::red);
+    glColor4dv(Color::red);
     for (int i = 0; i < (int)ref_pnts.size(); i++)
         glVertex3d(ref_pnts[i]);
 
-    glColor3dv(Color::light_green);
+    glColor4dv(Color::light_green);
     for (int i = 0; i < (int)nearest_pnts.size(); i++)
         glVertex3d(nearest_pnts[i]);
     glEnd();

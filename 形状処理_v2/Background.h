@@ -37,16 +37,16 @@ struct BackgroundNormal : IBackGround
 
         // TODO: きちんと求めたい
         // 透視投影のモデル行列初期値(単位行列)のときのz成分に合わせただけ
-        glColor3dv(color_topLeft);
+        glColor4dv(color_topLeft);
         glVertex3d(-R * aspectForWidth, R * aspectForHeight, 0);
 
-        glColor3dv(color_topRight);
+        glColor4dv(color_topRight);
         glVertex3d(R * aspectForWidth, R * aspectForHeight, 0);
 
-        glColor3dv(color_btmRight);
+        glColor4dv(color_btmRight);
         glVertex3d(R * aspectForWidth, -R * aspectForHeight, 0);
 
-        glColor3dv(color_btmLeft);
+        glColor4dv(color_btmLeft);
         glVertex3d(-R * aspectForWidth, -R * aspectForHeight, 0);
 
         glEnd();

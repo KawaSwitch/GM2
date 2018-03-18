@@ -125,7 +125,7 @@ void BsplineSurface::DrawMeshInternal()
     Vector3d pnt;
 
     // メッシュの色は3dvで渡した方が綺麗(α=0)
-    glColor3dv(_color);
+    glColor4dv(_color);
     glLineWidth(_mesh_width);
 
     // U方向
@@ -391,14 +391,14 @@ void BsplineSurface::DrawFirstDiffVectorsInternal()
             double v = (double)j / 100;
 
             // U方向
-            glColor3dv(Color::red); // 赤
+            glColor4dv(Color::red); // 赤
             pnt = GetPositionVector(u, v);
             diff = GetFirstDiffVectorU(u, v).Normalize();
             glVertex3d(pnt);
             glVertex3d(pnt + diff);
 
             // V方向
-            glColor3dv(Color::green); // 緑
+            glColor4dv(Color::green); // 緑
             diff = GetFirstDiffVectorV(u, v).Normalize();
             glVertex3d(pnt);
             glVertex3d(pnt + diff);
@@ -463,7 +463,7 @@ void BsplineSurface::DrawNormalVectorsInternal()
             double v = (double)j / 100;
 
             // 法線
-            glColor3dv(Color::blue); // 青
+            glColor4dv(Color::blue); // 青
             pnt = GetPositionVector(u, v);
             normal = GetNormalVector(u, v).Normalize();
             glVertex3d(pnt);
@@ -493,14 +493,14 @@ void BsplineSurface::DrawCurvatureVectorsInternal()
             curv = GetCurvatureVector(u, v);
 
             // 曲率半径
-            glColor3dv(Color::pink); // ピンク
+            glColor4dv(Color::pink); // ピンク
             glBegin(GL_LINES);
             glVertex3d(pnt);
             glVertex3d(pnt + curv);
             glEnd();
 
             // 曲率中心
-            glColor3dv(Color::light_green); // 黄緑
+            glColor4dv(Color::light_green); // 黄緑
             glBegin(GL_POINTS);
             glVertex3d(pnt + curv);
             glEnd();

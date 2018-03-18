@@ -20,7 +20,7 @@ BezierCurve::BezierCurve(int mord, ControlPoint* cp, int cp_size, GLdouble* colo
 // éñëOï`âÊ
 void BezierCurve::PreDraw()
 {
-    glColor3dv(_color);
+    glColor4dv(_color);
     glLineWidth(_width);
 
     glBegin(GL_LINE_STRIP);
@@ -58,7 +58,7 @@ void BezierCurve::CreateVBO()
 // VBOÇ≈ï`âÊ
 void BezierCurve::DrawVBO()
 {
-    glColor3dv(_color);
+    glColor4dv(_color);
     glLineWidth(_width);
 
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
@@ -77,7 +77,7 @@ void BezierCurve::DrawFirstDiffVectorsInternal()
 {
     Vector3d pnt, diff;
 
-    glColor3dv(Color::red);
+    glColor4dv(Color::red);
     glLineWidth(1.0);
     glBegin(GL_LINES);
 
@@ -99,7 +99,7 @@ void BezierCurve::DrawSecondDiffVectorsInternal()
 {
     Vector3d pnt, diff;
 
-    glColor3dv(Color::blue);
+    glColor4dv(Color::blue);
     glLineWidth(1.0);
     glBegin(GL_LINES);
 
@@ -121,7 +121,7 @@ void BezierCurve::DrawNormalVectorsInternal()
 {
     Vector3d pnt, normal;
 
-    glColor3dv(Color::blue);
+    glColor4dv(Color::blue);
     glLineWidth(1.0);
     glBegin(GL_LINES);
 
@@ -154,14 +154,14 @@ void BezierCurve::DrawCurvatureVectorsInternal()
         curv = GetCurvatureVector(t);
 
         // ã»ó¶îºåaï`âÊ
-        glColor3dv(Color::pink);
+        glColor4dv(Color::pink);
         glBegin(GL_LINES);
         glVertex3d(pnt);
         glVertex3d(pnt + curv);
         glEnd();
 
         // ã»ó¶íÜêSï`âÊ
-        glColor3dv(Color::light_green);
+        glColor4dv(Color::light_green);
         glBegin(GL_POINTS);
         glVertex3d(pnt + curv);
         glEnd();

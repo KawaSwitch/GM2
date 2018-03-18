@@ -16,12 +16,12 @@ private:
         glBegin(GL_LINES);
         {
             // xé≤
-            glColor3dv(Color::red);
+            glColor4dv(Color::red);
             glVertex2d(-_len, 0);
             glVertex2d(_len, 0);
 
             // yé≤
-            glColor3dv(Color::blue);
+            glColor4dv(Color::blue);
             glVertex2d(0, -_len);
             glVertex2d(0, _len);
         }

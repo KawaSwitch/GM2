@@ -63,7 +63,7 @@ void BsplineCurve::PreDraw()
 {
     Vector3d pnt;
 
-    glColor3dv(_color);
+    glColor4dv(_color);
     glLineWidth(_width);
     glBegin(GL_LINE_STRIP);
 
@@ -100,7 +100,7 @@ void BsplineCurve::CreateVBO()
 // VBOÇ≈ï`âÊ
 void BsplineCurve::DrawVBO()
 {
-    glColor3dv(_color);
+    glColor4dv(_color);
     glLineWidth(_width);
 
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
@@ -119,7 +119,7 @@ void BsplineCurve::DrawFirstDiffVectorsInternal()
 {
     Vector3d pnt, diff;
 
-    glColor3dv(Color::red);
+    glColor4dv(Color::red);
     glLineWidth(1.0);
     glBegin(GL_LINES);
 
@@ -141,7 +141,7 @@ void BsplineCurve::DrawSecondDiffVectorsInternal()
 {
     Vector3d pnt, diff;
 
-    glColor3dv(Color::blue);
+    glColor4dv(Color::blue);
     glLineWidth(1.0);
     glBegin(GL_LINES);
 
@@ -163,7 +163,7 @@ void BsplineCurve::DrawNormalVectorsInternal()
 {
     Vector3d pnt, normal;
 
-    glColor3dv(Color::blue);
+    glColor4dv(Color::blue);
     glLineWidth(1.0);
     glBegin(GL_LINES);
 
@@ -196,14 +196,14 @@ void BsplineCurve::DrawCurvatureVectorsInternal()
         curv = GetCurvatureVector(t);
 
         // ã»ó¶îºåaï`âÊ
-        glColor3dv(Color::pink);
+        glColor4dv(Color::pink);
         glBegin(GL_LINES);
         glVertex3d(pnt);
         glVertex3d(pnt + curv);
         glEnd();
 
         // ã»ó¶íÜêSï`âÊ
-        glColor3dv(Color::light_green);
+        glColor4dv(Color::light_green);
         glBegin(GL_POINTS);
         glVertex3d(pnt + curv);
         glEnd();

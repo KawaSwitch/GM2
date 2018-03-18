@@ -186,7 +186,7 @@ void ShowRotateCenter(bool isRotating)
         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
         // •`‰æ
-        glColor3dv(Color::orange);
+        glColor4dv(Color::orange);
         glPointSize(10.0);
         glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, Color::orange);
 
