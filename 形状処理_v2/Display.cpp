@@ -113,9 +113,9 @@ void Display()
 
             // ‰ñ“]’†S‚ðŽw’è‚µ‚Ä‰ñ“]
             // ƒ‚ƒfƒ‹‚ðŒ´“_‚É–ß‚µ‚Ä‰ñ“]‚·‚é(s—ñ‚ÌŠ|‚¯ŽZ‚Í‹t!)
-            glTranslated(rotateCenter.X, rotateCenter.Y, 0);
+            glTranslated(rotateCenter.X, rotateCenter.Y, rotateCenter.Z);
             glMultMatrixd(rot_mat); // ‰ñ“]
-            glTranslated(-rotateCenter.X, -rotateCenter.Y, 0);
+            glTranslated(-rotateCenter.X, -rotateCenter.Y, -rotateCenter.Z);
 
             // Œ`ó•`‰æ
             scene->Draw();
