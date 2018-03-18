@@ -110,5 +110,16 @@ void NormalAxis::DrawInternal()
     gluCylinder(arrows[2], _length / 10, 0.0f, _length / 4, 25, 25);
     glPopMatrix();
 
+    // Origin
+    if (isUseLight)
+    {
+        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, Color::orange);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
+    }
+    else
+        glColor4dv(Color::orange);
+
+    glutSolidSphere(_length / 20, 30, 30);
+
     glLineWidth(1.0);
 }
