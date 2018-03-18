@@ -134,7 +134,6 @@ double Curve::CalcDifferency(Curve* other)
     // doubleŒ^‚ÌŒë·l—¶
     for (double t = _min_draw_param; t < _max_draw_param + skip / 2; t += skip)
         sumDistance += this->GetPositionVector(t).DistanceFrom(other->GetPositionVector(t));
-
     // ‘Šˆá‹——£‚Ì•½‹Ï‚ğ•Ô‚·
     return sumDistance / (double)checkCnt;
 }

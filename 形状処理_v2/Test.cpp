@@ -60,25 +60,34 @@ void DrawApproxCurve_CGS4()
         curve1_remake_split = curve1->GetCurveFromPoints(passPnts, Color::orange, 3);
     }
 
-    //// 曲線2の近似(ノット位置のみ)
-    //{
-    //    vector<Vector3d> passPnts;
-    //    passPnts = curve2->GetPointsByKnots();
-    //    DrawPoints(passPnts, Color::green, 10);
+    printf("曲線1と近似曲線の相違距離平均\n");
+    printf("ノット位置のみ:    %f\n", curve1->CalcDifferency(curve1_remake));
+    printf("セグメント位置も:  %f\n", curve1->CalcDifferency(curve1_remake_split));
+    printf("\n");
 
-    //    curve2_remake = curve2->GetCurveFromPoints(passPnts, Color::red, 3);
-    //}
-    //// 曲線2の近似(ノット位置のみ + セグメント位置3分割)
-    //{
-    //    vector<Vector3d> passPnts;
-    //    passPnts = curve2->GetPointsByKnots(3);
-    //    vector<Vector3d> passPntsOnlyKnot;
-    //    passPntsOnlyKnot = curve2->GetPointsByKnots();
-    //    DrawPoints(passPntsOnlyKnot, Color::green, 10);
-    //    DrawPoints(passPnts, Color::pink, 10);
+    // 曲線2の近似(ノット位置のみ)
+    {
+        vector<Vector3d> passPnts;
+        passPnts = curve2->GetPointsByKnots();
+        DrawPoints(passPnts, Color::green, 10);
 
-    //    curve2_remake_split = curve2->GetCurveFromPoints(passPnts, Color::orange, 3);
-    //}
+        curve2_remake = curve2->GetCurveFromPoints(passPnts, Color::red, 3);
+    }
+    // 曲線2の近似(ノット位置のみ + セグメント位置3分割)
+    {
+        vector<Vector3d> passPnts;
+        passPnts = curve2->GetPointsByKnots(3);
+        vector<Vector3d> passPntsOnlyKnot;
+        passPntsOnlyKnot = curve2->GetPointsByKnots();
+        DrawPoints(passPntsOnlyKnot, Color::green, 10);
+        DrawPoints(passPnts, Color::pink, 10);
+
+        curve2_remake_split = curve2->GetCurveFromPoints(passPnts, Color::orange, 3);
+    }
+
+    printf("曲線2と近似曲線の相違距離平均\n");
+    printf("ノット位置のみ:    %f\n", curve2->CalcDifferency(curve2_remake));
+    printf("セグメント位置も:  %f\n", curve2->CalcDifferency(curve2_remake_split));
 
     if (isFirst)
     {
@@ -86,9 +95,9 @@ void DrawApproxCurve_CGS4()
         test_scene->AddObject(curve1_remake);
         test_scene->AddObject(curve1_remake_split);
 
-        //test_scene->AddObject(curve2);
-        //test_scene->AddObject(curve2_remake);
-        //test_scene->AddObject(curve2_remake_split);
+        test_scene->AddObject(curve2);
+        test_scene->AddObject(curve2_remake);
+        test_scene->AddObject(curve2_remake_split);
     }
 }
 
