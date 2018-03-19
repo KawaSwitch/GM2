@@ -115,6 +115,7 @@ void Scene::Draw()
     // リスト全描画
     while (it != ObjList.end())
     {
+        (*it)->DrawControlPointsAndLines(); // 制御点描画
         (*it)->DrawFirstDiffVectors(); // 接線描画
         (*it)->DrawSecondDiffVectors(); // 2階微分ベクトル描画
         (*it)->DrawBox(); // ミニマクスボックス描画
@@ -123,7 +124,6 @@ void Scene::Draw()
 
         // TODO: 制御点はモデルと同じ色にする ← 一時的に！
         (*it)->Draw(); // モデル描画
-        (*it)->DrawControlPointsAndLines(); // 制御点描画
 
         // 削除フラグチェック
         if ((*it)->IsDeleteFlagRaised())

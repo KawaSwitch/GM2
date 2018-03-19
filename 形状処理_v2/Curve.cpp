@@ -15,7 +15,7 @@ void Curve::SetControlPoint(ControlPoint* cp, int size)
 // êßå‰ì_ï`âÊ
 void Curve::DrawCPsInternal()
 {
-    //glColor3d(1.0, 0.0, 0.0); // ê‘
+    glColor3d(1.0, 0.0, 0.0); // ê‘
     glPointSize(10.0);
     glLineWidth(1.0);
 
