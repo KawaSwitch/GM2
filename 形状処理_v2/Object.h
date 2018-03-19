@@ -109,7 +109,7 @@ public:
     void DrawBoxInternal()
     {
         Box box(_ctrlp);
-        box.Draw(Color::orange, 1.0);
+        box.Draw(Color::light_blue, 1.0);
     }
 
     // トグルチェンジ

@@ -73,6 +73,7 @@ enum class StencilRef
     Background = 0, // 背景は0(初期値)
     Grid,
     Entity, // 曲線・曲面用
+    HiddenLine, // 陰線
     RotateCenter, // 回転中心
     Axis,
     Ignore, // 意味なし Keepして使うのを想定

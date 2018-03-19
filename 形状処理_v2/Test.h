@@ -1,5 +1,6 @@
 #pragma once
 
+void TestRegister();
 void TestDraw();
 
 // 参照曲線上に離散点を生成し, それを外部点として最近点を求める

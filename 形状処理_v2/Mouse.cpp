@@ -16,14 +16,14 @@ void Mouse(int button, int state, int x, int y)
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
     {
 #ifdef _DEBUG
-        // ピクセルのデプス値を取得
-        float z = GetDepth(x, y);
+        //// ピクセルのデプス値を取得
+        //float z = GetDepth(x, y);
 
-        // 押下場所の座標値を取得
-        auto coord = GetWorldCoord(x, y, z);
+        //// 押下場所の座標値を取得
+        //auto coord = GetWorldCoord(x, y, z);
 
-        printf("mouse : x, y, depth : %d %d %f\n", x, y, z);
-        printf("world : x, y, z : %f %f %f\n\n", coord.X, coord.Y, coord.Z);
+        //printf("mouse : x, y, depth : %d %d %f\n", x, y, z);
+        //printf("world : x, y, z : %f %f %f\n\n", coord.X, coord.Y, coord.Z);
 #endif
 
         // マウスボタンを押した位置を記憶

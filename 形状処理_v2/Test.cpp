@@ -10,6 +10,7 @@
 static int current_size; // 現在のテスト用のディスプレイリスト数
 static int* displayLists; // ディスプレイリスト保管用ポインタ
 static bool isFirst = true;
+static bool isRegistered = false;
 
 Scene* test_scene;
 
@@ -29,7 +30,7 @@ static vector<function<void(void)>> TestRegisterDraw
 };
 
 // 近似して曲線を描画
-void DrawApproxCurve_CGS4()
+static void DrawApproxCurve_CGS4()
 {
     auto reader = new KjsReader("");
 
@@ -60,10 +61,10 @@ void DrawApproxCurve_CGS4()
         curve1_remake_split = curve1->GetCurveFromPoints(passPnts, Color::orange, 3);
     }
 
-    printf("曲線1と近似曲線の相違距離平均\n");
-    printf("ノット位置のみ:    %f\n", curve1->CalcDifferency(curve1_remake));
-    printf("セグメント位置も:  %f\n", curve1->CalcDifferency(curve1_remake_split));
-    printf("\n");
+    //printf("曲線1と近似曲線の相違距離平均\n");
+    //printf("ノット位置のみ:    %f\n", curve1->CalcDifferency(curve1_remake));
+    //printf("セグメント位置も:  %f\n", curve1->CalcDifferency(curve1_remake_split));
+    //printf("\n");
 
     // 曲線2の近似(ノット位置のみ)
     {
@@ -85,9 +86,9 @@ void DrawApproxCurve_CGS4()
         curve2_remake_split = curve2->GetCurveFromPoints(passPnts, Color::orange, 3);
     }
 
-    printf("曲線2と近似曲線の相違距離平均\n");
-    printf("ノット位置のみ:    %f\n", curve2->CalcDifferency(curve2_remake));
-    printf("セグメント位置も:  %f\n", curve2->CalcDifferency(curve2_remake_split));
+    //printf("曲線2と近似曲線の相違距離平均\n");
+    //printf("ノット位置のみ:    %f\n", curve2->CalcDifferency(curve2_remake));
+    //printf("セグメント位置も:  %f\n", curve2->CalcDifferency(curve2_remake_split));
 
     if (isFirst)
     {
@@ -102,7 +103,7 @@ void DrawApproxCurve_CGS4()
 }
 
 // Nurbs曲面で円柱を描く
-void DrawCylinder_CGS3()
+static void DrawCylinder_CGS3()
 {
     // よくないけど無理やり求めた
     double cp1_p[2] = { 5, 5 * sqrt(3) };
@@ -156,7 +157,7 @@ void DrawCylinder_CGS3()
 }
 
 // Nurbs曲面で球を描く
-void DrawSphere_CGS3()
+static void DrawSphere_CGS3()
 {
     ControlPoint cp0[9]
     {
@@ -297,7 +298,7 @@ void DrawSphere_CGS3()
 }
 
 // Nurbs曲線で円を描く
-void DrawCircle_CGS3()
+static void DrawCircle_CGS3()
 {
     ControlPoint cp0[3]
     {
@@ -342,7 +343,7 @@ void DrawCircle_CGS3()
 
 // 参照曲線上に離散点を生成し, それを外部点として最近点を求める
 // レジメ第04回_05月A.docx
-void TestGetNearestPointCurveToCurve_CGS04()
+static void TestGetNearestPointCurveToCurve_CGS04()
 {
     auto reader = new KjsReader("");
 
@@ -438,14 +439,14 @@ void TestGetNearestPointCurveToSurface_CGS04()
 static double knot_a[10] = { -3, -2, -1, 0, 1, 2, 3, 4, 5, 6 };
 static double knot_b[10] = { 0, 0, 0, 0, 1, 2, 3, 3, 3, 3 };
 static double knot_c[10] = { 0, 0, 0, 0, 1, 1, 3, 3, 3, 3 };
-void DrawBsplineFunctions()
+static void DrawBsplineFunctions()
 {
     // 別のとこでディスプレイリストをstaticで使ってるので同時には書けない
     //DrawBsplineFunc(4, 6, 10, knot_a, -3.0, 6.0);
     DrawBsplineFunc(4, 6, 10, knot_b, 0.0, 3.0);
     //DrawBsplineFunc(4, 6, 10, knot_c, 0.0, 3.0);
 }
-void DrawBsplineCurves()
+static void DrawBsplineCurves()
 {
     static ControlPoint cp[6] =
     {
@@ -467,35 +468,45 @@ void DrawBsplineCurves()
     C->DrawAsItIsWithCPs();
 }
 
-// テスト描画メイン
+// テスト描画
 void TestDraw()
 {
-    // 初回はディスプレイリスト作成
-    if (isFirst)
+    if (isRegistered)
     {
-        for (int i = 0; i < (int)TestRegisterDraw.size(); i++)
-        {
-            displayLists = (int *)realloc(displayLists, sizeof(int) * ++current_size);
-            displayLists[i] = glGenLists(1);
-
-            glNewList(displayLists[i], GL_COMPILE);
-            TestRegisterDraw[i]();
-            glEndList();
-        }
-
-        isFirst = false;
-        glutPostRedisplay();
-    }
-    // それ以外はコール
-    else
-    {
+        // 全ディスプレイリストコール
         for (int i = 0; i < (int)TestRegisterDraw.size(); i++)
         {
             if (displayLists[i])
                 glCallList(displayLists[i]);
         }
+
+        // テストシーン描画
+        test_scene->Draw();
+    }
+    else
+    {
+        Error::ShowMessage(
+            "テスト用ディスプレイリスト未作成",
+            "自動で作成しますが, 適切な場所に登録関数を置くことを推奨します.");
+
+        TestRegister();
+        glutPostRedisplay();
+    }
+}
+
+// ディスプレイリストに描画を登録する(描画前に手動で呼び出すことを推奨)
+void TestRegister()
+{
+    for (int i = 0; i < (int)TestRegisterDraw.size(); i++)
+    {
+        displayLists = (int *)realloc(displayLists, sizeof(int) * ++current_size);
+        displayLists[i] = glGenLists(1);
+
+        glNewList(displayLists[i], GL_COMPILE);
+        TestRegisterDraw[i]();
+        glEndList();
     }
 
-    // テストシーン描画
-    test_scene->Draw();
+    isFirst = false;
+    isRegistered = true;
 }

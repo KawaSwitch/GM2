@@ -13,7 +13,9 @@ GeoGrid2D* grid; // グリッド
 Scene* scene; // シーン
 extern Scene* test_scene;
 
-Point3d rotateCenter; // 回転中心
+static Box* coverBox; // 全体のボックス
+static Point3d rotateCenter; // 回転中心
+static bool isFirst = true;
 
 void Display()
 {
@@ -106,7 +108,12 @@ void Display()
         glPushMatrix();
         {
             // 起動最初の描画で回転中心をウィンドウ中心にする
-            SetRotateCenter();
+            if (isFirst)
+            {
+                TestRegister(); // 事前に登録しておく
+                SetRotateCenter();
+            }
+
             glTranslated(-rotateCenter.X, -rotateCenter.Y, -rotateCenter.Z);
 
             glTranslated(dist_X, -dist_Y, dist_Z); // 移動
@@ -150,7 +157,7 @@ void Display()
 
     glDisable(GL_STENCIL_TEST); // ステンシル無効化
 
-    //isFirst = false;
+    isFirst = false;
     glutSwapBuffers();
 }
 
@@ -164,8 +171,9 @@ void SetRotateCenter()
     // TODO: いつか画面中心で回転させたい
     sceneBoxes.push_back(scene->GetCoverBound());
     sceneBoxes.push_back(test_scene->GetCoverBound());
+    coverBox = new Box(sceneBoxes);
+    auto center = coverBox->Center();
 
-    auto center = Box(sceneBoxes).Center();
     rotateCenter = Point3d(center.X, center.Y, center.Z);
 }
 // 回転中心を表示します
@@ -173,26 +181,47 @@ void ShowRotateCenter(bool isRotating)
 {
     if (rotate_flag)
     {
-        SetRotateCenter();
-
         // ライティングは切っておく
         if (glIsEnabled(GL_LIGHTING))
             glDisable(GL_LIGHTING);
 
-        glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::RotateCenter), 0xFF);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-
-        // 描画
+        // 中心点描画 デプス値は評価しない
         glColor4dv(Color::orange);
         glPointSize(10.0);
         glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, Color::orange);
 
-        // デプス値は評価しない
+        glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::RotateCenter), 0xFF);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
         glDisable(GL_DEPTH_TEST);
         glBegin(GL_POINTS);
         glVertex3d(rotateCenter);
         glEnd();
         glEnable(GL_DEPTH_TEST);
+
+        // カバーボックス描画  形状の後ろにあれば点線表示
+        glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::Entity), 0xFF);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+        coverBox->Draw(Color::orange, 2.0); // 普通に描画
+
+        // 陰線は破線表示
+        {
+            glStencilFunc(GL_GREATER, static_cast<int>(StencilRef::HiddenLine), 0xFF);
+            glStencilOp(GL_KEEP, GL_REPLACE, GL_KEEP);
+            coverBox->Draw(Color::orange, 2.0); // 陰線判定用
+
+            glStencilFunc(GL_EQUAL, static_cast<int>(StencilRef::HiddenLine), 0xFF);
+            glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+            glEnable(GL_LINE_STIPPLE);
+            glLineStipple(1, 0xF0F0);
+
+            // デプス値は評価しない
+            glDisable(GL_DEPTH_TEST);
+            coverBox->Draw(Color::orange, 1.5);
+            glEnable(GL_DEPTH_TEST);
+
+            glDisable(GL_LINE_STIPPLE);
+        }
 
         glPointSize(1.0);
     }
