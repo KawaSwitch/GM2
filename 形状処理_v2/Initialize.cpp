@@ -49,6 +49,7 @@ void Initialize()
     glClearStencil(0); // ステンシル値は0で初期化
 
     glEnable(GL_DEPTH_TEST); // デプス値 有効化
+    glDepthFunc(GL_LESS);
 
     glEnable(GL_BLEND); // ブレンド 有効化
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

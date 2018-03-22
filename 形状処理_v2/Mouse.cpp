@@ -8,8 +8,6 @@
 
 extern Scene* scene;
 
-extern void SetMatrix(Matrix3d);
-
 void Mouse(int button, int state, int x, int y)
 {
     // ‰EF‰ñ“]
@@ -87,14 +85,7 @@ void Motion(int x, int y)
             // ‰ñ“]Œã‚Ìp¨
             Quaternion after = { dy * theta, dx * theta, 0.0, cos(radian) };
 
-            //after = after.Normalize();
-            //current = current.Normalize();
             target = after * current;
-            //target = target.Normalize();
-            //target = after;
-
-
-            //SetMatrix(scene_mat.RotateAt(after, center));
             CalcRotateMatrix(rot_mat, target);
         }
     }
@@ -115,8 +106,6 @@ void Motion(int x, int y)
 
         xStart = x;
         yStart = y;
-
-        //SetMatrix(scene_mat.Translate(dist_X, -dist_Y, 0));
     }
 
     glutPostRedisplay();
@@ -129,8 +118,6 @@ void Wheel(int wheel_num, int direction, int x, int y)
         dist_Z += 2.0;
     else if (direction == -1)
         dist_Z -= 2.0;
-
-    //SetMatrix(scene_mat.Translate(0, 0, dist_Z));
 
     glutPostRedisplay();
 }

@@ -19,6 +19,7 @@ public:
     static GLdouble green_alpha[];
     static GLdouble blue_alpha[];
 
+    static GLdouble white[];
     static GLdouble black[];
     static GLdouble black_alpha[];
 

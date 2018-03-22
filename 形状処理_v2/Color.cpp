@@ -14,5 +14,6 @@ GLdouble Color::pink_alpha[4] = { 1.0, 0.0, 1.0, 0.7 };
 GLdouble Color::green_alpha[4] = { 0.0, 0.5, 0.0, 0.7 };
 GLdouble Color::blue_alpha[4] = { 0.4, 0.4, 1.0, 0.7 };
 
+GLdouble Color::white[4] = { 1.0, 1.0, 1.0, 1.0 };
 GLdouble Color::black[4] = { 0.0, 0.0, 0.0, 1.0 };
 GLdouble Color::black_alpha[4] = { 0.0, 0.0, 0.0, 0.7 };

@@ -4,6 +4,7 @@
 #include <gl/freeglut.h>
 #include <math.h>
 #include <functional>
+#include <memory>
 #include "define.h"
 #include "EPS.h"
 #include "Error.h"

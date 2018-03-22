@@ -20,6 +20,7 @@ class NormalAxis : public Axis
 {
 private:
     void DrawInternal();
+    void DrawCharacter();
 
 public:
     NormalAxis(double len) : Axis(len) { }
