@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+
 #include "GV.h"
 #include "Callback.h"
 #include "GeoGrid.h"
@@ -17,6 +19,11 @@ static Box* coverBox; // 全体のボックス
 static Point3d rotateCenter; // 回転中心
 static bool isFirst = true;
 
+// 透視投影定数
+static const double fovy = 30; // y方向の視野角
+static const double zNear = 0.1;
+static const double zFar = 10000;
+
 void Display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -25,7 +32,7 @@ void Display()
     if (isViewInitRequested)
     {
         InitQuaternion(); // 回転姿勢を初期化
-        dist_X = dist_Y = dist_Z = 0.0; // 移動を初期化
+        dist_X = dist_Y = 0.0; // 移動を初期化
 
         glutPostRedisplay();
         isViewInitRequested = false;
@@ -80,14 +87,14 @@ void Display()
 
     // 変換行列を全体用に指定しなおす
     glMatrixMode(GL_PROJECTION);
-    glLoadIdentity(); // TODO: この辺nearとかfarとかも変数置いて一括管理がいい
-    gluPerspective(30.0, (GLdouble)width / height, 0.1, 10000.0);
+    glLoadIdentity();
+    gluPerspective(fovy, (GLdouble)width / height, zNear, zFar);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(
-        0.0, 0.0, 100.0,  // 視点位置
-        0.0, 0.0, 0.0,  // 注視位置
+        0.0, 0.0, 0.0,  // 視点位置
+        0.0, 0.0, -1.0,  // 注視位置
         0.0, 1.0, 0.0   // 上方向 : y
     );
 
@@ -110,8 +117,9 @@ void Display()
             // 起動最初の描画で回転中心をウィンドウ中心にする
             if (isFirst)
             {
-                TestRegister(); // 事前に登録しておく
+                TestRegister(); // 事前に登録しておく               
                 SetRotateCenter();
+                UpdateLookAtZ(coverBox);
             }
 
             glTranslated(-rotateCenter.X, -rotateCenter.Y, -rotateCenter.Z);
@@ -121,10 +129,13 @@ void Display()
             // 回転中心を指定して回転
             RotateAt(rot_mat, rotateCenter);
 
-            // 形状描画
-            scene->Draw();
+            //if (isFirst)
+            //    FitScreen(coverBox); // 起動最初はフィット
+
             // テスト描画
             TestDraw();
+            // 形状描画
+            scene->Draw();
 
             // 回転中心描画
             ShowRotateCenter(rotate_flag);
@@ -225,6 +236,81 @@ void ShowRotateCenter(bool isRotating)
 
         glPointSize(1.0);
     }
+}
+
+// 視点のZ位置をボックスから決定し更新します
+void UpdateLookAtZ(const Box* const box)
+{
+    double boxHalfX = (box->MaxX() - box->MinX()) / 2;
+    double boxHalfY = (box->MaxY() - box->MinY()) / 2;
+    double boxHalfZ = (box->MaxZ() - box->MinZ()) / 2;
+    double boxLongerHalfEdge = (boxHalfX > boxHalfY) ? boxHalfX : boxHalfX;
+    double boxAspectForFit = (boxHalfX > boxHalfY) ? (boxHalfX / boxHalfY) : (boxHalfY / boxHalfX);
+
+    double ratio; // 仰角に対する縦横比倍率
+
+    // ウィンドウにぴったり収まるような縦横比倍率を場合分け
+    if (width > height)
+        ratio = boxHalfX / boxHalfY;
+    else
+        ratio = (double)width / height;
+
+    // ボックス前面からカメラまでの距離
+    double distToBoxFront = boxHalfX / std::tan(ratio * (fovy / 2) * (M_PI / 180));
+
+    // カメラは原点に置いたままワールドを反対方向に動かす
+    double cameraZ = boxHalfZ + distToBoxFront;
+    dist_Z = -(cameraZ + boxHalfZ / 2); // ちょっと余裕を持たせておく
+}
+
+// ワールド座標のボックスをウィンドウ座標へ変換する
+void GetLocalBox(const Box* const boxWorld, Box2d* const boxLocal)
+{
+    // ミニマクスボックスの各頂点
+    // TODO: BoxとBox2dに一貫性がないので改良すべき
+    Point3d points[8] =
+    {
+        Point3d(boxWorld->MinX(), boxWorld->MinY(), boxWorld->MinZ()),
+        Point3d(boxWorld->MaxX(), boxWorld->MinY(), boxWorld->MinZ()),
+        Point3d(boxWorld->MinX(), boxWorld->MaxY(), boxWorld->MinZ()),
+        Point3d(boxWorld->MaxX(), boxWorld->MaxY(), boxWorld->MinZ()),
+        Point3d(boxWorld->MinX(), boxWorld->MinY(), boxWorld->MaxZ()),
+        Point3d(boxWorld->MaxX(), boxWorld->MinY(), boxWorld->MaxZ()),
+        Point3d(boxWorld->MinX(), boxWorld->MaxY(), boxWorld->MaxZ()),
+        Point3d(boxWorld->MaxX(), boxWorld->MaxY(), boxWorld->MaxZ()),
+    };
+
+    // ウィンドウ座標におけるモデルの表示範囲
+    boxLocal->MaxX = -DBL_MAX;
+    boxLocal->MaxY = -DBL_MAX;
+    boxLocal->MinX = DBL_MAX;
+    boxLocal->MinY = DBL_MAX;
+    for (const auto& p : points)
+    {
+        boxLocal->MaxX = std::fmax(boxLocal->MaxX, p.X);
+        boxLocal->MaxY = std::fmax(boxLocal->MaxY, p.Y);
+        boxLocal->MinX = std::fmin(boxLocal->MinY, p.X);
+        boxLocal->MinY = std::fmin(boxLocal->MinY, p.Y);
+    }
+}
+// 指定ボックスが画面いっぱいに表示されるようズームする
+void FitScreen(const Box* const box)
+{
+    Point3d pnts[1] = { Point3d(0, 0, 0), };
+
+    // ウィンドウ座標のモデルの表示範囲
+    Box2d boxLocal;
+    GetLocalBox(box, &boxLocal);
+
+    // 画面いっぱいに表示されるようにズームする
+    double C = 1.05; // 調整用定数
+    double w = boxLocal.MaxX - boxLocal.MinX;
+    double h = boxLocal.MaxY - boxLocal.MinY;
+    double w_per_window = w / width;
+    double h_per_window = h / height;
+    double zoom = 1.0 / (std::fmax(w_per_window, h_per_window) * C);
+
+    dist_Z = -(zoom);
 }
 
 // コンソールに説明を表示します

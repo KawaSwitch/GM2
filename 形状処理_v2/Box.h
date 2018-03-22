@@ -13,6 +13,13 @@ private:
 
 public:
 
+    double MinX() const { return _xmin; }
+    double MinY() const { return _ymin; }
+    double MinZ() const { return _zmin; }
+    double MaxX() const { return _xmax; }
+    double MaxY() const { return _ymax; }
+    double MaxZ() const { return _zmax; }
+
     // ボックスの体積
     double Volume()
     {
@@ -43,7 +50,7 @@ public:
     void Draw(GLdouble* color, GLdouble width)
     {
         glColor4dv(color);
-        glLineWidth(width);
+        glLineWidth((GLfloat)width);
 
         glBegin(GL_LINE_LOOP);
         glVertex3d(_xmin, _ymin, _zmin);
@@ -123,5 +130,35 @@ public:
 
         _xmin = xmin; _ymin = ymin; _zmin = zmin;
         _xmax = xmax; _ymax = ymax;  _zmax = zmax;
+    }
+};
+
+// 2次元 ボックス
+struct Box2d
+{
+public:
+
+    double MinX, MinY;
+    double MaxX, MaxY;
+
+public:
+
+    Box2d() { MinX = 0; MinY = 0; MaxX = 0; MaxY = 0; }
+
+    Box2d(double minX, double minY, double maxX, double maxY)
+    {
+        MinX = minX;
+        MinY = minY;
+        MaxX = maxX;
+        MaxY = maxY;
+    }
+
+    Point<double> Center()
+    {
+        return Point<double> 
+        {
+            (MinX + MaxX) / 2.0,
+            (MinY + MaxY) / 2.0 
+        };
     }
 };
