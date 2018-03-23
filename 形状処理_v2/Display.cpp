@@ -28,7 +28,7 @@ void Display()
     if (isViewInitRequested)
     {
         InitQuaternion(); // 回転姿勢を初期化
-        dist_X = dist_Y = 0.0; // 移動を初期化
+        dist_X = dist_Y = 0.0; // 移動を初期化(Z方向を除く)
 
         glutPostRedisplay();
         isViewInitRequested = false;
@@ -287,7 +287,7 @@ void ConsoleDiscription()
     ShowButtonDiscription("ESC", "終了");
     ShowButtonDiscription("A", "軸表示トグル");
     ShowButtonDiscription("G", "グリッド表示変更");
-    ShowButtonDiscription("I", "回転/移動を元に戻す");
+    ShowButtonDiscription("I", "回転/移動(奥行以外)を元に戻す");
     //ShowButtonDiscription("L", "ライティングトグル");
 
     puts("\n");
