@@ -1,5 +1,13 @@
+#define _USE_MATH_DEFINES
+
 #include "GV.h"
 #include "ControlPoint.h"
+#include <cmath>
+
+// 度数法から弧度法に変換する
+double ToRad(double degree) { return degree * M_PI / 180; }
+// 弧度法から度数法に変換する
+double ToDeg(double radian) { return radian * 180 / M_PI; }
 
 // 2次方程式 ax^2 + bx + c = 0 の 2解x1,x2 を求める
 // 虚数解の場合 x1 ± x2i を満たす x1,x2 を求める

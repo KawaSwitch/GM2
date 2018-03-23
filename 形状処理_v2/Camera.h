@@ -1,23 +1,19 @@
 #pragma once
 
-#include "LookAt.h"
-#include "Ortho.h"
-#include "Box.h"
-
-// ƒJƒƒ‰
-class Camera
+// “§‹“Š‰e’è”
+struct PersParam
 {
-private:
-
-    LookAt _lookAt;
-    Ortho _ortho;
-
-    Point3d _rotateCenter; // ‰ñ“]’†S
-
-public:
-
-    Camera()
-    {
-        
-    }
+    static const double fovy; // y•ûŒü‚Ì‹–ìŠp
+    static const double zNear;
+    static const double zFar;
 };
+
+// “Š‰e–@
+enum ProjectType
+{
+    Perspective,    // “§‹“Š‰e
+    Ortho,          // •½s“Š‰e
+};
+
+extern ProjectType mainProjType; // ƒƒCƒ“ƒrƒ…[‚Ì“Š‰e–@
+extern ProjectType axisProjType; // ²‚Ì“Š‰e–@

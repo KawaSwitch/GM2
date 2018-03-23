@@ -9,6 +9,7 @@
 #include "BsplineCurve.h"
 #include "Test.h"
 #include "Picking.h"
+#include "Camera.h"
 
 NormalAxis* axis; // 軸
 GeoGrid2D* grid; // グリッド
@@ -18,11 +19,6 @@ extern Scene* test_scene;
 static Box* coverBox; // 全体のボックス
 static Point3d rotateCenter; // 回転中心
 static bool isFirst = true;
-
-// 透視投影定数
-static const double fovy = 30; // y方向の視野角
-static const double zNear = 0.1;
-static const double zFar = 10000;
 
 void Display()
 {
@@ -88,7 +84,7 @@ void Display()
     // 変換行列を全体用に指定しなおす
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(fovy, (GLdouble)width / height, zNear, zFar);
+    gluPerspective(PersParam::fovy, (GLdouble)width / height, PersParam::zNear, PersParam::zFar);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -117,20 +113,18 @@ void Display()
             // 起動最初の描画で回転中心をウィンドウ中心にする
             if (isFirst)
             {
-                TestRegister(); // 事前に登録しておく               
+                TestRegister(); // 事前に登録しておく 
+
                 SetRotateCenter();
-                UpdateLookAtZ(coverBox);
+                UpdateLookAtZ(coverBox); // フィット
             }
 
             glTranslated(-rotateCenter.X, -rotateCenter.Y, -rotateCenter.Z);
 
-            glTranslated(dist_X, -dist_Y, dist_Z); // 移動
+            glTranslated(dist_X, dist_Y, dist_Z); // 移動
 
             // 回転中心を指定して回転
             RotateAt(rot_mat, rotateCenter);
-
-            //if (isFirst)
-            //    FitScreen(coverBox); // 起動最初はフィット
 
             // テスト描画
             TestDraw();
@@ -256,61 +250,11 @@ void UpdateLookAtZ(const Box* const box)
         ratio = (double)width / height;
 
     // ボックス前面からカメラまでの距離
-    double distToBoxFront = boxHalfX / std::tan(ratio * (fovy / 2) * (M_PI / 180));
+    double distToBoxFront = boxHalfX / std::tan(ratio * (PersParam::fovy / 2) * (M_PI / 180));
 
     // カメラは原点に置いたままワールドを反対方向に動かす
     double cameraZ = boxHalfZ + distToBoxFront;
     dist_Z = -(cameraZ + boxHalfZ / 2); // ちょっと余裕を持たせておく
-}
-
-// ワールド座標のボックスをウィンドウ座標へ変換する
-void GetLocalBox(const Box* const boxWorld, Box2d* const boxLocal)
-{
-    // ミニマクスボックスの各頂点
-    // TODO: BoxとBox2dに一貫性がないので改良すべき
-    Point3d points[8] =
-    {
-        Point3d(boxWorld->MinX(), boxWorld->MinY(), boxWorld->MinZ()),
-        Point3d(boxWorld->MaxX(), boxWorld->MinY(), boxWorld->MinZ()),
-        Point3d(boxWorld->MinX(), boxWorld->MaxY(), boxWorld->MinZ()),
-        Point3d(boxWorld->MaxX(), boxWorld->MaxY(), boxWorld->MinZ()),
-        Point3d(boxWorld->MinX(), boxWorld->MinY(), boxWorld->MaxZ()),
-        Point3d(boxWorld->MaxX(), boxWorld->MinY(), boxWorld->MaxZ()),
-        Point3d(boxWorld->MinX(), boxWorld->MaxY(), boxWorld->MaxZ()),
-        Point3d(boxWorld->MaxX(), boxWorld->MaxY(), boxWorld->MaxZ()),
-    };
-
-    // ウィンドウ座標におけるモデルの表示範囲
-    boxLocal->MaxX = -DBL_MAX;
-    boxLocal->MaxY = -DBL_MAX;
-    boxLocal->MinX = DBL_MAX;
-    boxLocal->MinY = DBL_MAX;
-    for (const auto& p : points)
-    {
-        boxLocal->MaxX = std::fmax(boxLocal->MaxX, p.X);
-        boxLocal->MaxY = std::fmax(boxLocal->MaxY, p.Y);
-        boxLocal->MinX = std::fmin(boxLocal->MinY, p.X);
-        boxLocal->MinY = std::fmin(boxLocal->MinY, p.Y);
-    }
-}
-// 指定ボックスが画面いっぱいに表示されるようズームする
-void FitScreen(const Box* const box)
-{
-    Point3d pnts[1] = { Point3d(0, 0, 0), };
-
-    // ウィンドウ座標のモデルの表示範囲
-    Box2d boxLocal;
-    GetLocalBox(box, &boxLocal);
-
-    // 画面いっぱいに表示されるようにズームする
-    double C = 1.05; // 調整用定数
-    double w = boxLocal.MaxX - boxLocal.MinX;
-    double h = boxLocal.MaxY - boxLocal.MinY;
-    double w_per_window = w / width;
-    double h_per_window = h / height;
-    double zoom = 1.0 / (std::fmax(w_per_window, h_per_window) * C);
-
-    dist_Z = -(zoom);
 }
 
 // コンソールに説明を表示します

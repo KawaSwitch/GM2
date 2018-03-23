@@ -11,10 +11,11 @@
     GLOBAL void ConsoleDiscription();
     GLOBAL void SetRotateCenter();
     GLOBAL void ShowRotateCenter(bool isRotating);
-    GLOBAL void FitScreen(const Box* const box);
     GLOBAL void UpdateLookAtZ(const Box* const box);
 
 // CalcUtil.cpp
+    GLOBAL double ToRad(double degree);
+    GLOBAL double ToDeg(double radian);
     GLOBAL void SolveQuadraticEquation(double a, double b, double c, double* x1, double* x2);
     GLOBAL double CalcBernsteinFunc(unsigned int i, unsigned int N, double t);
     GLOBAL double Calc1DiffBernsteinFunc(unsigned int i, unsigned int N, double t);

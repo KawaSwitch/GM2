@@ -101,7 +101,7 @@ void Motion(int x, int y)
         if (move_flag == GL_TRUE)
         {
             dist_X += xdis * a * a * a * a * a;
-            dist_Y += ydis * a * a * a * a * a;
+            dist_Y -= ydis * a * a * a * a * a; // ウィンドウ座標系に合わせる
         }
 
         xStart = x;

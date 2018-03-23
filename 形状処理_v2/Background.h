@@ -1,5 +1,8 @@
 #pragma once
+
+#include "GV.h"
 #include "Picking.h"
+#include "Camera.h"
 
 static GLdouble color_topLeft[4] = { 1.0, 0.9, 0.9, 1.0 };
 static GLdouble color_topRight[4] = { 0.9, 1.0, 0.9, 1.0 };
@@ -25,32 +28,43 @@ struct BackgroundNormal : IBackGround
 {
     void Draw() const override
     {
-        // デプス値は無効
-        //glDisable(GL_DEPTH_TEST);
+        double elev_angle = PersParam::fovy / 2; // 仰角(度数法)
+        double backHeightHalf, backWidthHalf; // 背景の大きさ(原点からの長さ)
 
-        const double R = 2.5 * ((double)100 / 9); // 描画半径
-        double aspect = (double)width / height;
-        double aspectForWidth = aspect;
-        double aspectForHeight = (aspect > 1.0) ? aspect : (double)1 / aspect;
+        glPushMatrix();
+        {
+            // 視体積に合うように背景の大きさと位置を決定する
+            // 現状メインビューは透視投影のみ
+            if (mainProjType == ProjectType::Perspective)
+            {
+                backHeightHalf = PersParam::zNear * std::tan(ToRad(elev_angle));
+                backWidthHalf = PersParam::zNear * std::tan(ToRad(elev_angle * ((GLdouble)width / height)));
 
-        glBegin(GL_QUADS);
+                // 視錐体の前面に設定する
+                // NOTE: 後面だとなぜかずらす必要があったので前面にした
+                glTranslated(0, 0, -PersParam::zNear);
+            }
+            else
+                Error::ShowAndExit("背景設定不可", "投影法が無効な値です");
 
-        // TODO: きちんと求めたい
-        // 透視投影のモデル行列初期値(単位行列)のときのz成分に合わせただけ
-        glColor4dv(color_topLeft);
-        glVertex3d(-R * aspectForWidth, R * aspectForHeight, 0);
 
-        glColor4dv(color_topRight);
-        glVertex3d(R * aspectForWidth, R * aspectForHeight, 0);
+            // 背景描画
+            glBegin(GL_QUADS);
 
-        glColor4dv(color_btmRight);
-        glVertex3d(R * aspectForWidth, -R * aspectForHeight, 0);
+            glColor4dv(color_topLeft);
+            glVertex3d(-backWidthHalf, backHeightHalf, 0);
 
-        glColor4dv(color_btmLeft);
-        glVertex3d(-R * aspectForWidth, -R * aspectForHeight, 0);
+            glColor4dv(color_topRight);
+            glVertex3d(backWidthHalf, backHeightHalf, 0);
 
-        glEnd();
+            glColor4dv(color_btmRight);
+            glVertex3d(backWidthHalf, -backHeightHalf, 0);
 
-       //glEnable(GL_DEPTH_TEST);
+            glColor4dv(color_btmLeft);
+            glVertex3d(-backWidthHalf, -backHeightHalf, 0);
+
+            glEnd();
+        }
+        glPopMatrix();
     }
 };

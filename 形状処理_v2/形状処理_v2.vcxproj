@@ -126,6 +126,7 @@
     <ClCompile Include="BsplineCurve.cpp" />
     <ClCompile Include="BsplineSurface.cpp" />
     <ClCompile Include="CalcUtil.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Curve.cpp" />
     <ClCompile Include="Display.cpp" />
@@ -167,14 +168,12 @@
     <ClInclude Include="GeoGrid.h" />
     <ClInclude Include="GV.h" />
     <ClInclude Include="Light.h" />
-    <ClInclude Include="LookAt.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Matrix3d.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="NurbsCurve.h" />
     <ClInclude Include="NurbsSurface.h" />
     <ClInclude Include="Object.h" />
-    <ClInclude Include="Ortho.h" />
     <ClInclude Include="Picking.h" />
     <ClInclude Include="Point3d.h" />
     <ClInclude Include="Quaternion.h" />

@@ -227,6 +227,9 @@
     <ClCompile Include="..\形状処理_v2\glUtil.cpp">
       <Filter>ソース ファイル\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\形状処理_v2\Camera.cpp">
+      <Filter>ソース ファイル\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

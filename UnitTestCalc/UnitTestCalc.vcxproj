@@ -202,6 +202,7 @@
     <ClCompile Include="..\形状処理_v2\BsplineCurve.cpp" />
     <ClCompile Include="..\形状処理_v2\BsplineSurface.cpp" />
     <ClCompile Include="..\形状処理_v2\CalcUtil.cpp" />
+    <ClCompile Include="..\形状処理_v2\Camera.cpp" />
     <ClCompile Include="..\形状処理_v2\Color.cpp" />
     <ClCompile Include="..\形状処理_v2\Curve.cpp" />
     <ClCompile Include="..\形状処理_v2\Display.cpp" />
