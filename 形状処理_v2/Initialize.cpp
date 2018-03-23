@@ -6,6 +6,7 @@
 #include "Model.h"
 #include "Triangle.h"
 #include "Reader.h"
+#include "Axis.h"
 
 extern NormalAxis* axis;
 extern GeoGrid2D* grid;
@@ -80,7 +81,7 @@ void Initialize()
     grid = new GeoGrid2D(200, 5);
 
     // ²‰Šú‰»
-    isShowAxis = true;
+    axisShowType = AxisShowType::Normal;
     axis = new NormalAxis(10); // ²
 
     obj_number = 1; // ‰Šú¯•Êq‚Í1

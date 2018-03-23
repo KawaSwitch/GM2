@@ -1,6 +1,7 @@
 #include "GV.h"
 #include "Callback.h"
 #include "Scene.h"
+#include "Axis.h"
 
 extern Scene* scene;
 extern Scene* test_scene;
@@ -37,8 +38,22 @@ void Keyboard(unsigned char key, int x, int y)
             test_scene->ToggleDrawBox();
             break;
 
-        case 'a': // 軸表示トグル 
-            isShowAxis = !isShowAxis;
+        case 'a': // 軸表示変更
+            switch (axisShowType)
+            {
+            case AxisShowType::None:
+                axisShowType = AxisShowType::Normal;
+                break;
+            case AxisShowType::Normal:
+                axisShowType = AxisShowType::WithLabel;
+                break;
+            case AxisShowType::WithLabel:
+                axisShowType = AxisShowType::None;
+                break;
+            default:
+                Error::ShowMessage("軸表示設定エラー");
+                break;
+            }
             break;
         case 'g': // グリッド表示変更
             switch (gridType)
@@ -53,6 +68,7 @@ void Keyboard(unsigned char key, int x, int y)
                     gridType = GridType::InVisible;
                     break;
                 default:
+                    Error::ShowMessage("グリッド表示設定エラー");
                     break;
             }
             break;

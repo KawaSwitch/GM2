@@ -37,7 +37,6 @@ void Display()
     glEnable(GL_STENCIL_TEST); // ステンシル有効化
 
     // 1.軸描画
-    if (isShowAxis)
     {
         // 軸の型取り
         glStencilFunc(GL_ALWAYS, static_cast<int>(StencilRef::Axis), 0xFF);
@@ -285,7 +284,7 @@ void ConsoleDiscription()
 
     puts("$ その他表示系");
     ShowButtonDiscription("ESC", "終了");
-    ShowButtonDiscription("A", "軸表示トグル");
+    ShowButtonDiscription("A", "軸表示変更");
     ShowButtonDiscription("G", "グリッド表示変更");
     ShowButtonDiscription("I", "回転/移動(奥行以外)を元に戻す");
     //ShowButtonDiscription("L", "ライティングトグル");

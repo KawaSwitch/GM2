@@ -3,6 +3,16 @@
 #include "GV.h"
 #include "Object.h"
 
+// 軸の表示タイプ
+enum AxisShowType
+{
+    None,  // 表示しない
+    Normal, // 普通に描画
+    WithLabel, // XYZラベルも描画
+};
+
+extern AxisShowType axisShowType;
+
 class Axis
 {
 protected:
@@ -15,7 +25,7 @@ public:
     double GetLength() { return _length + _length / 4; }
 };
 
-// Cggl風の軸
+// ソリッド軸
 class NormalAxis : public Axis
 {
 private:

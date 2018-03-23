@@ -1,11 +1,13 @@
 #include "Axis.h"
 #include "Color.h"
 
+AxisShowType axisShowType = AxisShowType::None;
+
 void NormalAxis::Draw()
 {
     // ディスプレイリスト
     static int displayList;
-    static int displayListChar; // 文字用
+    static int displayListLabel; // 文字用
     static bool isRendered = false;
 
     if (isUseLight)
@@ -14,8 +16,15 @@ void NormalAxis::Draw()
     if (isRendered)
     {
         // ディスプレイリスト作成済みならコール
-        glCallList(displayList);
-        glCallList(displayListChar);
+
+        if (axisShowType != AxisShowType::None)
+        {
+            glCallList(displayList);
+
+            // ラベル表示
+            if (axisShowType == AxisShowType::WithLabel)
+                glCallList(displayListLabel);
+        }
     }
     else // 初回は登録
     {
@@ -35,10 +44,10 @@ void NormalAxis::Draw()
 
         // 文字
         {
-            if (!(displayListChar = glGenLists(1)))
+            if (!(displayListLabel = glGenLists(1)))
                 Error::ShowAndExit("ディスプレイリスト作成失敗");
 
-            glNewList(displayListChar, GL_COMPILE);
+            glNewList(displayListLabel, GL_COMPILE);
 
             glEnable(GL_DEPTH_TEST);
             this->DrawCharacter();
