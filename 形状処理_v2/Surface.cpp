@@ -13,15 +13,15 @@ void Surface::SetControlPoint(ControlPoint* cp, int size)
     for (int i = 0; i < size; i++)
         _ctrlp.emplace_back(cp[i]);
 
-    // ŒvŽZ—p‚É“]’u‚·‚é(‚à‚Á‚ÆŒ©‰h‚¦‚ª‚¢‚¢‚â‚è•û‚ª—~‚µ‚¢)
+    // ŒvŽZ—p‚ÉŠe¬•ªŠ„‚èU‚é
     for (int i = 0; i < _ncpntU; i++)
     {
         for (int j = 0; j < _ncpntV; j++)
         {
-            _ctrlpX.push_back(_ctrlp[j * _ncpntU + i].X);
-            _ctrlpY.push_back(_ctrlp[j * _ncpntU + i].Y);
-            _ctrlpZ.push_back(_ctrlp[j * _ncpntU + i].Z);
-            _weight.push_back(_ctrlp[j * _ncpntU + i].W);
+            _ctrlpX.push_back(_ctrlp[i * _ncpntV + j].X);
+            _ctrlpY.push_back(_ctrlp[i * _ncpntV + j].Y);
+            _ctrlpZ.push_back(_ctrlp[i * _ncpntV + j].Z);
+            _weight.push_back(_ctrlp[i * _ncpntV + j].W);
         }
     }
 }
@@ -58,15 +58,16 @@ Vector3d Surface::CalcVectorWithBasisFunctions(double* BF_array_U, double* BF_ar
         ctrlpY_w.push_back(_ctrlpY[i] * _weight[i]);
         ctrlpZ_w.push_back(_ctrlpZ[i] * _weight[i]);
     }
-    
-    MatrixMultiply(1, _ncpntU, _ncpntV, BF_array_U, &ctrlpX_w[0], temp);
-    retVec.X = MatrixMultiply(_ncpntV, temp, BF_array_V);
 
-    MatrixMultiply(1, _ncpntU, _ncpntV, BF_array_U, &ctrlpY_w[0], temp);
-    retVec.Y = MatrixMultiply(_ncpntV, temp, BF_array_V);
+    // s—ñŒvŽZ‚Í‹t‚©‚çI
+    MatrixMultiply(1, _ncpntV, _ncpntU, BF_array_V, &ctrlpX_w[0], temp);
+    retVec.X = MatrixMultiply(_ncpntU, temp, BF_array_U);
 
-    MatrixMultiply(1, _ncpntU, _ncpntV, BF_array_U, &ctrlpZ_w[0], temp);
-    retVec.Z = MatrixMultiply(_ncpntV, temp, BF_array_V);
+    MatrixMultiply(1, _ncpntV, _ncpntU, BF_array_V, &ctrlpY_w[0], temp);
+    retVec.Y = MatrixMultiply(_ncpntU, temp, BF_array_U);
+
+    MatrixMultiply(1, _ncpntV, _ncpntU, BF_array_V, &ctrlpZ_w[0], temp);
+    retVec.Z = MatrixMultiply(_ncpntU, temp, BF_array_U);
 
     return retVec;
 }
@@ -77,10 +78,10 @@ double Surface::CalcWeightWithBasisFunctions(double* BF_array_U, double* BF_arra
 {
     double temp[100]; // ŒvŽZ—p
 
-    MatrixMultiply(1, _ncpntU, _ncpntV, BF_array_U, &_weight[0], temp);
-    return MatrixMultiply(_ncpntV, temp, BF_array_V);
+    // s—ñŒvŽZ‚Í‹t‚©‚çI
+    MatrixMultiply(1, _ncpntV, _ncpntU, BF_array_V, &_weight[0], temp);
+    return MatrixMultiply(_ncpntU, temp, BF_array_U);
 }
-
 
 // Žw’è‚µ‚½’[‚Ì‹Èü‚Ì§Œä“_‚ðŽæ“¾‚·‚é
 vector<ControlPoint> Surface::GetEdgeCurveControlPoint(SurfaceEdge edge)
