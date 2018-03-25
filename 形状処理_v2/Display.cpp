@@ -71,7 +71,9 @@ void Display()
         glPushMatrix();
 
         glMultMatrixd(rot_mat); // ‰ñ“]—Ê‚Íƒ‚ƒfƒ‹‚Æ“™‚µ‚­
-        axis->Draw();
+
+        if (axisShowType != AxisShowType::None)
+            axis->Draw();
 
         glPopMatrix();
     }
