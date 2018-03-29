@@ -16,7 +16,7 @@ void NormalAxis::Draw()
     if (isRendered)
     {
         // ディスプレイリスト作成済みならコール
-        if (axisShowType != AxisShowType::Normal)
+        if (axisShowType != AxisShowType::None)
         {
             glCallList(displayList);
 
