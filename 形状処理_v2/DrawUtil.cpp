@@ -15,20 +15,6 @@ void DrawPoints(vector<Vector3d> vec, GLdouble* color, GLdouble pSize)
 
     glPointSize(1.0); // –ß‚µ‚Ä‚¨‚­
 }
-void DrawPoints(vector<Point3d> pnt, GLdouble* color, GLdouble pSize)
-{
-    glColor4dv(color);
-    glPointSize(pSize);
-
-    glBegin(GL_POINTS);
-    {
-        for (auto it = pnt.begin(); it != pnt.end(); ++it)
-            glVertex3d((*it));
-    }
-    glEnd();
-
-    glPointSize(1.0); // –ß‚µ‚Ä‚¨‚­
-}
 
 // Šî’êŠÖ”‚ğ•`‰æ‚·‚é
 void DrawBsplineFunc(int mord, int ncpnt, int nknot, double* knot, double min_t, double max_t)

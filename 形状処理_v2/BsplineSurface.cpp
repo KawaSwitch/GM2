@@ -1,10 +1,11 @@
 #include "BsplineSurface.h"
 #include "BsplineCurve.h"
+#include <iterator>
 
 BsplineSurface::BsplineSurface(
     int u_mord, int v_mord, ControlPoint* cp, 
     int u_cp_size, int v_cp_size, double* u_knot, double* v_knot,
-    GLdouble* color, GLdouble resol)
+    const GLdouble* const color, const GLdouble resol)
 {
     _ordU = u_mord;
     _ordV = v_mord;
@@ -567,4 +568,380 @@ Vector3d BsplineSurface::GetSecondDiffVectorVV(double u, double v)
 {
     // u:0-diff v:2-diff
     return CalcVector(u, v, CalcBsplineFunc, Calc2DiffBsplineFunc);
+}
+
+// ノットベクトルをもとにして点群を取得する
+// splitSegCnt: セグメントを何分割するかの回数(デフォルトは1 = 分割しない)
+vector<vector<Vector3d>> BsplineSurface::GetPointsByKnots(int splitSegCnt_U, int splitSegCnt_V)
+{
+    vector<vector<Vector3d>> pnts; // pnts[v][u]と並べる
+
+    double skip;
+    vector<double> knotsU, knotsV; // 点群を取得するパラメータ
+
+    // U方向パラメータ位置
+    {
+        for (int i = _ordU - 1, kn = _knotU.size(); i < kn - _ordU; ++i)
+        {
+            skip = (_knotU[i + 1] - _knotU[i]) / (double)splitSegCnt_U;
+            
+            for (int j = 0; j < splitSegCnt_U; ++j)
+                knotsU.push_back(_knotU[i] + skip * j);
+        }
+        knotsU.push_back(_knotU[_knotU.size() - _ordU]);
+    }
+    // V方向パラメータ位置
+    {
+        for (int i = _ordV - 1, kn = _knotV.size(); i < kn - _ordV; ++i)
+        {
+            skip = (_knotV[i + 1] - _knotV[i]) / (double)splitSegCnt_V;
+
+            for (int j = 0; j < splitSegCnt_V; ++j)
+                knotsV.push_back(_knotV[i] + skip * j);
+        }
+        knotsV.push_back(_knotV[_knotV.size() - _ordV]);
+    }
+
+    // 位置ベクトルを求める
+    for (int j = 0, kv_size = knotsV.size(); j < kv_size; ++j)
+    {
+        vector<Vector3d> p_vec;
+        p_vec.reserve(knotsU.size());
+
+        for (int i = 0, ku_size = knotsU.size(); i < ku_size; ++i)
+            p_vec.emplace_back(GetPositionVector(knotsU[i], knotsV[j]));
+
+        pnts.push_back(p_vec);
+    }
+
+    return pnts;
+}
+
+// 通過点が正しくセットされているか
+// U方向/V方向の点の数がそれぞれ等しいかをチェックする
+bool IsPassingPntsSetCorrectly(const vector<vector<Vector3d>>& pnts)
+{
+    if (pnts.size() < 1)
+        return false;
+
+    // 内側(u方向)だけ調べればよい
+    for (const auto& u_pnts : pnts)
+    {
+        if (pnts[0].size() != u_pnts.size())
+            return false;
+    }
+
+    // すべて同じ個数なら正しい(n×m個)
+    return true;
+}
+
+// 通過点と階数からノットベクトルを算出する
+void CalcKnotVectorByPassingPnts(const vector<Vector3d>& pnts, const int ord, vector<double>* knot)
+{
+    if (knot == nullptr)
+    {
+        Error::ShowAndExit("ヌルポインタ");
+        return;
+    }
+
+    // ノット列サイズは制御点数と階数の和
+    knot->resize((pnts.size() + ord - 2) + ord);
+
+    vector<double> seg_dist; // セグメント間の距離
+    seg_dist.resize(pnts.size() - 1);
+
+    double minParam = 0.0;
+    double maxParam = 1.0;
+    double paramRange = fabs(maxParam - minParam);
+
+    // 通過点間の距離の総和
+    double sum = 0.0;
+    for (size_t i = 0, n = pnts.size(); i < n - 1; ++i)
+    {
+        seg_dist[i] = pnts[i].DistanceFrom(pnts[i + 1]);
+        sum += seg_dist[i];
+    }
+
+    // ノット間隔の割合は通過点間の距離に比例させる
+    for (size_t i = 0, n = knot->size(); i < n; ++i)
+    {
+        if (i < ord) // 最初は階数分重ねる
+            (*knot)[i] = minParam;
+        else if (i < knot->size() - ord) // 距離に比例
+        {
+            (*knot)[i] = (*knot)[i - 1] + (seg_dist[i - ord] / sum) * paramRange;
+        }
+        else // 最後も階数分重ねる
+            (*knot)[i] = maxParam;
+    }
+}
+
+// 複数のノット列を正規化する
+void NormalizeKnotVector(const vector<vector<double>>& knot_array, const int ord, vector<double>* knot_normal)
+{
+    if (knot_normal == nullptr)
+    {
+        Error::ShowAndExit("ヌルポインタ");
+        return;
+    }
+    if (knot_array.size() < 1)
+    {
+        Error::ShowAndExit("空指定");
+        return;
+    }
+
+    // 正規化前は0番目のノット列で初期化しておく
+    knot_normal->resize(knot_array[0].size());
+    for (size_t i = 0, n = knot_array[0].size(); i < n; ++i)
+        (*knot_normal)[i] = knot_array[0][i];
+
+    // 必要な個所(階数無視)を正規化する
+    for (size_t col = ord, n = knot_array[0].size(); col < n - ord; ++col)
+    {
+        double sum = 0.0;
+
+        for (size_t row = 0, n = knot_array.size(); row < n; ++row)
+            sum += knot_array[row][col];
+
+        // 平均
+        (*knot_normal)[col] = sum / knot_array.size();
+    }
+}
+
+// ノットベクトルを取得する
+void CalcKnotVectorByPassingPnts(const vector<vector<Vector3d>>& pnts, const int ordU, const int ordV,
+    vector<double>* knotU, vector<double>* knotV)
+{
+    // 各方向の通過点数
+    int passPntsCntU, passPntsCntV;
+    passPntsCntU = (int)pnts[0].size();
+    passPntsCntV = (int)pnts.size();
+
+    // 各方向の通過点から取得するノット列群
+    vector<vector<double>> new_knotsU(passPntsCntV), new_knotsV(passPntsCntU);
+
+    // U方向ノットベクトルの決定
+    {
+        for (int i = 0; i < passPntsCntV; ++i)
+        {
+            vector<Vector3d> pntsU(passPntsCntU);
+            vector<double> knot;
+
+            for (int j = 0; j < passPntsCntU; ++j)
+                pntsU[j] = pnts[i][j];
+
+            CalcKnotVectorByPassingPnts(pntsU, ordU, &knot);
+            new_knotsU[i] = knot;
+        }
+        // 正規化
+        NormalizeKnotVector(new_knotsU, ordU, knotU);
+    }
+    // V方向ノットベクトルの決定
+    {
+        for (int i = 0; i < passPntsCntU; ++i)
+        {
+            vector<Vector3d> pntsV(passPntsCntV);
+            vector<double> knot;
+
+            for (int j = 0; j < passPntsCntV; ++j)
+                pntsV[j] = pnts[j][i];
+
+            CalcKnotVectorByPassingPnts(pntsV, ordV, &knot);
+            new_knotsV[i] = knot;
+        }
+        // 正規化
+        NormalizeKnotVector(new_knotsV, ordV, knotV);
+    }
+}
+
+// 1方向の点群からそれらを通る曲線の制御点を算出する
+/*
+    通過点条件と終端条件から連立方程式を作成し解く
+    ただし, 通過点数n 制御点数qn(n + 階数 - 2) ノット列サイズkn とする
+
+    [通過点条件]
+        <端点条件>
+            P(k_0) = Q_0
+            P(k_kn-1) = Q_qn-1
+        <それ以外の通過点条件>
+            P(k_階数) = Q_1
+            P(k_階数+1) = Q_2
+            ...
+            P(k_kn-階数-1) = Q_qn-2
+
+    [終端条件]
+        P''(k_階数-1) = 0
+        P''(k_kn-階数-2) = 0
+*/
+void CalcControlPointsByPassingPnts(const vector<Vector3d>& pnts, const int ord, const vector<double>& knot, vector<ControlPoint>* ctrlp)
+{
+    // 各方向の通過点数
+    int passPntsCnt = (int)pnts.size();
+    // 新しい制御点数
+    int new_ncpnt = (passPntsCnt - 1) + (ord - 1);
+
+    // 通過点ベクトル(連立方程式用)
+    vector<Vector3d> P_array;
+    vector<double> P_array_x, P_array_y, P_array_z; // 射影版
+
+    // 基底関数行列
+    double* N_matrix;
+
+    // 1. 連立方程式を解く用の通過点ベクトル 作成
+    {
+        P_array.push_back(pnts[0]);
+        P_array.push_back(Vector3d::Zero());
+        for (int i = 1; i < passPntsCnt - 1; ++i)
+            P_array.push_back(pnts[i]);
+        P_array.push_back(Vector3d::Zero());
+        P_array.push_back(pnts[passPntsCnt - 1]);
+
+        // 計算用に各要素に射影
+        for (auto it = P_array.begin(), end = P_array.end(); it != end; ++it)
+        {
+            P_array_x.push_back((*it).X);
+            P_array_y.push_back((*it).Y);
+            P_array_z.push_back((*it).Z);
+        }
+    }
+
+    // 2. 基底関数用行列 作成
+    {
+        N_matrix = new double[new_ncpnt * new_ncpnt];
+
+        // 零行列に初期化
+        for (int i = 0; i < new_ncpnt; i++)
+        {
+            for (int j = 0; j < new_ncpnt; j++)
+                N_matrix[i * new_ncpnt + j] = 0;
+        }
+
+        for (int i = 0; i < new_ncpnt; i++)
+        {
+            if (i == 0) // 終端条件 前
+            {
+                // 一番左のみ1
+                N_matrix[i * new_ncpnt + 0] = 1;
+            }
+            else if (i == 1) // 2階微分終端条件 前
+            {
+                for (int j = i - 1; j < ord - 1; ++j)
+                    N_matrix[i * new_ncpnt + j] = Calc2DiffBsplineFunc(j, ord, knot[ord - 1], &(const_cast<vector<double>&>(knot))[0]);
+            }
+            else if (i > 1 && i < new_ncpnt - 2)
+            {
+                for (int j = i - 1; j < (ord - 1) + (i - 1); ++j)
+                    N_matrix[i * new_ncpnt + j] = CalcBsplineFunc(j, ord, knot[(ord - 1) + (i - 1)], &(const_cast<vector<double>&>(knot))[0]);
+            }
+            else if (i == new_ncpnt - 2) // 2階微分終端条件 後
+            {
+                for (int j = i - 1; j < (ord - 1) + (i - 1); ++j)
+                    N_matrix[i * new_ncpnt + j] = Calc2DiffBsplineFunc(j, ord, knot[(ord - 1) + (i - 1)], &(const_cast<vector<double>&>(knot))[0]);
+            }
+            else // 終端条件 後
+            {
+                // 一番右のみ1
+                N_matrix[i * new_ncpnt + (new_ncpnt - 1)] = 1;
+            }
+        }
+    }
+
+    // 3. 新しい制御点を求める
+    {
+        ctrlp->resize(new_ncpnt);
+        vector<double> new_cps_X, new_cps_Y, new_cps_Z;
+
+        // 連立方程式を解く
+        new_cps_X = LUDecomposition(new_ncpnt, N_matrix, &P_array_x[0]);
+        new_cps_Y = LUDecomposition(new_ncpnt, N_matrix, &P_array_y[0]);
+        new_cps_Z = LUDecomposition(new_ncpnt, N_matrix, &P_array_z[0]);
+
+        for (int i = 0; i < new_ncpnt; ++i)
+            (*ctrlp)[i] = ControlPoint(new_cps_X[i], new_cps_Y[i], new_cps_Z[i]);
+    }
+
+    // 解放
+    delete N_matrix;
+}
+
+// 通過点から逆変換して曲面を取得
+// TODO: static化
+Surface* BsplineSurface::GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, const GLdouble resol)
+{
+    int passPntsCntU, passPntsCntV; // 各方向の通過点数
+    int ordU, ordV; // 階数
+    int new_ncpntU, new_ncpntV; // 制御点数
+    int new_nknotU, new_nknotV; // ノット列サイズ
+
+    vector<double> knotU, knotV; // ノットベクトル
+    vector<ControlPoint> cps; // 制御点
+
+    // 各変数初期化
+    if (IsPassingPntsSetCorrectly(pnts))
+    {
+        passPntsCntU = (int)pnts[0].size();
+        passPntsCntV = (int)pnts.size();
+
+        ordU = 4; // とりあえずシステム固定
+        ordV = 4;
+
+        new_ncpntU = (passPntsCntU - 1) + (ordU - 1);
+        new_ncpntV = (passPntsCntV - 1) + (ordV - 1);
+
+        new_nknotU = ordU + new_ncpntU;
+        new_nknotV = ordV + new_ncpntV;
+    }
+    else
+        return nullptr;
+
+    // ノットベクトルの決定
+    CalcKnotVectorByPassingPnts(pnts, ordU, ordV, &knotU, &knotV);
+
+    // 制御点の決定
+    {
+        vector<vector<ControlPoint>> temp_cpsU(passPntsCntV), temp_cpsV(new_ncpntU);
+        cps.resize(new_ncpntU * new_ncpntV);
+
+        // U方向から制御点群を算出
+        for (int i = 0; i < passPntsCntV; ++i)
+        {
+            vector<Vector3d> pntsU(passPntsCntU);
+            vector<ControlPoint> ctrlpU;
+
+            for (int j = 0; j < passPntsCntU; ++j)
+                pntsU[j] = pnts[i][j];
+
+            CalcControlPointsByPassingPnts(pntsU, ordU, knotU, &ctrlpU);
+            temp_cpsU[i] = ctrlpU;
+        }
+
+        // V方向から制御点群を算出
+        for (size_t i = 0; i < new_ncpntU; ++i)
+        {
+            vector<Vector3d> pntsV(passPntsCntV);
+            vector<ControlPoint> ctrlpV;
+
+            for (int j = 0; j < passPntsCntV; ++j)
+                pntsV[j] = temp_cpsU[j][i];
+
+            // 注) 通過点はU方向からの制御点
+            // ここで求めた制御点が曲面の制御点となる
+            CalcControlPointsByPassingPnts(pntsV, ordV, knotV, &ctrlpV);
+            temp_cpsV[i] = ctrlpV;
+        }
+
+        auto a = temp_cpsV.size();
+        auto b = temp_cpsV[0].size();
+
+        // 転置
+        for (int i = 0; i < new_ncpntU; ++i)
+        {
+            for (int j = 0; j < new_ncpntV; ++j)
+            {
+                cps[j * new_ncpntU + i] = temp_cpsV[i][j];
+            }
+        }
+    }
+
+    return new BsplineSurface(ordU, ordV, &cps[0], new_ncpntU, new_ncpntV, &knotU[0], &knotV[0], color);
 }

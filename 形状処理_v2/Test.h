@@ -22,3 +22,7 @@ void DrawCylinder_CGS3();
 // ‹Èü‚ğ‹ß—‚µ‚Ä•`‰æ‚·‚é
 // ’†‹‰•Ò‘æ4‰ñ
 void DrawApproxCurve_CGS4();
+
+// ‹È–Ê‚ğ‹ß—‚µ‚Ä•`‰æ‚·‚é
+// ’†‹‰•Ò‘æ5‰ñ
+void DrawApproxSurface_CGS5();

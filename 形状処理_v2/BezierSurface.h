@@ -43,4 +43,7 @@ public:
     Vector3d GetSecondDiffVectorUU(double u, double v) override;
     Vector3d GetSecondDiffVectorUV(double u, double v) override;
     Vector3d GetSecondDiffVectorVV(double u, double v) override;
+
+    // ‹t•ÏŠ·
+    Surface* GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, const GLdouble resol) override;
 };

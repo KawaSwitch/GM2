@@ -37,9 +37,9 @@ protected:
     virtual Vector3d GetPositionVector(double u, double v) = 0; // 位置ベクトル
     virtual Vector3d GetFirstDiffVectorU(double u, double v) = 0; // 接線ベクトル
     virtual Vector3d GetFirstDiffVectorV(double u, double v) = 0;
-    virtual Vector3d GetSecondDiffVectorUU(double u, double v) { return Vector3d(); }; // 2階微分ベクトル
-    virtual Vector3d GetSecondDiffVectorUV(double u, double v) { return Vector3d(); };
-    virtual Vector3d GetSecondDiffVectorVV(double u, double v) { return Vector3d(); };
+    virtual Vector3d GetSecondDiffVectorUU(double u, double v) = 0; // 2階微分ベクトル
+    virtual Vector3d GetSecondDiffVectorUV(double u, double v) = 0;
+    virtual Vector3d GetSecondDiffVectorVV(double u, double v) = 0;
 
     // 法線ベクトル取得
     Vector3d GetNormalVector(double u, double v) { return (GetFirstDiffVectorU(u, v) * GetFirstDiffVectorV(u, v)); }
@@ -85,6 +85,12 @@ public:
 
     // 参照点からの最近点を取得
     Vector3d GetNearestPointFromRef(Vector3d ref);
+
+    // 描画範囲を各方向split_num個に分割するような位置ベクトルを取得する
+    vector<vector<Vector3d>> GetPositionVectors(int U_split_num, int V_split_num);
+
+    // 通過点から逆変換して曲面を取得する
+    virtual Surface* GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, const GLdouble width) = 0;
 
     virtual ~Surface() { glDeleteLists(_mesh_displayList, 1); }
 };

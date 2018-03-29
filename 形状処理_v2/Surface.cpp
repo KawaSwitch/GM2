@@ -201,6 +201,29 @@ void Surface::DrawCPsInternal()
     }
 }
 
+// 描画範囲を各方向split_num個に分割するような位置ベクトルを取得する
+vector<vector<Vector3d>> Surface::GetPositionVectors(int U_split_num, int V_split_num)
+{
+    vector<Vector3d> pos;
+    vector<vector<Vector3d>> pnts; // pnts[v][u]と並べる
+
+    // 分割区間を計算
+    double skip_U = (fabs(_min_draw_param_U) + fabs(_max_draw_param_U)) / U_split_num;
+    double skip_V = (fabs(_min_draw_param_V) + fabs(_max_draw_param_V)) / V_split_num;
+
+    // double型の誤差考慮
+    for (double v = _min_draw_param_V; v < _max_draw_param_V + skip_V / 2; v += skip_V)
+    {
+        for (double u = _min_draw_param_U; u < _max_draw_param_U + skip_U / 2; u += skip_U)
+            pos.push_back(GetPositionVector(u, v));
+
+        pnts.push_back(pos);
+        pos.clear();
+    }
+
+    return pnts;
+}
+
 // 参照点からの最近点を取得
 Vector3d Surface::GetNearestPointFromRef(Vector3d ref)
 {

@@ -159,7 +159,7 @@ public:
     }
 
     // êFê›íË
-    void SetColor(GLdouble* color)
+    void SetColor(const GLdouble* const color)
     {
         for (int i = 0; i < 4; i++)
             _color[i] = color[i];

@@ -407,3 +407,10 @@ Vector3d BezierSurface::GetSecondDiffVectorVV(double u, double v)
     // u:0-diff v:2-diff
     return CalcVector(u, v, CalcBernsteinFunc, Calc2DiffBernsteinFunc);
 }
+
+// ‹t•ÏŠ·
+Surface* BezierSurface::GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, const GLdouble resol)
+{
+    // –¢ŽÀ‘•
+    return this;
+}

@@ -15,6 +15,12 @@ public:
     constexpr ControlPoint(double x, double y, double z) : X(x), Y(y), Z(z), W(1.0) { }
     constexpr ControlPoint(double x, double y, double z, double w) : X(x), Y(y), Z(z), W(w) { }
 
+    operator Vector3d()
+    {
+        // ’ÊíÀ•WŒn‚É–ß‚·
+        return Vector3d(X / W, Y / W, Z / W);
+    }
+
     bool operator == (const ControlPoint& other)
     {
         return this->GetDistanceTo(other) < EPS::DIST;
@@ -25,7 +31,7 @@ public:
         return !(*this == other);
     }
 
-    void Show()
+    void Show() const
     {
         cout << X << " " << Y << " " << Z << " " << W << endl;
     }

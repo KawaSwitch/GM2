@@ -14,15 +14,16 @@
     GLOBAL void UpdateLookAtZ(const Box* const box);
 
 // CalcUtil.cpp
-    GLOBAL double ToRad(double degree);
-    GLOBAL double ToDeg(double radian);
+    GLOBAL double ToRad(const double degree);
+    GLOBAL double ToDeg(const double radian);
+    GLOBAL double GetAverage(const vector<double>& array);
     GLOBAL void SolveQuadraticEquation(double a, double b, double c, double* x1, double* x2);
     GLOBAL double CalcBernsteinFunc(unsigned int i, unsigned int N, double t);
     GLOBAL double Calc1DiffBernsteinFunc(unsigned int i, unsigned int N, double t);
     GLOBAL double Calc2DiffBernsteinFunc(unsigned int i, unsigned int N, double t);
-    GLOBAL double CalcBsplineFunc(unsigned int i, unsigned int M, double t, double* knot);
-    GLOBAL double Calc1DiffBsplineFunc(unsigned int i, unsigned int M, double t, double* knot);
-    GLOBAL double Calc2DiffBsplineFunc(unsigned int i, unsigned int M, double t, double* knot);
+    GLOBAL double CalcBsplineFunc(const unsigned int i, const unsigned int M, const double t, const double* knot);
+    GLOBAL double Calc1DiffBsplineFunc(const unsigned int i, const unsigned int M, const double t, const double* const knot);
+    GLOBAL double Calc2DiffBsplineFunc(const unsigned int i, const unsigned int M, const double t, const double* const knot);
     GLOBAL constexpr double Binomial(int n, int k);
     GLOBAL constexpr int Factorial(int n);
     GLOBAL Vector3d CalcPolygonNormal(Vector3d v0, Vector3d v1, Vector3d v2);
@@ -30,7 +31,7 @@
     GLOBAL Point3d Transform(const Point3d point, const double matrix[16]);
     GLOBAL void RotateCoord2DAroundCenter(double* const coord_2d, const double* const center, const double rad);
     GLOBAL void RotateCoord2DAroundOrigin(double* const coord_2d, const double rad);
-    GLOBAL vector<double> LUDecomposition(int size, double* aMatrix, double* b);
+    GLOBAL vector<double> LUDecomposition(const int size, const double* const aMatrix, const double* const b);
 
 // DrawUtil.cpp
     GLOBAL void DrawBsplineFunc(int mord, int ncpnt, int nknot, double* knot, double min_t = 0.0, double max_t = 1.0);

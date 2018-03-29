@@ -26,8 +26,44 @@ static vector<function<void(void)>> TestRegisterDraw
     //DrawCircle_CGS3, // Nurbs‹Èü‚Å‰~•`‚­
     //DrawSphere_CGS3, // Nurbs‹È–Ê‚Å‹…‚ğ•`‚­
     //DrawCylinder_CGS3, // Nurbs‹È–Ê‚Å‰~’Œ‚ğ•`‚­
-    DrawApproxCurve_CGS4, // ‹ß—‹Èü‚ğ•`‰æ
+    //DrawApproxCurve_CGS4, // ‹ß—‹Èü‚ğ•`‰æ
+    DrawApproxSurface_CGS5, // ‹ß—‹È–Ê‚ğ•`‰æ
 };
+
+// ‹ß—‚µ‚Ä‹È–Ê‚ğ•`‰æ
+static void DrawApproxSurface_CGS5()
+{
+    auto reader = new KjsReader("");
+
+    auto surf = (BsplineSurface *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_surface_1.kjs");
+
+    // ‹ß—‹È–Ê
+    Surface *surf_knot_remake, *surf_knot_split_remake;
+
+    // ‹È–Ê‚Ì‹ß—(ƒmƒbƒgˆÊ’u‚Ì‚İ)
+    {
+        auto passPnts = surf->GetPointsByKnots(1, 1);
+        for (const auto& pnts : passPnts)
+            DrawPoints(pnts, Color::green, 10);
+
+        surf_knot_remake = surf->GetSurfaceFromPoints(passPnts, Color::blue_alpha, 20);
+    }
+    // ‹È–Ê‚Ì‹ß—(ƒmƒbƒgˆÊ’u‚Ì‚İ + ƒZƒOƒƒ“ƒgˆÊ’u3•ªŠ„)
+    {
+        auto passPnts = surf->GetPointsByKnots(3, 3);
+        for (const auto& pnts : passPnts)
+            DrawPoints(pnts, Color::pink, 10);
+
+        surf_knot_split_remake = surf->GetSurfaceFromPoints(passPnts, Color::orange_alpha, 20);
+    }
+
+    if (isFirst)
+    {
+        test_scene->AddObject(surf);
+        test_scene->AddObject(surf_knot_remake);
+        test_scene->AddObject(surf_knot_split_remake);
+    }
+}
 
 // ‹ß—‚µ‚Ä‹Èü‚ğ•`‰æ
 static void DrawApproxCurve_CGS4()

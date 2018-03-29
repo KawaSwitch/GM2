@@ -3,11 +3,26 @@
 #include "GV.h"
 #include "ControlPoint.h"
 #include <cmath>
+#include <numeric>
 
 // 度数法から弧度法に変換する
-double ToRad(double degree) { return degree * M_PI / 180; }
+double ToRad(const double degree)
+{
+    constexpr double C = M_PI / 180;
+    return degree * C;
+}
 // 弧度法から度数法に変換する
-double ToDeg(double radian) { return radian * 180 / M_PI; }
+double ToDeg(const double radian)
+{
+    constexpr double C = 180 / M_PI;
+    return radian * C;
+}
+
+// 平均値を取得する
+double GetAverage(const vector<double>& array)
+{
+    return std::accumulate(array.begin(), array.end(), 0.0) / array.size();
+}
 
 // 2次方程式 ax^2 + bx + c = 0 の 2解x1,x2 を求める
 // 虚数解の場合 x1 ± x2i を満たす x1,x2 を求める
@@ -73,7 +88,7 @@ double Calc2DiffBernsteinFunc(unsigned int i, unsigned int N, double t)
 }
 
 // Bスプライン基底関数値を求める
-double CalcBsplineFunc(unsigned int i, unsigned int M, double t, double* knot)
+double CalcBsplineFunc(const unsigned int i, const unsigned int M, const double t, const double* const knot)
 {
     if (M == 1)
     {
@@ -105,7 +120,7 @@ double CalcBsplineFunc(unsigned int i, unsigned int M, double t, double* knot)
 }
 
 // 1階微分用Bスプライン基底関数値を求める
-double Calc1DiffBsplineFunc(unsigned int i, unsigned int M, double t, double* knot)
+double Calc1DiffBsplineFunc(const unsigned int i, const unsigned int M, const double t, const double* const knot)
 {
     if (M == 1)
     {
@@ -137,7 +152,7 @@ double Calc1DiffBsplineFunc(unsigned int i, unsigned int M, double t, double* kn
 }
 
 // 2階微分用Bスプライン基底関数値を求める
-double Calc2DiffBsplineFunc(unsigned int i, unsigned int M, double t, double* knot)
+double Calc2DiffBsplineFunc(const unsigned int i, const unsigned int M, const double t, const double* const knot)
 {
     if (M == 1)
     {
@@ -234,11 +249,16 @@ void RotateCoord2DAroundOrigin(double* const coord_2d, const double rad)
 }
 
 // LU分解で連立方程式を解く
-vector<double> LUDecomposition(int size, double* aMatrix, double* b)
+vector<double> LUDecomposition(const int size, const double* const aMatrix, const double* const b)
 {
     int N = size; // 解く配列のサイズ
 
-                  // L行列(零行列に初期化)
+    // aMatrixの値コピーを作成
+    double* aMatCopy = new double[N * N];
+    for (int i = 0; i < N * N; i++)
+        aMatCopy[i] = aMatrix[i];
+
+    // L行列(零行列に初期化)
     double **lMatrix = new double*[N];
     for (int i = 0; i < N; i++)
         lMatrix[i] = new double[N];
@@ -276,20 +296,20 @@ vector<double> LUDecomposition(int size, double* aMatrix, double* b)
     {
         int n = N - i - 1;
 
-        double l0 = lMatrix[i][i] = aMatrix[0];
+        double l0 = lMatrix[i][i] = aMatCopy[0];
 
         // l1成分をコピー
         double *l1 = new double[n];
         for (int j = 0; j < n; j++)
         {
-            lMatrix[j + i + 1][i] = l1[j] = aMatrix[(j + 1) * N + 0];
+            lMatrix[j + i + 1][i] = l1[j] = aMatCopy[(j + 1) * N + 0];
         }
 
         // u1^double成分をコピー
         double *u1 = new double[n];
         for (int j = 0; j < n; j++)
         {
-            uMatrix[i][j + i + 1] = u1[j] = aMatrix[0 * N + (j + 1)] / l0;
+            uMatrix[i][j + i + 1] = u1[j] = aMatCopy[0 * N + (j + 1)] / l0;
         }
 
         // luを求める
@@ -309,14 +329,14 @@ vector<double> LUDecomposition(int size, double* aMatrix, double* b)
         for (int j = 0; j < n; j++)
         {
             for (int k = 0; k < n; k++)
-                A1[j][k] = aMatrix[(j + 1) * N + (k + 1)] - buffer[j][k];
+                A1[j][k] = aMatCopy[(j + 1) * N + (k + 1)] - buffer[j][k];
         }
 
         // A1を新しいaMatrixとして利用する
         for (int i = 0; i < n; i++)
         {
             for (int j = 0; j < n; j++)
-                aMatrix[i * N + j] = A1[i][j];
+                aMatCopy[i * N + j] = A1[i][j];
         }
     }
 
@@ -344,5 +364,6 @@ vector<double> LUDecomposition(int size, double* aMatrix, double* b)
         x[i] = y[i] - sum;
     }
 
+    delete aMatCopy;
     return x;
 }
