@@ -110,21 +110,26 @@ void Scene::ToggleDrawCurvatureVectors()
 
 void Scene::Draw()
 {
-    auto it = ObjList.begin();
-
-    // リスト全描画
-    while (it != ObjList.end())
+    // 形状情報描画(非透明)
+    for (const auto& obj : ObjList)
     {
-        (*it)->DrawControlPointsAndLines(); // 制御点描画
-        (*it)->DrawFirstDiffVectors(); // 接線描画
-        (*it)->DrawSecondDiffVectors(); // 2階微分ベクトル描画
-        (*it)->DrawBox(); // ミニマクスボックス描画
-        (*it)->DrawNormalVectors(); // 法線描画
-        (*it)->DrawCurvatureVectors(); // 曲率ベクトル描画
+        obj->DrawControlPointsAndLines(); // 制御点描画
+        obj->DrawFirstDiffVectors(); // 接線描画
+        obj->DrawSecondDiffVectors(); // 2階微分ベクトル描画
+        obj->DrawBox(); // ミニマクスボックス描画
+        obj->DrawNormalVectors(); // 法線描画
+        obj->DrawCurvatureVectors(); // 曲率ベクトル描画
+    }
+    // 形状描画
+    // α値がある場合を考慮して最後に描く
+    // TODO: 形状同士のαでの順番考慮
+    for (const auto& obj : ObjList)
+    {
+        obj->Draw(); // モデル描画
+    }
 
-        // TODO: 制御点はモデルと同じ色にする ← 一時的に！
-        (*it)->Draw(); // モデル描画
-
+    for (auto it = ObjList.begin(), end = ObjList.end(); it != end; it++)
+    {
         // 削除フラグチェック
         if ((*it)->IsDeleteFlagRaised())
         {
