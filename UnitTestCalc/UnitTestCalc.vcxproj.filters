@@ -230,6 +230,9 @@
     <ClCompile Include="..\形状処理_v2\Camera.cpp">
       <Filter>ソース ファイル\Source</Filter>
     </ClCompile>
+    <ClCompile Include="SurfaceTest.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

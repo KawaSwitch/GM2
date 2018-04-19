@@ -62,7 +62,7 @@ void Initialize()
         lights.push_back(new Light(GL_LIGHT2, -50, -50, 0));
         lights.push_back(new Light(GL_LIGHT3, 50, 50, 50));
         lights.push_back(new Light(GL_LIGHT4, -50, -50, -50));
-        lights.push_back(new Light(GL_LIGHT4, -50, 0, 0));
+        lights.push_back(new Light(GL_LIGHT5, -50, 0, 0));
 
         // é≤ópÉâÉCÉgÇÃê›íË
         for (const auto light : lights)
