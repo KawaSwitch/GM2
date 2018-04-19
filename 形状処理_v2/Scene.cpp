@@ -136,8 +136,6 @@ void Scene::Draw()
             delete *it;
             (*it) = NULL;
         }
-
-        it++;
     }
 
     ObjList.remove(NULL);
