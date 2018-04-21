@@ -1,10 +1,11 @@
 #include "NurbsCurve.h"
 
-NurbsCurve::NurbsCurve(int mord, ControlPoint* cp, int cp_size, double* knot, GLdouble* color, GLdouble width)
+NurbsCurve::NurbsCurve(const int mord, const ControlPoint* const cp, const int cp_size, const double* const knot,
+    const GLdouble* const color, const GLdouble width)
     : BsplineCurve(mord, cp, cp_size, knot, color, width) { }
 
 // 位置ベクトル取得
-Vector3d NurbsCurve::GetPositionVector(double t)
+Vector3d NurbsCurve::GetPositionVector(const double t) const
 {
     Vector3d Q;
     double w = 0.0, W = 0.0;
@@ -20,7 +21,7 @@ Vector3d NurbsCurve::GetPositionVector(double t)
 }
 
 // 接線ベクトル取得
-Vector3d NurbsCurve::GetFirstDiffVector(double t)
+Vector3d NurbsCurve::GetFirstDiffVector(const double t) const
 {
     Vector3d P, Qt;
     double W = 0.0, Wt = 0.0;
@@ -40,7 +41,7 @@ Vector3d NurbsCurve::GetFirstDiffVector(double t)
 }
 
 // 2階微分ベクトル取得
-Vector3d NurbsCurve::GetSecondDiffVector(double t)
+Vector3d NurbsCurve::GetSecondDiffVector(const double t) const
 {
     Vector3d P, Pt, Qtt;
     double W = 0.0, Wt = 0.0, Wtt = 0.0;

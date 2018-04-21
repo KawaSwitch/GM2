@@ -22,37 +22,38 @@ protected:
 
     bool _isUseVBO = false; // VBOを使うか
     bool _isUseIBO = false; // IBOを使うか
-    GLuint _vbo, _ibo;
+    mutable GLuint _vbo, _ibo;
+
     GLdouble _color[4];  // 色
     vector<ControlPoint> _ctrlp; // 制御点
     double _resolution; // 解像度
 
     // 事前描画
-    virtual void PreDraw() = 0;
-    virtual void DrawCPsInternal() = 0;
-    virtual void DrawFirstDiffVectorsInternal() { };
-    virtual void DrawSecondDiffVectorsInternal() { };
-    virtual void DrawNormalVectorsInternal() { };
-    virtual void DrawCurvatureVectorsInternal() { };
+    virtual void PreDraw() const = 0;
+    virtual void DrawCPsInternal() const = 0;
+    virtual void DrawFirstDiffVectorsInternal() const { };
+    virtual void DrawSecondDiffVectorsInternal() const { };
+    virtual void DrawNormalVectorsInternal() const { };
+    virtual void DrawCurvatureVectorsInternal() const { };
 
     // VBO
-    virtual void CreateVBO() { };
-    virtual void ModifyVBO() { };
-    virtual void DrawVBO() { };
+    virtual void CreateVBO() const { };
+    virtual void ModifyVBO() const { };
+    virtual void DrawVBO() const { };
 
     // IBO
-    virtual void CreateIBO() { };
-    virtual void ModifyIBO() { };
-    virtual void DrawIBO() { };
+    virtual void CreateIBO() const { };
+    virtual void ModifyIBO() const { };
+    virtual void DrawIBO() const { };
     
     // ディスプレイリスト
-    int _displayList = 0; // オブジェクト用
-    int _ctrlp_displayList = 0;
-    int _fd_displayList = 0;
-    int _sd_displayList = 0;
-    int _box_displayList = 0;
-    int _nor_displayList = 0;
-    int _cur_displayList = 0;
+    mutable int _displayList = 0; // オブジェクト用
+    mutable int _ctrlp_displayList = 0;
+    mutable int _fd_displayList = 0;
+    mutable int _sd_displayList = 0;
+    mutable int _box_displayList = 0;
+    mutable int _nor_displayList = 0;
+    mutable int _cur_displayList = 0;
 
     // 表示系ブーリアン
     bool _isDrawCtrlp = false; // 制御点
@@ -65,7 +66,7 @@ protected:
 public:
 
     // オブジェクト描画
-    virtual void Draw()
+    virtual void Draw() const
     {
         // VBO
         if (_isUseVBO)
@@ -95,18 +96,18 @@ public:
     }
 
     // そのまま描画
-    void DrawAsItIs()
+    void DrawAsItIs() const
     {
         this->PreDraw();
     }
-    void DrawAsItIsWithCPs()
+    void DrawAsItIsWithCPs() const
     {
         this->PreDraw();
         this->DrawCPsInternal();
     }
 
     // ミニマクスボックス描画
-    void DrawBoxInternal()
+    void DrawBoxInternal() const
     {
         Box box(_ctrlp);
         box.Draw(Color::light_blue, 1.0);
@@ -122,37 +123,37 @@ public:
     void SetUnsetIsDrawCurvature() { _isDrawCurvature = !_isDrawCurvature; }
 
     // 制御点線描画
-    void DrawControlPointsAndLines()
+    void DrawControlPointsAndLines() const
     {
         if (_isDrawCtrlp)
             DrawUsingDisplayList(&_ctrlp_displayList, [&] { return (*this).DrawCPsInternal(); });
     }
     // 接線ベクトル描画
-    void DrawFirstDiffVectors()
+    void DrawFirstDiffVectors() const
     {
         if (_isDrawFirstDiff)
             DrawUsingDisplayList(&_fd_displayList, [&] { return (*this).DrawFirstDiffVectorsInternal(); });
     }
     // 2階微分ベクトル描画
-    void DrawSecondDiffVectors()
+    void DrawSecondDiffVectors() const
     {
         if (_isDrawSecondDiff)
             DrawUsingDisplayList(&_sd_displayList, [&] { return (*this).DrawSecondDiffVectorsInternal(); });
     }
     // ミニマクスボックス描画
-    void DrawBox()
+    void DrawBox() const
     {
         if (_isDrawBox)
             DrawUsingDisplayList(&_box_displayList, [&] { return (*this).DrawBoxInternal(); });
     }
     // 法線ベクトル描画
-    void DrawNormalVectors()
+    void DrawNormalVectors() const
     {
         if (_isDrawNormal)
             DrawUsingDisplayList(&_nor_displayList, [&] { return (*this).DrawNormalVectorsInternal(); });
     }
     // 曲率ベクトル描画
-    void DrawCurvatureVectors()
+    void DrawCurvatureVectors() const
     {
         if (_isDrawCurvature)
             DrawUsingDisplayList(&_cur_displayList, [&] { return (*this).DrawCurvatureVectorsInternal(); });
@@ -166,7 +167,7 @@ public:
     }
 
     // オブジェクト番号を取得
-    unsigned int GetObjectNumber()
+    unsigned int GetObjectNumber() const
     {
         return _number;
     }

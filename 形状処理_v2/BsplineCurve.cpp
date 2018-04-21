@@ -2,7 +2,8 @@
 #include "ControlPoint.h"
 #include <iterator>
 
-BsplineCurve::BsplineCurve(int mord, ControlPoint* cp, int cp_size, double* knot, GLdouble* color, GLdouble width, double resol)
+BsplineCurve::BsplineCurve(const int mord, const ControlPoint* const cp, const int cp_size, const double* const knot,
+    const GLdouble* const color, const GLdouble width, const double resol)
 {
     _ord = mord;
     _ncpnt = cp_size;
@@ -22,7 +23,7 @@ BsplineCurve::BsplineCurve(int mord, ControlPoint* cp, int cp_size, double* knot
 }
 
 // ノットベクトル設定
-void BsplineCurve::SetKnotVector(double* knot, int size)
+void BsplineCurve::SetKnotVector(const double* const knot, const int size)
 {
     if (size <= 0)
         Error::ShowAndExit("ノットベクトル設定失敗", "knot-vector size must be over 0.");
@@ -34,7 +35,7 @@ void BsplineCurve::SetKnotVector(double* knot, int size)
 
 // ノットベクトルをもとにして点群を取得する
 // splitSegCnt: セグメントを何分割するかの回数(デフォルトは1 = 分割しない)
-vector<Vector3d> BsplineCurve::GetPointsByKnots(int splitSegCnt)
+vector<Vector3d> BsplineCurve::GetPointsByKnots(const int splitSegCnt) const
 {
     vector<Vector3d> pnts;
     double skip = (_knot[_ord] - _knot[0]) / (double)splitSegCnt;
@@ -59,7 +60,7 @@ vector<Vector3d> BsplineCurve::GetPointsByKnots(int splitSegCnt)
 }
 
 // 事前描画
-void BsplineCurve::PreDraw()
+void BsplineCurve::PreDraw() const
 {
     Vector3d pnt;
 
@@ -79,7 +80,7 @@ void BsplineCurve::PreDraw()
 }
 
 // 頂点バッファ作成
-void BsplineCurve::CreateVBO()
+void BsplineCurve::CreateVBO() const
 {
     vector<Vector3d> pnts;
 
@@ -90,7 +91,7 @@ void BsplineCurve::CreateVBO()
         pnts.push_back(GetPositionVector(t));
     }
 
-    _nVertex = (int)pnts.size();
+    _nVertex_cache = (int)pnts.size();
 
     glGenBuffers(1, &_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
@@ -98,7 +99,7 @@ void BsplineCurve::CreateVBO()
 }
 
 // VBOで描画
-void BsplineCurve::DrawVBO()
+void BsplineCurve::DrawVBO() const
 {
     glColor4dv(_color);
     glLineWidth(_width);
@@ -108,14 +109,14 @@ void BsplineCurve::DrawVBO()
 
     glEnableClientState(GL_VERTEX_ARRAY);
 
-    glDrawArrays(GL_LINE_STRIP, 0, _nVertex);
+    glDrawArrays(GL_LINE_STRIP, 0, _nVertex_cache);
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 // 接線ベクトル描画
-void BsplineCurve::DrawFirstDiffVectorsInternal()
+void BsplineCurve::DrawFirstDiffVectorsInternal() const
 {
     Vector3d pnt, diff;
 
@@ -137,7 +138,7 @@ void BsplineCurve::DrawFirstDiffVectorsInternal()
 }
 
 // 2階微分ベクトル描画
-void BsplineCurve::DrawSecondDiffVectorsInternal()
+void BsplineCurve::DrawSecondDiffVectorsInternal() const
 {
     Vector3d pnt, diff;
 
@@ -159,7 +160,7 @@ void BsplineCurve::DrawSecondDiffVectorsInternal()
 }
 
 // 法線ベクトル描画
-void BsplineCurve::DrawNormalVectorsInternal()
+void BsplineCurve::DrawNormalVectorsInternal() const
 {
     Vector3d pnt, normal;
 
@@ -181,7 +182,7 @@ void BsplineCurve::DrawNormalVectorsInternal()
 }
 
 // 曲率半径描画
-void BsplineCurve::DrawCurvatureVectorsInternal()
+void BsplineCurve::DrawCurvatureVectorsInternal() const
 {
     Vector3d pnt, curv;
 
@@ -213,7 +214,7 @@ void BsplineCurve::DrawCurvatureVectorsInternal()
 }
 
 // 位置ベクトル取得
-Vector3d BsplineCurve::GetPositionVector(const double t)
+Vector3d BsplineCurve::GetPositionVector(const double t) const
 {
     Vector3d pnt;
 
@@ -225,7 +226,7 @@ Vector3d BsplineCurve::GetPositionVector(const double t)
 }
 
 // 接線ベクトル取得
-Vector3d BsplineCurve::GetFirstDiffVector(double t)
+Vector3d BsplineCurve::GetFirstDiffVector(const double t) const
 {
     Vector3d diff;
 
@@ -236,7 +237,7 @@ Vector3d BsplineCurve::GetFirstDiffVector(double t)
 }
 
 // 2階微分ベクトル取得
-Vector3d BsplineCurve::GetSecondDiffVector(double t)
+Vector3d BsplineCurve::GetSecondDiffVector(const double t) const
 {
     Vector3d diff;
 
@@ -258,7 +259,7 @@ void CalcControlPointsByPassingPnt(const vector<Vector3d>& pnts, const int ord, 
     vector<Vector3d> P_array;
     vector<double> P_array_x, P_array_y, P_array_z; // 射影版
 
-                                                    // 基底関数行列
+    // 基底関数行列
     double* N_matrix;
 
     // 1. 連立方程式を解く用の通過点ベクトル 作成
@@ -340,7 +341,7 @@ void CalcControlPointsByPassingPnt(const vector<Vector3d>& pnts, const int ord, 
 
 // 通過点から逆変換して曲線を取得
 // TODO: 時間があったら整理する
-Curve* BsplineCurve::GetCurveFromPoints(vector<Vector3d> pnts, GLdouble* color, GLdouble width)
+Curve* BsplineCurve::GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdouble* const color, const GLdouble width) const
 {
     // TODO: 曲線外から生成
 

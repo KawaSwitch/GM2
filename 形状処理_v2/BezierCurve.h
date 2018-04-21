@@ -7,27 +7,27 @@ class BezierCurve : public Curve
 private:
 
     // 各種ベクトル描画 
-    void DrawFirstDiffVectorsInternal() override;
-    void DrawSecondDiffVectorsInternal() override;
-    void DrawNormalVectorsInternal() override;
-    void DrawCurvatureVectorsInternal() override;
+    void DrawFirstDiffVectorsInternal() const override;
+    void DrawSecondDiffVectorsInternal() const override;
+    void DrawNormalVectorsInternal() const override;
+    void DrawCurvatureVectorsInternal() const override;
 
     // 事前描画
-    void PreDraw() override;
+    void PreDraw() const override;
 
     // バッファオブジェクト
-    void CreateVBO() override;
-    void DrawVBO() override;
+    void CreateVBO() const override;
+    void DrawVBO() const override;
 
 public:
 
-    BezierCurve(int mord, ControlPoint* cp, int cp_size, GLdouble* color, GLdouble width = 1.0, double resol = 20);
+    BezierCurve(int mord, const ControlPoint* const cp, int cp_size, const GLdouble* const color, GLdouble width = 1.0, double resol = 20);
 
     // 各種ベクトル取得
-    Vector3d GetPositionVector(const double t) override;
-    Vector3d GetFirstDiffVector(double t) override;
-    Vector3d GetSecondDiffVector(double t) override;
+    Vector3d GetPositionVector(double t) const override;
+    Vector3d GetFirstDiffVector(double t) const override;
+    Vector3d GetSecondDiffVector(double t) const override;
 
     // 逆変換
-    Curve* GetCurveFromPoints(vector<Vector3d> pnts, GLdouble* color, GLdouble width) override;
+    Curve* GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdouble* const color, GLdouble width) const override;
 };

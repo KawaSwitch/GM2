@@ -1,7 +1,8 @@
 #include "BezierCurve.h"
 #include "ControlPoint.h"
 
-BezierCurve::BezierCurve(int mord, ControlPoint* cp, int cp_size, GLdouble* color, GLdouble width, double resol)
+BezierCurve::BezierCurve(const int mord, const ControlPoint* const cp, const int cp_size,
+    const GLdouble* const color, const GLdouble width, const double resol)
 {
     _ord = mord;
     _ncpnt = cp_size;
@@ -18,7 +19,7 @@ BezierCurve::BezierCurve(int mord, ControlPoint* cp, int cp_size, GLdouble* colo
 }
 
 // 事前描画
-void BezierCurve::PreDraw()
+void BezierCurve::PreDraw() const
 {
     glColor4dv(_color);
     glLineWidth(_width);
@@ -37,7 +38,7 @@ void BezierCurve::PreDraw()
 }
 
 // 頂点バッファ作成
-void BezierCurve::CreateVBO()
+void BezierCurve::CreateVBO() const
 {
     vector<Vector3d> pnts;
 
@@ -48,7 +49,7 @@ void BezierCurve::CreateVBO()
         pnts.push_back(GetPositionVector(t));
     }
 
-    _nVertex = (int)pnts.size();
+    _nVertex_cache = (int)pnts.size();
 
     glGenBuffers(1, &_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
@@ -56,7 +57,7 @@ void BezierCurve::CreateVBO()
 }
 
 // VBOで描画
-void BezierCurve::DrawVBO()
+void BezierCurve::DrawVBO() const
 {
     glColor4dv(_color);
     glLineWidth(_width);
@@ -66,14 +67,14 @@ void BezierCurve::DrawVBO()
 
     glEnableClientState(GL_VERTEX_ARRAY);
 
-    glDrawArrays(GL_LINE_STRIP, 0, _nVertex);
+    glDrawArrays(GL_LINE_STRIP, 0, _nVertex_cache);
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 // 接線ベクトル描画
-void BezierCurve::DrawFirstDiffVectorsInternal()
+void BezierCurve::DrawFirstDiffVectorsInternal() const
 {
     Vector3d pnt, diff;
 
@@ -95,7 +96,7 @@ void BezierCurve::DrawFirstDiffVectorsInternal()
 }
 
 // 2階微分ベクトル描画
-void BezierCurve::DrawSecondDiffVectorsInternal()
+void BezierCurve::DrawSecondDiffVectorsInternal() const
 {
     Vector3d pnt, diff;
 
@@ -117,7 +118,7 @@ void BezierCurve::DrawSecondDiffVectorsInternal()
 }
 
 // 法線ベクトル描画
-void BezierCurve::DrawNormalVectorsInternal()
+void BezierCurve::DrawNormalVectorsInternal() const
 {
     Vector3d pnt, normal;
 
@@ -139,7 +140,7 @@ void BezierCurve::DrawNormalVectorsInternal()
 }
 
 // 曲率半径描画
-void BezierCurve::DrawCurvatureVectorsInternal()
+void BezierCurve::DrawCurvatureVectorsInternal() const
 {
     Vector3d pnt, curv;
 
@@ -169,7 +170,7 @@ void BezierCurve::DrawCurvatureVectorsInternal()
 }
 
 // 位置ベクトル取得
-Vector3d BezierCurve::GetPositionVector(const double t)
+Vector3d BezierCurve::GetPositionVector(const double t) const
 {
     Vector3d pnt;
 
@@ -180,7 +181,7 @@ Vector3d BezierCurve::GetPositionVector(const double t)
 }
 
 // 接線ベクトル取得
-Vector3d BezierCurve::GetFirstDiffVector(double t)
+Vector3d BezierCurve::GetFirstDiffVector(const double t) const
 {
     Vector3d diff;
 
@@ -191,7 +192,7 @@ Vector3d BezierCurve::GetFirstDiffVector(double t)
 }
 
 // 2階微分ベクトル取得
-Vector3d BezierCurve::GetSecondDiffVector(double t)
+Vector3d BezierCurve::GetSecondDiffVector(const double t) const
 {
     Vector3d diff;
 
@@ -202,7 +203,7 @@ Vector3d BezierCurve::GetSecondDiffVector(double t)
 }
 
 // 通過点から逆変換して曲線を取得
-Curve* BezierCurve::GetCurveFromPoints(vector<Vector3d> pnts, GLdouble* color, GLdouble width)
+Curve* BezierCurve::GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdouble* const color, const GLdouble width) const
 {
     vector<ControlPoint> new_cps;
     new_cps.resize(_ncpnt);

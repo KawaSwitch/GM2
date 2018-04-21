@@ -2,8 +2,8 @@
 #include "BezierCurve.h"
 
 BezierSurface::BezierSurface(
-    int u_mord, int v_mord, ControlPoint* cp,
-    int u_cp_size, int v_cp_size, GLdouble* color, GLdouble resol)
+    const int u_mord, const int v_mord, const ControlPoint* const cp,
+    const int u_cp_size, const int v_cp_size, const GLdouble* const color, const GLdouble resol)
 {
     _ordU = u_mord; _ordV = v_mord;
     _ncpntU = u_cp_size; _ncpntV = v_cp_size;
@@ -19,7 +19,7 @@ BezierSurface::BezierSurface(
 }
 
 // 指定した端の曲線を取得する
-Curve* BezierSurface::GetEdgeCurve(SurfaceEdge edge)
+Curve* BezierSurface::GetEdgeCurve(const SurfaceEdge edge) const
 {
     vector<ControlPoint> edge_cp = GetEdgeCurveControlPoint(edge);
     int edge_ord = (edge == U_min || edge == U_max) ? _ordU : _ordV;
@@ -28,7 +28,7 @@ Curve* BezierSurface::GetEdgeCurve(SurfaceEdge edge)
 }
 
 // 事前描画
-void BezierSurface::PreDraw()
+void BezierSurface::PreDraw() const
 {
     vector<vector<Vector3d>> pnt;
     vector<vector<Vector3d>> nor;
@@ -81,7 +81,7 @@ void BezierSurface::PreDraw()
 }
 
 // メッシュ描画
-void BezierSurface::DrawMeshInternal()
+void BezierSurface::DrawMeshInternal() const
 {
     Vector3d pnt;
 
@@ -124,7 +124,7 @@ void BezierSurface::DrawMeshInternal()
 }
 
 // 頂点バッファ作成
-void BezierSurface::CreateVBO()
+void BezierSurface::CreateVBO() const
 {
     vector<vector<Vector3d>> pnt;
     vector<vector<Vector3d>> nor;
@@ -175,22 +175,22 @@ void BezierSurface::CreateVBO()
         }
     }
 
-    _nVertex = (int)pnt_vbo.size();
+    _nVertex_cache = (int)pnt_vbo.size();
 
     // VBOの設定
     glGenBuffers(1, &_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(double) * _nVertex * 3, &pnt_vbo[0], GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(double) * _nVertex_cache * 3, &pnt_vbo[0], GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glGenBuffers(1, &_vbo_nor);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo_nor);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(double) * _nVertex * 3, &nor_vbo[0], GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(double) * _nVertex_cache * 3, &nor_vbo[0], GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 // VBOで描画
-void BezierSurface::DrawVBO()
+void BezierSurface::DrawVBO() const
 {
     //glColor4dv(_color);
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, _color);
@@ -206,7 +206,7 @@ void BezierSurface::DrawVBO()
     glNormalPointer(GL_DOUBLE, 0, (void *)0);
 
     // 描画
-    glDrawArrays(GL_TRIANGLES, 0, _nVertex);
+    glDrawArrays(GL_TRIANGLES, 0, _nVertex_cache);
 
     // clean up
     glDisableClientState(GL_VERTEX_ARRAY);
@@ -215,7 +215,7 @@ void BezierSurface::DrawVBO()
 }
 
 // 接線ベクトル描画
-void BezierSurface::DrawFirstDiffVectorsInternal()
+void BezierSurface::DrawFirstDiffVectorsInternal() const
 {
     Vector3d pnt, diff;
     glLineWidth(2.0);
@@ -248,7 +248,7 @@ void BezierSurface::DrawFirstDiffVectorsInternal()
 }
 
 // 2階微分ベクトル描画
-void BezierSurface::DrawSecondDiffVectorsInternal()
+void BezierSurface::DrawSecondDiffVectorsInternal() const
 {
     Vector3d pnt, diff;
     glLineWidth(1.0);
@@ -287,7 +287,7 @@ void BezierSurface::DrawSecondDiffVectorsInternal()
 }
 
 // 法線ベクトル描画
-void BezierSurface::DrawNormalVectorsInternal()
+void BezierSurface::DrawNormalVectorsInternal() const
 {
     Vector3d pnt, normal;
     glLineWidth(1.0);
@@ -314,7 +314,7 @@ void BezierSurface::DrawNormalVectorsInternal()
 }
 
 // 曲率半径描画
-void BezierSurface::DrawCurvatureVectorsInternal()
+void BezierSurface::DrawCurvatureVectorsInternal() const
 {
     Vector3d pnt, curv;
     
@@ -349,9 +349,9 @@ void BezierSurface::DrawCurvatureVectorsInternal()
 
 // 指定パラメータのベクトルを基底関数から算出する
 Vector3d BezierSurface::CalcVector(
-    double u, double v,
-    function<double(unsigned, unsigned, double)> BasisFuncU,
-    function<double(unsigned, unsigned, double)> BasisFuncV)
+    const double u, const double v,
+    const function<double(const unsigned, const unsigned, const double)> BasisFuncU,
+    const function<double(const unsigned, const unsigned, const double)> BasisFuncV) const
 {
     Vector3d vector;
 
@@ -373,44 +373,44 @@ Vector3d BezierSurface::CalcVector(
 }
 
 // 位置ベクトル取得
-Vector3d BezierSurface::GetPositionVector(double u, double v)
+Vector3d BezierSurface::GetPositionVector(const double u, const double v) const
 {
     // u:0-diff v:0-diff
     return CalcVector(u, v, CalcBernsteinFunc, CalcBernsteinFunc);
 }
 
 // 接線ベクトル取得
-Vector3d BezierSurface::GetFirstDiffVectorU(double u, double v)
+Vector3d BezierSurface::GetFirstDiffVectorU(const double u, const double v) const
 {
     // u:1-diff v:0-diff
     return CalcVector(u, v, Calc1DiffBernsteinFunc, CalcBernsteinFunc);
 }
-Vector3d BezierSurface::GetFirstDiffVectorV(double u, double v)
+Vector3d BezierSurface::GetFirstDiffVectorV(const double u, const double v) const
 {
     // u:0-diff v:1-diff
     return CalcVector(u, v, CalcBernsteinFunc, Calc1DiffBernsteinFunc);
 }
 
 // 2階微分ベクトル取得
-Vector3d BezierSurface::GetSecondDiffVectorUU(double u, double v)
+Vector3d BezierSurface::GetSecondDiffVectorUU(const double u, const double v) const
 {
     // u:2diff v:0-diff
     return CalcVector(u, v, Calc2DiffBernsteinFunc, CalcBernsteinFunc);
 }
-Vector3d BezierSurface::GetSecondDiffVectorUV(double u, double v)
+Vector3d BezierSurface::GetSecondDiffVectorUV(const double u, const double v) const
 {
     // u:1-diff v:1-diff
     return CalcVector(u, v, Calc1DiffBernsteinFunc, Calc1DiffBernsteinFunc);
 }
-Vector3d BezierSurface::GetSecondDiffVectorVV(double u, double v)
+Vector3d BezierSurface::GetSecondDiffVectorVV(const double u, const double v) const
 {
     // u:0-diff v:2-diff
     return CalcVector(u, v, CalcBernsteinFunc, Calc2DiffBernsteinFunc);
 }
 
 // 逆変換
-Surface* BezierSurface::GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, const GLdouble resol)
+Surface* BezierSurface::GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, const GLdouble resol) const
 {
     // 未実装
-    return this;
+    return nullptr;
 }

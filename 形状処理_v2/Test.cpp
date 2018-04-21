@@ -60,7 +60,7 @@ static void DrawApproxSurface_CGS5()
     if (isFirst)
     {
         test_scene->AddObject(surf);
-        test_scene->AddObject(surf_knot_remake);
+        //test_scene->AddObject(surf_knot_remake);
         test_scene->AddObject(surf_knot_split_remake);
     }
 }

@@ -3,8 +3,8 @@
 #include <iterator>
 
 BsplineSurface::BsplineSurface(
-    int u_mord, int v_mord, ControlPoint* cp, 
-    int u_cp_size, int v_cp_size, double* u_knot, double* v_knot,
+    const int u_mord, const int v_mord, const ControlPoint* const cp,
+    const int u_cp_size, const int v_cp_size, const double* const u_knot, const double* const v_knot,
     const GLdouble* const color, const GLdouble resol)
 {
     _ordU = u_mord;
@@ -29,7 +29,7 @@ BsplineSurface::BsplineSurface(
 }
 
 // ノットベクトル設定
-void BsplineSurface::SetKnotVector(double* knot, int size, vector<double>& _knot)
+void BsplineSurface::SetKnotVector(const double* const knot, int size, vector<double>& _knot)
 {
     if (size <= 0)
         Error::ShowAndExit("ノットベクトル設定失敗", "knot-vector size must be over 0.");
@@ -40,7 +40,7 @@ void BsplineSurface::SetKnotVector(double* knot, int size, vector<double>& _knot
 }
 
 // 指定した端の曲線を取得する
-Curve* BsplineSurface::GetEdgeCurve(SurfaceEdge edge)
+Curve* BsplineSurface::GetEdgeCurve(const SurfaceEdge edge) const
 {
     vector<ControlPoint> edge_cp = GetEdgeCurveControlPoint(edge);
     int edge_ord = (edge == U_min || edge == U_max) ? _ordV : _ordU;
@@ -50,7 +50,7 @@ Curve* BsplineSurface::GetEdgeCurve(SurfaceEdge edge)
 }
 
 // 事前描画
-void BsplineSurface::PreDraw()
+void BsplineSurface::PreDraw() const
 {   
     // 解像度
     int RES = (int)_resolution;
@@ -121,7 +121,7 @@ void BsplineSurface::PreDraw()
 }
 
 // メッシュ描画
-void BsplineSurface::DrawMeshInternal()
+void BsplineSurface::DrawMeshInternal() const
 {
     Vector3d pnt;
 
@@ -164,7 +164,7 @@ void BsplineSurface::DrawMeshInternal()
 }
 
 // 頂点バッファ(VBO)作成
-void BsplineSurface::CreateVBO()
+void BsplineSurface::CreateVBO() const
 {
     // 解像度
     int RES = (int)_resolution;
@@ -228,22 +228,22 @@ void BsplineSurface::CreateVBO()
         }
     }
 
-    _nVertex = (int)pnt_vbo.size();
+    _nVertex_cache = (int)pnt_vbo.size();
 
     // VBOの設定
     glGenBuffers(1, &_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(double) * _nVertex * 3, &pnt_vbo[0], GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(double) * _nVertex_cache * 3, &pnt_vbo[0], GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glGenBuffers(1, &_vbo_nor);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo_nor);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(double) * _nVertex * 3, &nor_vbo[0], GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(double) * _nVertex_cache * 3, &nor_vbo[0], GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 // VBOで描画
-void BsplineSurface::DrawVBO()
+void BsplineSurface::DrawVBO() const
 {
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, _color);
 
@@ -258,7 +258,7 @@ void BsplineSurface::DrawVBO()
     glNormalPointer(GL_DOUBLE, 0, (void *)0);
 
     // 描画
-    glDrawArrays(GL_TRIANGLES, 0, _nVertex);
+    glDrawArrays(GL_TRIANGLES, 0, _nVertex_cache);
 
     // clean up
     glDisableClientState(GL_VERTEX_ARRAY);
@@ -267,7 +267,7 @@ void BsplineSurface::DrawVBO()
 }
 
 // 頂点バッファ(IBO)作成
-void BsplineSurface::CreateIBO()
+void BsplineSurface::CreateIBO() const
 {
     // 解像度
     int RES = 15;
@@ -332,18 +332,18 @@ void BsplineSurface::CreateIBO()
         }
     }
 
-    _nVertex = (int)pnt_vbo.size();
+    _nVertex_cache = (int)pnt_vbo.size();
 
     // VBOの設定
     glGenBuffers(1, &_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(double) * _nVertex * 3, &pnt_vbo[0], GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(double) * _nVertex_cache * 3, &pnt_vbo[0], GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // IBOの設定
     glGenBuffers(1, &_ibo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(double) * _nVertex * 3, &pnt_vbo[0], GL_DYNAMIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(double) * _nVertex_cache * 3, &pnt_vbo[0], GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     //glGenBuffers(1, &_vbo_nor);
@@ -353,7 +353,7 @@ void BsplineSurface::CreateIBO()
 }
 
 // IBOで描画
-void BsplineSurface::DrawIBO()
+void BsplineSurface::DrawIBO() const
 {
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, _color);
 
@@ -368,7 +368,7 @@ void BsplineSurface::DrawIBO()
     //glNormalPointer(GL_DOUBLE, 0, (void *)0);
 
     // 描画
-    glDrawElements(GL_TRIANGLES, _nVertex, GL_UNSIGNED_INT, (void *)0);
+    glDrawElements(GL_TRIANGLES, _nVertex_cache, GL_UNSIGNED_INT, (void *)0);
 
     // clean up
     //glDisableClientState(GL_VERTEX_ARRAY);
@@ -377,7 +377,7 @@ void BsplineSurface::DrawIBO()
 }
 
 // 接線ベクトル描画
-void BsplineSurface::DrawFirstDiffVectorsInternal()
+void BsplineSurface::DrawFirstDiffVectorsInternal() const
 {
     Vector3d pnt, diff;
     glLineWidth(2.0);
@@ -410,7 +410,7 @@ void BsplineSurface::DrawFirstDiffVectorsInternal()
 }
 
 // 2階微分ベクトル描画
-void BsplineSurface::DrawSecondDiffVectorsInternal()
+void BsplineSurface::DrawSecondDiffVectorsInternal() const
 {
     Vector3d pnt, diff;
     glLineWidth(1.0);
@@ -449,8 +449,8 @@ void BsplineSurface::DrawSecondDiffVectorsInternal()
 }
 
 // 法線ベクトル描画
-void BsplineSurface::DrawNormalVectorsInternal()
-{
+void BsplineSurface::DrawNormalVectorsInternal() const
+{ 
     Vector3d pnt, normal;
     glLineWidth(1.0);
 
@@ -476,7 +476,7 @@ void BsplineSurface::DrawNormalVectorsInternal()
 }
 
 // 曲率半径描画
-void BsplineSurface::DrawCurvatureVectorsInternal()
+void BsplineSurface::DrawCurvatureVectorsInternal() const
 {
     Vector3d pnt, curv;
 
@@ -511,9 +511,9 @@ void BsplineSurface::DrawCurvatureVectorsInternal()
 
 // 指定パラメータのベクトルを基底関数から算出する
 Vector3d BsplineSurface::CalcVector(
-    double u, double v,
-    function<double(unsigned, unsigned, double, double *)> BasisFuncU,
-    function<double(unsigned, unsigned, double, double *)> BasisFuncV)
+    const double u, const double v,
+    const function<double(const unsigned, const unsigned, const double, const double* const)> BasisFuncU,
+    const function<double(const unsigned, const unsigned, const double, const double* const)> BasisFuncV) const
 {
     Vector3d vector;
 
@@ -535,36 +535,36 @@ Vector3d BsplineSurface::CalcVector(
 }
 
 // 位置ベクトル取得
-Vector3d BsplineSurface::GetPositionVector(double u, double v)
+Vector3d BsplineSurface::GetPositionVector(const double u, const double v) const
 {
     // u:0-diff v:0-diff
     return CalcVector(u, v, CalcBsplineFunc, CalcBsplineFunc);
 }
 
 // 接線ベクトル取得
-Vector3d BsplineSurface::GetFirstDiffVectorU(double u, double v)
+Vector3d BsplineSurface::GetFirstDiffVectorU(const double u, const double v) const
 {
     // u:1-diff v:0-diff
     return CalcVector(u, v, Calc1DiffBsplineFunc, CalcBsplineFunc);
 }
-Vector3d BsplineSurface::GetFirstDiffVectorV(double u, double v)
+Vector3d BsplineSurface::GetFirstDiffVectorV(const double u, const double v) const
 {
     // u:0-diff v:1-diff
     return CalcVector(u, v, CalcBsplineFunc, Calc1DiffBsplineFunc);
 }
 
 // 2階微分ベクトル取得
-Vector3d BsplineSurface::GetSecondDiffVectorUU(double u, double v)
+Vector3d BsplineSurface::GetSecondDiffVectorUU(const double u, const double v) const
 {
     // u:2diff v:0-diff
     return CalcVector(u, v, Calc2DiffBsplineFunc, CalcBsplineFunc);
 }
-Vector3d BsplineSurface::GetSecondDiffVectorUV(double u, double v)
+Vector3d BsplineSurface::GetSecondDiffVectorUV(const double u, const double v) const
 {
     // u:1-diff v:1-diff
     return CalcVector(u, v, Calc1DiffBsplineFunc, Calc1DiffBsplineFunc);
 }
-Vector3d BsplineSurface::GetSecondDiffVectorVV(double u, double v)
+Vector3d BsplineSurface::GetSecondDiffVectorVV(const double u, const double v) const
 {
     // u:0-diff v:2-diff
     return CalcVector(u, v, CalcBsplineFunc, Calc2DiffBsplineFunc);
@@ -572,7 +572,7 @@ Vector3d BsplineSurface::GetSecondDiffVectorVV(double u, double v)
 
 // ノットベクトルをもとにして点群を取得する
 // splitSegCnt: セグメントを何分割するかの回数(デフォルトは1 = 分割しない)
-vector<vector<Vector3d>> BsplineSurface::GetPointsByKnots(int splitSegCnt_U, int splitSegCnt_V)
+vector<vector<Vector3d>> BsplineSurface::GetPointsByKnots(const int splitSegCnt_U, const int splitSegCnt_V) const
 {
     vector<vector<Vector3d>> pnts; // pnts[v][u]と並べる
 
@@ -581,7 +581,7 @@ vector<vector<Vector3d>> BsplineSurface::GetPointsByKnots(int splitSegCnt_U, int
 
     // U方向パラメータ位置
     {
-        for (int i = _ordU - 1, kn = _knotU.size(); i < kn - _ordU; ++i)
+        for (size_t i = _ordU - 1, kn = _knotU.size(); i < kn - _ordU; ++i)
         {
             skip = (_knotU[i + 1] - _knotU[i]) / (double)splitSegCnt_U;
             
@@ -592,7 +592,7 @@ vector<vector<Vector3d>> BsplineSurface::GetPointsByKnots(int splitSegCnt_U, int
     }
     // V方向パラメータ位置
     {
-        for (int i = _ordV - 1, kn = _knotV.size(); i < kn - _ordV; ++i)
+        for (size_t i = _ordV - 1, kn = _knotV.size(); i < kn - _ordV; ++i)
         {
             skip = (_knotV[i + 1] - _knotV[i]) / (double)splitSegCnt_V;
 
@@ -603,12 +603,12 @@ vector<vector<Vector3d>> BsplineSurface::GetPointsByKnots(int splitSegCnt_U, int
     }
 
     // 位置ベクトルを求める
-    for (int j = 0, kv_size = knotsV.size(); j < kv_size; ++j)
+    for (size_t j = 0, kv_size = knotsV.size(); j < kv_size; ++j)
     {
         vector<Vector3d> p_vec;
         p_vec.reserve(knotsU.size());
 
-        for (int i = 0, ku_size = knotsU.size(); i < ku_size; ++i)
+        for (size_t i = 0, ku_size = knotsU.size(); i < ku_size; ++i)
             p_vec.emplace_back(GetPositionVector(knotsU[i], knotsV[j]));
 
         pnts.push_back(p_vec);
@@ -866,7 +866,7 @@ void CalcControlPointsByPassingPnts(const vector<Vector3d>& pnts, const int ord,
 
 // 通過点から逆変換して曲面を取得
 // TODO: static化
-Surface* BsplineSurface::GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, const GLdouble resol)
+Surface* BsplineSurface::GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, const GLdouble resol) const
 {
     int passPntsCntU, passPntsCntV; // 各方向の通過点数
     int ordU, ordV; // 階数
@@ -929,9 +929,6 @@ Surface* BsplineSurface::GetSurfaceFromPoints(const vector<vector<Vector3d>>& pn
             CalcControlPointsByPassingPnts(pntsV, ordV, knotV, &ctrlpV);
             temp_cpsV[i] = ctrlpV;
         }
-
-        auto a = temp_cpsV.size();
-        auto b = temp_cpsV[0].size();
 
         // 転置
         for (int i = 0; i < new_ncpntU; ++i)

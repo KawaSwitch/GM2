@@ -1,7 +1,7 @@
 #include "Surface.h"
 
 // 制御点設定
-void Surface::SetControlPoint(ControlPoint* cp, int size)
+void Surface::SetControlPoint(const ControlPoint* const cp, const int size)
 {
     if (size <= 0)
         Error::ShowAndExit("制御点設定失敗", "CP size must be over 0.");
@@ -27,7 +27,7 @@ void Surface::SetControlPoint(ControlPoint* cp, int size)
 }
 
 // 描画用曲率ベクトル取得
-Vector3d Surface::GetCurvatureVector(double u, double v)
+Vector3d Surface::GetCurvatureVector(const double u, const double v) const
 {
     // 主曲率取得
     double max_kappa, min_kappa;
@@ -44,7 +44,7 @@ Vector3d Surface::GetCurvatureVector(double u, double v)
 
 // Σ[i=1tok]Σ[j=1toL] Q(i,j)N[i,n](u)N[j,m](v) を計算する
 // <!>非有理曲面の位置ベクトル, 有理曲面の分子
-Vector3d Surface::CalcVectorWithBasisFunctions(double* BF_array_U, double* BF_array_V)
+Vector3d Surface::CalcVectorWithBasisFunctions(const double* const BF_array_U, const double* const BF_array_V) const
 {
     Vector3d retVec;
     double temp[100]; // 計算用
@@ -74,7 +74,7 @@ Vector3d Surface::CalcVectorWithBasisFunctions(double* BF_array_U, double* BF_ar
 
 // Σ[i=1tok]Σ[j=1toL] w(i,j)N[i,n](u)N[j,m](v) を計算する
 // <!>有理曲面の分母
-double Surface::CalcWeightWithBasisFunctions(double* BF_array_U, double* BF_array_V)
+double Surface::CalcWeightWithBasisFunctions(const double* const BF_array_U, const double* const BF_array_V) const
 {
     double temp[100]; // 計算用
 
@@ -84,7 +84,7 @@ double Surface::CalcWeightWithBasisFunctions(double* BF_array_U, double* BF_arra
 }
 
 // 指定した端の曲線の制御点を取得する
-vector<ControlPoint> Surface::GetEdgeCurveControlPoint(SurfaceEdge edge)
+vector<ControlPoint> Surface::GetEdgeCurveControlPoint(const SurfaceEdge edge) const
 {
     vector<ControlPoint> edge_cp;
 
@@ -113,7 +113,7 @@ vector<ControlPoint> Surface::GetEdgeCurveControlPoint(SurfaceEdge edge)
 }
 
 // 主曲率を取得
-void Surface::GetPrincipalCurvatures(double u, double v, double* max_kappa, double* min_kappa)
+void Surface::GetPrincipalCurvatures(const double u, const double v, double* const max_kappa, double* const min_kappa) const
 {
     Vector3d e = GetNormalVector(u, v).Normalize(); // 単位法線ベクトル
 
@@ -139,7 +139,7 @@ void Surface::GetPrincipalCurvatures(double u, double v, double* max_kappa, doub
 }
 
 // 平均曲率取得
-double Surface::GetMeanCurvature(double u, double v)
+double Surface::GetMeanCurvature(const double u, const double v) const
 {
     // 主曲率取得
     double max_kappa, min_kappa;
@@ -149,7 +149,7 @@ double Surface::GetMeanCurvature(double u, double v)
 }
 
 // ガウス曲率取得
-double Surface::GetGaussianCurvature(double u, double v)
+double Surface::GetGaussianCurvature(const double u, const double v) const
 {
     // 主曲率取得
     double max_kappa, min_kappa;
@@ -159,7 +159,7 @@ double Surface::GetGaussianCurvature(double u, double v)
 }
 
 // オブジェクト描画
-void Surface::Draw()
+void Surface::Draw() const
 {
     if (isUseLight) // 曲面にはライティング処理を施す
         glEnable(GL_LIGHTING);
@@ -171,9 +171,10 @@ void Surface::Draw()
 }
 
 // 制御点線描画
-void Surface::DrawCPsInternal()
+void Surface::DrawCPsInternal() const
 {
-    glColor3d(1.0, 0.0, 0.0); // 赤
+    //glColor3d(1.0, 0.0, 0.0); // 赤
+    glColor3dv(_color);
     glPointSize(5.0);
     glLineWidth(1.0);
 
@@ -202,7 +203,7 @@ void Surface::DrawCPsInternal()
 }
 
 // 描画範囲を各方向split_num個に分割するような位置ベクトルを取得する
-vector<vector<Vector3d>> Surface::GetPositionVectors(int U_split_num, int V_split_num)
+vector<vector<Vector3d>> Surface::GetPositionVectors(const int U_split_num, const int V_split_num) const
 {
     vector<Vector3d> pos;
     vector<vector<Vector3d>> pnts; // pnts[v][u]と並べる
@@ -225,7 +226,7 @@ vector<vector<Vector3d>> Surface::GetPositionVectors(int U_split_num, int V_spli
 }
 
 // 参照点からの最近点を取得
-Vector3d Surface::GetNearestPointFromRef(Vector3d ref)
+Vector3d Surface::GetNearestPointFromRef(const Vector3d& ref) const
 {
     int count = 0;
 

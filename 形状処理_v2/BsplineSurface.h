@@ -10,55 +10,55 @@ protected:
     vector<double> _knotU, _knotV; // ノットベクトル
 
     // 各種ベクトル描画
-    void DrawFirstDiffVectorsInternal() override;
-    void DrawSecondDiffVectorsInternal() override;
-    void DrawNormalVectorsInternal() override;
-    void DrawCurvatureVectorsInternal() override;
+    void DrawFirstDiffVectorsInternal() const override;
+    void DrawSecondDiffVectorsInternal() const override;
+    void DrawNormalVectorsInternal() const override;
+    void DrawCurvatureVectorsInternal() const override;
 
     // メッシュ描画
-    void DrawMeshInternal() override;
+    void DrawMeshInternal() const override;
 
     // 事前描画
-    void PreDraw() override;
+    void PreDraw() const override;
 
     // バッファオブジェクト
-    void CreateVBO() override;
-    void DrawVBO() override;
-    void CreateIBO() override;
-    void DrawIBO() override;
+    void CreateVBO() const override;
+    void DrawVBO() const override;
+    void CreateIBO() const override;
+    void DrawIBO() const override;
 
     // ノットベクトル設定
-    void SetKnotVector(double* knot, int size, vector<double>& _knot);
+    void SetKnotVector(const double* const knot, int size, vector<double>& _knot);
 
 private:
 
     // 指定した端の曲線を取得する
-    Curve* GetEdgeCurve(SurfaceEdge edge) override;
+    Curve* GetEdgeCurve(SurfaceEdge edge) const override;
 
     // 指定パラメータのベクトルを基底関数から算出する
     Vector3d CalcVector(
         double u, double v,
-        function<double(unsigned, unsigned, double, double *)> BasisFuncU,
-        function<double(unsigned, unsigned, double, double *)> BasisFuncV);
+        function<double(unsigned, unsigned, double, const double* const)> BasisFuncU,
+        function<double(unsigned, unsigned, double, const double* const)> BasisFuncV) const;
 
 public:
 
     BsplineSurface(int u_mord, int v_mord,
-        ControlPoint* cp, int u_cp_size, int v_cp_size, 
-        double* u_knot, double* v_knot,
-        const GLdouble* const color, const GLdouble resol = 20);
+        const ControlPoint* const cp, int u_cp_size, int v_cp_size,
+        const double* const u_knot, const double* const v_knot,
+        const GLdouble* const color, GLdouble resol = 20);
 
     // 各種ベクトル取得
-    Vector3d GetPositionVector(double u, double v) override;
-    Vector3d GetFirstDiffVectorU(double u, double v) override;
-    Vector3d GetFirstDiffVectorV(double u, double v) override;
-    Vector3d GetSecondDiffVectorUU(double u, double v) override;
-    Vector3d GetSecondDiffVectorUV(double u, double v) override;
-    Vector3d GetSecondDiffVectorVV(double u, double v) override;
+    Vector3d GetPositionVector(double u, double v) const override;
+    Vector3d GetFirstDiffVectorU(double u, double v) const override;
+    Vector3d GetFirstDiffVectorV(double u, double v) const override;
+    Vector3d GetSecondDiffVectorUU(double u, double v) const override;
+    Vector3d GetSecondDiffVectorUV(double u, double v) const override;
+    Vector3d GetSecondDiffVectorVV(double u, double v) const override;
 
     // ノットベクトルをもとにして点群を取得する
-    vector<vector<Vector3d>> GetPointsByKnots(int splitSegCnt_U = 1, int splitSegCnt_V = 1);
+    vector<vector<Vector3d>> GetPointsByKnots(int splitSegCnt_U = 1, int splitSegCnt_V = 1) const;
 
     // 逆変換
-    Surface* GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, const GLdouble resol) override;
+    Surface* GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, GLdouble resol) const override;
 };

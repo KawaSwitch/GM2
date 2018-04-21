@@ -1,7 +1,7 @@
 #include "Curve.h"
 
 // 制御点設定
-void Curve::SetControlPoint(ControlPoint* cp, int size)
+void Curve::SetControlPoint(const ControlPoint* const cp, const int size)
 {
     if (size <= 0)
         Error::ShowAndExit("制御点設定失敗", "CP size must be over 0.");
@@ -13,7 +13,7 @@ void Curve::SetControlPoint(ControlPoint* cp, int size)
 }
 
 // 制御点描画
-void Curve::DrawCPsInternal()
+void Curve::DrawCPsInternal() const
 {
     glColor3d(1.0, 0.0, 0.0); // 赤
     glPointSize(10.0);
@@ -33,7 +33,7 @@ void Curve::DrawCPsInternal()
 }
 
 // 曲率ベクトル取得
-Vector3d Curve::GetCurvatureVector(double t)
+Vector3d Curve::GetCurvatureVector(const double t) const
 {
     double kappa =  // κ = |Pt×Ptt| / |Pt|^3
         (GetFirstDiffVector(t) * GetSecondDiffVector(t)).Length() // |Pt×Ptt|
@@ -46,7 +46,7 @@ Vector3d Curve::GetCurvatureVector(double t)
 }
 
 // 描画範囲をsplit_num個に分割するような位置ベクトルを取得する
-vector<Vector3d> Curve::GetPositionVectors(int split_num)
+vector<Vector3d> Curve::GetPositionVectors(const int split_num) const
 {
     vector<Vector3d> pos;
 
@@ -61,7 +61,7 @@ vector<Vector3d> Curve::GetPositionVectors(int split_num)
 }
 
 // 参照点からの最近点を取得する
-Vector3d Curve::GetNearestPointFromRef(Vector3d ref)
+Vector3d Curve::GetNearestPointFromRef(const Vector3d& ref) const
 {
     const double EPS = 10e-12;
     double left = _min_draw_param;
@@ -117,7 +117,7 @@ Vector3d Curve::GetNearestPointFromRef(Vector3d ref)
 }
 
 // 他曲線との相違度を計算します
-double Curve::CalcDifferency(Curve* other)
+double Curve::CalcDifferency(const Curve* const other) const
 {
     int checkCnt = 100; // 距離を測る点の数
     double sumDistance = 0.0; // 相違距離の合計

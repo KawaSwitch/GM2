@@ -3,14 +3,14 @@
 
 // Bsplineと同じ
 NurbsSurface::NurbsSurface(
-    int u_mord, int v_mord,
-    ControlPoint* cp, int u_cp_size, int v_cp_size,
-    double* u_knot, double* v_knot,
-    GLdouble* color, GLdouble resol)
+    const int u_mord, const int v_mord,
+    const ControlPoint* const cp, const int u_cp_size, const int v_cp_size,
+    const double* const u_knot, const double* const v_knot,
+    const GLdouble* const color, const GLdouble resol)
         : BsplineSurface(u_mord, v_mord, cp, u_cp_size, v_cp_size, u_knot, v_knot, color, resol) { }
 
 // 指定した端の曲線を取得する
-Curve* NurbsSurface::GetEdgeCurve(SurfaceEdge edge)
+Curve* NurbsSurface::GetEdgeCurve(const SurfaceEdge edge) const
 {
     vector<ControlPoint> edge_cp = GetEdgeCurveControlPoint(edge);
     int edge_ord = (edge == U_min || edge == U_max) ? _ordV : _ordU;
@@ -20,7 +20,7 @@ Curve* NurbsSurface::GetEdgeCurve(SurfaceEdge edge)
 }
 
 // 位置ベクトル取得
-Vector3d NurbsSurface::GetPositionVector(double u, double v)
+Vector3d NurbsSurface::GetPositionVector(const double u, const double v) const
 {
     // 基底関数配列(行列計算用)
     double* N_array_U = new double[_ncpntU];
@@ -41,7 +41,7 @@ Vector3d NurbsSurface::GetPositionVector(double u, double v)
 }
 
 // 接線ベクトル取得
-Vector3d NurbsSurface::GetFirstDiffVectorU(double u, double v)
+Vector3d NurbsSurface::GetFirstDiffVectorU(const double u, const double v) const
 {
     // 基底関数配列(行列計算用)
     double* N_array_U = new double[_ncpntU];
@@ -66,7 +66,7 @@ Vector3d NurbsSurface::GetFirstDiffVectorU(double u, double v)
     delete[] N_array_U, N_array_V;
     return (Qu - Wu * P) / W;
 }
-Vector3d NurbsSurface::GetFirstDiffVectorV(double u, double v)
+Vector3d NurbsSurface::GetFirstDiffVectorV(const double u, const double v) const
 {
     // 基底関数配列(行列計算用)
     double* N_array_U = new double[_ncpntU];
@@ -93,7 +93,7 @@ Vector3d NurbsSurface::GetFirstDiffVectorV(double u, double v)
 }
 
 // 2階微分ベクトル取得
-Vector3d NurbsSurface::GetSecondDiffVectorUU(double u, double v)
+Vector3d NurbsSurface::GetSecondDiffVectorUU(const double u, const double v) const
 {
     // 基底関数配列(行列計算用)
     double* N_array_U = new double[_ncpntU];
@@ -124,7 +124,7 @@ Vector3d NurbsSurface::GetSecondDiffVectorUU(double u, double v)
     delete[] N_array_U, N_array_V;
     return (Quu - Wuu * P - 2 * Wu * Pu) / W;
 }
-Vector3d NurbsSurface::GetSecondDiffVectorUV(double u, double v)
+Vector3d NurbsSurface::GetSecondDiffVectorUV(const double u, const double v) const
 {
     // 基底関数配列(行列計算用)
     double* N_array_U = new double[_ncpntU];
@@ -157,7 +157,7 @@ Vector3d NurbsSurface::GetSecondDiffVectorUV(double u, double v)
     delete[] N_array_U, N_array_V;
     return (Quv - Wu * Pv - Wv * Pu - Wuv * P) / W;
 }
-Vector3d NurbsSurface::GetSecondDiffVectorVV(double u, double v)
+Vector3d NurbsSurface::GetSecondDiffVectorVV(const double u, const double v) const
 {
     // 基底関数配列(行列計算用)
     double* N_array_U = new double[_ncpntU];

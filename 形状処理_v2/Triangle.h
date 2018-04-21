@@ -12,7 +12,7 @@ private:
     Point3d A, B, C;
 
     // éñëOï`âÊ
-    virtual void PreDraw() override
+    virtual void PreDraw() const override
     {
         glColor3d(1.0, 0.0, 0.0); // Ç∆ÇËÇ†Ç¶Ç∏ê‘
         glBegin(GL_TRIANGLES);

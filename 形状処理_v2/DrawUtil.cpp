@@ -66,7 +66,7 @@ void DrawBsplineFunc(int mord, int ncpnt, int nknot, double* knot, double min_t,
 }
 
 // ディスプレイリストと描画関数を用いて描画する
-void DrawUsingDisplayList(int* const displayList, function<void(void)> RegisterDraw)
+void DrawUsingDisplayList(int* const displayList, const function<void(void)> RegisterDraw)
 {
     if (*displayList == 0)
     {
