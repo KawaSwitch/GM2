@@ -1,6 +1,7 @@
 #pragma once
-#include <math.h>
-#include <cstdio>
+
+#include <cmath>
+#include <iostream>
 
 // double型3次元ベクトルクラス
 struct Vector3d
@@ -10,7 +11,8 @@ struct Vector3d
     constexpr Vector3d() : X(0), Y(0), Z(0) { } // デフォルトは0初期化
     constexpr Vector3d(double x, double y, double z) : X(x), Y(y), Z(z) { }
 
-   void Show() const { std::cout << X << " " << Y << " " << Z << endl; }
+    // 表示用
+    void Show() const { std::cout << X << " " << Y << " " << Z << std::endl; }
 
     // 内積
     constexpr double Dot(const Vector3d& other) const 

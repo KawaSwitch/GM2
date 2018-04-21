@@ -1,9 +1,8 @@
 #define _USE_MATH_DEFINES
 
-#include "GV.h"
-#include "ControlPoint.h"
-#include <cmath>
 #include <numeric>
+#include "CalcUtil.h"
+#include "Matrix.h"
 
 // 度数法から弧度法に変換する
 double ToRad(const double degree)
@@ -19,14 +18,14 @@ double ToDeg(const double radian)
 }
 
 // 平均値を取得する
-double GetAverage(const vector<double>& array)
+double GetAverage(const std::vector<double>& array)
 {
     return std::accumulate(array.begin(), array.end(), 0.0) / array.size();
 }
 
 // 2次方程式 ax^2 + bx + c = 0 の 2解x1,x2 を求める
 // 虚数解の場合 x1 ± x2i を満たす x1,x2 を求める
-void SolveQuadraticEquation(double a, double b, double c, double* x1, double* x2)
+void SolveQuadraticEquation(const double a, const double b, const double c, double* const x1, double* const x2)
 {
     // 判別式
     double D = b * b - 4 * a * c;
@@ -52,31 +51,31 @@ void SolveQuadraticEquation(double a, double b, double c, double* x1, double* x2
 }
 
 // 二項係数を求める
-constexpr double Binomial(int n, int k)
+constexpr double Binomial(const int n, const int k)
 {
     return Factorial(n) / (Factorial(k) * Factorial(n - k));
 }
 
 // 階乗値を計算する
-constexpr int Factorial(int n)
+constexpr int Factorial(const int n)
 {
     return (n == 0) ? 1 : n * Factorial(n - 1);
 }
 
 // バーンスタイン基底関数を求める
-double CalcBernsteinFunc(unsigned int i, unsigned int N, double t)
+double CalcBernsteinFunc(const unsigned int i, const unsigned int N, const double t)
 {
     return Binomial(N, i) * pow(t, i) * pow(1 - t, N - i);
 }
 
 // 1階微分用バーンスタイン基底関数を求める
-double Calc1DiffBernsteinFunc(unsigned int i, unsigned int N, double t)
+double Calc1DiffBernsteinFunc(const unsigned int i, const unsigned int N, const double t)
 {
     return Binomial(N, i) * (i * pow(t, i - 1) * pow(1 - t, N - i) - (N - i) * pow(t, i) * pow(1 - t, N - i - 1));
 }
 
 // 2階微分用バーンスタイン基底関数を求める
-double Calc2DiffBernsteinFunc(unsigned int i, unsigned int N, double t)
+double Calc2DiffBernsteinFunc(const unsigned int i, const unsigned int N, const double t)
 {
     double temp_left = i * ((i - 1) * pow(t, i - 2) * pow(1 - t, N - i)
         - pow(t, i - 1) * (N - i) * pow(1 - t, N - i - 1));
@@ -183,40 +182,13 @@ double Calc2DiffBsplineFunc(const unsigned int i, const unsigned int M, const do
     }
 }
 
-// 文字列の中から数字のみを取り出す
-void GetNumberOnly(char *dest, const char *src)
-{
-    while (*src)
-    {
-        if ('0' <= *src && *src <= '9') 
-            *dest++ = *src;
-        
-        src++;
-        *dest = 0;
-    }
-}
-
 // 3点から成るポリゴンの単位化済み面法線を取得する
-Vector3d CalcPolygonNormal(Vector3d v0, Vector3d v1, Vector3d v2)
+Vector3d CalcPolygonNormal(const Vector3d& v0, const Vector3d& v1, const Vector3d& v2)
 {
     Vector3d vec01 = v1 - v0;
     Vector3d vec02 = v2 - v0;
 
     return (vec01 * vec02).Normalize();
-}
-
-// 3次元点を幾何学変換する
-Point3d Transform(const Point3d point, const double matrix[16]/* 4 × 4行列 */)
-{
-    return
-    {
-        point.X * matrix[0 * 4 + 0] + point.Y * matrix[1 * 4 + 0] + point.Z * matrix[2 * 4 + 0] + matrix[3 * 4 + 0],
-        point.X * matrix[0 * 4 + 1] + point.Y * matrix[1 * 4 + 1] + point.Z * matrix[2 * 4 + 1] + matrix[3 * 4 + 1],
-        point.X * matrix[0 * 4 + 2] + point.Y * matrix[1 * 4 + 2] + point.Z * matrix[2 * 4 + 2] + matrix[3 * 4 + 2],
-        //point.X * matrix[0 * 4 + 0] + point.Y * matrix[0 * 4 + 1] + point.Z * matrix[0 * 4 + 2] + matrix[0 * 4 + 3],
-        //point.X * matrix[1 * 4 + 0] + point.Y * matrix[1 * 4 + 1] + point.Z * matrix[1 * 4 + 2] + matrix[1 * 4 + 3],
-        //point.X * matrix[2 * 4 + 0] + point.Y * matrix[2 * 4 + 1] + point.Z * matrix[2 * 4 + 2] + matrix[2 * 4 + 3],
-    };
 }
 
 // 2D:指定座標中心に指定rad回転させる
@@ -249,7 +221,7 @@ void RotateCoord2DAroundOrigin(double* const coord_2d, const double rad)
 }
 
 // LU分解で連立方程式を解く
-vector<double> LUDecomposition(const int size, const double* const aMatrix, const double* const b)
+std::vector<double> LUDecomposition(const int size, const double* const aMatrix, const double* const b)
 {
     int N = size; // 解く配列のサイズ
 
@@ -352,7 +324,7 @@ vector<double> LUDecomposition(const int size, const double* const aMatrix, cons
         y[i] = (b[i] - sum) / lMatrix[i][i];
     }
 
-    vector<double> x; // 解ベクトル
+    std::vector<double> x; // 解ベクトル
     x.resize(N);
     for (int i = N - 1; i >= 0; i--)
     {

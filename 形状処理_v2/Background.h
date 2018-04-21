@@ -3,6 +3,7 @@
 #include "GV.h"
 #include "Picking.h"
 #include "Camera.h"
+#include "CalcUtil.h"
 
 static GLdouble color_topLeft[4] = { 1.0, 0.9, 0.9, 1.0 };
 static GLdouble color_topRight[4] = { 0.9, 1.0, 0.9, 1.0 };

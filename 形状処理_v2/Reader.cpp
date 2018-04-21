@@ -8,7 +8,7 @@
 #include <algorithm>
 
 // 指定拡張子のファイル名をすべて取得
-vector<string> Reader::GetFilenames(string extension)
+vector<string> Reader::GetFilenames(const string& extension) const
 {
     vector<string> returnFiles;
 
@@ -53,7 +53,7 @@ vector<string> Reader::GetFilenames(string extension)
 }
 
 // 1行ずつすべて読み込んで返す
-vector<string> Reader::ReadAllLines(string filepath)
+vector<string> Reader::ReadAllLines(const string& filepath) const
 {
     vector<string> returnLines;
     std::ifstream ifs(filepath);
@@ -73,7 +73,7 @@ vector<string> Reader::ReadAllLines(string filepath)
 }
 
 // ファイルからオブジェクトを取得する
-Object* KjsReader::GetObjectFromFile(string file_name)
+Object* KjsReader::GetObjectFromFile(const string& file_name) const
 {
     string file_path = file_name;
 
@@ -126,7 +126,7 @@ Object* KjsReader::GetObjectFromFile(string file_name)
 }
 
 // KJSフォルダ内の先頭に@のついた.kjsファイルすべてからオブジェクトを取得する
-vector<Object *> KjsReader::GetObjectsFromKjsFolder()
+vector<Object *> KjsReader::GetObjectsFromKjsFolder() const
 {
     vector<Object *> returnObjs;
 
@@ -146,9 +146,22 @@ vector<Object *> KjsReader::GetObjectsFromKjsFolder()
     return returnObjs;
 }
 
+// 文字列の中から数字のみを取り出す
+void KjsReader::ExtractNumberFromString(char* dest, const char* src) const
+{
+    while (*src)
+    {
+        if ('0' <= *src && *src <= '9')
+            *dest++ = *src;
+
+        src++;
+        *dest = 0;
+    }
+}
+
 // 以下各オブジェクトのリーダー(ゲッター)関数
 // 長々しいのでまとめれたらまとめたい
-Object* KjsReader::BezierCurveReader(vector<string> lines)
+Object* KjsReader::BezierCurveReader(const vector<string>& lines) const
 {
     int current = 2; // 3行目から読み込む
     char mord[8]; // 階数
@@ -169,8 +182,8 @@ Object* KjsReader::BezierCurveReader(vector<string> lines)
     }
 
     // 各プロパティ取得
-    GetNumberOnly(mord, lines[current++].c_str());
-    GetNumberOnly(ncpnt, lines[current++].c_str());
+    ExtractNumberFromString(mord, lines[current++].c_str());
+    ExtractNumberFromString(ncpnt, lines[current++].c_str());
 
     vector<ControlPoint> cps;
     cps.resize(atoi(ncpnt));
@@ -191,7 +204,7 @@ Object* KjsReader::BezierCurveReader(vector<string> lines)
     BezierCurve* curve = new BezierCurve(atoi(mord), &cps[0], atoi(ncpnt), color, width);
     return curve;
 }
-Object* KjsReader::BezierSurfaceReader(vector<string> lines)
+Object* KjsReader::BezierSurfaceReader(const vector<string>& lines) const
 {
     int current = 2; // 3行目から読み込む
     char uord[8]; // u階数
@@ -214,10 +227,10 @@ Object* KjsReader::BezierSurfaceReader(vector<string> lines)
     }
 
     // 各プロパティ取得
-    GetNumberOnly(uord, lines[current++].c_str());
-    GetNumberOnly(ucpnt, lines[current++].c_str());
-    GetNumberOnly(vord, lines[current++].c_str());
-    GetNumberOnly(vcpnt, lines[current++].c_str());
+    ExtractNumberFromString(uord, lines[current++].c_str());
+    ExtractNumberFromString(ucpnt, lines[current++].c_str());
+    ExtractNumberFromString(vord, lines[current++].c_str());
+    ExtractNumberFromString(vcpnt, lines[current++].c_str());
 
     vector<ControlPoint> cps;
     cps.resize(atoi(ucpnt) * atoi(vcpnt));
@@ -238,7 +251,7 @@ Object* KjsReader::BezierSurfaceReader(vector<string> lines)
     BezierSurface* surf = new BezierSurface(atoi(uord), atoi(vord), &cps[0], atoi(ucpnt), atoi(vcpnt), color, resol);
     return surf;
 }
-Object* KjsReader::BsplineCurveReader(vector<string> lines)
+Object* KjsReader::BsplineCurveReader(const vector<string>& lines) const
 {
     int current = 2; // 3行目から読み込む
     char mord[8]; // 階数
@@ -259,8 +272,8 @@ Object* KjsReader::BsplineCurveReader(vector<string> lines)
     }
 
     // 各プロパティ取得
-    GetNumberOnly(mord, lines[current++].c_str());
-    GetNumberOnly(ncpnt, lines[current++].c_str());
+    ExtractNumberFromString(mord, lines[current++].c_str());
+    ExtractNumberFromString(ncpnt, lines[current++].c_str());
 
     vector<ControlPoint> cps;
     cps.resize(atoi(ncpnt));
@@ -297,7 +310,7 @@ Object* KjsReader::BsplineCurveReader(vector<string> lines)
     BsplineCurve* curve = new BsplineCurve(atoi(mord), &cps[0], atoi(ncpnt), &knot[0], color, width);
     return curve;
 }
-Object* KjsReader::BsplineSurfaceReader(vector<string> lines)
+Object* KjsReader::BsplineSurfaceReader(const vector<string>& lines) const
 {
     int current = 2; // 3行目から読み込む
     char uord[8]; // u階数
@@ -320,10 +333,10 @@ Object* KjsReader::BsplineSurfaceReader(vector<string> lines)
     }
 
     // 各プロパティ取得
-    GetNumberOnly(uord, lines[current++].c_str());
-    GetNumberOnly(ucpnt, lines[current++].c_str());
-    GetNumberOnly(vord, lines[current++].c_str());
-    GetNumberOnly(vcpnt, lines[current++].c_str());
+    ExtractNumberFromString(uord, lines[current++].c_str());
+    ExtractNumberFromString(ucpnt, lines[current++].c_str());
+    ExtractNumberFromString(vord, lines[current++].c_str());
+    ExtractNumberFromString(vcpnt, lines[current++].c_str());
 
     vector<ControlPoint> cps;
     cps.resize(atoi(ucpnt) * atoi(vcpnt));
@@ -373,7 +386,7 @@ Object* KjsReader::BsplineSurfaceReader(vector<string> lines)
 
     return surf;
 }
-Object* KjsReader::NurbsCurveReader(vector<string> lines)
+Object* KjsReader::NurbsCurveReader(const vector<string>& lines) const
 {
     int current = 2; // 3行目から読み込む
     char mord[8]; // 階数
@@ -394,8 +407,8 @@ Object* KjsReader::NurbsCurveReader(vector<string> lines)
     }
 
     // 各プロパティ取得
-    GetNumberOnly(mord, lines[current++].c_str());
-    GetNumberOnly(ncpnt, lines[current++].c_str());
+    ExtractNumberFromString(mord, lines[current++].c_str());
+    ExtractNumberFromString(ncpnt, lines[current++].c_str());
 
     vector<ControlPoint> cps;
     cps.resize(atoi(ncpnt));
@@ -430,7 +443,7 @@ Object* KjsReader::NurbsCurveReader(vector<string> lines)
     NurbsCurve* curve = new NurbsCurve(atoi(mord), &cps[0], atoi(ncpnt), &knot[0], color, width);
     return curve;
 }
-Object* KjsReader::NurbsSurfaceReader(vector<string> lines)
+Object* KjsReader::NurbsSurfaceReader(const vector<string>& lines) const
 {
     int current = 2; // 3行目から読み込む
     char uord[8]; // u階数
@@ -453,10 +466,10 @@ Object* KjsReader::NurbsSurfaceReader(vector<string> lines)
     }
 
     // 各プロパティ取得
-    GetNumberOnly(uord, lines[current++].c_str());
-    GetNumberOnly(ucpnt, lines[current++].c_str());
-    GetNumberOnly(vord, lines[current++].c_str());
-    GetNumberOnly(vcpnt, lines[current++].c_str());
+    ExtractNumberFromString(uord, lines[current++].c_str());
+    ExtractNumberFromString(ucpnt, lines[current++].c_str());
+    ExtractNumberFromString(vord, lines[current++].c_str());
+    ExtractNumberFromString(vcpnt, lines[current++].c_str());
 
     vector<ControlPoint> cps;
     cps.resize(atoi(ucpnt) * atoi(vcpnt));

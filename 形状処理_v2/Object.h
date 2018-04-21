@@ -2,6 +2,7 @@
 #pragma comment(lib,"glew32.lib")
 
 #include "GV.h"
+#include "CalcUtil.h"
 #include "Scene.h"
 #include "Error.h"
 #include "ControlPoint.h"
