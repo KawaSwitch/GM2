@@ -7,6 +7,7 @@
 #include "Triangle.h"
 #include "Reader.h"
 #include "Axis.h"
+#include "Initialize.h"
 
 extern NormalAxis* axis;
 extern GeoGrid2D* grid;
@@ -99,5 +100,5 @@ void Initialize()
     InitScene();
 
     // コンソール出力
-    ConsoleDiscription();
+    ShowConsoleDiscription();
 }

@@ -1,5 +1,6 @@
 #include "GV.h"
 #include "CalcUtil.h"
+#include "glUtil.h"
 
 // “_ŒQ‚ð•`‰æ‚·‚é
 void DrawPoints(vector<Vector3d> vec, GLdouble* color, GLdouble pSize)

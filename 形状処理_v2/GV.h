@@ -5,6 +5,7 @@
 #include <math.h>
 #include <functional>
 #include <memory>
+#include <vector>
 #include "define.h"
 #include "EPS.h"
 #include "Error.h"
@@ -21,7 +22,6 @@
 #define GLOBAL extern 
 #endif
 
-#include "function.h"
 #include "template.h"
 
 GLOBAL int width, height; // ウィンドウサイズ

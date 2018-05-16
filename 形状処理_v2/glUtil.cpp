@@ -9,31 +9,6 @@ void glPointSize(const GLdouble size) { glPointSize((GLfloat)size); }
 void glLineWidth(const GLdouble width) { glLineWidth((GLfloat)width); }
 void glNormal3d(const Vector3d& vec) { glNormal3d(vec.X, vec.Y, vec.Z); }
 
-void glMultMatrixd(const Matrix3d& mat)
-{
-    const double mat_arr[16] =
-    {
-        mat.M11, mat.M12, mat.M13, mat.M14,
-        mat.M21, mat.M22, mat.M23, mat.M24,
-        mat.M31, mat.M32, mat.M33, mat.M34,
-        mat.M41, mat.M42, mat.M43, mat.M44,
-    };
-
-    glMultMatrixd(mat_arr);
-}
-void glLoadMatrixd(const Matrix3d& mat)
-{
-    const double mat_arr[16] =
-    {
-        mat.M11, mat.M12, mat.M13, mat.M14,
-        mat.M21, mat.M22, mat.M23, mat.M24,
-        mat.M31, mat.M32, mat.M33, mat.M34,
-        mat.M41, mat.M42, mat.M43, mat.M44,
-    };
-
-    glLoadMatrixd(mat_arr);
-}
-
 void glColor(const double r, const double g, const double b)
 {
     const double max_8bit = 255;

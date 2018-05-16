@@ -1,5 +1,6 @@
 #include "Axis.h"
 #include "Color.h"
+#include "glUtil.h"
 
 AxisShowType axisShowType = AxisShowType::None;
 

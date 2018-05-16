@@ -1,5 +1,6 @@
 #include "BezierCurve.h"
 #include "ControlPoint.h"
+#include "glUtil.h"
 
 BezierCurve::BezierCurve(const int mord, const ControlPoint* const cp, const int cp_size,
     const GLdouble* const color, const GLdouble width, const double resol)

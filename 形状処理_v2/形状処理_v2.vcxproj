@@ -163,11 +163,13 @@
     <ClInclude Include="ControlPoint.h" />
     <ClInclude Include="Curve.h" />
     <ClInclude Include="define.h" />
+    <ClInclude Include="DrawUtil.h" />
     <ClInclude Include="EPS.h" />
     <ClInclude Include="Error.h" />
-    <ClInclude Include="function.h" />
     <ClInclude Include="GeoGrid.h" />
+    <ClInclude Include="glUtil.h" />
     <ClInclude Include="GV.h" />
+    <ClInclude Include="Initialize.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Matrix3d.h" />

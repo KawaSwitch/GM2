@@ -7,6 +7,7 @@
 #include "Error.h"
 #include "ControlPoint.h"
 #include "Box.h"
+#include "DrawUtil.h"
 
 class Scene;
 

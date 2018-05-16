@@ -10,6 +10,8 @@
 #include "Test.h"
 #include "Picking.h"
 #include "Camera.h"
+#include "glUtil.h"
+#include "Initialize.h"
 
 NormalAxis* axis; // 軸
 GeoGrid2D* grid; // グリッド
@@ -19,6 +21,12 @@ extern Scene* test_scene;
 static Box* coverBox; // 全体のボックス
 static Point3d rotateCenter; // 回転中心
 static bool isFirst = true;
+
+// --- プロトタイプ宣言 ---
+void SetRotateCenter();
+void ShowRotateCenter(bool isRotating);
+void UpdateLookAtZ(const Box* const box);
+// ------------------------
 
 void Display()
 {
@@ -259,7 +267,7 @@ void UpdateLookAtZ(const Box* const box)
 }
 
 // コンソールに説明を表示します
-void ConsoleDiscription()
+void ShowConsoleDiscription()
 {
     puts("形状処理C++ 操作方法\n");
 
