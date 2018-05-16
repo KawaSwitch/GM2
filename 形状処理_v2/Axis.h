@@ -15,14 +15,26 @@ extern AxisShowType axisShowType;
 
 class Axis
 {
+private:
+    // –îˆó•”•ª‚Ìè‚ß‚éŠ„‡
+    const double _ratio = (double)1 / 3;
+
 protected:
-    double _length; // “·‘Ì•”•ª‚Ì’·‚³
+    double _length; 
+    double _bodyLength; // “·‘Ì•”•ª‚Ì’·‚³
+    double _arrowLength; // –îˆó•”•ª‚Ì’·‚³
 
 public:
-    Axis(double len) { _length = len; }
+    Axis(double len) 
+    {
+        _length = len;
+
+        _bodyLength = len * (1 - _ratio);
+        _arrowLength = len * _ratio;
+    }
 
     // –îˆó•”•ª‚ğŠÜ‚ß‚½’·‚³‚ğ•Ô‚·
-    double GetLength() { return _length + _length / 4; }
+    double GetLength() { return _length; }
 };
 
 // ƒ\ƒŠƒbƒh²
