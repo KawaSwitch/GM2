@@ -1,6 +1,9 @@
 #pragma once
 #include "GV.h"
 
+extern const int grid_length;
+extern const int grid_interval;
+
 class GeoGrid2D
 {
 private:

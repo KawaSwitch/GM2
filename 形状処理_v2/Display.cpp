@@ -17,6 +17,7 @@ NormalAxis* axis; // 軸
 GeoGrid2D* grid; // グリッド
 Scene* scene; // シーン
 extern Scene* test_scene;
+extern const int grid_length;
 
 static Box* coverBox; // 全体のボックス
 static Point3d rotateCenter; // 回転中心
@@ -186,6 +187,18 @@ void SetRotateCenter()
     sceneBoxes.push_back(scene->GetCoverBound());
     sceneBoxes.push_back(test_scene->GetCoverBound());
     coverBox = new Box(sceneBoxes);
+
+    // とりあえず
+    if (coverBox->IsValid() == false)
+    {
+        Error::ShowMessage(
+            "バウンドボックス設定エラー",
+            "描画形状が設定されていません. 既定の回転ボックス, 回転中心を設定します");
+        coverBox = new Box(
+            -grid_length, -grid_length, -grid_length,
+            grid_length, grid_length, grid_length);
+    }
+
     auto center = coverBox->Center();
 
     rotateCenter = Point3d(center.X, center.Y, center.Z);

@@ -46,6 +46,14 @@ public:
             && other._zmax >= _zmin;
     }
 
+    // ボックスが適正か
+    bool IsValid()
+    {
+        return _xmax > _xmin
+            && _ymax > _ymin
+            && _zmax > _zmin;
+    }
+
     // 描画
     void Draw(GLdouble* color, GLdouble width)
     {
@@ -83,6 +91,18 @@ public:
         glEnd();
 
         glLineWidth(1.0f);
+    }
+
+    Box(double xmin, double ymin, double zmin, double xmax, double ymax, double zmax)
+    {
+        _xmin = xmin; _ymin = ymin; _zmin = zmin;
+        _xmax = xmax; _ymax = ymax;  _zmax = zmax;
+    }
+
+    Box(Vector3d min, Vector3d max)
+    {
+        _xmin = min.X; _ymin = min.Y; _zmin = min.Z;
+        _xmax = max.X; _ymax = max.Y; _zmax = max.Z;
     }
 
     // 制御点を囲むボックスを取得(バウンディングボックス)

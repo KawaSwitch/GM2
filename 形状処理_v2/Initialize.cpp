@@ -14,6 +14,9 @@ extern GeoGrid2D* grid;
 extern Scene* scene;
 extern Scene* test_scene;
 
+static const int grid_length = 200;
+static const int grid_interval = 5;
+
 void InitScene()
 {
     scene = new Scene();
@@ -77,8 +80,8 @@ void Initialize()
     }
 
     // ƒOƒŠƒbƒh‰Šú‰»
-    gridType = GridType::InVisible;
-    grid = new GeoGrid2D(200, 5);
+    gridType = GridType::WithAxis;
+    grid = new GeoGrid2D(grid_length, grid_interval);
 
     // ²‰Šú‰»
     axisShowType = AxisShowType::Normal;
