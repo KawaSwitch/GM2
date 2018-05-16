@@ -5,11 +5,8 @@
 #include "Camera.h"
 #include "CalcUtil.h"
 
-static GLdouble color_topLeft[4] = { 1.0, 0.9, 0.9, 1.0 };
-static GLdouble color_topRight[4] = { 0.9, 1.0, 0.9, 1.0 };
-static GLdouble color_btmRight[4] = { 0.9, 0.9, 1.0, 1.0 };
-static GLdouble color_btmLeft[4] = { 1.0, 0.9, 0.7, 1.0 };
-static GLdouble color_back[4] = { 0.9, 0.9, 1.0, 1.0 };
+static GLdouble color_top[4] = { 1.0, 1.0, 1.0, 1.0 };
+static GLdouble color_bottom[4] = { 0.8, 1.0, 0.9, 1.0 };
 
 template<class IBackGround> void DrawBackground(const IBackGround& grid)
 {
@@ -38,6 +35,7 @@ struct BackgroundNormal : IBackGround
             // 現状メインビューは透視投影のみ
             if (mainProjType == ProjectType::Perspective)
             {
+                // NOTE: アス比変えたときにバグあり, いつかSlicerWpfに合わせる
                 backHeightHalf = PersParam::zNear * std::tan(ToRad(elev_angle));
                 backWidthHalf = PersParam::zNear * std::tan(ToRad(elev_angle * ((GLdouble)width / height)));
 
@@ -52,16 +50,12 @@ struct BackgroundNormal : IBackGround
             // 背景描画
             glBegin(GL_QUADS);
 
-            glColor4dv(color_topLeft);
+            glColor4dv(color_top);
             glVertex3d(-backWidthHalf, backHeightHalf, 0);
-
-            glColor4dv(color_topRight);
             glVertex3d(backWidthHalf, backHeightHalf, 0);
 
-            glColor4dv(color_btmRight);
+            glColor4dv(color_bottom);
             glVertex3d(backWidthHalf, -backHeightHalf, 0);
-
-            glColor4dv(color_btmLeft);
             glVertex3d(-backWidthHalf, -backHeightHalf, 0);
 
             glEnd();
