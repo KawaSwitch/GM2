@@ -1,11 +1,11 @@
 #pragma once
 
 // Vector3d‚ÌŽcŠ[ ˆê‰žŽc‚µ‚Ä‚é
-struct Point3d
+class Point3d
 {
     double X, Y, Z;
 
-    operator Vector3d()
+    operator Point3d()
     {
         return Point3d(X, Y, Z);
     }

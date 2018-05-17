@@ -24,7 +24,7 @@ float GetDepth(int x, int y)
 }
 
 // ローカル座標からワールド座標を取得する
-Point3d GetWorldCoord(int x, int y, float depth)
+Vector3d GetWorldCoord(int x, int y, float depth)
 {
     double wx, wy, wz;
     GLdouble mvMatrix[16], pjMatrix[16];
@@ -44,11 +44,11 @@ Point3d GetWorldCoord(int x, int y, float depth)
         &wy,
         &wz);
 
-    return Point3d(wx, wy, wz);
+    return Vector3d(wx, wy, wz);
 }
 
 // ワールド座標からローカル座標を取得する
-Point3d GetLocalCoord(int x, int y, int z)
+Vector3d GetLocalCoord(int x, int y, int z)
 {
     double winX, winY, depth;
     GLdouble mvMatrix[16], pjMatrix[16];
@@ -68,7 +68,7 @@ Point3d GetLocalCoord(int x, int y, int z)
         &winY,
         &depth);
 
-    return Point3d(winX, winY, depth);
+    return Vector3d(winX, winY, depth);
 }
 
 // マウスの座標と重なっているオブジェクトの識別番号を返す

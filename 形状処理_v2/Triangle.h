@@ -9,7 +9,7 @@ class Triangle : public Object
 {
 private:
 
-    Point3d A, B, C;
+    Vector3d A, B, C;
 
     // Ž–‘O•`‰æ
     virtual void PreDraw() const override
@@ -24,6 +24,6 @@ private:
 
 public:
 
-    Triangle(Point3d a, Point3d b, Point3d c) { A = a; B = b; C = c; }
+    Triangle(Vector3d a, Vector3d b, Vector3d c) { A = a; B = b; C = c; }
     ~Triangle() { }
 };

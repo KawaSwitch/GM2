@@ -4,7 +4,6 @@
 // •`‰æŒn‚ÍDrawUtil.cpp‚Å’è‹`‚µ‚Ä‚­‚¾‚³‚¢
 
 void glVertex3d(const Vector3d& vec) { glVertex3d(vec.X, vec.Y, vec.Z); }
-void glVertex3d(const Point3d& pnt) { glVertex3d(pnt.X, pnt.Y, pnt.Z); }
 void glPointSize(const GLdouble size) { glPointSize((GLfloat)size); }
 void glLineWidth(const GLdouble width) { glLineWidth((GLfloat)width); }
 void glNormal3d(const Vector3d& vec) { glNormal3d(vec.X, vec.Y, vec.Z); }
@@ -31,14 +30,9 @@ void glVertex(const vector<Vector3d> vec)
     for (auto it = vec.begin(); it != vec.end(); ++it)
         glVertex3d(*it);
 }
-void glVertex(const vector<Point3d> pnt)
-{
-    for (auto it = pnt.begin(); it != pnt.end(); ++it)
-        glVertex3d(*it);
-}
 
 // ‰ñ“]’†S‚ğw’è‚µ‚Ä‰ñ“]
-void RotateAt(const double* mat, const Point3d center)
+void RotateAt(const double* mat, const Vector3d center)
 {
     // Œ´“_‚É–ß‚µ‚Ä‰ñ“]‚·‚é(s—ñ‚ÌŠ|‚¯Z‚Í‹t!)
     glTranslated(center.X, center.Y, center.Z);
@@ -72,9 +66,9 @@ void GetCurrentModelviewMatrix(std::unique_ptr<double>& modelview)
 }
 
 // ƒ[ƒ‹ƒhÀ•W‚ğƒ[ƒJƒ‹À•W‚Ö•ÏŠ·‚·‚é
-vector<Point3d> GetLocalCoord(int size, const Point3d* const pnt)
+vector<Vector3d> GetLocalCoord(int size, const Vector3d* const pnt)
 {
-    std::vector<Point3d> local;
+    std::vector<Vector3d> local;
 
     std::unique_ptr<int> viewport;
     std::unique_ptr<double> projection, modelview;
@@ -97,7 +91,7 @@ vector<Point3d> GetLocalCoord(int size, const Point3d* const pnt)
     //        modelview.get(), projection.get(), viewport.get(), 
     //        &winX, &winY, &winZ);
 
-    //    local.push_back(Point3d(winX, winY, winZ));
+    //    local.push_back(Vector3d(winX, winY, winZ));
     //}
 
     int v[4];
@@ -114,7 +108,7 @@ vector<Point3d> GetLocalCoord(int size, const Point3d* const pnt)
             m, p, v,
             &winX, &winY, &winZ);
 
-        local.push_back(Point3d(winX, winY, winZ));
+        local.push_back(Vector3d(winX, winY, winZ));
     }
 
     return local;

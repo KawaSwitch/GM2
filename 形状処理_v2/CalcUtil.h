@@ -18,7 +18,7 @@ double Calc2DiffBsplineFunc(const unsigned int i, const unsigned int M, const do
 constexpr double Binomial(int n, int k);
 constexpr int Factorial(int n);
 Vector3d CalcPolygonNormal(Vector3d v0, Vector3d v1, Vector3d v2);
-Point3d Transform(const Point3d point, const double matrix[16]);
+Vector3d Transform(const Vector3d point, const double matrix[16]);
 void RotateCoord2DAroundCenter(double* const coord_2d, const double* const center, const double rad);
 void RotateCoord2DAroundOrigin(double* const coord_2d, const double rad);
 std::vector<double> LUDecomposition(const int size, const double* const aMatrix, const double* const b);

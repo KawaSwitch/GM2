@@ -84,9 +84,9 @@ struct Matrix3d
         Rotate(*this, quaternion, result);
         return result;
     }
-    Matrix3d RotateAt(Quaternion quaternion, Point3d center)
+    Matrix3d RotateAt(Quaternion quaternion, Vector3d center)
     {
-        Point3d temp = this->Transform(center);
+        Vector3d temp = this->Transform(center);
 
         Matrix3d result = *this;
 
@@ -147,9 +147,9 @@ struct Matrix3d
         result.M44 = left.M41 * right.M14 + left.M42 * right.M24 + left.M43 * right.M34 + left.M44 * right.M44;
     }
 
-    // transforms the given Point3D by this matrix,
+    // transforms the given Vector3d by this matrix,
     // projecting the result back into the W=1 plane.
-    Point3d Transform(Point3d point)
+    Vector3d Transform(Vector3d point)
     {
         return {
             point.X * M11 + point.Y * M21 + point.Z * M31 + M41,

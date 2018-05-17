@@ -20,7 +20,7 @@ extern Scene* test_scene;
 extern const int grid_length;
 
 static Box* coverBox; // 全体のボックス
-static Point3d rotateCenter; // 回転中心
+static Vector3d rotateCenter; // 回転中心
 static bool isFirst = true;
 
 // --- プロトタイプ宣言 ---
@@ -201,7 +201,7 @@ void SetRotateCenter()
 
     auto center = coverBox->Center();
 
-    rotateCenter = Point3d(center.X, center.Y, center.Z);
+    rotateCenter = Vector3d(center.X, center.Y, center.Z);
 }
 // 回転中心を表示します
 void ShowRotateCenter(bool isRotating)

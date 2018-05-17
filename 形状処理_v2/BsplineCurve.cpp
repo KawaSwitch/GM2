@@ -490,6 +490,8 @@ Curve* BsplineCurve::GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdo
 
 NearestPointInfoC BsplineCurve::GetNearestPointInfoFromRef(const Vector3d& ref) const
 {
+    const int seg_split = 8; // ƒZƒOƒƒ“ƒg•ªŠ„”
+
 
 
     //double left = _min_draw_param;
