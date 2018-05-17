@@ -11,4 +11,7 @@ struct EPS
 
     // 相違トレランス
     static const double DIFF;
+
+    // 最近点用トレランス
+    static const double NEAREST;
 };

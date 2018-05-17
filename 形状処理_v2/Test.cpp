@@ -6,6 +6,7 @@
 #include "Model.h"
 #include "Reader.h"
 #include "Scene.h"
+#include "glUtil.h"
 
 static int current_size; // 現在のテスト用のディスプレイリスト数
 static int* displayLists; // ディスプレイリスト保管用ポインタ
@@ -27,8 +28,64 @@ static vector<function<void(void)>> TestRegisterDraw
     //DrawSphere_CGS3, // Nurbs曲面で球を描く
     //DrawCylinder_CGS3, // Nurbs曲面で円柱を描く
     //DrawApproxCurve_CGS4, // 近似曲線を描画
-    DrawApproxSurface_CGS5, // 近似曲面を描画
+    //DrawApproxSurface_CGS5, // 近似曲面を描画
+    DrawCurveNearest_CGS6, // 最近点を描画_曲線
+    //DrawSurfaceNearest_CGS7, // 最近点を描画_曲面
 };
+
+// 参照曲線から最近点を求めて描画
+static void DrawCurveNearest_CGS6()
+{
+    auto reader = new KjsReader();
+
+    // 対象曲線/曲面
+    Curve* curve1 = (Curve *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_curve_1.kjs");
+    // 参照曲線
+    Curve* curveC = (Curve *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_curve_C.kjs");
+
+    //// 参照点群を取得
+    //auto ref_pnts = curveC->GetPositionVectors(20);
+    //vector<Vector3d> nearest_pnts; // 最近点群
+
+    //                               // 最近点取得
+    //for (int i = 0; i < (int)ref_pnts.size(); i++)
+    //    nearest_pnts.push_back(curve1->GetNearestPointFromRef(ref_pnts[i]));
+
+    //// 描画
+    //glLineWidth(1.0);
+    //glPointSize(5.0);
+    //glBegin(GL_LINES);
+    //glColor4dv(Color::orange);
+    //for (int i = 0; i < (int)ref_pnts.size(); i++)
+    //{
+    //    glVertex3d(ref_pnts[i]);
+    //    glVertex3d(nearest_pnts[i]);
+    //}
+    //glEnd();
+
+    //glBegin(GL_POINTS);
+    //glColor4dv(Color::red);
+    //for (int i = 0; i < (int)ref_pnts.size(); i++)
+    //    glVertex3d(ref_pnts[i]);
+
+    //glColor4dv(Color::light_green);
+    //for (int i = 0; i < (int)nearest_pnts.size(); i++)
+    //    glVertex3d(nearest_pnts[i]);
+    //glEnd();
+
+    if (isFirst)
+    {
+        test_scene->AddObject(curve1);
+        test_scene->AddObject(curveC);
+    }
+}
+
+// 参照曲面から最近点を求めて描画
+static void DrawSurfaceNearest_CGS7()
+{
+
+}
+
 
 // 近似して曲面を描画
 static void DrawApproxSurface_CGS5()

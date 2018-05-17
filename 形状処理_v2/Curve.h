@@ -2,6 +2,7 @@
 
 #include "Object.h"
 #include "ControlPoint.h"
+#include "NearestPointInfo.h"
 
 // 曲線基底クラス
 class Curve : public Object
@@ -41,7 +42,10 @@ public:
     virtual Vector3d GetSecondDiffVector(double t) const = 0; // 2階微分ベクトル
 
     // 参照点からの最近点を取得する
-    Vector3d GetNearestPointFromRef(const Vector3d& ref) const;
+    virtual Vector3d GetNearestPointFromRef(const Vector3d& ref) const;
+
+    // 参照点からの最近点を取得する
+    virtual NearestPointInfoC GetNearestPointInfoFromRef(const Vector3d& ref) const = 0;
 
     // 描画範囲をsplit_num個に分割するような位置ベクトルを取得する
     vector<Vector3d> GetPositionVectors(int split_num) const;

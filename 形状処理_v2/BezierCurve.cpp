@@ -237,3 +237,10 @@ Curve* BezierCurve::GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdou
 
     return new BezierCurve(_ord, &new_cps[0], _ncpnt, color, width);
 }
+
+// Å‹ß“_æ“¾
+NearestPointInfoC BezierCurve::GetNearestPointInfoFromRef(const Vector3d& ref) const
+{
+    // NOTE: –¢À‘•
+    return NearestPointInfoC(Vector3d(), ref, 0);
+}
