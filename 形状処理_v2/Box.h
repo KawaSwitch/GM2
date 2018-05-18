@@ -49,9 +49,9 @@ public:
     // ボックスが適正か
     bool IsValid()
     {
-        return _xmax > _xmin
-            && _ymax > _ymin
-            && _zmax > _zmin;
+        return _xmax >= _xmin
+            && _ymax >= _ymin
+            && _zmax >= _zmin;
     }
 
     // 描画
