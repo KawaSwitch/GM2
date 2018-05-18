@@ -61,28 +61,36 @@ static void DrawCurveNearest_CGS6()
         nearest_pnts.push_back(curve1->GetNearestPointInfoFromRef(ref_pnts[i]));
 
     // 描画
-    glLineWidth(1.0);
-    glPointSize(5.0);
-    glBegin(GL_LINES);
-    glColor4dv(Color::orange);
-    for (int i = 0; i < (int)ref_pnts.size(); i++)
     {
-        glVertex3d(ref_pnts[i]);
-        glVertex3d(nearest_pnts[i].nearestPnt);
+        glLineWidth(1.0);
+        glPointSize(5.0);
+        glBegin(GL_LINES);
+        glColor4dv(Color::orange);
+        for (int i = 0; i < (int)ref_pnts.size(); i++)
+        {
+            glVertex3d(ref_pnts[i]);
+            glVertex3d(nearest_pnts[i].nearestPnt);
+        }
+        glEnd();
+
+        glBegin(GL_POINTS);
+        glColor4dv(Color::red);
+        for (int i = 0; i < (int)ref_pnts.size(); i++)
+            glVertex3d(ref_pnts[i]);
+
+        glColor4dv(Color::light_green);
+        for (int i = 0; i < (int)nearest_pnts.size(); i++)
+            glVertex3d(nearest_pnts[i].nearestPnt);
+        glEnd();
     }
-    glEnd();
 
-    glBegin(GL_POINTS);
-    glColor4dv(Color::red);
-    for (int i = 0; i < (int)ref_pnts.size(); i++)
-        glVertex3d(ref_pnts[i]);
-
-    glColor4dv(Color::light_green);
-    for (int i = 0; i < (int)nearest_pnts.size(); i++)
-        glVertex3d(nearest_pnts[i].nearestPnt);
-    glEnd();
-
-    printf("%f %f\n", curve1->GetLength(), curveC->GetLength());
+    // 詳細表示
+    for (const auto& np : nearest_pnts)
+    {
+        printf("最近点位置 X:%f Y:%f Z:%f\n", np.nearestPnt.X, np.nearestPnt.Y, np.nearestPnt.Z);
+        printf("パラメータ %f\n", np.param);
+        printf("点間距離 %f\n\n", np.dist);
+    }
 
     if (isFirst)
     {
