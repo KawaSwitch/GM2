@@ -137,12 +137,17 @@ NearestPointInfoC Curve::GetSectionNearestPointInfoByBinary(const Vector3d& ref,
 
     left = ini_left; right = ini_right;
 
+    auto update = [&]()
+    {
+        middle = (left + right) / 2;
+        pnt = GetPositionVector(middle);
+        tan = GetFirstDiffVector(middle);
+        vec_ref_pnt = pnt - ref;
+        dot = tan.Dot(vec_ref_pnt); // 内積値
+    };
+
     // 初期更新
-    middle = (ini_left + ini_right) / 2;
-    pnt = GetPositionVector(middle);
-    tan = GetFirstDiffVector(middle);
-    vec_ref_pnt = pnt - ref;
-    dot = tan.Dot(vec_ref_pnt); // 内積値
+    update();
 
     while (left <= right)
     {
@@ -177,18 +182,11 @@ NearestPointInfoC Curve::GetSectionNearestPointInfoByBinary(const Vector3d& ref,
         }
 
         // 各値更新
-        middle = (left + right) / 2.0;
-        pnt = GetPositionVector(middle);
-        tan = GetFirstDiffVector(middle);
-        vec_ref_pnt = pnt - ref;
-        dot = tan.Dot(vec_ref_pnt); // 内積値
+        update();
 
         // e4. ステップ数上限に達したらその時点の点を返す
         if (++count > EPS::COUNT_MAX)
-        {
             return NearestPointInfoC(pnt, ref, middle);
-            break;
-        }
     }
 
     // ここまで来ないはず
