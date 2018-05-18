@@ -137,3 +137,19 @@ double Curve::CalcDifferency(const Curve* const other) const
     // ‘Šˆá‹——£‚Ì•½‹Ï‚ğ•Ô‚·
     return sumDistance / (double)checkCnt;
 }
+
+// ‹Èü’·‚ğæ“¾‚µ‚Ü‚·
+// split : •ªŠ„”
+double Curve::GetLength(int split) const
+{
+    double dist = 0.0; // ‹Èü’·
+
+    // •ªŠ„‹æŠÔ‚ğŒvZ
+    double skip = (fabs(_min_draw_param) + fabs(_max_draw_param)) / split;
+
+    // doubleŒ^‚ÌŒë·l—¶
+    for (double t = _min_draw_param; t < _max_draw_param - skip - skip / 2; t += skip)
+        dist += this->GetPositionVector(t).DistanceFrom(this->GetPositionVector(t + skip));
+
+    return dist;
+}

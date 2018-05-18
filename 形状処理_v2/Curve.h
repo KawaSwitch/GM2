@@ -35,6 +35,8 @@ public:
 
     double GetMinDrawParam() const { return this->_min_draw_param; }
     double GetMaxDrawParam() const { return this->_max_draw_param; }
+    
+    double GetLength(int split = 100) const;
 
     // ベクトル取得関数
     virtual Vector3d GetPositionVector(double t) const = 0; // 位置ベクトル
