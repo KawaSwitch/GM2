@@ -27,6 +27,12 @@ public:
     {
         param = t;
     }
+
+    NearestPointInfoC(Point3dC nearest, Vector3d ref)
+        : NearestPointInfo(nearest.ToPositionVector(), ref)
+    {
+        param = nearest.param;
+    }
 };
 
 // ç≈ãﬂì_èÓïÒÇ‹Ç∆Çﬂç\ë¢ëÃ ã»ñ óp
@@ -41,5 +47,12 @@ public:
     {
         paramU = u;
         paramV = v;
+    }
+
+    NearestPointInfoS(Point3dS nearest, Vector3d ref)
+        : NearestPointInfo(nearest.ToPositionVector(), ref)
+    {
+        paramU = nearest.paramU;
+        paramV = nearest.paramV;
     }
 };

@@ -23,17 +23,22 @@ protected:
 
     // 法線ベクトル取得
     Vector3d GetNormalVector(double t) const { return (Vector3d(0, 0, 1) * GetFirstDiffVector(t)); }
-
     // 曲率ベクトル取得
     Vector3d GetCurvatureVector(double t) const;
 
     // 制御点設定
     void SetControlPoint(const ControlPoint* const cp, int size);
 
+    // 最近点取得(2分探索法)
+    NearestPointInfoC GetNearestPointInfoInternal(const Vector3d& ref, const vector<Point3dC>& startPnts) const;
+
 private:
 
     // 制御点描画
     void DrawCPsInternal() const override;
+
+    // 区間内最近点取得(2分探索)
+    NearestPointInfoC GetSectionNearestPointInfoByBinary(const Vector3d& ref, double ini_left, double ini_right) const;
 
 public:
 
@@ -46,9 +51,6 @@ public:
     virtual Vector3d GetPositionVector(double t) const = 0; // 位置ベクトル
     virtual Vector3d GetFirstDiffVector(double t) const = 0; // 接線ベクトル
     virtual Vector3d GetSecondDiffVector(double t) const = 0; // 2階微分ベクトル
-
-    // 参照点からの最近点を取得する
-    virtual Vector3d GetNearestPointFromRef(const Vector3d& ref) const;
 
     // 参照点からの最近点を取得する
     virtual NearestPointInfoC GetNearestPointInfoFromRef(const Vector3d& ref) const = 0;

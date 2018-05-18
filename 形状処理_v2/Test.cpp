@@ -43,14 +43,14 @@ static void DrawCurveNearest_CGS6()
     // 参照曲線
     BsplineCurve* curveC = (BsplineCurve *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_curve_C.kjs");
     
-    // 対象曲線をセグメント8分割した点群
-    {
-        vector<Vector3d> passPnts, segPassPnts;
-        passPnts = curve1->GetPositionVectorsByKnots(8);
-        segPassPnts = curve1->GetPositionVectorsByKnots();
-        DrawPoints(segPassPnts, Color::pink, 10);
-        DrawPoints(passPnts, Color::green, 10);
-    }
+    //// 対象曲線をセグメント8分割した点群
+    //{
+    //    vector<Vector3d> passPnts, segPassPnts;
+    //    passPnts = curve1->GetPositionVectorsByKnots(8);
+    //    segPassPnts = curve1->GetPositionVectorsByKnots();
+    //    DrawPoints(segPassPnts, Color::pink, 10);
+    //    DrawPoints(passPnts, Color::green, 10);
+    //}
 
     // 参照点群を取得
     auto ref_pnts = curveC->GetPositionVectors(20); // 20分割して21点を取る
@@ -65,22 +65,29 @@ static void DrawCurveNearest_CGS6()
         glLineWidth(1.0);
         glPointSize(5.0);
         glBegin(GL_LINES);
-        glColor4dv(Color::orange);
-        for (int i = 0; i < (int)ref_pnts.size(); i++)
         {
-            glVertex3d(ref_pnts[i]);
-            glVertex3d(nearest_pnts[i].nearestPnt);
+            // 参照点と最近点を結ぶ線
+            glColor4dv(Color::orange);
+            for (int i = 0; i < (int)ref_pnts.size(); i++)
+            {
+                glVertex3d(ref_pnts[i]);
+                glVertex3d(nearest_pnts[i].nearestPnt);
+            }
         }
         glEnd();
 
         glBegin(GL_POINTS);
-        glColor4dv(Color::red);
-        for (int i = 0; i < (int)ref_pnts.size(); i++)
-            glVertex3d(ref_pnts[i]);
+        {
+            // 参照点
+            glColor4dv(Color::red);
+            for (int i = 0; i < (int)ref_pnts.size(); i++)
+                glVertex3d(ref_pnts[i]);
 
-        glColor4dv(Color::light_green);
-        for (int i = 0; i < (int)nearest_pnts.size(); i++)
-            glVertex3d(nearest_pnts[i].nearestPnt);
+            // 最近点
+            glColor4dv(Color::light_green);
+            for (int i = 0; i < (int)nearest_pnts.size(); i++)
+                glVertex3d(nearest_pnts[i].nearestPnt);
+        }
         glEnd();
     }
 
@@ -102,7 +109,48 @@ static void DrawCurveNearest_CGS6()
 // 参照曲面から最近点を求めて描画
 static void DrawSurfaceNearest_CGS7()
 {
+    auto reader = new KjsReader("");
 
+    // 対象曲線/曲面
+    Surface* surf1 = (Surface *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_surface_1.kjs");
+    // 参照曲線
+    Curve* curveS = (Curve *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_curve_S.kjs");
+
+    // 参照点群を取得
+    auto ref_pnts = curveS->GetPositionVectors(20);
+    vector<Vector3d> nearest_pnts; // 最近点群
+
+                                   // 最近点取得
+    for (int i = 0; i < (int)ref_pnts.size(); i++)
+        nearest_pnts.push_back(surf1->GetNearestPointFromRef(ref_pnts[i]));
+
+    // 描画
+    glLineWidth(1.0);
+    glPointSize(5.0);
+    glBegin(GL_LINES);
+    glColor4dv(Color::orange);
+    for (int i = 0; i < (int)ref_pnts.size(); i++)
+    {
+        glVertex3d(ref_pnts[i]);
+        glVertex3d(nearest_pnts[i]);
+    }
+    glEnd();
+
+    glBegin(GL_POINTS);
+    glColor4dv(Color::red);
+    for (int i = 0; i < (int)ref_pnts.size(); i++)
+        glVertex3d(ref_pnts[i]);
+
+    glColor4dv(Color::light_green);
+    for (int i = 0; i < (int)nearest_pnts.size(); i++)
+        glVertex3d(nearest_pnts[i]);
+    glEnd();
+
+    if (isFirst)
+    {
+        test_scene->AddObject(surf1);
+        test_scene->AddObject(curveS);
+    }
 }
 
 
@@ -450,99 +498,6 @@ static void DrawCircle_CGS3()
         test_scene->AddObject(curve1);
         test_scene->AddObject(curve2);
         test_scene->AddObject(curve3);
-    }
-}
-
-// 参照曲線上に離散点を生成し, それを外部点として最近点を求める
-// レジメ第04回_05月A.docx
-static void TestGetNearestPointCurveToCurve_CGS04()
-{
-    auto reader = new KjsReader("");
-
-    // 対象曲線/曲面
-    Curve* curve1 = (Curve *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_curve_1.kjs");
-    // 参照曲線
-    Curve* curveC = (Curve *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_curve_C.kjs");
-
-    // 参照点群を取得
-    auto ref_pnts = curveC->GetPositionVectors(20);
-    vector<Vector3d> nearest_pnts; // 最近点群
-
-    // 最近点取得
-    for (int i = 0; i < (int)ref_pnts.size(); i++)
-        nearest_pnts.push_back(curve1->GetNearestPointFromRef(ref_pnts[i]));
-
-    // 描画
-    glLineWidth(1.0);
-    glPointSize(5.0);
-    glBegin(GL_LINES);
-    glColor4dv(Color::orange);
-    for (int i = 0; i < (int)ref_pnts.size(); i++)
-    {
-        glVertex3d(ref_pnts[i]);
-        glVertex3d(nearest_pnts[i]);
-    }
-    glEnd();
-
-    glBegin(GL_POINTS);
-    glColor4dv(Color::red);
-    for (int i = 0; i < (int)ref_pnts.size(); i++)
-        glVertex3d(ref_pnts[i]);
-
-    glColor4dv(Color::light_green);
-    for (int i = 0; i < (int)nearest_pnts.size(); i++)
-        glVertex3d(nearest_pnts[i]);
-    glEnd();
-
-    if (isFirst)
-    {
-        test_scene->AddObject(curve1);
-        test_scene->AddObject(curveC);
-    }
-}
-void TestGetNearestPointCurveToSurface_CGS04()
-{
-    auto reader = new KjsReader("");
-
-    // 対象曲線/曲面
-    Surface* surf1 = (Surface *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_surface_1.kjs");
-    // 参照曲線
-    Curve* curveS = (Curve *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_curve_S.kjs");
-
-    // 参照点群を取得
-    auto ref_pnts = curveS->GetPositionVectors(20);
-    vector<Vector3d> nearest_pnts; // 最近点群
-
-    // 最近点取得
-    for (int i = 0; i < (int)ref_pnts.size(); i++)
-        nearest_pnts.push_back(surf1->GetNearestPointFromRef(ref_pnts[i]));
-
-    // 描画
-    glLineWidth(1.0);
-    glPointSize(5.0);
-    glBegin(GL_LINES);
-    glColor4dv(Color::orange);
-    for (int i = 0; i < (int)ref_pnts.size(); i++)
-    {
-        glVertex3d(ref_pnts[i]);
-        glVertex3d(nearest_pnts[i]);
-    }
-    glEnd();
-
-    glBegin(GL_POINTS);
-    glColor4dv(Color::red);
-    for (int i = 0; i < (int)ref_pnts.size(); i++)
-        glVertex3d(ref_pnts[i]);
-
-    glColor4dv(Color::light_green);
-    for (int i = 0; i < (int)nearest_pnts.size(); i++)
-        glVertex3d(nearest_pnts[i]);
-    glEnd();
-
-    if (isFirst)
-    {
-        test_scene->AddObject(surf1);
-        test_scene->AddObject(curveS);
     }
 }
 

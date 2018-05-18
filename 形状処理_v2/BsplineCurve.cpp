@@ -517,87 +517,11 @@ Curve* BsplineCurve::GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdo
     return new BsplineCurve(_ord, &new_cps[0], new_ncpnt, &new_knots[0], color, width);
 }
 
-// 最近点取得
+// 参照点からの最近点情報を取得
 NearestPointInfoC BsplineCurve::GetNearestPointInfoFromRef(const Vector3d& ref) const
 {
-    vector<NearestPointInfoC> possiblePnts; // 最近候補点
     const int seg_split = 8; // セグメント分割数
-    double left, right, middle; // 2分探索用パラメータ
-    Vector3d pnt, vec_ref_pnt, tan;
-    double dot; // 内積値
+    auto startPnts = this->GetPointsByKnots(seg_split); // 開始点群
 
-    auto startPnts = this->GetPointsByKnots(seg_split);
-
-    for (size_t i = 0, s = startPnts.size(); i < s; ++i)
-    {
-        int count = 0; // 2分探索ステップ数
-
-        left = startPnts[(i == 0) ? i : i - 1].param;
-        middle = startPnts[i].param;
-        right = startPnts[(i == s - 1) ? i : i + 1].param;
-
-        pnt = GetPositionVector(middle);
-        tan = GetFirstDiffVector(middle);
-
-        vec_ref_pnt = pnt - ref;
-        dot = tan.Dot(vec_ref_pnt); // 内積値
-
-        while (left <= right)
-        {
-            // パラメータの移動量0
-            if (fabs(left - middle) < EPS::DIFF)
-            {
-                possiblePnts.push_back(NearestPointInfoC(pnt, ref, left));
-                break;
-            }
-            else if (fabs(right - middle) < EPS::DIFF)
-            {
-                possiblePnts.push_back(NearestPointInfoC(pnt, ref, right));
-                break;
-            }
-
-            // ベクトルの内積が0
-            if (-EPS::NEAREST < dot && dot < EPS::NEAREST)
-            {
-                // 十分な精度なので見つかったことにする
-                possiblePnts.push_back(NearestPointInfoC(pnt, ref, middle));
-                break;
-            }
-            else if (dot >= EPS::NEAREST)
-            {
-                // 右端更新
-                right = middle;
-            }
-            else if (dot <= -EPS::NEAREST)
-            {
-                // 左端更新
-                left = middle;
-            }
-
-            // 中心更新
-            middle = (left + right) / 2.0;
-
-            // 各値更新
-            pnt = GetPositionVector(middle);
-            tan = GetFirstDiffVector(middle);
-            vec_ref_pnt = pnt - ref;
-            dot = tan.Dot(vec_ref_pnt); // 内積値
-
-            // ステップ数上限に達したらその時点の点を返す
-            if (++count > EPS::COUNT_MAX)
-            {
-                possiblePnts.push_back(NearestPointInfoC(pnt, ref, middle));
-                break;
-            }
-        }
-    }
-
-    NearestPointInfoC nearestPnt(Vector3d(), Vector3d(DBL_MAX, DBL_MAX, DBL_MAX), 0);
-    for (const auto& p : possiblePnts)
-    {
-        if (p.dist < nearestPnt.dist)
-            nearestPnt = p;
-    }
-
-    return nearestPnt;
+    return Curve::GetNearestPointInfoInternal(ref, startPnts);
 }

@@ -261,12 +261,12 @@ Vector3d Surface::GetNearestPointFromRef(const Vector3d& ref) const
             if (u < _min_draw_param_U)
             {
                 Curve* edge = GetEdgeCurve(SurfaceEdge::U_min);
-                return edge->GetNearestPointFromRef(ref);
+                return edge->GetNearestPointInfoFromRef(ref).nearestPnt;
             }
             else
             {
                 Curve* edge = GetEdgeCurve(SurfaceEdge::U_max);
-                return edge->GetNearestPointFromRef(ref);
+                return edge->GetNearestPointInfoFromRef(ref).nearestPnt;
             }
         }
         // v•ûŒü‚ª‚Í‚İo‚éê‡
@@ -275,12 +275,12 @@ Vector3d Surface::GetNearestPointFromRef(const Vector3d& ref) const
             if (v < _min_draw_param_V)
             {
                 Curve* edge = GetEdgeCurve(SurfaceEdge::V_min);
-                return edge->GetNearestPointFromRef(ref);
+                return edge->GetNearestPointInfoFromRef(ref).nearestPnt;
             }
             else
             {
                 Curve* edge = GetEdgeCurve(SurfaceEdge::V_max);
-                return  edge->GetNearestPointFromRef(ref);
+                return  edge->GetNearestPointInfoFromRef(ref).nearestPnt;
             }
         }
 

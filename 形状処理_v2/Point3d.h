@@ -8,7 +8,7 @@ public:
     double X, Y, Z;
 
     // Vector3då›ä∑
-    Vector3d ToVector() { return Vector3d(X, Y, Z); }
+    Vector3d ToPositionVector() { return Vector3d(X, Y, Z); }
 
     Point3d(double x, double y, double z) { X = x; Y = y; Z = z; }
     Point3d(const Vector3d& v) { X = v.X; Y = v.Y; Z = v.Z; }
