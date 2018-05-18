@@ -15,6 +15,9 @@ BezierCurve::BezierCurve(const int mord, const ControlPoint* const cp, const int
     _width = width;
     _resolution = resol;
 
+    _length = this->GetLength();
+    _draw_vec_length = _length * _draw_vector_ratio;
+
     // VBOŽg‚¤
     _isUseVBO = true;
 }
@@ -88,7 +91,7 @@ void BezierCurve::DrawFirstDiffVectorsInternal() const
         double t = (double)i / 100;
 
         pnt = GetPositionVector(t);
-        diff = GetFirstDiffVector(t).Normalize();
+        diff = GetFirstDiffVector(t).Normalize() * _draw_vec_length;
         glVertex3d(pnt);
         glVertex3d(pnt + diff);
     }
@@ -110,7 +113,7 @@ void BezierCurve::DrawSecondDiffVectorsInternal() const
         double t = (double)i / 100;
 
         pnt = GetPositionVector(t);
-        diff = GetSecondDiffVector(t).Normalize();
+        diff = GetSecondDiffVector(t).Normalize() * _draw_vec_length;
         glVertex3d(pnt);
         glVertex3d(pnt + diff);
     }
@@ -132,7 +135,7 @@ void BezierCurve::DrawNormalVectorsInternal() const
         double t = (double)i / 100;
 
         pnt = GetPositionVector(t);
-        normal = GetNormalVector(t).Normalize();
+        normal = GetNormalVector(t).Normalize() * _draw_vec_length;
         glVertex3d(pnt);
         glVertex3d(pnt + normal);
     }

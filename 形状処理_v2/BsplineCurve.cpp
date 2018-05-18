@@ -18,6 +18,9 @@ BsplineCurve::BsplineCurve(const int mord, const ControlPoint* const cp, const i
     _width = width;
     _resolution = resol;
 
+    _length = this->GetLength();
+    _draw_vec_length = _length * _draw_vector_ratio;
+
     // VBO使う
     _isUseVBO = true;
 }
@@ -35,7 +38,7 @@ void BsplineCurve::SetKnotVector(const double* const knot, const int size)
 
 // ノットベクトルをもとにして点群を取得する
 // splitSegCnt: セグメントを何分割するかの回数(デフォルトは1 = 分割しない)
-vector<Vector3d> BsplineCurve::GetPointsByKnots(const int splitSegCnt) const
+vector<Vector3d> BsplineCurve::GetPositionVectorsByKnots(const int splitSegCnt) const
 {
     vector<Vector3d> pnts;
     double skip = (_knot[_ord] - _knot[0]) / (double)splitSegCnt;
@@ -53,6 +56,31 @@ vector<Vector3d> BsplineCurve::GetPointsByKnots(const int splitSegCnt) const
         {
             for (int j = 1; j < splitSegCnt; j++)
                 pnts.push_back(this->GetPositionVector(_knot[i] + skip * j));
+        }
+    }
+
+    return pnts;
+}
+// ノットベクトルをもとにして点群を取得する
+// splitSegCnt: セグメントを何分割するかの回数(デフォルトは1 = 分割しない)
+vector<Point3dC> BsplineCurve::GetPointsByKnots(const int splitSegCnt) const
+{
+    vector<Point3dC> pnts;
+    double skip = (_knot[_ord] - _knot[0]) / (double)splitSegCnt;
+
+    for (int i = 0; i < _knot.size(); ++i)
+    {
+        // ノットの階数端の非描画部分or重複は省く
+        if ((i > 0 && i < _ord) || (i >= _knot.size() - _ord && i < _knot.size() - 1))
+            continue;
+
+        pnts.push_back(Point3dC(this->GetPositionVector(_knot[i]), _knot[i]));
+
+        // 最後は追加しない
+        if (i != _knot.size() - 1)
+        {
+            for (int j = 1; j < splitSegCnt; j++)
+                pnts.push_back(Point3dC(this->GetPositionVector(_knot[i] + skip * j), _knot[i] + skip * j));
         }
     }
 
@@ -129,7 +157,7 @@ void BsplineCurve::DrawFirstDiffVectorsInternal() const
         double t = (double)i / 100;
 
         pnt = GetPositionVector(t);
-        diff = GetFirstDiffVector(t).Normalize();
+        diff = GetFirstDiffVector(t).Normalize() * _draw_vec_length;
         glVertex3d(pnt);
         glVertex3d(pnt + diff);
     }
@@ -151,7 +179,7 @@ void BsplineCurve::DrawSecondDiffVectorsInternal() const
         double t = (double)i / 100;
 
         pnt = GetPositionVector(t);
-        diff = GetSecondDiffVector(t).Normalize();
+        diff = GetSecondDiffVector(t).Normalize() * _draw_vec_length;
         glVertex3d(pnt);
         glVertex3d(pnt + diff);
     }
@@ -173,7 +201,7 @@ void BsplineCurve::DrawNormalVectorsInternal() const
         double t = (double)i / 100;
 
         pnt = GetPositionVector(t);
-        normal = GetNormalVector(t).Normalize();
+        normal = GetNormalVector(t).Normalize() * _draw_vec_length;
         glVertex3d(pnt);
         glVertex3d(pnt + normal);
     }
@@ -488,9 +516,63 @@ Curve* BsplineCurve::GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdo
     return new BsplineCurve(_ord, &new_cps[0], new_ncpnt, &new_knots[0], color, width);
 }
 
+// 最近点取得
 NearestPointInfoC BsplineCurve::GetNearestPointInfoFromRef(const Vector3d& ref) const
 {
     const int seg_split = 8; // セグメント分割数
+    double left, right, middle; // 2分探索用パラメータ
+    Vector3d pnt, vec_ref_pnt, tan;
+    double dot; // 内積値
+
+    auto startPnts = this->GetPointsByKnots(seg_split);
+
+    for (unsigned int i = 0, s = startPnts.size(); i < s; ++i)
+    {
+        int count = 0; // 2分探索ステップ数
+
+        left = startPnts[(i == 0) ? i : i - 1].param;
+        middle = startPnts[i].param;
+        right = startPnts[(i == s - 1) ? i : i + 1].param;
+
+        pnt = GetPositionVector(middle);
+        tan = GetFirstDiffVector(middle);
+
+        vec_ref_pnt = pnt - ref;
+        dot = tan.Dot(vec_ref_pnt); // 内積値
+
+        while (left <= right)
+        {
+            // ベクトルの内積が0
+            if (-EPS::NEAREST < dot && dot < EPS::NEAREST)
+            {
+                // 十分な精度なので見つかったことにする
+                return NearestPointInfoC(pnt, ref, middle);
+            }
+            else if (dot >= EPS::NEAREST)
+            {
+                // 右端更新
+                right = middle;
+            }
+            else if (dot <= -EPS::NEAREST)
+            {
+                // 左端更新
+                left = middle;
+            }
+
+            // 中心更新
+            middle = (left + right) / 2.0;
+
+            //// 中央更新値が端を超えたら
+            //if (middle < _min_draw_param)
+            //    return NearestPointInfoC(GetPositionVector(_min_draw_param), ref, _min_draw_param);
+            //if (middle > _max_draw_param)
+            //    return NearestPointInfoC(GetPositionVector(_max_draw_param), ref, _max_draw_param);
+
+            // ステップ数上限に達したらその時点の点を返す
+            if (++count > EPS::COUNT_MAX)
+                return NearestPointInfoC(pnt, ref, middle);
+        }
+    }
 
 
 
@@ -545,5 +627,5 @@ NearestPointInfoC BsplineCurve::GetNearestPointInfoFromRef(const Vector3d& ref) 
     //// 見つかった
     //return pnt;
 
-    return NearestPointInfoC(Vector3d(), ref, 0);
+    return NearestPointInfoC(pnt, ref, 0);
 }

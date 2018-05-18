@@ -14,6 +14,10 @@ protected:
     double _width; // 曲線の幅
     double _min_draw_param, _max_draw_param; // 描画範囲パラメータ
 
+    double _length; // 曲線長
+    double _draw_vec_length; // 描画ベクトル長
+    const double _draw_vector_ratio = (double)1 / 20; // 描画ベクトル長の曲線長との比
+
     // バッファオブジェクト用
     mutable int _nVertex_cache; // 頂点個数
 

@@ -31,7 +31,8 @@ public:
     BsplineCurve(int mord, const ControlPoint* const cp, int cp_size, const double* const knot, 
         const GLdouble* const color, GLdouble width = 1.0, double resol = 20);
 
-    virtual vector<Vector3d> GetPointsByKnots(int splitSegCnt = 1) const;
+    virtual vector<Vector3d> GetPositionVectorsByKnots(int splitSegCnt = 1) const;
+    virtual vector<Point3dC> GetPointsByKnots(int splitSegCnt = 1) const;
 
     // 各種ベクトル取得
     Vector3d GetPositionVector(double t) const override;
