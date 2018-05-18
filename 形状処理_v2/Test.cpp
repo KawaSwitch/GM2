@@ -39,39 +39,50 @@ static void DrawCurveNearest_CGS6()
     auto reader = new KjsReader();
 
     // 対象曲線/曲面
-    Curve* curve1 = (Curve *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_curve_1.kjs");
+    BsplineCurve* curve1 = (BsplineCurve *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_curve_1.kjs");
     // 参照曲線
-    Curve* curveC = (Curve *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_curve_C.kjs");
+    BsplineCurve* curveC = (BsplineCurve *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_curve_C.kjs");
+    
+    // 対象曲線をセグメント8分割した点群
+    {
+        vector<Vector3d> passPnts, segPassPnts;
+        passPnts = curve1->GetPositionVectorsByKnots(8);
+        segPassPnts = curve1->GetPositionVectorsByKnots();
+        DrawPoints(segPassPnts, Color::pink, 10);
+        DrawPoints(passPnts, Color::green, 10);
+    }
 
-    //// 参照点群を取得
-    //auto ref_pnts = curveC->GetPositionVectors(20);
-    //vector<Vector3d> nearest_pnts; // 最近点群
+    // 参照点群を取得
+    auto ref_pnts = curveC->GetPositionVectors(20); // 20分割して21点を取る
 
-    //                               // 最近点取得
-    //for (int i = 0; i < (int)ref_pnts.size(); i++)
-    //    nearest_pnts.push_back(curve1->GetNearestPointFromRef(ref_pnts[i]));
+    // 最近点取得
+    vector<NearestPointInfoC> nearest_pnts;
+    for (int i = 0; i < (int)ref_pnts.size(); i++)
+        nearest_pnts.push_back(curve1->GetNearestPointInfoFromRef(ref_pnts[i]));
 
-    //// 描画
-    //glLineWidth(1.0);
-    //glPointSize(5.0);
-    //glBegin(GL_LINES);
-    //glColor4dv(Color::orange);
-    //for (int i = 0; i < (int)ref_pnts.size(); i++)
-    //{
-    //    glVertex3d(ref_pnts[i]);
-    //    glVertex3d(nearest_pnts[i]);
-    //}
-    //glEnd();
+    // 描画
+    glLineWidth(1.0);
+    glPointSize(5.0);
+    glBegin(GL_LINES);
+    glColor4dv(Color::orange);
+    for (int i = 0; i < (int)ref_pnts.size(); i++)
+    {
+        glVertex3d(ref_pnts[i]);
+        glVertex3d(nearest_pnts[i].nearestPnt);
+    }
+    glEnd();
 
-    //glBegin(GL_POINTS);
-    //glColor4dv(Color::red);
-    //for (int i = 0; i < (int)ref_pnts.size(); i++)
-    //    glVertex3d(ref_pnts[i]);
+    glBegin(GL_POINTS);
+    glColor4dv(Color::red);
+    for (int i = 0; i < (int)ref_pnts.size(); i++)
+        glVertex3d(ref_pnts[i]);
 
-    //glColor4dv(Color::light_green);
-    //for (int i = 0; i < (int)nearest_pnts.size(); i++)
-    //    glVertex3d(nearest_pnts[i]);
-    //glEnd();
+    glColor4dv(Color::light_green);
+    for (int i = 0; i < (int)nearest_pnts.size(); i++)
+        glVertex3d(nearest_pnts[i].nearestPnt);
+    glEnd();
+
+    printf("%f %f\n", curve1->GetLength(), curveC->GetLength());
 
     if (isFirst)
     {
@@ -137,7 +148,7 @@ static void DrawApproxCurve_CGS4()
     // 曲線1の近似(ノット位置のみ)
     {
         vector<Vector3d> passPnts;
-        passPnts = curve1->GetPointsByKnots();
+        passPnts = curve1->GetPositionVectorsByKnots();
         DrawPoints(passPnts, Color::green, 10);
 
         curve1_remake = curve1->GetCurveFromPoints(passPnts, Color::red, 3);
@@ -145,9 +156,9 @@ static void DrawApproxCurve_CGS4()
     // 曲線1の近似(ノット位置のみ + セグメント位置3分割)
     {
         vector<Vector3d> passPnts;
-        passPnts = curve1->GetPointsByKnots(3);
+        passPnts = curve1->GetPositionVectorsByKnots(3);
         vector<Vector3d> passPntsOnlyKnot;
-        passPntsOnlyKnot = curve1->GetPointsByKnots();
+        passPntsOnlyKnot = curve1->GetPositionVectorsByKnots();
         DrawPoints(passPntsOnlyKnot, Color::green, 10);
         DrawPoints(passPnts, Color::pink, 10);
 
@@ -162,7 +173,7 @@ static void DrawApproxCurve_CGS4()
     // 曲線2の近似(ノット位置のみ)
     {
         vector<Vector3d> passPnts;
-        passPnts = curve2->GetPointsByKnots();
+        passPnts = curve2->GetPositionVectorsByKnots();
         DrawPoints(passPnts, Color::green, 10);
 
         curve2_remake = curve2->GetCurveFromPoints(passPnts, Color::red, 3);
@@ -170,9 +181,9 @@ static void DrawApproxCurve_CGS4()
     // 曲線2の近似(ノット位置のみ + セグメント位置3分割)
     {
         vector<Vector3d> passPnts;
-        passPnts = curve2->GetPointsByKnots(3);
+        passPnts = curve2->GetPositionVectorsByKnots(3);
         vector<Vector3d> passPntsOnlyKnot;
-        passPntsOnlyKnot = curve2->GetPointsByKnots();
+        passPntsOnlyKnot = curve2->GetPositionVectorsByKnots();
         DrawPoints(passPntsOnlyKnot, Color::green, 10);
         DrawPoints(passPnts, Color::pink, 10);
 

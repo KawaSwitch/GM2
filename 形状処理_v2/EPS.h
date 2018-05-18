@@ -14,4 +14,5 @@ struct EPS
 
     // 最近点用トレランス
     static const double NEAREST;
+    static const int COUNT_MAX;
 };

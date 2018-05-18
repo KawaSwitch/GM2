@@ -1,6 +1,7 @@
 #include "BsplineCurve.h"
 #include "ControlPoint.h"
 #include <iterator>
+#include <cfloat>
 
 BsplineCurve::BsplineCurve(const int mord, const ControlPoint* const cp, const int cp_size, const double* const knot,
     const GLdouble* const color, const GLdouble width, const double resol)
@@ -519,6 +520,7 @@ Curve* BsplineCurve::GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdo
 // 最近点取得
 NearestPointInfoC BsplineCurve::GetNearestPointInfoFromRef(const Vector3d& ref) const
 {
+    vector<NearestPointInfoC> possiblePnts; // 最近候補点
     const int seg_split = 8; // セグメント分割数
     double left, right, middle; // 2分探索用パラメータ
     Vector3d pnt, vec_ref_pnt, tan;
@@ -526,7 +528,7 @@ NearestPointInfoC BsplineCurve::GetNearestPointInfoFromRef(const Vector3d& ref) 
 
     auto startPnts = this->GetPointsByKnots(seg_split);
 
-    for (unsigned int i = 0, s = startPnts.size(); i < s; ++i)
+    for (size_t i = 0, s = startPnts.size(); i < s; ++i)
     {
         int count = 0; // 2分探索ステップ数
 
@@ -542,11 +544,24 @@ NearestPointInfoC BsplineCurve::GetNearestPointInfoFromRef(const Vector3d& ref) 
 
         while (left <= right)
         {
+            // パラメータの移動量0
+            if (fabs(left - middle) < EPS::DIFF)
+            {
+                possiblePnts.push_back(NearestPointInfoC(pnt, ref, left));
+                break;
+            }
+            else if (fabs(right - middle) < EPS::DIFF)
+            {
+                possiblePnts.push_back(NearestPointInfoC(pnt, ref, right));
+                break;
+            }
+
             // ベクトルの内積が0
             if (-EPS::NEAREST < dot && dot < EPS::NEAREST)
             {
                 // 十分な精度なので見つかったことにする
-                return NearestPointInfoC(pnt, ref, middle);
+                possiblePnts.push_back(NearestPointInfoC(pnt, ref, middle));
+                break;
             }
             else if (dot >= EPS::NEAREST)
             {
@@ -562,70 +577,27 @@ NearestPointInfoC BsplineCurve::GetNearestPointInfoFromRef(const Vector3d& ref) 
             // 中心更新
             middle = (left + right) / 2.0;
 
-            //// 中央更新値が端を超えたら
-            //if (middle < _min_draw_param)
-            //    return NearestPointInfoC(GetPositionVector(_min_draw_param), ref, _min_draw_param);
-            //if (middle > _max_draw_param)
-            //    return NearestPointInfoC(GetPositionVector(_max_draw_param), ref, _max_draw_param);
+            // 各値更新
+            pnt = GetPositionVector(middle);
+            tan = GetFirstDiffVector(middle);
+            vec_ref_pnt = pnt - ref;
+            dot = tan.Dot(vec_ref_pnt); // 内積値
 
             // ステップ数上限に達したらその時点の点を返す
             if (++count > EPS::COUNT_MAX)
-                return NearestPointInfoC(pnt, ref, middle);
+            {
+                possiblePnts.push_back(NearestPointInfoC(pnt, ref, middle));
+                break;
+            }
         }
     }
 
+    NearestPointInfoC nearestPnt(Vector3d(), Vector3d(DBL_MAX, DBL_MAX, DBL_MAX), 0);
+    for (const auto& p : possiblePnts)
+    {
+        if (p.dist < nearestPnt.dist)
+            nearestPnt = p;
+    }
 
-
-    //double left = _min_draw_param;
-    //double right = _max_draw_param;
-    //double middle = (left + right) / 2;
-    //int count = 0;
-
-    //Vector3d pnt = GetPositionVector(middle);
-    //Vector3d ref_pnt = pnt - ref;
-    //Vector3d tan = GetFirstDiffVector(middle);
-    //double dot = tan.Dot(ref_pnt); // 内積値
-
-    //                               // 二分探索
-    //                               // 端対策のために更新の際EPSを増減させる
-    //while (left <= right)
-    //{
-    //    if (-EPS < dot && dot < EPS)
-    //    {
-    //        // 十分な精度なので見つかったことにする
-    //        return pnt;
-    //    }
-    //    else if (dot >= EPS)
-    //    {
-    //        // 右端更新
-    //        right = middle - EPS;
-    //    }
-    //    else if (dot <= -EPS)
-    //    {
-    //        // 左端更新
-    //        left = middle + EPS;
-    //    }
-
-    //    // 中心更新
-    //    middle = (left + right) / 2.0;
-
-    //    // 端っこが一番近い
-    //    if (middle < _min_draw_param)
-    //        return GetPositionVector(_min_draw_param);
-    //    if (middle > _max_draw_param)
-    //        return GetPositionVector(_max_draw_param);
-
-    //    // 再計算
-    //    pnt = GetPositionVector(middle);
-    //    ref_pnt = pnt - ref;
-    //    tan = GetFirstDiffVector(middle);
-    //    dot = tan.Dot(ref_pnt); // 内積値
-
-    //    count++;
-    //}
-
-    //// 見つかった
-    //return pnt;
-
-    return NearestPointInfoC(pnt, ref, 0);
+    return nearestPnt;
 }
