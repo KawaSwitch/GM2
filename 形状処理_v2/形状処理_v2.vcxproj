@@ -156,6 +156,7 @@
     <ClInclude Include="Box.h" />
     <ClInclude Include="BsplineCurve.h" />
     <ClInclude Include="BsplineSurface.h" />
+    <ClInclude Include="CalcGeoModelUtil.h" />
     <ClInclude Include="CalcUtil.h" />
     <ClInclude Include="Callback.h" />
     <ClInclude Include="Camera.h" />

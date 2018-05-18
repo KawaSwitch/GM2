@@ -27,7 +27,7 @@ static vector<function<void(void)>> TestRegisterDraw
     //DrawCircle_CGS3, // Nurbs‹Èü‚Å‰~•`‚­
     //DrawSphere_CGS3, // Nurbs‹È–Ê‚Å‹…‚ğ•`‚­
     //DrawCylinder_CGS3, // Nurbs‹È–Ê‚Å‰~’Œ‚ğ•`‚­
-    //DrawApproxCurve_CGS4, // ‹ß—‹Èü‚ğ•`‰æ
+    DrawApproxCurve_CGS4, // ‹ß—‹Èü‚ğ•`‰æ
     //DrawApproxSurface_CGS5, // ‹ß—‹È–Ê‚ğ•`‰æ
     DrawCurveNearest_CGS6, // Å‹ß“_‚ğ•`‰æ_‹Èü
     //DrawSurfaceNearest_CGS7, // Å‹ß“_‚ğ•`‰æ_‹È–Ê

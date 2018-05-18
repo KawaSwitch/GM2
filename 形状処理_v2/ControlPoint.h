@@ -33,7 +33,7 @@ public:
 
     void Show() const
     {
-        cout << X << " " << Y << " " << Z << " " << W << endl;
+        std::cout << X << " " << Y << " " << Z << " " << W << std::endl;
     }
 
     double GetDistanceTo(ControlPoint other)
