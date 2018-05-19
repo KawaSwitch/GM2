@@ -152,3 +152,4 @@ UnitTestCalc/
 *.VC.VC.opendb
 *.VC.db
 packages/
+*.csv
