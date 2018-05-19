@@ -1,4 +1,5 @@
 #include "Curve.h"
+#include <cfloat>
 
 // 制御点設定
 void Curve::SetControlPoint(const ControlPoint* const cp, const int size)
@@ -66,21 +67,60 @@ double Curve::CalcDifferency(const Curve* const other) const
 {
     int checkCnt = 100; // 距離を測る点の数
     double sumDistance = 0.0; // 相違距離の合計
-    double minParam[2], maxParam[2]; // 端のパラメータ
-
-    minParam[0] = this->GetMinDrawParam();
-    maxParam[0] = this->GetMaxDrawParam();
-    minParam[1] = other->GetMinDrawParam();
-    maxParam[1] = other->GetMaxDrawParam();
 
     // 分割区間を計算
     double skip = (fabs(_min_draw_param) + fabs(_max_draw_param)) / checkCnt;
 
     // double型の誤差考慮
     for (double t = _min_draw_param; t < _max_draw_param + skip / 2; t += skip)
-        sumDistance += this->GetPositionVector(t).DistanceFrom(other->GetPositionVector(t));
+        sumDistance += this->GetPositionVector(t).DistanceFrom(other->GetPositionVector(t / this->GetDrawParamRange()));
+
     // 相違距離の平均を返す
     return sumDistance / (double)checkCnt;
+}
+// 他曲線との相違度を計算します
+// 最近点平均
+double Curve::CalcDifferency2(const Curve* const other) const
+{
+    int checkCnt = 100; // 距離を測る点の数
+    double sumDistance = 0.0; // 相違距離の合計
+
+    // 参照点群を取得
+    auto ref_pnts = other->GetPositionVectors(checkCnt - 1);
+
+    // 最近点取得
+    vector<NearestPointInfoC> nearest_pnts;
+    for (int i = 0; i < (int)ref_pnts.size(); i++)
+        nearest_pnts.push_back(this->GetNearestPointInfoFromRef(ref_pnts[i]));
+
+    for (const auto& p : nearest_pnts)
+        sumDistance += p.dist;
+
+    // 相違距離の平均を返す
+    return sumDistance / (double)checkCnt;
+}
+
+// 2曲線で一番遠ざかる距離を計算する
+double Curve::CalcFarthestDistant(const Curve* const other) const
+{
+    int checkCnt = 100; // 距離を測る点の数
+    double farthestDist = -DBL_MAX; // 2曲線で一番遠い距離
+
+    // 参照点群を取得
+    auto ref_pnts = other->GetPositionVectors(checkCnt - 1);
+
+    // 最近点取得
+    vector<NearestPointInfoC> nearest_pnts;
+    for (int i = 0; i < (int)ref_pnts.size(); i++)
+        nearest_pnts.push_back(this->GetNearestPointInfoFromRef(ref_pnts[i]));
+
+    for (const auto& p : nearest_pnts)
+    {
+        if (p.dist > farthestDist)
+            farthestDist = p.dist;
+    }
+
+    return farthestDist;
 }
 
 // 曲線長を取得します

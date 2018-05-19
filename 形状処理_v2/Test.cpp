@@ -29,7 +29,7 @@ static vector<function<void(void)>> TestRegisterDraw
     //DrawCylinder_CGS3, // Nurbs曲面で円柱を描く
     DrawApproxCurve_CGS4, // 近似曲線を描画
     //DrawApproxSurface_CGS5, // 近似曲面を描画
-    DrawCurveNearest_CGS6, // 最近点を描画_曲線
+    //DrawCurveNearest_CGS6, // 最近点を描画_曲線
     //DrawSurfaceNearest_CGS7, // 最近点を描画_曲面
 };
 
@@ -63,7 +63,6 @@ static void DrawCurveNearest_CGS6()
     // 描画
     {
         glLineWidth(1.0);
-        glPointSize(5.0);
         glBegin(GL_LINES);
         {
             // 参照点と最近点を結ぶ線
@@ -76,6 +75,7 @@ static void DrawCurveNearest_CGS6()
         }
         glEnd();
 
+        glPointSize(5.0);
         glBegin(GL_POINTS);
         {
             // 参照点
@@ -221,10 +221,20 @@ static void DrawApproxCurve_CGS4()
         curve1_remake_split = curve1->GetCurveFromPoints(passPnts, Color::orange, 3);
     }
 
-    //printf("曲線1と近似曲線の相違距離平均\n");
-    //printf("ノット位置のみ:    %f\n", curve1->CalcDifferency(curve1_remake));
-    //printf("セグメント位置も:  %f\n", curve1->CalcDifferency(curve1_remake_split));
-    //printf("\n");
+    printf("曲線1と近似曲線の相違距離平均\n");
+    printf("ノット位置のみ:    %f\n", curve1->CalcDifferency(curve1_remake));
+    printf("セグメント位置も:  %f\n", curve1->CalcDifferency(curve1_remake_split));
+    printf("\n");
+
+    printf("曲線1と近似曲線の相違距離平均 Ver.2 \n");
+    printf("ノット位置のみ:    %f\n", curve1->CalcDifferency2(curve1_remake));
+    printf("セグメント位置も:  %f\n", curve1->CalcDifferency2(curve1_remake_split));
+    printf("\n");
+
+    printf("曲線1と近似曲線の一番遠ざかる距離 \n");
+    printf("ノット位置のみ:    %f\n", curve1->CalcFarthestDistant(curve1_remake));
+    printf("セグメント位置も:  %f\n", curve1->CalcFarthestDistant(curve1_remake_split));
+    printf("\n");
 
     // 曲線2の近似(ノット位置のみ)
     {
@@ -246,9 +256,17 @@ static void DrawApproxCurve_CGS4()
         curve2_remake_split = curve2->GetCurveFromPoints(passPnts, Color::orange, 3);
     }
 
-    //printf("曲線2と近似曲線の相違距離平均\n");
-    //printf("ノット位置のみ:    %f\n", curve2->CalcDifferency(curve2_remake));
-    //printf("セグメント位置も:  %f\n", curve2->CalcDifferency(curve2_remake_split));
+    printf("曲線2と近似曲線の相違距離平均\n");
+    printf("ノット位置のみ:    %f\n", curve2->CalcDifferency(curve2_remake));
+    printf("セグメント位置も:  %f\n", curve2->CalcDifferency(curve2_remake_split));
+
+    printf("曲線2と近似曲線の相違距離平均 Ver.2 \n");
+    printf("ノット位置のみ:    %f\n", curve2->CalcDifferency2(curve2_remake));
+    printf("セグメント位置も:  %f\n", curve2->CalcDifferency2(curve2_remake_split));
+
+    printf("曲線2と近似曲線の一番遠ざかる距離 \n");
+    printf("ノット位置のみ:    %f\n", curve2->CalcFarthestDistant(curve2_remake));
+    printf("セグメント位置も:  %f\n", curve2->CalcFarthestDistant(curve2_remake_split));
 
     if (isFirst)
     {

@@ -42,9 +42,7 @@ private:
 
 public:
 
-    double GetMinDrawParam() const { return this->_min_draw_param; }
-    double GetMaxDrawParam() const { return this->_max_draw_param; }
-    
+    double GetDrawParamRange() const { return _max_draw_param - _min_draw_param; }
     double GetLength(int split = 100) const;
 
     // ベクトル取得関数
@@ -62,7 +60,9 @@ public:
     virtual Curve* GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdouble* const color, GLdouble width) const = 0;
 
     // 他曲線との相違度を計算します
+    double CalcFarthestDistant(const Curve* const other) const;
     double CalcDifferency(const Curve* const other) const;
+    double CalcDifferency2(const Curve* const other) const;
 
     virtual ~Curve() { };
 };
