@@ -147,6 +147,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="Test.cpp" />
+    <ClCompile Include="Writer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Axis.h" />
@@ -190,6 +191,7 @@
     <ClInclude Include="Test.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="Vector.h" />
+    <ClInclude Include="Writer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

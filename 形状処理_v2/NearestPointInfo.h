@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Vector.h"
+#include "Point3d.h"
 
 // Å‹ß“_î•ñ‚Ü‚Æ‚ß\‘¢‘Ì
 struct NearestPointInfo

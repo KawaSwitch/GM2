@@ -2,9 +2,11 @@
 
 #include "GV.h"
 #include <math.h>
+#include <fstream>
 #include "Test.h"
 #include "Model.h"
 #include "Reader.h"
+#include "Writer.h"
 #include "Scene.h"
 #include "glUtil.h"
 
@@ -27,9 +29,9 @@ static vector<function<void(void)>> TestRegisterDraw
     //DrawCircle_CGS3, // Nurbs‹Èü‚Å‰~•`‚­
     //DrawSphere_CGS3, // Nurbs‹È–Ê‚Å‹…‚ğ•`‚­
     //DrawCylinder_CGS3, // Nurbs‹È–Ê‚Å‰~’Œ‚ğ•`‚­
-    DrawApproxCurve_CGS4, // ‹ß—‹Èü‚ğ•`‰æ
+    //DrawApproxCurve_CGS4, // ‹ß—‹Èü‚ğ•`‰æ
     //DrawApproxSurface_CGS5, // ‹ß—‹È–Ê‚ğ•`‰æ
-    //DrawCurveNearest_CGS6, // Å‹ß“_‚ğ•`‰æ_‹Èü
+    DrawCurveNearest_CGS6, // Å‹ß“_‚ğ•`‰æ_‹Èü
     //DrawSurfaceNearest_CGS7, // Å‹ß“_‚ğ•`‰æ_‹È–Ê
 };
 
@@ -91,13 +93,8 @@ static void DrawCurveNearest_CGS6()
         glEnd();
     }
 
-    // Ú×•\¦
-    for (const auto& np : nearest_pnts)
-    {
-        printf("Å‹ß“_ˆÊ’u X:%f Y:%f Z:%f\n", np.nearestPnt.X, np.nearestPnt.Y, np.nearestPnt.Z);
-        printf("ƒpƒ‰ƒ[ƒ^ %f\n", np.param);
-        printf("“_ŠÔ‹——£ %f\n\n", np.dist);
-    }
+    // Ú×‚ğcsv“f‚«o‚µ
+    ExportCsv_NearestInfoCurve("nearest_pnt_CGS6.csv", nearest_pnts, true);
 
     if (isFirst)
     {
