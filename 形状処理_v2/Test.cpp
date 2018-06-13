@@ -41,9 +41,9 @@ static void DrawCurveNearest_CGS6()
     auto reader = new KjsReader();
 
     // 対象曲線/曲面
-    BsplineCurve* curve1 = (BsplineCurve *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_curve_1.kjs");
+    BsplineCurve* curve1 = (BsplineCurve *)reader->GetObjectFromFile("CGS_bspline_curve_1.kjs");
     // 参照曲線
-    BsplineCurve* curveC = (BsplineCurve *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_curve_C.kjs");
+    BsplineCurve* curveC = (BsplineCurve *)reader->GetObjectFromFile("CGS_bspline_curve_C.kjs");
     
     //// 対象曲線をセグメント8分割した点群
     //{
@@ -109,9 +109,9 @@ static void DrawSurfaceNearest_CGS7()
     auto reader = new KjsReader("");
 
     // 対象曲線/曲面
-    Surface* surf1 = (Surface *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_surface_1.kjs");
+    Surface* surf1 = (Surface *)reader->GetObjectFromFile("CGS_bspline_surface_1.kjs");
     // 参照曲線
-    Curve* curveS = (Curve *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_curve_S.kjs");
+    Curve* curveS = (Curve *)reader->GetObjectFromFile("CGS_bspline_curve_S.kjs");
 
     // 参照点群を取得
     auto ref_pnts = curveS->GetPositionVectors(20);
@@ -156,7 +156,7 @@ static void DrawApproxSurface_CGS5()
 {
     auto reader = new KjsReader("");
 
-    auto surf = (BsplineSurface *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_surface_1.kjs");
+    auto surf = (BsplineSurface *)reader->GetObjectFromFile("CGS_bspline_surface_1.kjs");
 
     // 近似曲面
     Surface *surf_knot_remake, *surf_knot_split_remake;
@@ -191,8 +191,8 @@ static void DrawApproxCurve_CGS4()
 {
     auto reader = new KjsReader("");
 
-    BsplineCurve* curve1 = (BsplineCurve *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_curve_1.kjs");
-    BsplineCurve* curve2 = (BsplineCurve *)reader->GetObjectFromFile("KJS_FILE/CGS_bspline_curve_2.kjs");
+    BsplineCurve* curve1 = (BsplineCurve *)reader->GetObjectFromFile("CGS_bspline_curve_1.kjs");
+    BsplineCurve* curve2 = (BsplineCurve *)reader->GetObjectFromFile("CGS_bspline_curve_2.kjs");
 
     // 近似曲線
     Curve *curve1_remake, *curve2_remake;
