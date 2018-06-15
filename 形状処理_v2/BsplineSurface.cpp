@@ -570,11 +570,40 @@ Vector3d BsplineSurface::GetSecondDiffVectorVV(const double u, const double v) c
     return CalcVector(u, v, CalcBsplineFunc, Calc2DiffBsplineFunc);
 }
 
-// ノットベクトルをもとにして点群を取得する
+// ノットベクトルをもとにして点群を取得する(pnts[v][u]と並べる)
 // splitSegCnt: セグメントを何分割するかの回数(デフォルトは1 = 分割しない)
-vector<vector<Vector3d>> BsplineSurface::GetPointsByKnots(const int splitSegCnt_U, const int splitSegCnt_V) const
+// NOTE: Vector3dとPoint3dは継承関係にあり型変換可能であるが,
+//           コンテナ使用時の派生要素の渡し方が複雑なためこの関数を残した
+void BsplineSurface::GetPointsByKnots(vector<vector<Vector3d>>& pnts, const int splitSegCnt_U, const int splitSegCnt_V) const
 {
-    vector<vector<Vector3d>> pnts; // pnts[v][u]と並べる
+    // 点群のクリア
+    for (auto& pntRow : pnts)
+        pntRow.clear();
+    pnts.clear();
+
+    vector<vector<Point3dS>> pntsInfo;
+    this->GetPointsInfoByKnots(pntsInfo, splitSegCnt_U, splitSegCnt_V);
+
+    // 点群情報から座標情報だけを抜き取る
+    for (int i = 0, r = (int)pnts.size(); i < r; ++i)
+    {
+        vector<Vector3d> pntsRow;
+        pntsRow.reserve(pnts[i].size());
+
+        for (int j = 0, c = (int)pnts[i].size(); j < c; ++j)
+            pntsRow.emplace_back(pntsInfo[i][j]);
+
+        pnts.push_back(pntsRow);
+    }
+}
+// ノットベクトルをもとにして点群情報を取得する(pnts[v][u]と並べる)
+// splitSegCnt: セグメントを何分割するかの回数(デフォルトは1 = 分割しない)
+void BsplineSurface::GetPointsInfoByKnots(vector<vector<Point3dS>>& pnts, const int splitSegCnt_U, const int splitSegCnt_V) const
+{
+    // 点群情報のクリア
+    for (auto& pntRow : pnts)
+        pntRow.clear();
+    pnts.clear();
 
     double skip;
     vector<double> knotsU, knotsV; // 点群を取得するパラメータ
@@ -584,7 +613,7 @@ vector<vector<Vector3d>> BsplineSurface::GetPointsByKnots(const int splitSegCnt_
         for (size_t i = _ordU - 1, kn = _knotU.size(); i < kn - _ordU; ++i)
         {
             skip = (_knotU[i + 1] - _knotU[i]) / (double)splitSegCnt_U;
-            
+
             for (int j = 0; j < splitSegCnt_U; ++j)
                 knotsU.push_back(_knotU[i] + skip * j);
         }
@@ -605,16 +634,14 @@ vector<vector<Vector3d>> BsplineSurface::GetPointsByKnots(const int splitSegCnt_
     // 位置ベクトルを求める
     for (size_t j = 0, kv_size = knotsV.size(); j < kv_size; ++j)
     {
-        vector<Vector3d> p_vec;
+        vector<Point3dS> p_vec;
         p_vec.reserve(knotsU.size());
 
         for (size_t i = 0, ku_size = knotsU.size(); i < ku_size; ++i)
-            p_vec.emplace_back(GetPositionVector(knotsU[i], knotsV[j]));
+            p_vec.emplace_back(Point3dS(GetPositionVector(knotsU[i], knotsV[j]), knotsU[i], knotsV[j]));
 
         pnts.push_back(p_vec);
     }
-
-    return pnts;
 }
 
 // 通過点から逆変換して曲面を取得
@@ -694,4 +721,28 @@ Surface* BsplineSurface::GetSurfaceFromPoints(const vector<vector<Vector3d>>& pn
     }
 
     return new BsplineSurface(ordU, ordV, &cps[0], new_ncpntU, new_ncpntV, &knotU[0], &knotV[0], color);
+}
+
+// 最近点取得
+NearestPointInfoS BsplineSurface::GetNearestPointInfoFromRef(const Vector3d& ref, const NearestSearch search) const
+{
+    int seg_split_u, seg_split_v; // セグメント分割数
+    vector<vector<Point3dS>> startPnts; // 開始点群
+
+    if (search == Project)
+    {
+        // 近い開始点を与えても時間がかかるだけなので大雑把に
+        seg_split_u = 1;
+        seg_split_v = 1;
+        this->GetPointsInfoByKnots(startPnts, seg_split_u, seg_split_v);
+    }
+    else if (search == Isoline)
+    {
+        seg_split_u = seg_split_v = 8;
+        this->GetPointsInfoByKnots(startPnts, seg_split_u, seg_split_v);
+    }
+    else
+        throw;
+
+    return Surface::GetNearestPointInfoInternal(ref, startPnts, search);
 }

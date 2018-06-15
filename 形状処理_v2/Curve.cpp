@@ -47,18 +47,16 @@ Vector3d Curve::GetCurvatureVector(const double t) const
 }
 
 // 描画範囲をsplit_num個に分割するような位置ベクトルを取得する
-vector<Vector3d> Curve::GetPositionVectors(const int split_num) const
+void Curve::GetPositionVectors(vector<Vector3d>& pnts, const int split_num) const
 {
-    vector<Vector3d> pos;
+    pnts.clear();
 
     // 分割区間を計算
     double skip = (fabs(_min_draw_param) + fabs(_max_draw_param)) / split_num;
 
     // double型の誤差考慮
     for (double t = _min_draw_param; t < _max_draw_param + skip / 2; t += skip)
-        pos.push_back(GetPositionVector(t));
-
-    return pos;
+        pnts.push_back(GetPositionVector(t));
 }
 
 // 他曲線との相違度を計算します
@@ -86,7 +84,8 @@ double Curve::CalcDifferency2(const Curve* const other) const
     double sumDistance = 0.0; // 相違距離の合計
 
     // 参照点群を取得
-    auto ref_pnts = other->GetPositionVectors(checkCnt - 1);
+    vector<Vector3d> ref_pnts;
+    other->GetPositionVectors(ref_pnts, checkCnt - 1);
 
     // 最近点取得
     vector<NearestPointInfoC> nearest_pnts;
@@ -107,7 +106,8 @@ double Curve::CalcFarthestDistant(const Curve* const other) const
     double farthestDist = -DBL_MAX; // 2曲線で一番遠い距離
 
     // 参照点群を取得
-    auto ref_pnts = other->GetPositionVectors(checkCnt - 1);
+    vector<Vector3d> ref_pnts;
+   other->GetPositionVectors(ref_pnts, checkCnt - 1);
 
     // 最近点取得
     vector<NearestPointInfoC> nearest_pnts;
@@ -193,22 +193,21 @@ NearestPointInfoC Curve::GetSectionNearestPointInfoByBinary(const Vector3d& ref,
     {
         // e5. 参照点が対象曲線の分割線上にある(中央座標と参照点が重なる)
         if (fabs(pnt.DistanceFrom(ref)) < EPS::DIST_SQRT)
-            return NearestPointInfoC(pnt, ref, middle);
+            break;
 
         // e2. パラメータの移動量0
         if (fabs(left - middle) < EPS::NEAREST || fabs(right - middle) < EPS::NEAREST)
-            return NearestPointInfoC(pnt, ref, middle);
-
+            break;
         // e3. 実座標の移動量0
         if (fabs(GetPositionVector(left).DistanceFrom(GetPositionVector(middle))) < EPS::NEAREST ||
             fabs(GetPositionVector(right).DistanceFrom(GetPositionVector(middle))) < EPS::NEAREST)
-            return NearestPointInfoC(pnt, ref, middle);
+            break;
 
         // e1. ベクトルの内積が0
         if (-EPS::NEAREST < dot && dot < EPS::NEAREST)
         {
             // 十分な精度なので見つかったことにする
-            return NearestPointInfoC(pnt, ref, middle);
+            break;
         }
         else if (dot >= EPS::NEAREST)
         {
@@ -226,9 +225,8 @@ NearestPointInfoC Curve::GetSectionNearestPointInfoByBinary(const Vector3d& ref,
 
         // e4. ステップ数上限に達したらその時点の点を返す
         if (++count > EPS::COUNT_MAX)
-            return NearestPointInfoC(pnt, ref, middle);
+            break;
     }
 
-    // ここまで来ないはず
-    throw;
+    return NearestPointInfoC(pnt, ref, middle);
 }

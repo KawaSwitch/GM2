@@ -54,7 +54,7 @@ public:
     virtual NearestPointInfoC GetNearestPointInfoFromRef(const Vector3d& ref) const = 0;
 
     // 描画範囲をsplit_num個に分割するような位置ベクトルを取得する
-    vector<Vector3d> GetPositionVectors(int split_num) const;
+    void GetPositionVectors(vector<Vector3d>& pnts, int split_num) const;
 
     // 通過点から逆変換して曲線を取得する
     virtual Curve* GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdouble* const color, GLdouble width) const = 0;

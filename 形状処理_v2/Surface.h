@@ -3,12 +3,21 @@
 #include "Object.h"
 #include "ControlPoint.h"
 #include "Curve.h"
+#include "BsplineCurve.h"
 
 extern Scene* test_scene;
 
 // 曲面基底クラス
 class Surface : public Object
 {
+public:
+    // 最近点導出法
+    enum NearestSearch
+    {
+        Project, // 射影法
+        Isoline, // アイソライン法
+    };
+
 protected:
 
     int _ordU, _ordV; // 階数
@@ -49,6 +58,14 @@ protected:
     // 指定した端の曲線の制御点を取得する
     vector<ControlPoint> GetEdgeCurveControlPoint(SurfaceEdge edge) const;
 
+    // 最近点取得
+    NearestPointInfoS GetNearestPointInfoInternal(const Vector3d& ref, const vector<vector<Point3dS>>& startPnts, const NearestSearch search) const;
+    // 最近点を取得する(射影法)
+    NearestPointInfoS GetNearestPointFromRefByProjectionMethod(const Vector3d& ref, const Point3dS& start) const;
+    NearestPointInfoS GetNearestPointWhenParamOver(const Vector3d& ref, double u, double v) const;
+    // 最近点を取得する(アイソライン法)
+    NearestPointInfoS GetNearestPointFromRefByIsolineMethod(const Vector3d& ref, const Point3dS& start) const;
+
     // メッシュ表示
     virtual void DrawMeshInternal() const { };
     void DrawMesh() const { DrawUsingDisplayList(&_mesh_displayList, [&] { return (*this).DrawMeshInternal(); }); }
@@ -76,17 +93,17 @@ private:
 
 public:
 
-    // 指定した端の曲線を取得する(アイソ曲線実装したら削除)
+    // 指定した端の曲線を取得する
     virtual Curve* GetEdgeCurve(SurfaceEdge edge) const = 0;
 
     // 指定したパラメータのアイソ曲線を取得する
-    //virtual Curve* GetIsoCurve(ParamUV direct, double param) const = 0;
+    virtual Curve* GetIsoCurve(ParamUV const_param, double param, const GLdouble* const color, GLdouble width) const ;
 
     // 参照点からの最近点を取得
-    Vector3d GetNearestPointFromRef(const Vector3d& ref) const;
+    virtual NearestPointInfoS GetNearestPointInfoFromRef(const Vector3d& ref, const NearestSearch search = Project) const = 0;
 
     // 描画範囲を各方向split_num個に分割するような位置ベクトルを取得する
-    vector<vector<Vector3d>> GetPositionVectors(int U_split_num, int V_split_num) const;
+    void GetPositionVectors(vector<vector<Vector3d>>& pnts, int U_split_num, int V_split_num) const;
 
     // 通過点から逆変換して曲面を取得する
     virtual Surface* GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, GLdouble width) const = 0;

@@ -1,4 +1,5 @@
 #include "Surface.h"
+#include "Reader.h"
 
 // 制御点設定
 void Surface::SetControlPoint(const ControlPoint* const cp, const int size)
@@ -112,6 +113,32 @@ vector<ControlPoint> Surface::GetEdgeCurveControlPoint(const SurfaceEdge edge) c
     return edge_cp;
 }
 
+// 指定パラメータ固定のアイソ曲線を取得する
+Curve* Surface::GetIsoCurve(const ParamUV const_param, const double param, const GLdouble* const color, const GLdouble width) const
+{
+    auto reader = new KjsReader("");
+    Curve* curve = (Curve *)reader->GetObjectFromFile("CGS_bspline_curve_S.kjs");
+    vector<Vector3d> pnts; // アイソ曲線取得用の参照点群
+    const int split = 30;
+
+    if (const_param == ParamUV::U)
+    {
+        double skipV = (_max_draw_param_V - _min_draw_param_V) / split;
+
+        for (int i = 0; i <= split; ++i)
+            pnts.push_back(GetPositionVector(param, _min_draw_param_V + skipV * i));
+    }
+    else
+    {
+        double skipU = (_max_draw_param_U - _min_draw_param_U) / split;
+
+        for (int i = 0; i <= split; ++i)
+            pnts.push_back(GetPositionVector(param, _min_draw_param_U + skipU * i));
+    }
+
+    return curve->GetCurveFromPoints(pnts, color, width);
+}
+
 // 主曲率を取得
 void Surface::GetPrincipalCurvatures(const double u, const double v, double* const max_kappa, double* const min_kappa) const
 {
@@ -202,11 +229,15 @@ void Surface::DrawCPsInternal() const
     }
 }
 
-// 描画範囲を各方向split_num個に分割するような位置ベクトルを取得する
-vector<vector<Vector3d>> Surface::GetPositionVectors(const int U_split_num, const int V_split_num) const
+// 描画範囲を各方向split_num個に分割するような位置ベクトルを取得する(pnts[v][u]と並べる)
+void Surface::GetPositionVectors(vector<vector<Vector3d>>& pnts, const int U_split_num, const int V_split_num) const
 {
+    // 点群のクリア
+    for (auto& pntRow : pnts)
+        pntRow.clear();
+    pnts.clear();
+
     vector<Vector3d> pos;
-    vector<vector<Vector3d>> pnts; // pnts[v][u]と並べる
 
     // 分割区間を計算
     double skip_U = (fabs(_min_draw_param_U) + fabs(_max_draw_param_U)) / U_split_num;
@@ -221,80 +252,161 @@ vector<vector<Vector3d>> Surface::GetPositionVectors(const int U_split_num, cons
         pnts.push_back(pos);
         pos.clear();
     }
-
-    return pnts;
 }
 
 // 参照点からの最近点を取得
-Vector3d Surface::GetNearestPointFromRef(const Vector3d& ref) const
+NearestPointInfoS Surface::GetNearestPointInfoInternal(const Vector3d& ref, const vector<vector<Point3dS>>& startPnts, const NearestSearch search) const
 {
-    int count = 0;
+    if (search == Project)
+    {
+        vector<NearestPointInfoS> possiblePnts; // 最近候補点
 
-    // 許容値
-    const double EPS = 10e-6;
+        // 開始点毎の最近点を取得し候補点とする
+        for (const auto& startPntRow : startPnts)
+        for (const auto& startPnt : startPntRow)
+            possiblePnts.push_back(this->GetNearestPointFromRefByProjectionMethod(ref, startPnt));
 
-    // 初期パラメータ とりあえず中心で
-    double u = (_min_draw_param_U + _max_draw_param_U) / 2.0;
-    double v = (_min_draw_param_V + _max_draw_param_V) / 2.0;
+        // 候補の中で一番距離の短いものを最近点とする
+        NearestPointInfoS nearestPnt(Vector3d(), Vector3d(DBL_MAX, DBL_MAX, DBL_MAX), 0, 0);
+        for (const auto& p : possiblePnts)
+        {
+            if (p.dist < nearestPnt.dist)
+                nearestPnt = p;
+        }
 
-    // 正射影法(DAP法)
-    Vector3d p = GetPositionVector(u, v);
-    Vector3d pu = GetFirstDiffVectorU(u, v);
-    Vector3d pv = GetFirstDiffVectorV(u, v);
+        return nearestPnt;
+    }
+    else if (search == Isoline)
+    {
+        // 各開始点の内, 対象点との距離が最短のものを開始点とする
+        double dist;
+        double min_dist = DBL_MAX;
+        Point3dS start(Vector3d(), 0, 0);
 
-    double delta_u = (ref - p).Dot(pu) / pow(pu.Length(), 2.0) * 0.5; // 0.7掛けだとおかしいときがある
-    double delta_v = (ref - p).Dot(pv) / pow(pv.Length(), 2.0) * 0.5; // CGS_bspline_surface_1.kjs
+        for (const auto& startPntRow : startPnts)
+        for (const auto& startPnt : startPntRow)
+        {
+            dist = ref.DistanceFrom((Vector3d)const_cast<Point3dS &>(startPnt));
+            if (dist < min_dist)
+                start = startPnt;
+        }
 
-    while (fabs(delta_u) > EPS || fabs(delta_v) > EPS)
+        // アイソライン法は適切な開始点の選択で1発で最近点が決定する
+        return this->GetNearestPointFromRefByIsolineMethod(ref, start);
+    }
+    else
+        throw;
+}
+// 最近点を取得する(射影法)
+// コメント内のe_.は資料の終了条件番号
+NearestPointInfoS Surface::GetNearestPointFromRefByProjectionMethod(const Vector3d& ref, const Point3dS& start) const
+{
+    int count = 0; // ステップ数
+
+    // 初期パラメータ
+    double u = start.paramU;
+    double v = start.paramV;
+
+    Vector3d p; // 位置ベクトル
+    Vector3d pu; // U方向接線ベクトル
+    Vector3d pv; // V方向接線ベクトル
+    double delta_u; // U方向パラメータ移動量
+    double delta_v; // V方向パラメータ移動量
+
+    // 更新
+    auto update = [&]()
+    {
+        // 各ベクトル更新
+        p = GetPositionVector(u, v);
+        pu = GetFirstDiffVectorU(u, v);
+        pv = GetFirstDiffVectorV(u, v);
+        // パラメータ移動量更新
+        delta_u = (ref - p).Dot(pu) / pow(pu.Length(), 2.0) * 0.7;
+        delta_v = (ref - p).Dot(pv) / pow(pv.Length(), 2.0) * 0.7;
+    };
+
+    update(); // 初期更新
+
+    while (true)
     {
         u += delta_u;
         v += delta_v;
 
-        // 注目ベクトルとPuが直角 かつ 注目ベクトルとPvが直角
-        if (fabs((ref - p).Dot(pu)) < EPS && fabs((ref - p).Dot(pv) < EPS))
+        // パラメータが描画範囲からはみ出す場合
+        if (u < _min_draw_param_U || u > _max_draw_param_U ||
+            v < _min_draw_param_V || v > _max_draw_param_V)
+            return this->GetNearestPointWhenParamOver(ref, u, v);
+
+        update(); // 更新
+
+        // e1. 注目ベクトルとPuが直交 かつ 注目ベクトルとPvが直交
+        if (fabs((ref - p).Dot(pu)) < EPS::NEAREST && fabs((ref - p).Dot(pv) < EPS::NEAREST))
             break;
-
-        // u, v方向ともにはみ出る場合も片方の判定だけで十分
-        // u方向がはみ出る場合
-        if (u < _min_draw_param_U || u > _max_draw_param_U)
-        {
-            if (u < _min_draw_param_U)
-            {
-                Curve* edge = GetEdgeCurve(SurfaceEdge::U_min);
-                return edge->GetNearestPointInfoFromRef(ref).nearestPnt;
-            }
-            else
-            {
-                Curve* edge = GetEdgeCurve(SurfaceEdge::U_max);
-                return edge->GetNearestPointInfoFromRef(ref).nearestPnt;
-            }
-        }
-        // v方向がはみ出る場合
-        else if (v < _min_draw_param_V || v > _max_draw_param_V)
-        {
-            if (v < _min_draw_param_V)
-            {
-                Curve* edge = GetEdgeCurve(SurfaceEdge::V_min);
-                return edge->GetNearestPointInfoFromRef(ref).nearestPnt;
-            }
-            else
-            {
-                Curve* edge = GetEdgeCurve(SurfaceEdge::V_max);
-                return  edge->GetNearestPointInfoFromRef(ref).nearestPnt;
-            }
-        }
-
-        p = GetPositionVector(u, v);
-        pu = GetFirstDiffVectorU(u, v);
-        pv = GetFirstDiffVectorV(u, v);
-
-        delta_u = (ref - p).Dot(pu) / pow(pu.Length(), 2.0) * 0.7; // 更新は0.7でも問題なかった
-        delta_v = (ref - p).Dot(pv) / pow(pv.Length(), 2.0) * 0.7; // CGS_bspline_surface_1.kjs
-
-                                                                   // 繰り返し数が十分なら最近点とする
-        if (count++ > 1000)
+        // e2. 実座標の移動量がU,V方向ともに0
+        if (GetPositionVector(u, v).DistanceFrom(GetPositionVector(u - delta_u, v)) < EPS::NEAREST &&
+            GetPositionVector(u, v).DistanceFrom(GetPositionVector(u, v - delta_v)) < EPS::NEAREST)
+            break;
+        // e3. パラメータ移動量がU,V方向ともに0
+        if (fabs(delta_u) < EPS::NEAREST && fabs(delta_v) < EPS::NEAREST)
+            break;
+        // e4. ステップ数上限
+        if (++count > EPS::COUNT_MAX)
+            break;
+        // e5. 曲面上の点
+        if (ref.DistanceFrom(p) < EPS::DIST)
             break;
     }
 
-    return GetPositionVector(u, v);
+    return NearestPointInfoS(p, ref, u, v);
+}
+// パラメータがはみ出したときの最近点取得(曲面の端に最近点があるはず)
+// u,v方向がともにはみ出す場合もOK
+NearestPointInfoS Surface::GetNearestPointWhenParamOver(const Vector3d& ref, const double u, const double v) const
+{
+    Curve* edge; // 曲面の端
+    NearestPointInfoC* nearInfo; // 最近点情報
+
+    // u方向がはみ出る場合
+    if (u < _min_draw_param_U || u > _max_draw_param_U)
+    {
+        if (u < _min_draw_param_U)
+        {
+            edge = GetEdgeCurve(SurfaceEdge::U_min);
+            nearInfo = &edge->GetNearestPointInfoFromRef(ref);
+            return NearestPointInfoS(nearInfo->nearestPnt, ref, _min_draw_param_U, nearInfo->param);
+        }
+        else
+        {
+            edge = GetEdgeCurve(SurfaceEdge::U_max);
+            nearInfo = &edge->GetNearestPointInfoFromRef(ref);
+            return NearestPointInfoS(nearInfo->nearestPnt, ref, _max_draw_param_U, nearInfo->param);
+        }
+    }
+    // v方向がはみ出る場合
+    else if (v < _min_draw_param_V || v > _max_draw_param_V)
+    {
+        if (v < _min_draw_param_V)
+        {
+            Curve* edge = GetEdgeCurve(SurfaceEdge::V_min);
+            nearInfo = &edge->GetNearestPointInfoFromRef(ref);
+            return NearestPointInfoS(nearInfo->nearestPnt, ref, nearInfo->param, _min_draw_param_V);
+        }
+        else
+        {
+            Curve* edge = GetEdgeCurve(SurfaceEdge::V_max);
+            nearInfo = &edge->GetNearestPointInfoFromRef(ref);
+            return NearestPointInfoS(nearInfo->nearestPnt, ref, nearInfo->param, _max_draw_param_V);
+        }
+    }
+
+    throw;
+}
+// 最近点を取得する(アイソライン法)
+// コメント内のe_は資料の終了条件番号
+NearestPointInfoS Surface::GetNearestPointFromRefByIsolineMethod(const Vector3d& ref, const Point3dS& start) const
+{
+
+
+
+    return NearestPointInfoS(Vector3d(), ref, 0, 0);
 }

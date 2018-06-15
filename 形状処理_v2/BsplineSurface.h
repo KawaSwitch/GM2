@@ -57,8 +57,13 @@ public:
     Vector3d GetSecondDiffVectorVV(double u, double v) const override;
 
     // ノットベクトルをもとにして点群を取得する
-    vector<vector<Vector3d>> GetPointsByKnots(int splitSegCnt_U = 1, int splitSegCnt_V = 1) const;
+    void GetPointsByKnots(vector<vector<Vector3d>>& pnts, int splitSegCnt_U = 1, int splitSegCnt_V = 1) const;
+    // ノットベクトルをもとにして点群情報を取得する
+    void GetPointsInfoByKnots(vector<vector<Point3dS>>& pnts, int splitSegCnt_U = 1, int splitSegCnt_V = 1) const;
 
     // 逆変換
     Surface* GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, GLdouble resol) const override;
+
+    // 最近点取得
+    NearestPointInfoS GetNearestPointInfoFromRef(const Vector3d& ref, const NearestSearch search = Project) const override;
 };

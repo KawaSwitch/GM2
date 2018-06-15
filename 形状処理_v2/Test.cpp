@@ -31,8 +31,8 @@ static vector<function<void(void)>> TestRegisterDraw
     //DrawCylinder_CGS3, // Nurbs曲面で円柱を描く
     //DrawApproxCurve_CGS4, // 近似曲線を描画
     //DrawApproxSurface_CGS5, // 近似曲面を描画
-    DrawCurveNearest_CGS6, // 最近点を描画_曲線
-    //DrawSurfaceNearest_CGS7, // 最近点を描画_曲面
+    //DrawCurveNearest_CGS6, // 最近点を描画_曲線
+    DrawSurfaceNearest_CGS7, // 最近点を描画_曲面
 };
 
 // 参照曲線から最近点を求めて描画
@@ -55,7 +55,8 @@ static void DrawCurveNearest_CGS6()
     //}
 
     // 参照点群を取得
-    auto ref_pnts = curveC->GetPositionVectors(20); // 20分割して21点を取る
+    vector<Vector3d> ref_pnts;
+    curveC->GetPositionVectors(ref_pnts, 20); // 20分割して21点を取る
 
     // 最近点取得
     vector<NearestPointInfoC> nearest_pnts;
@@ -109,47 +110,64 @@ static void DrawSurfaceNearest_CGS7()
     auto reader = new KjsReader("");
 
     // 対象曲線/曲面
-    Surface* surf1 = (Surface *)reader->GetObjectFromFile("CGS_bspline_surface_1.kjs");
+    Surface* surf1 = (BsplineSurface *)reader->GetObjectFromFile("CGS_bspline_surface_1.kjs");
     // 参照曲線
     Curve* curveS = (Curve *)reader->GetObjectFromFile("CGS_bspline_curve_S.kjs");
 
-    // 参照点群を取得
-    auto ref_pnts = curveS->GetPositionVectors(20);
-    vector<Vector3d> nearest_pnts; // 最近点群
+    // 参照点群(21点)を取得
+    vector<Vector3d> ref_pnts;
+    curveS->GetPositionVectors(ref_pnts, 20);
+    vector<NearestPointInfoS> nearest_pnts; // 最近点群
 
-                                   // 最近点取得
-    for (int i = 0; i < (int)ref_pnts.size(); i++)
-        nearest_pnts.push_back(surf1->GetNearestPointFromRef(ref_pnts[i]));
+    // 最近点取得
+    for (const auto& ref : ref_pnts)
+        nearest_pnts.push_back(surf1->GetNearestPointInfoFromRef(ref, Surface::Project));
+        //nearest_pnts.push_back(surf1->GetNearestPointInfoFromRef(ref, Surface::Isoline));
+
+    Curve* c = surf1->GetIsoCurve(ParamUV::U, 0.5, Color::red, 3);
+
 
     // 描画
-    glLineWidth(1.0);
-    glPointSize(5.0);
-    glBegin(GL_LINES);
-    glColor4dv(Color::orange);
-    for (int i = 0; i < (int)ref_pnts.size(); i++)
     {
-        glVertex3d(ref_pnts[i]);
-        glVertex3d(nearest_pnts[i]);
+        glLineWidth(1.0);
+        glPointSize(5.0);
+        glBegin(GL_LINES);
+        {
+            // 参照点と最近点を結ぶ線分
+            glColor4dv(Color::orange);
+            for (int i = 0; i < (int)ref_pnts.size(); i++)
+            {
+                glVertex3d(ref_pnts[i]);
+                glVertex3d(nearest_pnts[i].nearestPnt);
+            }
+        }
+        glEnd();
+
+        glBegin(GL_POINTS);
+        {
+            // 参照点
+            glColor4dv(Color::red);
+            for (int i = 0; i < (int)ref_pnts.size(); i++)
+                glVertex3d(ref_pnts[i]);
+
+            // 最近点
+            glColor4dv(Color::light_green);
+            for (int i = 0; i < (int)nearest_pnts.size(); i++)
+                glVertex3d(nearest_pnts[i].nearestPnt);
+        }
+        glEnd();
     }
-    glEnd();
 
-    glBegin(GL_POINTS);
-    glColor4dv(Color::red);
-    for (int i = 0; i < (int)ref_pnts.size(); i++)
-        glVertex3d(ref_pnts[i]);
-
-    glColor4dv(Color::light_green);
-    for (int i = 0; i < (int)nearest_pnts.size(); i++)
-        glVertex3d(nearest_pnts[i]);
-    glEnd();
+    // 詳細をcsv吐き出し
+    ExportCsv_NearestInfoSurface("nearest_pnt_CGS7.csv", nearest_pnts, true);
 
     if (isFirst)
     {
         test_scene->AddObject(surf1);
         test_scene->AddObject(curveS);
+        test_scene->AddObject(c);
     }
 }
-
 
 // 近似して曲面を描画
 static void DrawApproxSurface_CGS5()
@@ -163,7 +181,8 @@ static void DrawApproxSurface_CGS5()
 
     // 曲面の近似(ノット位置のみ)
     {
-        auto passPnts = surf->GetPointsByKnots(1, 1);
+        vector<vector<Vector3d>> passPnts;
+        surf->GetPointsByKnots(passPnts, 1, 1);
         for (const auto& pnts : passPnts)
             DrawPoints(pnts, Color::green, 10);
 
@@ -171,7 +190,8 @@ static void DrawApproxSurface_CGS5()
     }
     // 曲面の近似(ノット位置のみ + セグメント位置3分割)
     {
-        auto passPnts = surf->GetPointsByKnots(3, 3);
+        vector<vector<Vector3d>> passPnts;
+        surf->GetPointsByKnots(passPnts, 3, 3);
         for (const auto& pnts : passPnts)
             DrawPoints(pnts, Color::pink, 10);
 

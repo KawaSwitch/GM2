@@ -414,3 +414,10 @@ Surface* BezierSurface::GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnt
     // –¢À‘•
     return nullptr;
 }
+
+// Å‹ß“_æ“¾
+NearestPointInfoS BezierSurface::GetNearestPointInfoFromRef(const Vector3d& ref, const NearestSearch search) const
+{
+    // –¢À‘•
+    return NearestPointInfoS(Vector3d(), ref, 0, 0);
+}

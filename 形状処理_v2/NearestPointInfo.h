@@ -30,7 +30,7 @@ public:
     }
 
     NearestPointInfoC(Point3dC nearest, Vector3d ref)
-        : NearestPointInfo(nearest.ToPositionVector(), ref)
+        : NearestPointInfo((Vector3d)nearest, ref)
     {
         param = nearest.param;
     }
@@ -51,7 +51,7 @@ public:
     }
 
     NearestPointInfoS(Point3dS nearest, Vector3d ref)
-        : NearestPointInfo(nearest.ToPositionVector(), ref)
+        : NearestPointInfo((Vector3d)nearest, ref)
     {
         paramU = nearest.paramU;
         paramV = nearest.paramV;
