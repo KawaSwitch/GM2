@@ -110,6 +110,7 @@ void Scene::ToggleDrawCurvatureVectors()
 
 void Scene::Draw()
 {
+    // ƒ¿’l‚ª‚ ‚éê‡‚ðl—¶‚µ‚ÄÅŒã‚É•`‚­
     // Œ`óî•ñ•`‰æ(”ñ“§–¾)
     for (const auto& obj : ObjList)
     {
@@ -121,11 +122,16 @@ void Scene::Draw()
         obj->DrawCurvatureVectors(); // ‹È—¦ƒxƒNƒgƒ‹•`‰æ
     }
     // Œ`ó•`‰æ
-    // ƒ¿’l‚ª‚ ‚éê‡‚ðl—¶‚µ‚ÄÅŒã‚É•`‚­
-    // TODO: Œ`ó“¯Žm‚Ìƒ¿‚Å‚Ì‡”Ôl—¶
+    // Œ`ó“¯Žm‚Ìƒ¿‚Å‚Ì‡”Ôl—¶
     for (const auto& obj : ObjList)
     {
-        obj->Draw(); // ƒ‚ƒfƒ‹•`‰æ
+        if (!obj->IsSemiTransparent())
+            obj->Draw(); // ƒ‚ƒfƒ‹•`‰æ
+    }
+    for (const auto& obj : ObjList)
+    {
+        if (obj->IsSemiTransparent())
+            obj->Draw(); // ƒ‚ƒfƒ‹•`‰æ
     }
 
     for (auto it = ObjList.begin(), end = ObjList.end(); it != end; it++)

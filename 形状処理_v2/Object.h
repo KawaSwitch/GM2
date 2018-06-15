@@ -168,6 +168,15 @@ public:
             _color[i] = color[i];
     }
 
+    // 半透明オブジェクトであるか
+    bool IsSemiTransparent()
+    {
+        if (fabs(_color[3] - 1.0) < EPS::DIST)
+            return false;
+        else
+            return true;
+    }
+
     // オブジェクト番号を取得
     unsigned int GetObjectNumber() const
     {
