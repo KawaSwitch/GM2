@@ -45,3 +45,6 @@ public:
     // Å‹ß“_æ“¾
     NearestPointInfoC GetNearestPointInfoFromRef(const Vector3d& ref) const override;
 };
+
+// ’ÊŠÏ“_‚©‚ç‹t•ÏŠ·‚µ‚Ä‹Èü‚ğæ“¾‚·‚é
+BsplineCurve* GetBsplineCurveFromPoints(const vector<Vector3d>& pnts, int ord, const GLdouble* const color, GLdouble width);

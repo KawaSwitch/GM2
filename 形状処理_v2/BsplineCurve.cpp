@@ -276,23 +276,24 @@ Vector3d BsplineCurve::GetSecondDiffVector(const double t) const
     return diff;
 }
 
-// 通過点から逆変換して曲線を取得
-// TODO: 時間があったら整理する
+// 通過点から逆変換して曲線を取得する(メンバ関数版)
 Curve* BsplineCurve::GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdouble* const color, const GLdouble width) const
 {
-    // TODO: 曲線外から生成
-
+    return GetBsplineCurveFromPoints(pnts, 4, color, width);
+}
+// 通観点から逆変換して曲線を取得する
+BsplineCurve* GetBsplineCurveFromPoints(const vector<Vector3d>& pnts, int ord, const GLdouble* const color, GLdouble width)
+{
     int passPntsCnt = (int)pnts.size(); // 通過点数
-    int ord = 4; // システム固定 とりあえず
-    int new_ncpnt = (passPntsCnt - 1) + (_ord - 1); // 新しい制御点数
+    int new_ncpnt = (passPntsCnt - 1) + (ord - 1); // 新しい制御点数
 
     vector<double> new_knots;
-    CalcKnotVectorByPassingPnts(pnts, _ord, &new_knots);
+    CalcKnotVectorByPassingPnts(pnts, ord, &new_knots);
 
     vector<ControlPoint> new_cps;
-    CalcControlPointsByPassingPnts(pnts, _ord, new_knots, &new_cps);
+    CalcControlPointsByPassingPnts(pnts, ord, new_knots, &new_cps);
 
-    return new BsplineCurve(_ord, &new_cps[0], new_ncpnt, &new_knots[0], color, width);
+    return new BsplineCurve(ord, &new_cps[0], new_ncpnt, &new_knots[0], color, width);
 }
 
 // 参照点からの最近点情報を取得

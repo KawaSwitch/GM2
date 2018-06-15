@@ -644,12 +644,15 @@ void BsplineSurface::GetPointsInfoByKnots(vector<vector<Point3dS>>& pnts, const 
     }
 }
 
-// 通過点から逆変換して曲面を取得
-// TODO: static化
+// 通過点から逆変換してBスプライン曲面を取得する(メンバ関数版)
 Surface* BsplineSurface::GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, const GLdouble resol) const
 {
+    return GetBsplineSurfaceFromPoints(pnts, 4, 4, color, resol);
+}
+// 通過点から逆変化してBスプライン曲面を取得する
+BsplineSurface* GetBsplineSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const int ordU, const int ordV, const GLdouble* const color, const GLdouble resol)
+{
     int passPntsCntU, passPntsCntV; // 各方向の通過点数
-    int ordU, ordV; // 階数
     int new_ncpntU, new_ncpntV; // 制御点数
     int new_nknotU, new_nknotV; // ノット列サイズ
 
@@ -661,9 +664,6 @@ Surface* BsplineSurface::GetSurfaceFromPoints(const vector<vector<Vector3d>>& pn
     {
         passPntsCntU = (int)pnts[0].size();
         passPntsCntV = (int)pnts.size();
-
-        ordU = 4; // とりあえずシステム固定
-        ordV = 4;
 
         new_ncpntU = (passPntsCntU - 1) + (ordU - 1);
         new_ncpntV = (passPntsCntV - 1) + (ordV - 1);

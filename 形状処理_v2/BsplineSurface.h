@@ -67,3 +67,6 @@ public:
     // 最近点取得
     NearestPointInfoS GetNearestPointInfoFromRef(const Vector3d& ref, const NearestSearch search = Project) const override;
 };
+
+// 通過点から逆変化してBスプライン曲面を取得する
+BsplineSurface* GetBsplineSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, int ordU, int ordV, const GLdouble* const color, GLdouble resol);
