@@ -1,5 +1,5 @@
 #include "Surface.h"
-#include "Reader.h"
+#include "BsplineCurve.h"
 
 // 制御点設定
 void Surface::SetControlPoint(const ControlPoint* const cp, const int size)
@@ -116,8 +116,6 @@ vector<ControlPoint> Surface::GetEdgeCurveControlPoint(const SurfaceEdge edge) c
 // 指定パラメータ固定のアイソ曲線を取得する
 Curve* Surface::GetIsoCurve(const ParamUV const_param, const double param, const GLdouble* const color, const GLdouble width) const
 {
-    auto reader = new KjsReader("");
-    Curve* curve = (Curve *)reader->GetObjectFromFile("CGS_bspline_curve_S.kjs");
     vector<Vector3d> pnts; // アイソ曲線取得用の参照点群
     const int split = 30;
 
@@ -133,10 +131,10 @@ Curve* Surface::GetIsoCurve(const ParamUV const_param, const double param, const
         double skipU = (_max_draw_param_U - _min_draw_param_U) / split;
 
         for (int i = 0; i <= split; ++i)
-            pnts.push_back(GetPositionVector(param, _min_draw_param_U + skipU * i));
+            pnts.push_back(GetPositionVector(_min_draw_param_U + skipU * i, param));
     }
 
-    return curve->GetCurveFromPoints(pnts, color, width);
+    return GetBsplineCurveFromPoints(pnts, 4, color, width);
 }
 
 // 主曲率を取得
