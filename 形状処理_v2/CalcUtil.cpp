@@ -521,14 +521,16 @@ std::vector<double> LUDecomposition(const int size, const double* const aMatrix,
         double l0 = lMatrix[i][i] = aMatCopy[0];
 
         // l1成分をコピー
-        double *l1 = new double[n];
+        double *l1;
+        l1 = new double[n];
         for (int j = 0; j < n; j++)
         {
             lMatrix[j + i + 1][i] = l1[j] = aMatCopy[(j + 1) * N + 0];
         }
 
         // u1^double成分をコピー
-        double *u1 = new double[n];
+        double *u1;
+        u1 = new double[n];
         for (int j = 0; j < n; j++)
         {
             uMatrix[i][j + i + 1] = u1[j] = aMatCopy[0 * N + (j + 1)] / l0;
@@ -542,6 +544,9 @@ std::vector<double> LUDecomposition(const int size, const double* const aMatrix,
                 buffer[j][k] = l1[j] * u1[k];
             }
         }
+
+        delete[] l1;
+        delete[] u1;
 
         // A1を求める
         double **A1 = new double*[n];
@@ -560,6 +565,10 @@ std::vector<double> LUDecomposition(const int size, const double* const aMatrix,
             for (int j = 0; j < n; j++)
                 aMatCopy[i * N + j] = A1[i][j];
         }
+
+        for (int i = 0; i < n; ++i)
+            delete[] A1[i];
+        delete[] A1;
     }
 
     // LU行列を使って連立方程式を解く
@@ -586,6 +595,11 @@ std::vector<double> LUDecomposition(const int size, const double* const aMatrix,
         x[i] = y[i] - sum;
     }
 
-    delete aMatCopy;
+    delete[] aMatCopy;
+    for (int i = 0; i < N; ++i)
+        delete[] (delete[] (delete[] lMatrix[i], uMatrix[i]), buffer[i]);
+    delete[](delete[](delete[] lMatrix, uMatrix), buffer);
+    delete[] y;
+
     return x;
 }
