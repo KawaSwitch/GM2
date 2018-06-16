@@ -8,4 +8,4 @@ const double EPS::VOLUME = 10e-6;
 const double EPS::DIFF = 1e-6;
 
 const double EPS::NEAREST = 1.0e-6;
-const int EPS::COUNT_MAX = (int)10e4;
+const int EPS::COUNT_MAX = (int)1.0e2;

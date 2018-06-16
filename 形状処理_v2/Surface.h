@@ -63,8 +63,8 @@ protected:
     // 最近点を取得する(射影法)
     NearestPointInfoS GetNearestPointFromRefByProjectionMethod(const Vector3d& ref, const Point3dS& start) const;
     NearestPointInfoS GetNearestPointWhenParamOver(const Vector3d& ref, double u, double v) const;
-    // 最近点を取得する(アイソライン法)
-    NearestPointInfoS GetNearestPointFromRefByIsolineMethod(const Vector3d& ref, const Point3dS& start) const;
+    //// 最近点を取得する(アイソライン法)
+    //NearestPointInfoS GetNearestPointFromRefByIsolineMethod(const Vector3d& ref, const Point3dS& start) const;
 
     // メッシュ表示
     virtual void DrawMeshInternal() const { };
@@ -94,19 +94,22 @@ private:
 public:
 
     // 指定した端の曲線を取得する
-    virtual Curve* GetEdgeCurve(SurfaceEdge edge) const = 0;
+    virtual std::unique_ptr<Curve> GetEdgeCurve(SurfaceEdge edge) const = 0;
 
     // 指定したパラメータのアイソ曲線を取得する
-    virtual Curve* GetIsoCurve(ParamUV const_param, double param, const GLdouble* const color, GLdouble width) const ;
+    virtual std::unique_ptr<Curve> GetIsoCurve(ParamUV const_param, double param, const GLdouble* const color = Color::red, GLdouble width = 3) const ;
 
     // 参照点からの最近点を取得
     virtual NearestPointInfoS GetNearestPointInfoFromRef(const Vector3d& ref, const NearestSearch search = Project) const = 0;
+
+    // 最近点を取得する(アイソライン法)
+    NearestPointInfoS GetNearestPointFromRefByIsolineMethod(const Vector3d& ref, const Point3dS& start) const;
 
     // 描画範囲を各方向split_num個に分割するような位置ベクトルを取得する
     void GetPositionVectors(vector<vector<Vector3d>>& pnts, int U_split_num, int V_split_num) const;
 
     // 通過点から逆変換して曲面を取得する
-    virtual Surface* GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, GLdouble width) const = 0;
+    virtual std::unique_ptr<Surface> GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, GLdouble width) const = 0;
 
     virtual ~Surface() { glDeleteLists(_mesh_displayList, 1); }
 };

@@ -2,6 +2,7 @@
 
 #include "GV.h"
 #include <math.h>
+#include <ctime>
 #include <fstream>
 #include "Test.h"
 #include "Model.h"
@@ -38,7 +39,7 @@ static vector<function<void(void)>> TestRegisterDraw
 // 参照曲線から最近点を求めて描画
 static void DrawCurveNearest_CGS6()
 {
-    auto reader = new KjsReader();
+    auto reader = std::make_unique<KjsReader>();
 
     // 対象曲線/曲面
     BsplineCurve* curve1 = (BsplineCurve *)reader->GetObjectFromFile("CGS_bspline_curve_1.kjs");
@@ -107,10 +108,10 @@ static void DrawCurveNearest_CGS6()
 // 参照曲面から最近点を求めて描画
 static void DrawSurfaceNearest_CGS7()
 {
-    auto reader = new KjsReader("");
+    auto reader = std::make_unique<KjsReader>();
 
     // 対象曲線/曲面
-    Surface* surf1 = (BsplineSurface *)reader->GetObjectFromFile("CGS_bspline_surface_1.kjs");
+    BsplineSurface* surf1 = (BsplineSurface *)reader->GetObjectFromFile("CGS_bspline_surface_1.kjs");
     // 参照曲線
     Curve* curveS = (Curve *)reader->GetObjectFromFile("CGS_bspline_curve_S.kjs");
 
@@ -119,18 +120,24 @@ static void DrawSurfaceNearest_CGS7()
     curveS->GetPositionVectors(ref_pnts, 20);
     vector<NearestPointInfoS> nearest_pnts; // 最近点群
 
+    clock_t start = clock();
+
     // 最近点取得
     for (const auto& ref : ref_pnts)
-        nearest_pnts.push_back(surf1->GetNearestPointInfoFromRef(ref, Surface::Project));
-        //nearest_pnts.push_back(surf1->GetNearestPointInfoFromRef(ref, Surface::Isoline));
+        //nearest_pnts.push_back(surf1->GetNearestPointInfoFromRef(ref, Surface::Project));
+        nearest_pnts.push_back(surf1->GetNearestPointInfoFromRef(ref, Surface::Isoline));
 
-    Curve* c = surf1->GetIsoCurve(ParamUV::U, 0.5, Color::red, 3);
+    clock_t end = clock();
+    cout << "トレランス : "  << EPS::NEAREST << "  最近点取得(21点)時間 = " << (double)(end - start) / CLOCKS_PER_SEC << "sec.\n";
 
+    vector<vector<Vector3d>> startPnts; // 開始点群
+    int seg_split_u = 1;
+    int seg_split_v = 1;
+    surf1->GetPointsByKnots(startPnts, seg_split_u, seg_split_v);
 
     // 描画
     {
         glLineWidth(1.0);
-        glPointSize(5.0);
         glBegin(GL_LINES);
         {
             // 参照点と最近点を結ぶ線分
@@ -143,6 +150,7 @@ static void DrawSurfaceNearest_CGS7()
         }
         glEnd();
 
+        glPointSize(5.0);
         glBegin(GL_POINTS);
         {
             // 参照点
@@ -156,6 +164,17 @@ static void DrawSurfaceNearest_CGS7()
                 glVertex3d(nearest_pnts[i].nearestPnt);
         }
         glEnd();
+
+        glPointSize(10.0);
+        glBegin(GL_POINTS);
+        {
+            // 開始点
+            glColor4dv(Color::pink);
+            for (const auto& startRow : startPnts)
+                for (const auto& start : startRow)
+                    glVertex3d(start);
+        }
+        glEnd();
     }
 
     // 詳細をcsv吐き出し
@@ -165,19 +184,18 @@ static void DrawSurfaceNearest_CGS7()
     {
         test_scene->AddObject(surf1);
         test_scene->AddObject(curveS);
-        test_scene->AddObject(c);
     }
 }
 
 // 近似して曲面を描画
 static void DrawApproxSurface_CGS5()
 {
-    auto reader = new KjsReader("");
+    auto reader = std::make_unique<KjsReader>();
 
     auto surf = (BsplineSurface *)reader->GetObjectFromFile("CGS_bspline_surface_1.kjs");
 
     // 近似曲面
-    Surface *surf_knot_remake, *surf_knot_split_remake;
+    std::unique_ptr<Surface> surf_knot_remake, surf_knot_split_remake;
 
     // 曲面の近似(ノット位置のみ)
     {
@@ -202,21 +220,21 @@ static void DrawApproxSurface_CGS5()
     {
         test_scene->AddObject(surf);
         //test_scene->AddObject(surf_knot_remake);
-        test_scene->AddObject(surf_knot_split_remake);
+        test_scene->AddObject(surf_knot_split_remake.get());
     }
 }
 
 // 近似して曲線を描画
 static void DrawApproxCurve_CGS4()
 {
-    auto reader = new KjsReader("");
+    auto reader = std::make_unique<KjsReader>();
 
     BsplineCurve* curve1 = (BsplineCurve *)reader->GetObjectFromFile("CGS_bspline_curve_1.kjs");
     BsplineCurve* curve2 = (BsplineCurve *)reader->GetObjectFromFile("CGS_bspline_curve_2.kjs");
 
     // 近似曲線
-    Curve *curve1_remake, *curve2_remake;
-    Curve *curve1_remake_split, *curve2_remake_split;
+    std::unique_ptr<Curve> curve1_remake, curve2_remake;
+    std::unique_ptr<Curve> curve1_remake_split, curve2_remake_split;
 
     // 曲線1の近似(ノット位置のみ)
     {
@@ -239,18 +257,18 @@ static void DrawApproxCurve_CGS4()
     }
 
     printf("曲線1と近似曲線の相違距離平均\n");
-    printf("ノット位置のみ:    %f\n", curve1->CalcDifferency(curve1_remake));
-    printf("セグメント位置も:  %f\n", curve1->CalcDifferency(curve1_remake_split));
+    printf("ノット位置のみ:    %f\n", curve1->CalcDifferency(curve1_remake.get()));
+    printf("セグメント位置も:  %f\n", curve1->CalcDifferency(curve1_remake_split.get()));
     printf("\n");
 
     printf("曲線1と近似曲線の相違距離平均 Ver.2 \n");
-    printf("ノット位置のみ:    %f\n", curve1->CalcDifferency2(curve1_remake));
-    printf("セグメント位置も:  %f\n", curve1->CalcDifferency2(curve1_remake_split));
+    printf("ノット位置のみ:    %f\n", curve1->CalcDifferency2(curve1_remake.get()));
+    printf("セグメント位置も:  %f\n", curve1->CalcDifferency2(curve1_remake_split.get()));
     printf("\n");
 
     printf("曲線1と近似曲線の一番遠ざかる距離 \n");
-    printf("ノット位置のみ:    %f\n", curve1->CalcFarthestDistant(curve1_remake));
-    printf("セグメント位置も:  %f\n", curve1->CalcFarthestDistant(curve1_remake_split));
+    printf("ノット位置のみ:    %f\n", curve1->CalcFarthestDistant(curve1_remake.get()));
+    printf("セグメント位置も:  %f\n", curve1->CalcFarthestDistant(curve1_remake_split.get()));
     printf("\n");
 
     // 曲線2の近似(ノット位置のみ)
@@ -274,26 +292,26 @@ static void DrawApproxCurve_CGS4()
     }
 
     printf("曲線2と近似曲線の相違距離平均\n");
-    printf("ノット位置のみ:    %f\n", curve2->CalcDifferency(curve2_remake));
-    printf("セグメント位置も:  %f\n", curve2->CalcDifferency(curve2_remake_split));
+    printf("ノット位置のみ:    %f\n", curve2->CalcDifferency(curve2_remake.get()));
+    printf("セグメント位置も:  %f\n", curve2->CalcDifferency(curve2_remake_split.get()));
 
     printf("曲線2と近似曲線の相違距離平均 Ver.2 \n");
-    printf("ノット位置のみ:    %f\n", curve2->CalcDifferency2(curve2_remake));
-    printf("セグメント位置も:  %f\n", curve2->CalcDifferency2(curve2_remake_split));
+    printf("ノット位置のみ:    %f\n", curve2->CalcDifferency2(curve2_remake.get()));
+    printf("セグメント位置も:  %f\n", curve2->CalcDifferency2(curve2_remake_split.get()));
 
     printf("曲線2と近似曲線の一番遠ざかる距離 \n");
-    printf("ノット位置のみ:    %f\n", curve2->CalcFarthestDistant(curve2_remake));
-    printf("セグメント位置も:  %f\n", curve2->CalcFarthestDistant(curve2_remake_split));
+    printf("ノット位置のみ:    %f\n", curve2->CalcFarthestDistant(curve2_remake.get()));
+    printf("セグメント位置も:  %f\n", curve2->CalcFarthestDistant(curve2_remake_split.get()));
 
     if (isFirst)
     {
         test_scene->AddObject(curve1);
-        test_scene->AddObject(curve1_remake);
-        test_scene->AddObject(curve1_remake_split);
+        test_scene->AddObject(curve1_remake.get());
+        test_scene->AddObject(curve1_remake_split.get());
 
         test_scene->AddObject(curve2);
-        test_scene->AddObject(curve2_remake);
-        test_scene->AddObject(curve2_remake_split);
+        test_scene->AddObject(curve2_remake.get());
+        test_scene->AddObject(curve2_remake_split.get());
     }
 }
 

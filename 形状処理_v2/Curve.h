@@ -37,9 +37,6 @@ private:
     // 制御点描画
     void DrawCPsInternal() const override;
 
-    // 区間内最近点取得(2分探索)
-    NearestPointInfoC GetSectionNearestPointInfoByBinary(const Vector3d& ref, double ini_left, double ini_right) const;
-
 public:
 
     double GetDrawParamRange() const { return _max_draw_param - _min_draw_param; }
@@ -52,12 +49,15 @@ public:
 
     // 参照点からの最近点を取得する
     virtual NearestPointInfoC GetNearestPointInfoFromRef(const Vector3d& ref) const = 0;
+    // 区間内最近点取得(2分探索)
+    NearestPointInfoC GetSectionNearestPointInfoByBinary(const Vector3d& ref, double ini_left, double ini_right) const;
+    NearestPointInfoC GetSectionNearestPointInfoByBinary(const Vector3d& ref, double ini_left, double ini_right, int split) const;
 
     // 描画範囲をsplit_num個に分割するような位置ベクトルを取得する
     void GetPositionVectors(vector<Vector3d>& pnts, int split_num) const;
 
     // 通過点から逆変換して曲線を取得する
-    virtual Curve* GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdouble* const color, GLdouble width) const = 0;
+    virtual std::unique_ptr<Curve> GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdouble* const color, GLdouble width) const = 0;
 
     // 他曲線との相違度を計算します
     double CalcFarthestDistant(const Curve* const other) const;

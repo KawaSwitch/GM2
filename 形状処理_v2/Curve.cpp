@@ -230,3 +230,31 @@ NearestPointInfoC Curve::GetSectionNearestPointInfoByBinary(const Vector3d& ref,
 
     return NearestPointInfoC(pnt, ref, middle);
 }
+// 区間内最近点取得(2分探索)
+NearestPointInfoC Curve::GetSectionNearestPointInfoByBinary(const Vector3d& ref, double ini_left, double ini_right, int split) const
+{
+    vector<NearestPointInfoC> possiblePnts; // 最近候補点
+    double skip = (ini_right - ini_left) / split;
+
+    // パラメータ範囲を分割して最近点を取得する
+    if (fabs(ini_left - ini_right) < EPS::DIST)
+    {
+        // 左値と右値が等しい場合
+        possiblePnts.push_back(GetSectionNearestPointInfoByBinary(ref, ini_left, ini_right));
+    }
+    else
+    {
+        for (double param = ini_left; param < ini_right - skip / 2; param += skip)
+            possiblePnts.push_back(GetSectionNearestPointInfoByBinary(ref, param, param + skip));
+    }
+
+    // 候補の中で一番距離の短いものを最近点とする
+    NearestPointInfoC nearestPnt(Vector3d(), Vector3d(DBL_MAX, DBL_MAX, DBL_MAX), 0);
+    for (const auto& p : possiblePnts)
+    {
+        if (p.dist < nearestPnt.dist)
+            nearestPnt = p;
+    }
+
+    return nearestPnt;
+}
