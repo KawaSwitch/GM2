@@ -2,6 +2,7 @@
 #include "ControlPoint.h"
 #include <iterator>
 #include <cfloat>
+#include <memory>
 
 BsplineCurve::BsplineCurve(const int mord, const ControlPoint* const cp, const int cp_size, const double* const knot,
     const GLdouble* const color, const GLdouble width, const double resol)
@@ -277,12 +278,12 @@ Vector3d BsplineCurve::GetSecondDiffVector(const double t) const
 }
 
 // 通過点から逆変換して曲線を取得する(メンバ関数版)
-Curve* BsplineCurve::GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdouble* const color, const GLdouble width) const
+std::unique_ptr<Curve> BsplineCurve::GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdouble* const color, const GLdouble width) const
 {
     return GetBsplineCurveFromPoints(pnts, 4, color, width);
 }
 // 通観点から逆変換して曲線を取得する
-BsplineCurve* GetBsplineCurveFromPoints(const vector<Vector3d>& pnts, int ord, const GLdouble* const color, GLdouble width)
+std::unique_ptr<Curve> GetBsplineCurveFromPoints(const vector<Vector3d>& pnts, int ord, const GLdouble* const color, GLdouble width)
 {
     int passPntsCnt = (int)pnts.size(); // 通過点数
     int new_ncpnt = (passPntsCnt - 1) + (ord - 1); // 新しい制御点数
@@ -293,7 +294,7 @@ BsplineCurve* GetBsplineCurveFromPoints(const vector<Vector3d>& pnts, int ord, c
     vector<ControlPoint> new_cps;
     CalcControlPointsByPassingPnts(pnts, ord, new_knots, &new_cps);
 
-    return new BsplineCurve(ord, &new_cps[0], new_ncpnt, &new_knots[0], color, width);
+    return std::unique_ptr<BsplineCurve>(new BsplineCurve(ord, &new_cps[0], new_ncpnt, &new_knots[0], color, width));
 }
 
 // 参照点からの最近点情報を取得

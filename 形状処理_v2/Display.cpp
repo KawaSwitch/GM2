@@ -19,7 +19,7 @@ Scene* scene; // シーン
 extern Scene* test_scene;
 extern const int grid_length;
 
-static Box* coverBox; // 全体のボックス
+static Box coverBox; // 全体のボックス
 static Vector3d rotateCenter; // 回転中心
 static bool isFirst = true;
 
@@ -126,7 +126,7 @@ void Display()
                 TestRegister(); // 事前に登録しておく 
 
                 SetRotateCenter();
-                UpdateLookAtZ(coverBox); // フィット
+                UpdateLookAtZ(&coverBox); // フィット
             }
 
             glTranslated(-rotateCenter.X, -rotateCenter.Y, -rotateCenter.Z);
@@ -186,20 +186,20 @@ void SetRotateCenter()
     // TODO: いつか画面中心で回転させたい
     sceneBoxes.push_back(scene->GetCoverBound());
     sceneBoxes.push_back(test_scene->GetCoverBound());
-    coverBox = new Box(sceneBoxes);
+    coverBox = Box(sceneBoxes);
 
     // とりあえず
-    if (coverBox->IsValid() == false)
+    if (coverBox.IsValid() == false)
     {
         Error::ShowMessage(
             "バウンドボックス設定エラー",
             "描画形状が設定されていません. 既定の回転ボックス, 回転中心を設定します");
-        coverBox = new Box(
+        coverBox = Box(
             -grid_length, -grid_length, -grid_length,
             grid_length, grid_length, grid_length);
     }
 
-    auto center = coverBox->Center();
+    auto center = coverBox.Center();
 
     rotateCenter = Vector3d(center.X, center.Y, center.Z);
 }
@@ -229,13 +229,13 @@ void ShowRotateCenter(bool isRotating)
         // カバーボックス描画  形状の後ろにあれば点線表示
         glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::Entity), 0xFF);
         glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-        coverBox->Draw(Color::orange, 2.0); // 普通に描画
+        coverBox.Draw(Color::orange, 2.0); // 普通に描画
 
         // 陰線は破線表示
         {
             glStencilFunc(GL_GREATER, static_cast<int>(StencilRef::HiddenLine), 0xFF);
             glStencilOp(GL_KEEP, GL_REPLACE, GL_KEEP);
-            coverBox->Draw(Color::orange, 2.0); // 陰線判定用
+            coverBox.Draw(Color::orange, 2.0); // 陰線判定用
 
             glStencilFunc(GL_EQUAL, static_cast<int>(StencilRef::HiddenLine), 0xFF);
             glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
@@ -244,7 +244,7 @@ void ShowRotateCenter(bool isRotating)
 
             // デプス値は評価しない
             glDisable(GL_DEPTH_TEST);
-            coverBox->Draw(Color::orange, 1.5);
+            coverBox.Draw(Color::orange, 1.5);
             glEnable(GL_DEPTH_TEST);
 
             glDisable(GL_LINE_STIPPLE);

@@ -7,7 +7,7 @@ class NurbsSurface : public BsplineSurface
 private:
 
     // w’è‚µ‚½’[‚Ì‹Èü‚ğæ“¾‚·‚é
-    Curve* GetEdgeCurve(SurfaceEdge edge) const override;
+    std::unique_ptr<Curve> GetEdgeCurve(SurfaceEdge edge) const override;
 
 public:
 

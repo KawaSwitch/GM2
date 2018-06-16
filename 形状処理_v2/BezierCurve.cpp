@@ -207,7 +207,7 @@ Vector3d BezierCurve::GetSecondDiffVector(const double t) const
 }
 
 // ’Ê‰ß“_‚©‚ç‹t•ÏŠ·‚µ‚Ä‹Èü‚ğæ“¾
-Curve* BezierCurve::GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdouble* const color, const GLdouble width) const
+std::unique_ptr<Curve> BezierCurve::GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdouble* const color, const GLdouble width) const
 {
     vector<ControlPoint> new_cps;
     new_cps.resize(_ncpnt);
@@ -238,7 +238,7 @@ Curve* BezierCurve::GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdou
     //        B_matrix[i][j] = CalcBernsteinFunc(j, _ord - 1, )
     //}
 
-    return new BezierCurve(_ord, &new_cps[0], _ncpnt, color, width);
+    return  std::unique_ptr<Curve>(new BezierCurve(_ord, &new_cps[0], _ncpnt, color, width));
 }
 
 // Å‹ß“_æ“¾

@@ -49,6 +49,8 @@ vector<string> Reader::GetFilenames(const string& extension) const
         }
     } while (entry != NULL);
 
+    closedir(dp);
+
     return returnFiles;
 }
 

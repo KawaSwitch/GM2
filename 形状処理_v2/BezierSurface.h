@@ -24,7 +24,7 @@ private:
     void DrawVBO() const override;
 
     // 指定した端の曲線を取得する
-    Curve* GetEdgeCurve(SurfaceEdge edge) const override;
+    std::unique_ptr<Curve> GetEdgeCurve(SurfaceEdge edge) const override;
 
     // 指定パラメータのベクトルを基底関数から算出する
     Vector3d CalcVector(
@@ -45,7 +45,7 @@ public:
     Vector3d GetSecondDiffVectorVV(double u, double v) const override;
 
     // 逆変換
-    Surface* GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, GLdouble resol) const override;
+    std::unique_ptr<Surface> GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, GLdouble resol) const override;
 
     // 最近点取得
     NearestPointInfoS GetNearestPointInfoFromRef(const Vector3d& ref, const NearestSearch search = Project) const override;

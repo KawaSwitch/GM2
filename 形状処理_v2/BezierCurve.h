@@ -29,7 +29,7 @@ public:
     Vector3d GetSecondDiffVector(double t) const override;
 
     // ‹t•ÏŠ·
-    Curve* GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdouble* const color, GLdouble width) const override;
+    std::unique_ptr<Curve> GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdouble* const color, GLdouble width) const override;
 
     // Å‹ß“_æ“¾
     NearestPointInfoC GetNearestPointInfoFromRef(const Vector3d& ref) const override;

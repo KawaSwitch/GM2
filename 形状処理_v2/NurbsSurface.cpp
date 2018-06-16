@@ -10,13 +10,13 @@ NurbsSurface::NurbsSurface(
         : BsplineSurface(u_mord, v_mord, cp, u_cp_size, v_cp_size, u_knot, v_knot, color, resol) { }
 
 // 指定した端の曲線を取得する
-Curve* NurbsSurface::GetEdgeCurve(const SurfaceEdge edge) const
+std::unique_ptr<Curve> NurbsSurface::GetEdgeCurve(const SurfaceEdge edge) const
 {
     vector<ControlPoint> edge_cp = GetEdgeCurveControlPoint(edge);
     int edge_ord = (edge == U_min || edge == U_max) ? _ordV : _ordU;
     vector<double> edge_knot = (edge == U_min || edge == U_max) ? _knotV : _knotU;
 
-    return new NurbsCurve(edge_ord, &edge_cp[0], (int)edge_cp.size(), &edge_knot[0], Color::red, _mesh_width);
+    return std::unique_ptr<Curve>(new NurbsCurve(edge_ord, &edge_cp[0], (int)edge_cp.size(), &edge_knot[0], Color::red, _mesh_width));
 }
 
 // 位置ベクトル取得
@@ -36,7 +36,7 @@ Vector3d NurbsSurface::GetPositionVector(const double u, const double v) const
     Vector3d Q = CalcVectorWithBasisFunctions(N_array_U, N_array_V);
     double W = CalcWeightWithBasisFunctions(N_array_U, N_array_V);
 
-    delete[] N_array_U, N_array_V;
+    delete[] (delete[] N_array_U, N_array_V);
     return Q / W;
 }
 
@@ -63,7 +63,7 @@ Vector3d NurbsSurface::GetFirstDiffVectorU(const double u, const double v) const
     double W = CalcWeightWithBasisFunctions(N_array_U, N_array_V);
     double Wu = CalcWeightWithBasisFunctions(N_array_Ud, N_array_V);
 
-    delete[] N_array_U, N_array_V;
+    delete[](delete[](delete[] N_array_U, N_array_Ud), N_array_V);
     return (Qu - Wu * P) / W;
 }
 Vector3d NurbsSurface::GetFirstDiffVectorV(const double u, const double v) const
@@ -88,7 +88,7 @@ Vector3d NurbsSurface::GetFirstDiffVectorV(const double u, const double v) const
     double W = CalcWeightWithBasisFunctions(N_array_U, N_array_V);
     double Wv = CalcWeightWithBasisFunctions(N_array_U, N_array_Vd);
 
-    delete[] N_array_U, N_array_V;
+    delete[](delete[](delete[] N_array_U, N_array_V), N_array_Vd);
     return (Qv - Wv * P) / W;
 }
 
@@ -121,7 +121,7 @@ Vector3d NurbsSurface::GetSecondDiffVectorUU(const double u, const double v) con
     double Wu = CalcWeightWithBasisFunctions(N_array_Ud, N_array_V);
     double Wuu = CalcWeightWithBasisFunctions(N_array_Udd, N_array_V);
 
-    delete[] N_array_U, N_array_V;
+    delete[](delete[](delete[](delete[]  N_array_U, N_array_Ud), N_array_Udd), N_array_V);
     return (Quu - Wuu * P - 2 * Wu * Pu) / W;
 }
 Vector3d NurbsSurface::GetSecondDiffVectorUV(const double u, const double v) const
@@ -154,7 +154,7 @@ Vector3d NurbsSurface::GetSecondDiffVectorUV(const double u, const double v) con
     double Wv = CalcWeightWithBasisFunctions(N_array_U, N_array_Vd);
     double Wuv = CalcWeightWithBasisFunctions(N_array_Ud, N_array_Vd);
 
-    delete[] N_array_U, N_array_V;
+    delete[](delete[](delete[](delete[]  N_array_U, N_array_Ud), N_array_V), N_array_Vd);
     return (Quv - Wu * Pv - Wv * Pu - Wuv * P) / W;
 }
 Vector3d NurbsSurface::GetSecondDiffVectorVV(const double u, const double v) const
@@ -185,6 +185,6 @@ Vector3d NurbsSurface::GetSecondDiffVectorVV(const double u, const double v) con
     double Wv = CalcWeightWithBasisFunctions(N_array_U, N_array_Vd);
     double Wvv = CalcWeightWithBasisFunctions(N_array_U, N_array_Vdd);
 
-    delete[] N_array_U, N_array_V;
+    delete[](delete[](delete[](delete[] N_array_U, N_array_V), N_array_Vd), N_array_Vdd);
     return (Qvv - Wvv * P - 2 * Wv * Pv) / W;
 }

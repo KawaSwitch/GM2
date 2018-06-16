@@ -40,13 +40,13 @@ void BsplineSurface::SetKnotVector(const double* const knot, int size, vector<do
 }
 
 // 指定した端の曲線を取得する
-Curve* BsplineSurface::GetEdgeCurve(const SurfaceEdge edge) const
+std::unique_ptr<Curve> BsplineSurface::GetEdgeCurve(const SurfaceEdge edge) const
 {
     vector<ControlPoint> edge_cp = GetEdgeCurveControlPoint(edge);
     int edge_ord = (edge == U_min || edge == U_max) ? _ordV : _ordU;
     vector<double> edge_knot = (edge == U_min || edge == U_max) ? _knotV : _knotU;
 
-    return new BsplineCurve(edge_ord, &edge_cp[0], (int)edge_cp.size(), &edge_knot[0], Color::red, _mesh_width);
+    return std::unique_ptr<Curve>(new BsplineCurve(edge_ord, &edge_cp[0], (int)edge_cp.size(), &edge_knot[0], Color::red, _mesh_width));
 }
 
 // 事前描画
@@ -528,9 +528,9 @@ Vector3d BsplineSurface::CalcVector(
         N_array_V[i] = BasisFuncV(i, _ordV, v, &_knotV[0]);
 
     // ベクトル算出(行列計算)
-    vector = CalcVectorWithBasisFunctions(N_array_U, N_array_V);
+    vector = CalcVectorWithBasisFunctions(&N_array_U[0], &N_array_V[0]);
 
-    delete[] N_array_U, N_array_V;
+    delete[](delete[] N_array_U, N_array_V);
     return vector;
 }
 
@@ -581,16 +581,24 @@ void BsplineSurface::GetPointsByKnots(vector<vector<Vector3d>>& pnts, const int 
         pntRow.clear();
     pnts.clear();
 
+    for (auto& pntRow : pnts)
+    {
+        pntRow.clear();
+        vector<Vector3d>(pntRow).swap(pntRow);
+    }
+    pnts.clear();
+    vector<vector<Vector3d>>(pnts).swap(pnts);
+
     vector<vector<Point3dS>> pntsInfo;
     this->GetPointsInfoByKnots(pntsInfo, splitSegCnt_U, splitSegCnt_V);
 
     // 点群情報から座標情報だけを抜き取る
-    for (int i = 0, r = (int)pnts.size(); i < r; ++i)
+    for (int i = 0, r = (int)pntsInfo.size(); i < r; ++i)
     {
         vector<Vector3d> pntsRow;
-        pntsRow.reserve(pnts[i].size());
+        pntsRow.reserve(pntsInfo[i].size());
 
-        for (int j = 0, c = (int)pnts[i].size(); j < c; ++j)
+        for (int j = 0, c = (int)pntsInfo[i].size(); j < c; ++j)
             pntsRow.emplace_back(pntsInfo[i][j]);
 
         pnts.push_back(pntsRow);
@@ -645,12 +653,12 @@ void BsplineSurface::GetPointsInfoByKnots(vector<vector<Point3dS>>& pnts, const 
 }
 
 // 通過点から逆変換してBスプライン曲面を取得する(メンバ関数版)
-Surface* BsplineSurface::GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, const GLdouble resol) const
+std::unique_ptr<Surface> BsplineSurface::GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, const GLdouble resol) const
 {
     return GetBsplineSurfaceFromPoints(pnts, 4, 4, color, resol);
 }
 // 通過点から逆変化してBスプライン曲面を取得する
-BsplineSurface* GetBsplineSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const int ordU, const int ordV, const GLdouble* const color, const GLdouble resol)
+std::unique_ptr<Surface> GetBsplineSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const int ordU, const int ordV, const GLdouble* const color, const GLdouble resol)
 {
     int passPntsCntU, passPntsCntV; // 各方向の通過点数
     int new_ncpntU, new_ncpntV; // 制御点数
@@ -720,7 +728,7 @@ BsplineSurface* GetBsplineSurfaceFromPoints(const vector<vector<Vector3d>>& pnts
         }
     }
 
-    return new BsplineSurface(ordU, ordV, &cps[0], new_ncpntU, new_ncpntV, &knotU[0], &knotV[0], color);
+    return std::unique_ptr<Surface>(new BsplineSurface(ordU, ordV, &cps[0], new_ncpntU, new_ncpntV, &knotU[0], &knotV[0], color));
 }
 
 // 最近点取得
@@ -732,13 +740,12 @@ NearestPointInfoS BsplineSurface::GetNearestPointInfoFromRef(const Vector3d& ref
     if (search == Project)
     {
         // 近い開始点を与えても時間がかかるだけなので大雑把に
-        seg_split_u = 1;
-        seg_split_v = 1;
+        seg_split_u = seg_split_v = 1;
         this->GetPointsInfoByKnots(startPnts, seg_split_u, seg_split_v);
     }
     else if (search == Isoline)
     {
-        seg_split_u = seg_split_v = 8;
+        seg_split_u = seg_split_v = 8; // とりあえず
         this->GetPointsInfoByKnots(startPnts, seg_split_u, seg_split_v);
     }
     else

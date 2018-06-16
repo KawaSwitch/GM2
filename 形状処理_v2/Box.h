@@ -93,6 +93,12 @@ public:
         glLineWidth(1.0f);
     }
 
+    Box()
+    {
+        _xmin = 0; _ymin = 0; _zmin = 0;
+        _xmax = 0; _ymax = 0;  _zmax = 0;
+    }
+
     Box(double xmin, double ymin, double zmin, double xmax, double ymax, double zmax)
     {
         _xmin = xmin; _ymin = ymin; _zmin = zmin;

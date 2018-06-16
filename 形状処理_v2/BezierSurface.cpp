@@ -19,12 +19,12 @@ BezierSurface::BezierSurface(
 }
 
 // w’è‚µ‚½’[‚Ì‹Èü‚ğæ“¾‚·‚é
-Curve* BezierSurface::GetEdgeCurve(const SurfaceEdge edge) const
+std::unique_ptr<Curve> BezierSurface::GetEdgeCurve(const SurfaceEdge edge) const
 {
     vector<ControlPoint> edge_cp = GetEdgeCurveControlPoint(edge);
     int edge_ord = (edge == U_min || edge == U_max) ? _ordU : _ordV;
 
-    return new BezierCurve(edge_ord, &edge_cp[0], (int)edge_cp.size(), _color, _mesh_width);
+    return std::unique_ptr<Curve>(new BezierCurve(edge_ord, &edge_cp[0], (int)edge_cp.size(), _color, _mesh_width));
 }
 
 // –‘O•`‰æ
@@ -409,7 +409,7 @@ Vector3d BezierSurface::GetSecondDiffVectorVV(const double u, const double v) co
 }
 
 // ‹t•ÏŠ·
-Surface* BezierSurface::GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, const GLdouble resol) const
+std::unique_ptr<Surface> BezierSurface::GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, const GLdouble resol) const
 {
     // –¢À‘•
     return nullptr;

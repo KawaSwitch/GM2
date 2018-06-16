@@ -40,11 +40,11 @@ public:
     Vector3d GetSecondDiffVector(double t) const override;
 
     // ‹t•ÏŠ·
-    Curve* GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdouble* const color, GLdouble width) const override;
+    std::unique_ptr<Curve> GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdouble* const color, GLdouble width) const override;
 
     // Å‹ß“_æ“¾
     NearestPointInfoC GetNearestPointInfoFromRef(const Vector3d& ref) const override;
 };
 
 // ’ÊŠÏ“_‚©‚ç‹t•ÏŠ·‚µ‚Ä‹Èü‚ğæ“¾‚·‚é
-BsplineCurve* GetBsplineCurveFromPoints(const vector<Vector3d>& pnts, int ord, const GLdouble* const color, GLdouble width);
+std::unique_ptr<Curve> GetBsplineCurveFromPoints(const vector<Vector3d>& pnts, int ord, const GLdouble* const color, GLdouble width);
