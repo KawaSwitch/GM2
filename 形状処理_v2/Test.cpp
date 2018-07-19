@@ -25,16 +25,21 @@ static vector<function<void(void)>> TestRegisterDraw
 {
     //DrawBsplineFunctions, // BƒXƒvƒ‰ƒCƒ“Šî’êŠÖ”•`‰æ
     //DrawBsplineCurves, // BƒXƒvƒ‰ƒCƒ“‹Èü•`‰æ
-    //TestGetNearestPointCurveToCurve_CGS04, // ‹Èü‚Æ‹Èü‚ÌÅ‹ß“_ŒQ•`‰æ
-    //TestGetNearestPointCurveToSurface_CGS04, // ‹Èü‚Æ‹È–Ê‚ÌÅ‹ß“_ŒQ•`‰æ
     //DrawCircle_CGS3, // Nurbs‹Èü‚Å‰~•`‚­
     //DrawSphere_CGS3, // Nurbs‹È–Ê‚Å‹…‚ğ•`‚­
     //DrawCylinder_CGS3, // Nurbs‹È–Ê‚Å‰~’Œ‚ğ•`‚­
     //DrawApproxCurve_CGS4, // ‹ß—‹Èü‚ğ•`‰æ
     //DrawApproxSurface_CGS5, // ‹ß—‹È–Ê‚ğ•`‰æ
-    //DrawCurveNearest_CGS6, // Å‹ß“_‚ğ•`‰æ_‹Èü
-    DrawSurfaceNearest_CGS7, // Å‹ß“_‚ğ•`‰æ_‹È–Ê
+    DrawCurveNearest_CGS6, // Å‹ß“_‚ğ•`‰æ_‹Èü
+    //DrawSurfaceNearest_CGS7, // Å‹ß“_‚ğ•`‰æ_‹È–Ê
+    //DrawSplitCurve_CGS8, // •ªŠ„‹Èü‚ğ•`‰æ
 };
+
+// •ªŠ„‹Èü•`‰æ
+static void DrawSplitCurve_CGS8()
+{
+
+}
 
 // QÆ‹Èü‚©‚çÅ‹ß“_‚ğ‹‚ß‚Ä•`‰æ
 static void DrawCurveNearest_CGS6()
