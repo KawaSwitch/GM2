@@ -147,8 +147,4 @@ $RECYCLE.BIN/
 .DS_Store
 
 # original
-*.VC.VC.opendb
-*.VC.db
-packages/
 *.csv
-.vs
