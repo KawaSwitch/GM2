@@ -147,7 +147,6 @@ $RECYCLE.BIN/
 .DS_Store
 
 # original
-KJS_FILE/
 UnitTestCalc/
 *.VC.VC.opendb
 *.VC.db
