@@ -147,7 +147,6 @@ $RECYCLE.BIN/
 .DS_Store
 
 # original
-UnitTestCalc/
 *.VC.VC.opendb
 *.VC.db
 packages/
