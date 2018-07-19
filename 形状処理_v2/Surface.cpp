@@ -369,7 +369,7 @@ NearestPointInfoS Surface::GetNearestPointFromRefByProjectionMethod(const Vector
 NearestPointInfoS Surface::GetNearestPointWhenParamOver(const Vector3d& ref, const double u, const double v) const
 {
     std::unique_ptr<Curve> edge; // 曲面の端
-    NearestPointInfoC* nearInfo; // 最近点情報
+    std::unique_ptr<NearestPointInfoC> nearInfo; // 最近店情報
 
     // u方向がはみ出る場合
     if (u < _min_draw_param_U || u > _max_draw_param_U)
@@ -377,13 +377,13 @@ NearestPointInfoS Surface::GetNearestPointWhenParamOver(const Vector3d& ref, con
         if (u < _min_draw_param_U)
         {
             edge = GetEdgeCurve(SurfaceEdge::U_min);
-            nearInfo = &edge->GetNearestPointInfoFromRef(ref);
+            nearInfo = std::make_unique<NearestPointInfoC>(edge->GetNearestPointInfoFromRef(ref));
             return NearestPointInfoS(nearInfo->nearestPnt, ref, _min_draw_param_U, nearInfo->param);
         }
         else
         {
             edge = GetEdgeCurve(SurfaceEdge::U_max);
-            nearInfo = &edge->GetNearestPointInfoFromRef(ref);
+            nearInfo = std::make_unique<NearestPointInfoC>(edge->GetNearestPointInfoFromRef(ref));
             return NearestPointInfoS(nearInfo->nearestPnt, ref, _max_draw_param_U, nearInfo->param);
         }
     }
@@ -393,13 +393,13 @@ NearestPointInfoS Surface::GetNearestPointWhenParamOver(const Vector3d& ref, con
         if (v < _min_draw_param_V)
         {
             edge = GetEdgeCurve(SurfaceEdge::V_min);
-            nearInfo = &edge->GetNearestPointInfoFromRef(ref);
+            nearInfo = std::make_unique<NearestPointInfoC>(edge->GetNearestPointInfoFromRef(ref));
             return NearestPointInfoS(nearInfo->nearestPnt, ref, nearInfo->param, _min_draw_param_V);
         }
         else
         {
             edge = GetEdgeCurve(SurfaceEdge::V_max);
-            nearInfo = &edge->GetNearestPointInfoFromRef(ref);
+            nearInfo = std::make_unique<NearestPointInfoC>(edge->GetNearestPointInfoFromRef(ref));
             return NearestPointInfoS(nearInfo->nearestPnt, ref, nearInfo->param, _max_draw_param_V);
         }
     }
@@ -412,7 +412,7 @@ NearestPointInfoS Surface::GetNearestPointFromRefByIsolineMethod(const Vector3d&
 {
     int count = 0; // ステップ数
     std::unique_ptr<Curve> iso; // アイソ曲線
-    NearestPointInfoC* nearInfo; // 最近点情報
+    std::unique_ptr<NearestPointInfoC> nearInfo; // 最近点情報
     double u, v; // 現在のパラメータ
     double end_param; // 終了点のパラメータ
     double dot; // 内積値
@@ -436,16 +436,16 @@ NearestPointInfoS Surface::GetNearestPointFromRefByIsolineMethod(const Vector3d&
         if (count % 2 == 0)
         {
             if (u < end_param)
-                nearInfo = &iso->GetSectionNearestPointInfoByBinary(ref, u / ori_rangeU, end_param / ori_rangeU, 8);
+	      nearInfo = std::make_unique<NearestPointInfoC>(iso->GetSectionNearestPointInfoByBinary(ref, u / ori_rangeU, end_param / ori_rangeU, 8));
             else
-                nearInfo = &iso->GetSectionNearestPointInfoByBinary(ref, end_param / ori_rangeU, u / ori_rangeU, 8);
+	      nearInfo = std::make_unique<NearestPointInfoC>(iso->GetSectionNearestPointInfoByBinary(ref, end_param / ori_rangeU, u / ori_rangeU, 8));
         }
         else
         {
             if (v < end_param)
-                nearInfo = &iso->GetSectionNearestPointInfoByBinary(ref, v / ori_rangeV, end_param / ori_rangeV, 8);
+	      nearInfo = std::make_unique<NearestPointInfoC>(iso->GetSectionNearestPointInfoByBinary(ref, v / ori_rangeV, end_param / ori_rangeV, 8));
             else
-                nearInfo = &iso->GetSectionNearestPointInfoByBinary(ref, end_param / ori_rangeV, v / ori_rangeV, 8);
+	      nearInfo = std::make_unique<NearestPointInfoC>(iso->GetSectionNearestPointInfoByBinary(ref, end_param / ori_rangeV, v / ori_rangeV, 8));
         }
         ++count;
 

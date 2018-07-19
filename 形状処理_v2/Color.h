@@ -1,5 +1,5 @@
 #pragma once
-#include <gl/freeglut.h>
+#include <GL/freeglut.h>
 
 // êFÇ‹Ç∆Çﬂ
 struct Color

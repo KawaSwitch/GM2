@@ -1,7 +1,7 @@
 #pragma once
 
-#include <gl/glew.h>
-#include <gl/freeglut.h>
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 #include <math.h>
 #include <functional>
 #include <memory>

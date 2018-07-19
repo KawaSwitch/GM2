@@ -6,6 +6,7 @@
 #include <sstream>
 #include <dirent.h>
 #include <algorithm>
+#include <cstring>
 
 // 指定拡張子のファイル名をすべて取得
 vector<string> Reader::GetFilenames(const string& extension) const
@@ -104,7 +105,6 @@ Object* KjsReader::GetObjectFromFile(const string& file_name) const
         //    "ファイル読み込みに失敗しました.",
         //    detail.c_str());
     }
-        
 
     auto lines = ReadAllLines(file_path);
 
@@ -114,27 +114,27 @@ Object* KjsReader::GetObjectFromFile(const string& file_name) const
     // 大文字変換
     transform(lines[0].begin(), lines[0].end(), lines[0].begin(), ::toupper);
     transform(lines[1].begin(), lines[1].end(), lines[1].begin(), ::toupper);
-
-    if (lines[0] == "BEZIER")
+    
+    if (strstr(lines[0].c_str(), "BEZIER"))
     {
-        if (lines[1] == "CURVE")
-            return BezierCurveReader(lines);
-        else
-            return BezierSurfaceReader(lines);
+      if (strstr(lines[1].c_str(), "CURVE"))
+	return BezierCurveReader(lines);
+      else
+	return BezierSurfaceReader(lines);
     }
-    else if (lines[0] == "BSPLINE")
+    else if (strstr(lines[0].c_str(), "BSPLINE"))
     {
-        if (lines[1] == "CURVE")
-            return BsplineCurveReader(lines);
-        else
-            return BsplineSurfaceReader(lines);
+      if (strstr(lines[1].c_str(), "CURVE"))
+	return BsplineCurveReader(lines);
+      else
+	return BsplineSurfaceReader(lines);
     }
-    else if (lines[0] == "NURBS")
+    else if (strstr(lines[0].c_str(), "NURBS"))
     {
-        if (lines[1] == "CURVE")
-            return NurbsCurveReader(lines);
-        else
-            return NurbsSurfaceReader(lines);
+      if (strstr(lines[1].c_str(), "CURVE"))
+	return NurbsCurveReader(lines);
+      else
+	return NurbsSurfaceReader(lines);
     }
     else
     {

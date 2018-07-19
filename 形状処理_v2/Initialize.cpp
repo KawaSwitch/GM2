@@ -14,8 +14,8 @@ extern GeoGrid2D* grid;
 extern Scene* scene;
 extern Scene* test_scene;
 
-static const int grid_length = 200;
-static const int grid_interval = 5;
+const int grid_length = 200;
+const int grid_interval = 5;
 
 void InitScene()
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gl/freeglut.h>
+#include <GL/freeglut.h>
 #include <memory>
 #include <vector>
 #include "Vector.h"

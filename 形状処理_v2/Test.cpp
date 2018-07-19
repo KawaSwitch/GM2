@@ -36,13 +36,13 @@ static vector<function<void(void)>> TestRegisterDraw
 };
 
 // •ªŠ„‹Èü•`‰æ
-static void DrawSplitCurve_CGS8()
+void DrawSplitCurve_CGS8()
 {
 
 }
 
 // QÆ‹Èü‚©‚çÅ‹ß“_‚ğ‹‚ß‚Ä•`‰æ
-static void DrawCurveNearest_CGS6()
+void DrawCurveNearest_CGS6()
 {
     auto reader = std::make_unique<KjsReader>();
 
@@ -111,7 +111,7 @@ static void DrawCurveNearest_CGS6()
 }
 
 // QÆ‹È–Ê‚©‚çÅ‹ß“_‚ğ‹‚ß‚Ä•`‰æ
-static void DrawSurfaceNearest_CGS7()
+void DrawSurfaceNearest_CGS7()
 {
     auto reader = std::make_unique<KjsReader>();
 
@@ -193,7 +193,7 @@ static void DrawSurfaceNearest_CGS7()
 }
 
 // ‹ß—‚µ‚Ä‹È–Ê‚ğ•`‰æ
-static void DrawApproxSurface_CGS5()
+void DrawApproxSurface_CGS5()
 {
     auto reader = std::make_unique<KjsReader>();
 
@@ -230,7 +230,7 @@ static void DrawApproxSurface_CGS5()
 }
 
 // ‹ß—‚µ‚Ä‹Èü‚ğ•`‰æ
-static void DrawApproxCurve_CGS4()
+void DrawApproxCurve_CGS4()
 {
     auto reader = std::make_unique<KjsReader>();
 
@@ -321,7 +321,7 @@ static void DrawApproxCurve_CGS4()
 }
 
 // Nurbs‹È–Ê‚Å‰~’Œ‚ğ•`‚­
-static void DrawCylinder_CGS3()
+void DrawCylinder_CGS3()
 {
     // ‚æ‚­‚È‚¢‚¯‚Ç–³—‚â‚è‹‚ß‚½
     double cp1_p[2] = { 5, 5 * sqrt(3) };
@@ -375,7 +375,7 @@ static void DrawCylinder_CGS3()
 }
 
 // Nurbs‹È–Ê‚Å‹…‚ğ•`‚­
-static void DrawSphere_CGS3()
+void DrawSphere_CGS3()
 {
     ControlPoint cp0[9]
     {
@@ -516,7 +516,7 @@ static void DrawSphere_CGS3()
 }
 
 // Nurbs‹Èü‚Å‰~‚ğ•`‚­
-static void DrawCircle_CGS3()
+void DrawCircle_CGS3()
 {
     ControlPoint cp0[3]
     {
@@ -564,14 +564,14 @@ static void DrawCircle_CGS3()
 static double knot_a[10] = { -3, -2, -1, 0, 1, 2, 3, 4, 5, 6 };
 static double knot_b[10] = { 0, 0, 0, 0, 1, 2, 3, 3, 3, 3 };
 static double knot_c[10] = { 0, 0, 0, 0, 1, 1, 3, 3, 3, 3 };
-static void DrawBsplineFunctions()
+void DrawBsplineFunctions()
 {
     // •Ê‚Ì‚Æ‚±‚ÅƒfƒBƒXƒvƒŒƒCƒŠƒXƒg‚ğstatic‚Åg‚Á‚Ä‚é‚Ì‚Å“¯‚É‚Í‘‚¯‚È‚¢
     //DrawBsplineFunc(4, 6, 10, knot_a, -3.0, 6.0);
     DrawBsplineFunc(4, 6, 10, knot_b, 0.0, 3.0);
     //DrawBsplineFunc(4, 6, 10, knot_c, 0.0, 3.0);
 }
-static void DrawBsplineCurves()
+void DrawBsplineCurves()
 {
     static ControlPoint cp[6] =
     {

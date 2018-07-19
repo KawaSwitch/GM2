@@ -2,6 +2,7 @@
 
 #include "GV.h"
 #include "ControlPoint.h"
+#include <float.h>
 
 // ミニマクスボックス
 class Box

@@ -1,6 +1,8 @@
 #include "Writer.h"
 #include <fstream>
 #include <ctime>
+#include <error.h>
+#include <time.h>
 
 // タイムスタンプを書き出す
 void ExportTimeStamp(std::ofstream* log)
@@ -10,11 +12,11 @@ void ExportTimeStamp(std::ofstream* log)
 
     time_t longtime = time(NULL);
     struct tm now;
-    errno_t error;
+    int error;
     char week[][3] = { "日","月","火","水","木","金","土" };
 
-    error = localtime_s(&now, &longtime);
-    asctime_s(buf, buf_size, &now);
+    localtime_r(&longtime, &now);
+    asctime_r(&now, buf);
 
     *log << buf << std::endl;
 }
@@ -37,23 +39,23 @@ void ExportCsv_NearestInfoCurve(std::string path, std::vector<NearestPointInfoC>
         std::string np_data;
 
         // インデックス
-        sprintf_s(buf, buf_size, "%d,", ++cnt);
+        sprintf(buf, "%d,", ++cnt);
         np_data += buf;
 
         // 座標
-        sprintf_s(buf, buf_size, "%f,", info.nearestPnt.X);
+        sprintf(buf, "%f,", info.nearestPnt.X);
         np_data += buf;
-        sprintf_s(buf, buf_size, "%f,", info.nearestPnt.Y);
+        sprintf(buf, "%f,", info.nearestPnt.Y);
         np_data += buf;
-        sprintf_s(buf, buf_size, "%f,", info.nearestPnt.Z);
+        sprintf(buf, "%f,", info.nearestPnt.Z);
         np_data += buf;
 
         // パラメータ
-        sprintf_s(buf, buf_size, "%f,", info.param);
+        sprintf(buf, "%f,", info.param);
         np_data += buf;
 
         // 点間距離
-        sprintf_s(buf, buf_size, "%f", info.dist);
+        sprintf(buf, "%f", info.dist);
         np_data += buf;
 
         log << np_data << std::endl;
@@ -83,25 +85,25 @@ void ExportCsv_NearestInfoSurface(std::string path, std::vector<NearestPointInfo
         std::string np_data;
 
         // インデックス
-        sprintf_s(buf, buf_size, "%d,", ++cnt);
+        sprintf(buf, "%d,", ++cnt);
         np_data += buf;
 
         // 座標
-        sprintf_s(buf, buf_size, "%f,", info.nearestPnt.X);
+        sprintf(buf, "%f,", info.nearestPnt.X);
         np_data += buf;
-        sprintf_s(buf, buf_size, "%f,", info.nearestPnt.Y);
+        sprintf(buf, "%f,", info.nearestPnt.Y);
         np_data += buf;
-        sprintf_s(buf, buf_size, "%f,", info.nearestPnt.Z);
+        sprintf(buf, "%f,", info.nearestPnt.Z);
         np_data += buf;
 
         // パラメータ
-        sprintf_s(buf, buf_size, "%f,", info.paramU);
+        sprintf(buf, "%f,", info.paramU);
         np_data += buf;
-        sprintf_s(buf, buf_size, "%f,", info.paramV);
+        sprintf(buf, "%f,", info.paramV);
         np_data += buf;
 
         // 点間距離
-        sprintf_s(buf, buf_size, "%f", info.dist);
+        sprintf(buf, "%f", info.dist);
         np_data += buf;
 
         log << np_data << std::endl;

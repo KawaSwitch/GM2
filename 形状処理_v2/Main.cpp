@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
     // ウィンドウ設定
     glutInitWindowSize(DEF_WIN_X, DEF_WIN_Y);
     glutInitWindowPosition(90, 20);
-    glutCreateWindow("形状処理");
+    glutCreateWindow("Geometric Modeling Linux ver.");
 
     // 各種コールバック
     glutDisplayFunc(Display);
