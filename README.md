@@ -27,5 +27,6 @@ mkdir build
 cd build
 cmake ..
 make
+./geoModeling
 ```
 多分g++があれば動くはず
