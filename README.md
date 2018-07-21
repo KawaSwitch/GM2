@@ -22,7 +22,7 @@ cmake
 cmakeの生成ファイルが邪魔なので以下のようにするのがおすすめです  
 ```
 git clone <これのurl>
-cd GM2/src
+cd GM2
 mkdir build
 cd build
 cmake ..
