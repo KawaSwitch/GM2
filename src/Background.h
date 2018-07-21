@@ -19,8 +19,6 @@ class IBackGround
     void virtual Draw() const = 0;
 };
 
-static bool isBackNotDrawn = true;
-
 // í èÌîwåi
 struct BackgroundNormal : IBackGround
 {

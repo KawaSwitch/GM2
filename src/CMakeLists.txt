@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 project(GeometricModelingLinux CXX)
-set(CMAKE_CXX_FLAGS "-std=c++14 -g")
+set(CMAKE_CXX_FLAGS "-std=c++14 -g -Wall -Wno-unknown-pragmas")
 
 add_executable(geoModeling
   Main.cpp

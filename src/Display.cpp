@@ -254,9 +254,6 @@ void UpdateLookAtZ(const Box* const box)
   double boxHalfX = (box->MaxX() - box->MinX()) / 2;
   double boxHalfY = (box->MaxY() - box->MinY()) / 2;
   double boxHalfZ = (box->MaxZ() - box->MinZ()) / 2;
-  double boxLongerHalfEdge = (boxHalfX > boxHalfY) ? boxHalfX : boxHalfX;
-  double boxAspectForFit = (boxHalfX > boxHalfY) ? (boxHalfX / boxHalfY) : (boxHalfY / boxHalfX);
-
   double ratio; // 仰角に対する縦横比倍率
 
   // ウィンドウにぴったり収まるような縦横比倍率を場合分け

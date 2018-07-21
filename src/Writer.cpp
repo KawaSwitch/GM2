@@ -8,12 +8,9 @@
 void ExportTimeStamp(std::ofstream* log)
 {
     char buf[256];
-    int buf_size = sizeof(buf);
 
     time_t longtime = time(NULL);
     struct tm now;
-    int error;
-    char week[][3] = { "日","月","火","水","木","金","土" };
 
     localtime_r(&longtime, &now);
     asctime_r(&now, buf);
@@ -25,7 +22,6 @@ void ExportTimeStamp(std::ofstream* log)
 void ExportCsv_NearestInfoCurve(std::string path, std::vector<NearestPointInfoC> np_infos, bool isNeedTimestamp)
 {
     char buf[256];
-    int buf_size = sizeof(buf);
 
     std::ofstream log;
     log.open(path, std::ios::trunc); // 同ファイル名があれば上書き
@@ -71,7 +67,6 @@ void ExportCsv_NearestInfoCurve(std::string path, std::vector<NearestPointInfoC>
 void ExportCsv_NearestInfoSurface(std::string path, std::vector<NearestPointInfoS> np_infos, bool isNeedTimestamp)
 {
     char buf[256];
-    int buf_size = sizeof(buf);
 
     std::ofstream log;
     log.open(path, std::ios::trunc); // 同ファイル名があれば上書き

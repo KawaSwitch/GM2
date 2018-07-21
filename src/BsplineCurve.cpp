@@ -45,10 +45,10 @@ vector<Vector3d> BsplineCurve::GetPositionVectorsByKnots(const int splitSegCnt) 
     vector<Vector3d> pnts;
     double skip = (_knot[_ord] - _knot[0]) / (double)splitSegCnt;
 
-    for (int i = 0; i < _knot.size(); ++i)
+    for (unsigned i = 0; i < _knot.size(); ++i)
     {
         // ƒmƒbƒg‚ÌŠK”’[‚Ì”ñ•`‰æ•”•ªord•¡‚ÍÈ‚­
-        if ((i > 0 && i < _ord) || (i >= _knot.size() - _ord && i < _knot.size() - 1))
+      if ((i > 0 && i < (unsigned)_ord) || (i >= _knot.size() - _ord && i < _knot.size() - 1))
             continue;
 
         pnts.push_back(this->GetPositionVector(_knot[i]));
@@ -70,10 +70,10 @@ vector<Point3dC> BsplineCurve::GetPointsByKnots(const int splitSegCnt) const
     vector<Point3dC> pnts;
     double skip = (_knot[_ord] - _knot[0]) / (double)splitSegCnt;
 
-    for (int i = 0; i < _knot.size(); ++i)
+    for (unsigned i = 0; i < _knot.size(); ++i)
     {
         // ƒmƒbƒg‚ÌŠK”’[‚Ì”ñ•`‰æ•”•ªord•¡‚ÍÈ‚­
-        if ((i > 0 && i < _ord) || (i >= _knot.size() - _ord && i < _knot.size() - 1))
+      if ((i > 0 && i < (unsigned)_ord) || (i >= _knot.size() - _ord && i < _knot.size() - 1))
             continue;
 
         pnts.push_back(Point3dC(this->GetPositionVector(_knot[i]), _knot[i]));

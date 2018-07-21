@@ -8,7 +8,7 @@ NurbsCurve::NurbsCurve(const int mord, const ControlPoint* const cp, const int c
 Vector3d NurbsCurve::GetPositionVector(const double t) const
 {
     Vector3d Q;
-    double w = 0.0, W = 0.0;
+    double W = 0.0;
 
     // 必要な値を計算する
     for (int i = 0; i < _ncpnt; i++)

@@ -368,7 +368,8 @@ Vector3d BezierSurface::CalcVector(
     // ベクトル算出(行列計算)
     vector = CalcVectorWithBasisFunctions(N_array_U, N_array_V);
 
-    delete[] N_array_U, N_array_V;
+    delete[] N_array_U;
+    delete[] N_array_V;
     return vector;
 }
 

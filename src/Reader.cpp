@@ -151,7 +151,7 @@ vector<Object *> KjsReader::GetObjectsFromKjsFolder() const
     // kjs拡張子ファイルを取得
     auto kjsFiles = GetFilenames("kjs");
 
-    for (int i = 0; i < kjsFiles.size(); i++)
+    for (unsigned i = 0; i < kjsFiles.size(); i++)
     {
         // ファイル名の先頭が @ のファイルのみ読み込む!
         if (kjsFiles[i].front() != '@')
@@ -209,7 +209,7 @@ Object* KjsReader::BezierCurveReader(const vector<string>& lines) const
     cps.resize(atoi(ncpnt));
     current++; // CONTROL POINT宣言
 
-    for (int i = 0; i < cps.size(); i++)
+    for (unsigned i = 0; i < cps.size(); i++)
     {
         double x, y, z;
         double buf[8];
@@ -256,7 +256,7 @@ Object* KjsReader::BezierSurfaceReader(const vector<string>& lines) const
     cps.resize(atoi(ucpnt) * atoi(vcpnt));
     current++; // CONTROL POINT宣言
 
-    for (int i = 0; i < cps.size(); i++)
+    for (unsigned i = 0; i < cps.size(); i++)
     {
         double x, y, z;
         double buf[8];
@@ -300,7 +300,7 @@ Object* KjsReader::BsplineCurveReader(const vector<string>& lines) const
     current++; // CONTROL POINT宣言
 
     // 制御点取得
-    for (int i = 0; i < cps.size(); i++)
+    for (unsigned i = 0; i < cps.size(); i++)
     {
         double x, y, z;
         double buf[8];
@@ -319,7 +319,7 @@ Object* KjsReader::BsplineCurveReader(const vector<string>& lines) const
     current++; // KNOTS宣言
 
     // ノット列取得
-    for (int i = 0; i < knot.size(); i++)
+    for (unsigned i = 0; i < knot.size(); i++)
     {
         double buf[4];
 
@@ -363,7 +363,7 @@ Object* KjsReader::BsplineSurfaceReader(const vector<string>& lines) const
     current++; // CONTROL POINT宣言
 
     // 制御点取得
-    for (int i = 0; i < cps.size(); i++)
+    for (unsigned i = 0; i < cps.size(); i++)
     {
         double x, y, z;
         int row, col;
@@ -380,7 +380,7 @@ Object* KjsReader::BsplineSurfaceReader(const vector<string>& lines) const
     current++; // U KNOTS宣言
 
     // Uノット列取得
-    for (int i = 0; i < knotU.size(); i++)
+    for (unsigned i = 0; i < knotU.size(); i++)
     {
         double buf[4];
 
@@ -393,7 +393,7 @@ Object* KjsReader::BsplineSurfaceReader(const vector<string>& lines) const
     current++; // V KNOTS宣言
 
     // Vノット列取得
-    for (int i = 0; i < knotV.size(); i++)
+    for (unsigned i = 0; i < knotV.size(); i++)
     {
         double buf[4];
 
@@ -435,7 +435,7 @@ Object* KjsReader::NurbsCurveReader(const vector<string>& lines) const
     current++; // CONTROL POINT宣言
 
     // 制御点取得
-    for (int i = 0; i < cps.size(); i++)
+    for (unsigned i = 0; i < cps.size(); i++)
     {
         double x, y, z, w;
         double buf[8];
@@ -452,7 +452,7 @@ Object* KjsReader::NurbsCurveReader(const vector<string>& lines) const
     current++; // KNOTS宣言
 
     // ノット列取得
-    for (int i = 0; i < knot.size(); i++)
+    for (unsigned i = 0; i < knot.size(); i++)
     {
         double buf[4];
 
@@ -496,7 +496,7 @@ Object* KjsReader::NurbsSurfaceReader(const vector<string>& lines) const
     current++; // CONTROL POINT宣言
 
     // 制御点取得
-    for (int i = 0; i < cps.size(); i++)
+    for (unsigned i = 0; i < cps.size(); i++)
     {
         double x, y, z, w;
         int row, col;
@@ -513,7 +513,7 @@ Object* KjsReader::NurbsSurfaceReader(const vector<string>& lines) const
     current++; // U KNOTS宣言
 
     // Uノット列取得
-    for (int i = 0; i < knotU.size(); i++)
+    for (unsigned i = 0; i < knotU.size(); i++)
     {
         double buf[4];
 
@@ -526,7 +526,7 @@ Object* KjsReader::NurbsSurfaceReader(const vector<string>& lines) const
     current++; // V KNOTS宣言
 
     // Vノット列取得
-    for (int i = 0; i < knotV.size(); i++)
+    for (unsigned i = 0; i < knotV.size(); i++)
     {
         double buf[4];
 

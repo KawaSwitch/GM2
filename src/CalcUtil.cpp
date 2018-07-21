@@ -233,7 +233,7 @@ void CalcKnotVectorByPassingPnts(const vector<Vector3d>& pnts, const int ord, ve
     // ƒmƒbƒgŠÔŠu‚ÌŠ„‡‚Í’Ê‰ß“_ŠÔ‚Ì‹——£‚É”ä—á‚³‚¹‚é
     for (size_t i = 0, n = knot->size(); i < n; ++i)
     {
-        if (i < ord) // Å‰‚ÍŠK”•ªd‚Ë‚é
+      if (i < (unsigned)ord) // Å‰‚ÍŠK”•ªd‚Ë‚é
             (*knot)[i] = minParam;
         else if (i < knot->size() - ord) // ‹——£‚É”ä—á
         {

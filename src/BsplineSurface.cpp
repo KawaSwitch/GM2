@@ -662,7 +662,7 @@ std::unique_ptr<Surface> GetBsplineSurfaceFromPoints(const vector<vector<Vector3
 {
     int passPntsCntU, passPntsCntV; // 各方向の通過点数
     int new_ncpntU, new_ncpntV; // 制御点数
-    int new_nknotU, new_nknotV; // ノット列サイズ
+    //int new_nknotU, new_nknotV; // ノット列サイズ
 
     vector<double> knotU, knotV; // ノットベクトル
     vector<ControlPoint> cps; // 制御点
@@ -676,8 +676,8 @@ std::unique_ptr<Surface> GetBsplineSurfaceFromPoints(const vector<vector<Vector3
         new_ncpntU = (passPntsCntU - 1) + (ordU - 1);
         new_ncpntV = (passPntsCntV - 1) + (ordV - 1);
 
-        new_nknotU = ordU + new_ncpntU;
-        new_nknotV = ordV + new_ncpntV;
+        //new_nknotU = ordU + new_ncpntU;
+        //new_nknotV = ordV + new_ncpntV;
     }
     else
         return nullptr;
@@ -704,7 +704,7 @@ std::unique_ptr<Surface> GetBsplineSurfaceFromPoints(const vector<vector<Vector3
         }
 
         // V方向から制御点群を算出
-        for (size_t i = 0; i < new_ncpntU; ++i)
+        for (int i = 0; i < new_ncpntU; ++i)
         {
             vector<Vector3d> pntsV(passPntsCntV);
             vector<ControlPoint> ctrlpV;
