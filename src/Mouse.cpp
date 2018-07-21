@@ -111,6 +111,8 @@ void Motion(int x, int y)
     glutPostRedisplay();
 }
 
+// NOTE: ホイールが使えない場合キーボードのK,Jキーで対応
+// TODO: ホイールコールバックが設定されない環境への対応
 void Wheel(int wheel_num, int direction, int x, int y)
 {
     // ズーム

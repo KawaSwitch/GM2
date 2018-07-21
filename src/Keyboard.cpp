@@ -51,7 +51,7 @@ void Keyboard(unsigned char key, int x, int y)
                 axisShowType = AxisShowType::None;
                 break;
             default:
-                Error::ShowMessage("軸表示設定エラー");
+                Error::ShowMessage("Axis Show Setting error");
                 break;
             }
             break;
@@ -68,13 +68,19 @@ void Keyboard(unsigned char key, int x, int y)
                     gridType = GridType::InVisible;
                     break;
                 default:
-                    Error::ShowMessage("グリッド表示設定エラー");
+                    Error::ShowMessage("Grid Show Setting error");
                     break;
             }
             break;
         case 'i': // 初期位置の表示に戻す
             isViewInitRequested = true;
             break;
+    case 'j':
+      dist_Z += 2.0;
+      break;
+    case 'k':
+      dist_Z -= 2.0;
+      break;
         //case 'l': // ライティングトグル
         //    isUseLight = !isUseLight;
         //    break;
