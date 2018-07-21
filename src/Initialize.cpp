@@ -80,7 +80,7 @@ void Initialize()
     }
 
     // ƒOƒŠƒbƒh‰Šú‰»
-    gridType = GridType::WithAxis;
+    gridType = GridType::InVisible;
     grid = new GeoGrid2D(grid_length, grid_interval);
 
     // ²‰Šú‰»
