@@ -1,5 +1,9 @@
 #define _USE_MATH_DEFINES
 
+// compatibility with original GLUT
+#define EXT_GLUT_WHEEL_UP 3
+#define EXT_GLUT_WHEEL_DOWN 4
+
 #include "GV.h"
 #include "Scene.h"
 #include "Callback.h"
@@ -9,7 +13,7 @@
 extern Scene* scene;
 
 void Mouse(int button, int state, int x, int y)
-{
+{ 
     // 右：回転
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
     {
@@ -52,6 +56,12 @@ void Mouse(int button, int state, int x, int y)
     {
         move_flag = GL_FALSE;
     }
+
+    // ホイール：拡大/縮小
+    else if (button == EXT_GLUT_WHEEL_UP)
+        dist_Z += 2.0;
+    else if (button == EXT_GLUT_WHEEL_DOWN)
+        dist_Z -= 2.0;
 
     // それ以外はどちらでもない
     else
@@ -111,8 +121,6 @@ void Motion(int x, int y)
     glutPostRedisplay();
 }
 
-// NOTE: ホイールが使えない場合キーボードのK,Jキーで対応
-// TODO: ホイールコールバックが設定されない環境への対応
 void Wheel(int wheel_num, int direction, int x, int y)
 {
     // ズーム
