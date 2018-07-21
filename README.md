@@ -24,9 +24,10 @@ cmakeの生成ファイルが邪魔なので以下のようにするのがおす
 git clone <これのurl>
 cd GM2
 mkdir build
+cp -r ./KJS_FILE ./build
 cd build
 cmake ..
 make
-./geoModeling
+src/geoModeling
 ```
 多分g++があれば動くはず
