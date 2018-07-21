@@ -2,5 +2,5 @@
 
 void Initialize();
 void InitQuaternion();
-void ShowButtonDiscription(char* button, char* disc);
+void ShowButtonDiscription(const char* button, const char* disc);
 void ShowConsoleDiscription();

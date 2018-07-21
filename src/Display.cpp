@@ -45,7 +45,12 @@ void Display()
 
     glEnable(GL_STENCIL_TEST); // ステンシル有効化
 
-    // 1.軸描画
+    // 1. 背景描画
+    glDisable(GL_DEPTH_TEST);
+    DrawBackground(BackgroundNormal());
+    glEnable(GL_DEPTH_TEST);
+
+    // 2.軸描画
     {
         // 軸の型取り
         glStencilFunc(GL_ALWAYS, static_cast<int>(StencilRef::Axis), 0xFF);
@@ -111,7 +116,7 @@ void Display()
         light->On();
 
 
-    // 2. 形状描画
+    // 3. 形状描画
     {
         // 形状の型取り
         // 軸を除いて描画
@@ -144,7 +149,7 @@ void Display()
             // 回転中心描画
             ShowRotateCenter(rotate_flag);
 
-            // グリッド描画
+            // 4.グリッド描画
             {
                 // グリッドの型取り
                 // 上の全部が描画されていない所にグリッドを描画
@@ -158,17 +163,6 @@ void Display()
         }
         glPopMatrix();
     }
-
-
-    // 3. 背景描画
-    {
-        // 上の全部が描画されていない箇所は背景を描画
-        glStencilFunc(GL_EQUAL, static_cast<int>(StencilRef::Background), 0xFF);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-
-        DrawBackground(BackgroundNormal());
-    }
-
 
     glDisable(GL_STENCIL_TEST); // ステンシル無効化
 
@@ -295,7 +289,7 @@ void ShowConsoleDiscription()
     puts("");
 
     // エンティティ操作ボタン説明
-    puts("$ エンティティトグル表示系");
+    puts("$ エンティティトグル表\示系");
     ShowButtonDiscription("B", "ミニマクスボックス");
     ShowButtonDiscription("P", "制御点");
     ShowButtonDiscription("F", "一階微分(接線)ベクトル");
@@ -305,10 +299,10 @@ void ShowConsoleDiscription()
 
     puts("");
 
-    puts("$ その他表示系");
+    puts("$ その他表\示系");
     ShowButtonDiscription("ESC", "終了");
-    ShowButtonDiscription("A", "軸表示変更");
-    ShowButtonDiscription("G", "グリッド表示変更");
+    ShowButtonDiscription("A", "軸表\示変更");
+    ShowButtonDiscription("G", "グリッド表\示変更");
     ShowButtonDiscription("I", "回転/移動(奥行以外)を元に戻す");
     //ShowButtonDiscription("L", "ライティングトグル");
 
@@ -318,7 +312,7 @@ void ShowConsoleDiscription()
 }
 
 // ボタンの説明を表示します
-void ShowButtonDiscription(char* button, char* disc)
+void ShowButtonDiscription(const char* button, const char* disc)
 {
     printf("    ");
     printf("%s : ", button);
