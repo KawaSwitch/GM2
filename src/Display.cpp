@@ -13,17 +13,17 @@
 #include "glUtil.h"
 #include "Initialize.h"
 
-NormalAxis* axis; // ²
-GeoGrid2D* grid; // ƒOƒŠƒbƒh
-Scene* scene; // ƒV[ƒ“
+NormalAxis* axis; // è»¸
+GeoGrid2D* grid; // ã‚°ãƒªãƒƒãƒ‰
+Scene* scene; // ã‚·ãƒ¼ãƒ³
 extern Scene* test_scene;
 extern const int grid_length;
 
-static Box coverBox; // ‘S‘Ì‚Ìƒ{ƒbƒNƒX
-static Vector3d rotateCenter; // ‰ñ“]’†S
+static Box coverBox; // å…¨ä½“ã®ãƒœãƒƒã‚¯ã‚¹
+static Vector3d rotateCenter; // å›è»¢ä¸­å¿ƒ
 static bool isFirst = true;
 
-// --- ƒvƒƒgƒ^ƒCƒvéŒ¾ ---
+// --- ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€ ---
 void SetRotateCenter();
 void ShowRotateCenter(bool isRotating);
 void UpdateLookAtZ(const Box* const box);
@@ -31,290 +31,290 @@ void UpdateLookAtZ(const Box* const box);
 
 void Display()
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-    // ƒŠƒNƒGƒXƒg‚ª‚ ‚ê‚Î•\¦‚ğ‰ŠúˆÊ’u‚É–ß‚·
-    if (isViewInitRequested)
+  // ãƒªã‚¯ã‚¨ã‚¹ãƒˆãŒã‚ã‚Œã°è¡¨ç¤ºã‚’åˆæœŸä½ç½®ã«æˆ»ã™
+  if (isViewInitRequested)
     {
-        InitQuaternion(); // ‰ñ“]p¨‚ğ‰Šú‰»
-        dist_X = dist_Y = 0.0; // ˆÚ“®‚ğ‰Šú‰»(Z•ûŒü‚ğœ‚­)
+      InitQuaternion(); // å›è»¢å§¿å‹¢ã‚’åˆæœŸåŒ–
+      dist_X = dist_Y = 0.0; // ç§»å‹•ã‚’åˆæœŸåŒ–(Zæ–¹å‘ã‚’é™¤ã)
 
-        glutPostRedisplay();
-        isViewInitRequested = false;
+      glutPostRedisplay();
+      isViewInitRequested = false;
     }
 
-    glEnable(GL_STENCIL_TEST); // ƒXƒeƒ“ƒVƒ‹—LŒø‰»
+  glEnable(GL_STENCIL_TEST); // ã‚¹ãƒ†ãƒ³ã‚·ãƒ«æœ‰åŠ¹åŒ–
 
-    // 1. ”wŒi•`‰æ
-    glDisable(GL_DEPTH_TEST);
-    DrawBackground(BackgroundNormal());
-    glEnable(GL_DEPTH_TEST);
+  // 1. èƒŒæ™¯æç”»
+  glDisable(GL_DEPTH_TEST);
+  DrawBackground(BackgroundNormal());
+  glEnable(GL_DEPTH_TEST);
 
-    // 2.²•`‰æ
-    {
-        // ²‚ÌŒ^æ‚è
-        glStencilFunc(GL_ALWAYS, static_cast<int>(StencilRef::Axis), 0xFF);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+  // 2.è»¸æç”»
+  {
+    // è»¸ã®å‹å–ã‚Š
+    glStencilFunc(GL_ALWAYS, static_cast<int>(StencilRef::Axis), 0xFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-        // ²—pƒrƒ…[ƒ|[ƒgƒTƒCƒY‚ğŒvZ
-        int axisViewWidth = width / 5;
-        int axisViewHeight = height / 5;
-        int axisViewSize = (axisViewWidth < axisViewHeight) ? axisViewWidth : axisViewHeight;
+    // è»¸ç”¨ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆã‚µã‚¤ã‚ºã‚’è¨ˆç®—
+    int axisViewWidth = width / 5;
+    int axisViewHeight = height / 5;
+    int axisViewSize = (axisViewWidth < axisViewHeight) ? axisViewWidth : axisViewHeight;
 
-        // ²—pƒrƒ…[ƒ|[ƒg‚ğİ’è
-        double axisLength = axis->GetLength();
-        glViewport(axisViewSize / 10, axisViewSize / 10, axisViewSize, axisViewSize);
+    // è»¸ç”¨ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆã‚’è¨­å®š
+    double axisLength = axis->GetLength();
+    glViewport(axisViewSize / 10, axisViewSize / 10, axisViewSize, axisViewSize);
 
-        // ²—p‚É•ÏŠ·s—ñ‚ğw’è‚·‚é
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glOrtho(
+    // è»¸ç”¨ã«å¤‰æ›è¡Œåˆ—ã‚’æŒ‡å®šã™ã‚‹
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(
             -axisLength, axisLength,
             -axisLength, axisLength,
             -axisLength, axisLength);
 
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-
-        // ²—pƒ‰ƒCƒg‚Ì‚İƒIƒ“‚É‚·‚é
-        for (const auto& light : modelLight)
-            light->Off();
-        for (const auto& light : axisLight)
-            light->On();
-
-        glPushMatrix();
-
-        glMultMatrixd(rot_mat); // ‰ñ“]—Ê‚Íƒ‚ƒfƒ‹‚Æ“™‚µ‚­
-
-        if (axisShowType != AxisShowType::None)
-            axis->Draw();
-
-        glPopMatrix();
-    }
-
-
-    // ƒrƒ…[ƒ|[ƒg‚ğƒEƒBƒ“ƒhƒE‘S‘Ì‚Éİ’è
-    glViewport(0, 0, width, height);
-
-    // •ÏŠ·s—ñ‚ğ‘S‘Ì—p‚Éw’è‚µ‚È‚¨‚·
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(PersParam::fovy, (GLdouble)width / height, PersParam::zNear, PersParam::zFar);
-
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(
-        0.0, 0.0, 0.0,  // ‹“_ˆÊ’u
-        0.0, 0.0, -1.0,  // ’‹ˆÊ’u
-        0.0, 1.0, 0.0   // ã•ûŒü : y
-    );
 
-    // Œ`ó—pƒ‰ƒCƒg‚Ì‚İƒIƒ“‚É‚·‚é
-    for (const auto& light : axisLight)
-        light->Off();
+    // è»¸ç”¨ãƒ©ã‚¤ãƒˆã®ã¿ã‚ªãƒ³ã«ã™ã‚‹
     for (const auto& light : modelLight)
-        light->On();
+      light->Off();
+    for (const auto& light : axisLight)
+      light->On();
+
+    glPushMatrix();
+
+    glMultMatrixd(rot_mat); // å›è»¢é‡ã¯ãƒ¢ãƒ‡ãƒ«ã¨ç­‰ã—ã
+
+    if (axisShowType != AxisShowType::None)
+      axis->Draw();
+
+    glPopMatrix();
+  }
 
 
-    // 3. Œ`ó•`‰æ
+  // ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆã‚’ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦å…¨ä½“ã«è¨­å®š
+  glViewport(0, 0, width, height);
+
+  // å¤‰æ›è¡Œåˆ—ã‚’å…¨ä½“ç”¨ã«æŒ‡å®šã—ãªãŠã™
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  gluPerspective(PersParam::fovy, (GLdouble)width / height, PersParam::zNear, PersParam::zFar);
+
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  gluLookAt(
+	    0.0, 0.0, 0.0,  // è¦–ç‚¹ä½ç½®
+	    0.0, 0.0, -1.0,  // æ³¨è¦–ä½ç½®
+	    0.0, 1.0, 0.0   // ä¸Šæ–¹å‘ : y
+	    );
+
+  // å½¢çŠ¶ç”¨ãƒ©ã‚¤ãƒˆã®ã¿ã‚ªãƒ³ã«ã™ã‚‹
+  for (const auto& light : axisLight)
+    light->Off();
+  for (const auto& light : modelLight)
+    light->On();
+
+
+  // 3. å½¢çŠ¶æç”»
+  {
+    // å½¢çŠ¶ã®å‹å–ã‚Š
+    // è»¸ã‚’é™¤ã„ã¦æç”»
+    glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::Entity), 0xFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+    glPushMatrix();
     {
-        // Œ`ó‚ÌŒ^æ‚è
-        // ²‚ğœ‚¢‚Ä•`‰æ
-        glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::Entity), 0xFF);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+      // èµ·å‹•æœ€åˆã®æç”»ã§å›è»¢ä¸­å¿ƒã‚’ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ä¸­å¿ƒã«ã™ã‚‹
+      if (isFirst)
+	{
+	  TestRegister(); // äº‹å‰ã«ç™»éŒ²ã—ã¦ãŠã 
 
-        glPushMatrix();
-        {
-            // ‹N“®Å‰‚Ì•`‰æ‚Å‰ñ“]’†S‚ğƒEƒBƒ“ƒhƒE’†S‚É‚·‚é
-            if (isFirst)
-            {
-                TestRegister(); // –‘O‚É“o˜^‚µ‚Ä‚¨‚­ 
+	  SetRotateCenter();
+	  UpdateLookAtZ(&coverBox); // ãƒ•ã‚£ãƒƒãƒˆ
+	}
 
-                SetRotateCenter();
-                UpdateLookAtZ(&coverBox); // ƒtƒBƒbƒg
-            }
+      glTranslated(-rotateCenter.X, -rotateCenter.Y, -rotateCenter.Z);
 
-            glTranslated(-rotateCenter.X, -rotateCenter.Y, -rotateCenter.Z);
+      glTranslated(dist_X, dist_Y, dist_Z); // ç§»å‹•
 
-            glTranslated(dist_X, dist_Y, dist_Z); // ˆÚ“®
+      // å›è»¢ä¸­å¿ƒã‚’æŒ‡å®šã—ã¦å›è»¢
+      RotateAt(rot_mat, rotateCenter);
 
-            // ‰ñ“]’†S‚ğw’è‚µ‚Ä‰ñ“]
-            RotateAt(rot_mat, rotateCenter);
+      // ãƒ†ã‚¹ãƒˆæç”»
+      TestDraw();
+      // å½¢çŠ¶æç”»
+      scene->Draw();
 
-            // ƒeƒXƒg•`‰æ
-            TestDraw();
-            // Œ`ó•`‰æ
-            scene->Draw();
+      // å›è»¢ä¸­å¿ƒæç”»
+      ShowRotateCenter(rotate_flag);
 
-            // ‰ñ“]’†S•`‰æ
-            ShowRotateCenter(rotate_flag);
+      // 4.ã‚°ãƒªãƒƒãƒ‰æç”»
+      {
+	// ã‚°ãƒªãƒƒãƒ‰ã®å‹å–ã‚Š
+	// ä¸Šã®å…¨éƒ¨ãŒæç”»ã•ã‚Œã¦ã„ãªã„æ‰€ã«ã‚°ãƒªãƒƒãƒ‰ã‚’æç”»
+	glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::Grid), 0xFF);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-            // 4.ƒOƒŠƒbƒh•`‰æ
-            {
-                // ƒOƒŠƒbƒh‚ÌŒ^æ‚è
-                // ã‚Ì‘S•”‚ª•`‰æ‚³‚ê‚Ä‚¢‚È‚¢Š‚ÉƒOƒŠƒbƒh‚ğ•`‰æ
-                glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::Grid), 0xFF);
-                glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-
-                // Šô‰½ƒOƒŠƒbƒh•`‰æ
-                if (gridType != GridType::InVisible)
-                    grid->Draw();
-            }
-        }
-        glPopMatrix();
+	// å¹¾ä½•ã‚°ãƒªãƒƒãƒ‰æç”»
+	if (gridType != GridType::InVisible)
+	  grid->Draw();
+      }
     }
+    glPopMatrix();
+  }
 
-    glDisable(GL_STENCIL_TEST); // ƒXƒeƒ“ƒVƒ‹–³Œø‰»
+  glDisable(GL_STENCIL_TEST); // ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ç„¡åŠ¹åŒ–
 
-    isFirst = false;
-    glutSwapBuffers();
+  isFirst = false;
+  glutSwapBuffers();
 }
 
-// ‰ñ“]’†S‚ğİ’è‚µ‚Ü‚·
+// å›è»¢ä¸­å¿ƒã‚’è¨­å®šã—ã¾ã™
 void SetRotateCenter()
 {
-    vector<Box> sceneBoxes;
+  vector<Box> sceneBoxes;
 
-    // ‰ñ“]’†S‚ğŒˆ‚ß‚é
-    // ‚·‚×‚Ä‚ÌŒ`ó‚Ì’†S‚ğ‰ñ“]’†S‚Æ‚·‚é
-    // TODO: ‚¢‚Â‚©‰æ–Ê’†S‚Å‰ñ“]‚³‚¹‚½‚¢
-    sceneBoxes.push_back(scene->GetCoverBound());
-    sceneBoxes.push_back(test_scene->GetCoverBound());
-    coverBox = Box(sceneBoxes);
+  // å›è»¢ä¸­å¿ƒã‚’æ±ºã‚ã‚‹
+  // ã™ã¹ã¦ã®å½¢çŠ¶ã®ä¸­å¿ƒã‚’å›è»¢ä¸­å¿ƒã¨ã™ã‚‹
+  // TODO: ã„ã¤ã‹ç”»é¢ä¸­å¿ƒã§å›è»¢ã•ã›ãŸã„
+  sceneBoxes.push_back(scene->GetCoverBound());
+  sceneBoxes.push_back(test_scene->GetCoverBound());
+  coverBox = Box(sceneBoxes);
 
-    // ‚Æ‚è‚ ‚¦‚¸
-    if (coverBox.IsValid() == false)
+  // ã¨ã‚Šã‚ãˆãš
+  if (coverBox.IsValid() == false)
     {
-        Error::ShowMessage(
-            "ƒoƒEƒ“ƒhƒ{ƒbƒNƒXİ’èƒGƒ‰[",
-            "•`‰æŒ`ó‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ. Šù’è‚Ì‰ñ“]ƒ{ƒbƒNƒX, ‰ñ“]’†S‚ğİ’è‚µ‚Ü‚·");
-        coverBox = Box(
-            -grid_length, -grid_length, -grid_length,
-            grid_length, grid_length, grid_length);
+      Error::ShowMessage(
+			 "ãƒã‚¦ãƒ³ãƒ‰ãƒœãƒƒã‚¯ã‚¹è¨­å®šã‚¨ãƒ©ãƒ¼",
+			 "æç”»å½¢çŠ¶ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“. æ—¢å®šã®å›è»¢ãƒœãƒƒã‚¯ã‚¹, å›è»¢ä¸­å¿ƒã‚’è¨­å®šã—ã¾ã™");
+      coverBox = Box(
+		     -grid_length, -grid_length, -grid_length,
+		     grid_length, grid_length, grid_length);
     }
 
-    auto center = coverBox.Center();
+  auto center = coverBox.Center();
 
-    rotateCenter = Vector3d(center.X, center.Y, center.Z);
+  rotateCenter = Vector3d(center.X, center.Y, center.Z);
 }
-// ‰ñ“]’†S‚ğ•\¦‚µ‚Ü‚·
+// å›è»¢ä¸­å¿ƒã‚’è¡¨ç¤ºã—ã¾ã™
 void ShowRotateCenter(bool isRotating)
 {
-    if (rotate_flag)
+  if (rotate_flag)
     {
-        // ƒ‰ƒCƒeƒBƒ“ƒO‚ÍØ‚Á‚Ä‚¨‚­
-        if (glIsEnabled(GL_LIGHTING))
-            glDisable(GL_LIGHTING);
+      // ãƒ©ã‚¤ãƒ†ã‚£ãƒ³ã‚°ã¯åˆ‡ã£ã¦ãŠã
+      if (glIsEnabled(GL_LIGHTING))
+	glDisable(GL_LIGHTING);
 
-        // ’†S“_•`‰æ ƒfƒvƒX’l‚Í•]‰¿‚µ‚È‚¢
-        glColor4dv(Color::orange);
-        glPointSize(10.0);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, Color::orange);
+      // ä¸­å¿ƒç‚¹æç”» ãƒ‡ãƒ—ã‚¹å€¤ã¯è©•ä¾¡ã—ãªã„
+      glColor4dv(Color::orange);
+      glPointSize(10.0);
+      glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, Color::orange);
 
-        glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::RotateCenter), 0xFF);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+      glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::RotateCenter), 0xFF);
+      glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-        glDisable(GL_DEPTH_TEST);
-        glBegin(GL_POINTS);
-        glVertex3d(rotateCenter);
-        glEnd();
-        glEnable(GL_DEPTH_TEST);
+      glDisable(GL_DEPTH_TEST);
+      glBegin(GL_POINTS);
+      glVertex3d(rotateCenter);
+      glEnd();
+      glEnable(GL_DEPTH_TEST);
 
-        // ƒJƒo[ƒ{ƒbƒNƒX•`‰æ  Œ`ó‚ÌŒã‚ë‚É‚ ‚ê‚Î“_ü•\¦
-        glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::Entity), 0xFF);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-        coverBox.Draw(Color::orange, 2.0); // •’Ê‚É•`‰æ
+      // ã‚«ãƒãƒ¼ãƒœãƒƒã‚¯ã‚¹æç”»  å½¢çŠ¶ã®å¾Œã‚ã«ã‚ã‚Œã°ç‚¹ç·šè¡¨ç¤º
+      glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::Entity), 0xFF);
+      glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+      coverBox.Draw(Color::orange, 2.0); // æ™®é€šã«æç”»
 
-        // ‰Aü‚Í”jü•\¦
-        {
-            glStencilFunc(GL_GREATER, static_cast<int>(StencilRef::HiddenLine), 0xFF);
-            glStencilOp(GL_KEEP, GL_REPLACE, GL_KEEP);
-            coverBox.Draw(Color::orange, 2.0); // ‰Aü”»’è—p
+      // é™°ç·šã¯ç ´ç·šè¡¨ç¤º
+      {
+	glStencilFunc(GL_GREATER, static_cast<int>(StencilRef::HiddenLine), 0xFF);
+	glStencilOp(GL_KEEP, GL_REPLACE, GL_KEEP);
+	coverBox.Draw(Color::orange, 2.0); // é™°ç·šåˆ¤å®šç”¨
 
-            glStencilFunc(GL_EQUAL, static_cast<int>(StencilRef::HiddenLine), 0xFF);
-            glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-            glEnable(GL_LINE_STIPPLE);
-            glLineStipple(1, 0xF0F0);
+	glStencilFunc(GL_EQUAL, static_cast<int>(StencilRef::HiddenLine), 0xFF);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+	glEnable(GL_LINE_STIPPLE);
+	glLineStipple(1, 0xF0F0);
 
-            // ƒfƒvƒX’l‚Í•]‰¿‚µ‚È‚¢
-            glDisable(GL_DEPTH_TEST);
-            coverBox.Draw(Color::orange, 1.5);
-            glEnable(GL_DEPTH_TEST);
+	// ãƒ‡ãƒ—ã‚¹å€¤ã¯è©•ä¾¡ã—ãªã„
+	glDisable(GL_DEPTH_TEST);
+	coverBox.Draw(Color::orange, 1.5);
+	glEnable(GL_DEPTH_TEST);
 
-            glDisable(GL_LINE_STIPPLE);
-        }
+	glDisable(GL_LINE_STIPPLE);
+      }
 
-        glPointSize(1.0);
+      glPointSize(1.0);
     }
 }
 
-// ‹“_‚ÌZˆÊ’u‚ğƒ{ƒbƒNƒX‚©‚çŒˆ’è‚µXV‚µ‚Ü‚·
+// è¦–ç‚¹ã®Zä½ç½®ã‚’ãƒœãƒƒã‚¯ã‚¹ã‹ã‚‰æ±ºå®šã—æ›´æ–°ã—ã¾ã™
 void UpdateLookAtZ(const Box* const box)
 {
-    double boxHalfX = (box->MaxX() - box->MinX()) / 2;
-    double boxHalfY = (box->MaxY() - box->MinY()) / 2;
-    double boxHalfZ = (box->MaxZ() - box->MinZ()) / 2;
-    double boxLongerHalfEdge = (boxHalfX > boxHalfY) ? boxHalfX : boxHalfX;
-    double boxAspectForFit = (boxHalfX > boxHalfY) ? (boxHalfX / boxHalfY) : (boxHalfY / boxHalfX);
+  double boxHalfX = (box->MaxX() - box->MinX()) / 2;
+  double boxHalfY = (box->MaxY() - box->MinY()) / 2;
+  double boxHalfZ = (box->MaxZ() - box->MinZ()) / 2;
+  double boxLongerHalfEdge = (boxHalfX > boxHalfY) ? boxHalfX : boxHalfX;
+  double boxAspectForFit = (boxHalfX > boxHalfY) ? (boxHalfX / boxHalfY) : (boxHalfY / boxHalfX);
 
-    double ratio; // ‹ÂŠp‚É‘Î‚·‚éc‰¡”ä”{—¦
+  double ratio; // ä»°è§’ã«å¯¾ã™ã‚‹ç¸¦æ¨ªæ¯”å€ç‡
 
-    // ƒEƒBƒ“ƒhƒE‚É‚Ò‚Á‚½‚èû‚Ü‚é‚æ‚¤‚Èc‰¡”ä”{—¦‚ğê‡•ª‚¯
-    if (width > height)
-        ratio = boxHalfX / boxHalfY;
-    else
-        ratio = (double)width / height;
+  // ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«ã´ã£ãŸã‚Šåã¾ã‚‹ã‚ˆã†ãªç¸¦æ¨ªæ¯”å€ç‡ã‚’å ´åˆåˆ†ã‘
+  if (width > height)
+    ratio = boxHalfX / boxHalfY;
+  else
+    ratio = (double)width / height;
 
-    // ƒ{ƒbƒNƒX‘O–Ê‚©‚çƒJƒƒ‰‚Ü‚Å‚Ì‹——£
-    double distToBoxFront = boxHalfX / std::tan(ratio * (PersParam::fovy / 2) * (M_PI / 180));
+  // ãƒœãƒƒã‚¯ã‚¹å‰é¢ã‹ã‚‰ã‚«ãƒ¡ãƒ©ã¾ã§ã®è·é›¢
+  double distToBoxFront = boxHalfX / std::tan(ratio * (PersParam::fovy / 2) * (M_PI / 180));
 
-    // ƒJƒƒ‰‚ÍŒ´“_‚É’u‚¢‚½‚Ü‚Üƒ[ƒ‹ƒh‚ğ”½‘Î•ûŒü‚É“®‚©‚·
-    double cameraZ = boxHalfZ + distToBoxFront;
-    dist_Z = -(cameraZ + boxHalfZ / 2); // ‚¿‚å‚Á‚Æ—]—T‚ğ‚½‚¹‚Ä‚¨‚­
+  // ã‚«ãƒ¡ãƒ©ã¯åŸç‚¹ã«ç½®ã„ãŸã¾ã¾ãƒ¯ãƒ¼ãƒ«ãƒ‰ã‚’åå¯¾æ–¹å‘ã«å‹•ã‹ã™
+  double cameraZ = boxHalfZ + distToBoxFront;
+  dist_Z = -(cameraZ + boxHalfZ / 2); // ã¡ã‚‡ã£ã¨ä½™è£•ã‚’æŒãŸã›ã¦ãŠã
 }
 
-// ƒRƒ“ƒ\[ƒ‹‚Éà–¾‚ğ•\¦‚µ‚Ü‚·
+// ã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã«èª¬æ˜ã‚’è¡¨ç¤ºã—ã¾ã™
 void ShowConsoleDiscription()
 {
-    puts("Œ`óˆ—C++ ‘€ì•û–@\n");
+  puts("å½¢çŠ¶å‡¦ç†C++ æ“ä½œæ–¹æ³•\n");
 
-    puts("$ ƒtƒ@ƒCƒ‹‹N“®“Ç‚İ‚İ");
-    puts("./KJS_FILE“à‚Å–¼‘O‚Ìæ“ª‚É@‚ğ‚Â‚¯‚½.kjsƒtƒ@ƒCƒ‹‚ğ‹N“®‚É“Ç‚İ‚İ‚Ü‚·\n");
+  puts("$ ãƒ•ã‚¡ã‚¤ãƒ«èµ·å‹•æ™‚èª­ã¿è¾¼ã¿");
+  puts("./KJS_FILEå†…ã§åå‰ã®å…ˆé ­ã«@ã‚’ã¤ã‘ãŸ.kjsãƒ•ã‚¡ã‚¤ãƒ«ã‚’èµ·å‹•æ™‚ã«èª­ã¿è¾¼ã¿ã¾ã™\n");
 
-    puts("$ ƒ}ƒEƒX‘€ì");
-    ShowButtonDiscription("‰Eƒhƒ‰ƒbƒO", "‰ñ“]");
-    ShowButtonDiscription("’†ƒhƒ‰ƒbƒO", "ˆÚ“®");
-    ShowButtonDiscription("ƒzƒC[ƒ‹", "Šg‘å/k¬");
+  puts("$ ãƒã‚¦ã‚¹æ“ä½œ");
+  ShowButtonDiscription("å³ãƒ‰ãƒ©ãƒƒã‚°", "å›è»¢");
+  ShowButtonDiscription("ä¸­ãƒ‰ãƒ©ãƒƒã‚°", "ç§»å‹•");
+  ShowButtonDiscription("ãƒ›ã‚¤ãƒ¼ãƒ«", "æ‹¡å¤§/ç¸®å°");
 
-    puts("");
+  puts("");
 
-    // ƒGƒ“ƒeƒBƒeƒB‘€ìƒ{ƒ^ƒ“à–¾
-    puts("$ ƒGƒ“ƒeƒBƒeƒBƒgƒOƒ‹•\\¦Œn");
-    ShowButtonDiscription("B", "ƒ~ƒjƒ}ƒNƒXƒ{ƒbƒNƒX");
-    ShowButtonDiscription("P", "§Œä“_");
-    ShowButtonDiscription("F", "ˆêŠK”÷•ª(Úü)ƒxƒNƒgƒ‹");
-    ShowButtonDiscription("S", "“ñŠK”÷•ªƒxƒNƒgƒ‹");
-    ShowButtonDiscription("C", "‹È—¦ƒxƒNƒgƒ‹");
-    ShowButtonDiscription("N", "–@üƒxƒNƒgƒ‹");
+  // ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£æ“ä½œãƒœã‚¿ãƒ³èª¬æ˜
+  puts("$ ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ãƒˆã‚°ãƒ«è¡¨ç¤ºç³»");
+  ShowButtonDiscription("B", "ãƒŸãƒ‹ãƒã‚¯ã‚¹ãƒœãƒƒã‚¯ã‚¹");
+  ShowButtonDiscription("P", "åˆ¶å¾¡ç‚¹");
+  ShowButtonDiscription("F", "ä¸€éšå¾®åˆ†(æ¥ç·š)ãƒ™ã‚¯ãƒˆãƒ«");
+  ShowButtonDiscription("S", "äºŒéšå¾®åˆ†ãƒ™ã‚¯ãƒˆãƒ«");
+  ShowButtonDiscription("C", "æ›²ç‡ãƒ™ã‚¯ãƒˆãƒ«");
+  ShowButtonDiscription("N", "æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«");
 
-    puts("");
+  puts("");
 
-    puts("$ ‚»‚Ì‘¼•\\¦Œn");
-    ShowButtonDiscription("ESC", "I—¹");
-    ShowButtonDiscription("A", "²•\\¦•ÏX");
-    ShowButtonDiscription("G", "ƒOƒŠƒbƒh•\\¦•ÏX");
-    ShowButtonDiscription("I", "‰ñ“]/ˆÚ“®(‰œsˆÈŠO)‚ğŒ³‚É–ß‚·");
-    //ShowButtonDiscription("L", "ƒ‰ƒCƒeƒBƒ“ƒOƒgƒOƒ‹");
+  puts("$ ãã®ä»–è¡¨ç¤ºç³»");
+  ShowButtonDiscription("ESC", "çµ‚äº†");
+  ShowButtonDiscription("A", "è»¸è¡¨ç¤ºå¤‰æ›´");
+  ShowButtonDiscription("G", "ã‚°ãƒªãƒƒãƒ‰è¡¨ç¤ºå¤‰æ›´");
+  ShowButtonDiscription("I", "å›è»¢/ç§»å‹•(å¥¥è¡Œä»¥å¤–)ã‚’å…ƒã«æˆ»ã™");
+  //ShowButtonDiscription("L", "ãƒ©ã‚¤ãƒ†ã‚£ãƒ³ã‚°ãƒˆã‚°ãƒ«");
 
-    puts("\n");
+  puts("\n");
 
-    puts("ƒfƒoƒO—po—Í«\n");
+  puts("ãƒ‡ãƒã‚°ç”¨å‡ºåŠ›â†“\n");
 }
 
-// ƒ{ƒ^ƒ“‚Ìà–¾‚ğ•\¦‚µ‚Ü‚·
+// ãƒœã‚¿ãƒ³ã®èª¬æ˜ã‚’è¡¨ç¤ºã—ã¾ã™
 void ShowButtonDiscription(const char* button, const char* disc)
 {
-    printf("    ");
-    printf("%s : ", button);
-    printf("%s\n", disc);
+  printf("    ");
+  printf("%s : ", button);
+  printf("%s\n", disc);
 }
