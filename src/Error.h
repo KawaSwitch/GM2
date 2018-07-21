@@ -7,8 +7,8 @@ class Error
 private:
     static void Exit()
     {
-        cerr << "ƒvƒƒOƒ‰ƒ€‚ðI—¹‚µ‚Ü‚·" << endl;
-        system("pause>nul");
+        cerr << "Press any key to exit..." << endl;
+        getchar();
         exit(1);
     }
 
