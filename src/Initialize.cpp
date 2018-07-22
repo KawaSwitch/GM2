@@ -56,9 +56,14 @@ void Initialize()
     glEnable(GL_DEPTH_TEST); // デプス値 有効化
     glDepthFunc(GL_LESS);
 
-    glEnable(GL_BLEND); // ブレンド 有効化
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_POINT_SMOOTH); // 点にアンチエイリアシング処理を行う
+    glHint(GL_POINT_SMOOTH_HINT, GL_NICEST); // アンチエイリアシング品質を最高に
 
+    glShadeModel(GL_SMOOTH);
+    
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND); // ブレンド 有効化
+    
     // メインライト初期化
     {
         lights.push_back(new Light(GL_LIGHT0, 50, 50, -50));
@@ -93,8 +98,6 @@ void Initialize()
     rotate_flag = GL_FALSE;
     move_flag = GL_FALSE;
     InitQuaternion();
-
-    glShadeModel(GL_SMOOTH);
 
     isViewInitRequested = false; // 行列元に戻すか
 
