@@ -19,6 +19,7 @@ private:
     bool _deleteFlag = false;
     bool _isSelected = false; // 選択状態にあるか
     unsigned int _number; // 識別番号
+    std::string _name;
 
 protected:
 
@@ -64,6 +65,25 @@ protected:
     bool _isDrawBox = false; // ミニマクスボックス
     bool _isDrawNormal = false; // 法線
     bool _isDrawCurvature = false; // 曲率
+
+    // 表示系の識別子をすべてクリアする
+    void ClearAllShowingIds()
+    {
+      // ディスプレイリスト破棄
+      glDeleteLists(_displayList, 1);
+      glDeleteLists(_ctrlp_displayList, 1);
+      glDeleteLists(_fd_displayList, 1);
+      glDeleteLists(_sd_displayList, 1);
+      glDeleteLists(_box_displayList, 1);
+      glDeleteLists(_cur_displayList, 1);
+
+      // VBO破棄
+      glDeleteBuffers(1, &_vbo);
+
+      // IBO破棄
+      glDeleteBuffers(1, &_ibo);
+    }
+    
 
 public:
 
@@ -168,6 +188,11 @@ public:
             _color[i] = color[i];
     }
 
+    // 名前のセット
+    void SetName(std::string name) { _name = name; }
+    // 名前の取得
+    std::string GetName() const { return _name; };
+
     // 半透明オブジェクトであるか
     bool IsSemiTransparent()
     {
@@ -199,6 +224,7 @@ public:
     Object()
     {
         _number = obj_number++; // 識別子を振る
+	_name = std::to_string(_number); // ここで規定値として振っておく
 
         _vbo = 0;
         _ibo = 0;
@@ -209,18 +235,6 @@ public:
     {
         obj_number--; // 識別子を空ける
 
-        // ディスプレイリスト破棄
-        glDeleteLists(_displayList, 1);
-        glDeleteLists(_ctrlp_displayList, 1);
-        glDeleteLists(_fd_displayList, 1);
-        glDeleteLists(_sd_displayList, 1);
-        glDeleteLists(_box_displayList, 1);
-        glDeleteLists(_cur_displayList, 1);
-
-        // VBO破棄
-        glDeleteBuffers(1, &_vbo);
-
-        // IBO破棄
-        glDeleteBuffers(1, &_ibo);
+	ClearAllShowingIds();
     }
 };

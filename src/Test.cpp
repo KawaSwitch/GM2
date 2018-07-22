@@ -30,22 +30,45 @@ static const std::string surf1_name("CGS_bspline_surface_1.kjs");
 // •`‰æ‚µ‚½‚¢‚Ì‚ğ‚¨‚­
 static vector<function<void(void)>> TestRegisterDraw
 {
-    //DrawBsplineFunctions, // BƒXƒvƒ‰ƒCƒ“Šî’êŠÖ”•`‰æ
-    //DrawBsplineCurves, // BƒXƒvƒ‰ƒCƒ“‹Èü•`‰æ
-    //DrawCircle_CGS3, // Nurbs‹Èü‚Å‰~•`‚­
-    //DrawSphere_CGS3, // Nurbs‹È–Ê‚Å‹…‚ğ•`‚­
-    //DrawCylinder_CGS3, // Nurbs‹È–Ê‚Å‰~’Œ‚ğ•`‚­
-    //DrawApproxCurve_CGS4, // ‹ß—‹Èü‚ğ•`‰æ
-    //DrawApproxSurface_CGS5, // ‹ß—‹È–Ê‚ğ•`‰æ
-  DrawCurveNearest_CGS6, // Å‹ß“_‚ğ•`‰æ_‹Èü
+  //DrawBsplineFunctions, // BƒXƒvƒ‰ƒCƒ“Šî’êŠÖ”•`‰æ
+  //DrawBsplineCurves, // BƒXƒvƒ‰ƒCƒ“‹Èü•`‰æ
+  //DrawCircle_CGS3, // Nurbs‹Èü‚Å‰~•`‚­
+  //DrawSphere_CGS3, // Nurbs‹È–Ê‚Å‹…‚ğ•`‚­
+  //DrawCylinder_CGS3, // Nurbs‹È–Ê‚Å‰~’Œ‚ğ•`‚­
+  //DrawApproxCurve_CGS4, // ‹ß—‹Èü‚ğ•`‰æ
+  //DrawApproxSurface_CGS5, // ‹ß—‹È–Ê‚ğ•`‰æ
+  //DrawCurveNearest_CGS6, // Å‹ß“_‚ğ•`‰æ_‹Èü
   //DrawSurfaceNearest_CGS7, // Å‹ß“_‚ğ•`‰æ_‹È–Ê
-    //DrawSplitCurve_CGS8, // •ªŠ„‹Èü‚ğ•`‰æ
+  DrawSplitCurve_CGS8, // •ªŠ„‹Èü‚ğ•`‰æ
 };
 
 // •ªŠ„‹Èü•`‰æ
 void DrawSplitCurve_CGS8()
 {
-  //
+  auto reader = std::make_unique<KjsReader>();
+
+  // •ªŠ„‘ÎÛ‹Èü
+  std::shared_ptr<BsplineCurve> curve1((BsplineCurve *)reader->GetObjectFromFile(curve1_name));
+
+  // ƒmƒbƒg’Ç‰Á‹Èü
+  std::shared_ptr<BsplineCurve> curve1_clone((BsplineCurve *)reader->GetObjectFromFile(curve1_name));
+  curve1_clone->SetColor(Color::red);
+  curve1_clone->AddKnot(3);
+  curve1_clone->AddKnot(3);
+  curve1_clone->AddKnot(3);
+  // curve1_clone->AddKnot(4);
+  // curve1_clone->AddKnot(4);
+  // curve1_clone->AddKnot(4);
+  
+
+  // •ªŠ„‹Èü
+  
+  
+  if (isFirst)
+    {
+      test_scene->AddObject(curve1_name, curve1);
+      test_scene->AddObject(curve1_name+"add_1knot", curve1_clone);
+    }
 }
 
 // QÆ‹Èü‚©‚çÅ‹ß“_‚ğ‹‚ß‚Ä•`‰æ

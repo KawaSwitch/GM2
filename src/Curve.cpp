@@ -7,6 +7,13 @@ void Curve::SetControlPoint(const ControlPoint* const cp, const int size)
     if (size <= 0)
         Error::ShowAndExit("制御点設定失敗", "CP size must be over 0.");
 
+    // リセット
+    if (_ctrlp.size() > 0)
+      {
+	_ctrlp.clear();
+	_ctrlp.shrink_to_fit();
+      }
+    
     _ctrlp.reserve(size);
 
     for (int i = 0; i < size; i++)
@@ -16,7 +23,7 @@ void Curve::SetControlPoint(const ControlPoint* const cp, const int size)
 // 制御点描画
 void Curve::DrawCPsInternal() const
 {
-    glColor3d(1.0, 0.0, 0.0); // 赤
+    glColor4dv(_color);
     glPointSize(10.0);
     glLineWidth(1.0);
 

@@ -44,6 +44,9 @@ public:
 
     // 最近点取得
     NearestPointInfoC GetNearestPointInfoFromRef(const Vector3d& ref) const override;
+
+    // ノット追加
+    void AddKnot(double t, bool isDeleteOrigin = true);
 };
 
 // 通観点から逆変換して曲線を取得する

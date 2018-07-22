@@ -200,7 +200,7 @@ void Surface::DrawCPsInternal() const
 {
     //glColor3d(1.0, 0.0, 0.0); // ê‘
     glColor3dv(_color);
-    glPointSize(5.0);
+    glPointSize(10.0);
     glLineWidth(1.0);
 
     // ì_åQ
