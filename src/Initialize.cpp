@@ -22,12 +22,12 @@ void InitScene()
     scene = new Scene();
     test_scene = new Scene(); // テスト用もここで初期化
 
-    // @ファイル読み込み
-    auto reader = new KjsReader("KJS_FILE/");
-    auto objs = reader->GetObjectsFromKjsFolder();
+    // @ファイル読み込み TODO: ファイル読み込み復活
+    // auto reader = new KjsReader("KJS_FILE/");
+    // auto objs = reader->GetObjectsFromKjsFolder();
 
-    for (unsigned int i = 0; i < objs.size(); i++)
-        scene->AddObject(objs[i]);
+    // for (unsigned int i = 0; i < objs.size(); i++)
+    //     scene->AddObject(objs[i]);
 }
 
 void InitQuaternion()

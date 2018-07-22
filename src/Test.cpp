@@ -18,6 +18,13 @@ static bool isRegistered = false;
 
 Scene* test_scene;
 
+// 形状の名称(ファイル名) TODO: どっかで共有
+static const std::string curve1_name("CGS_bspline_curve_1.kjs");
+static const std::string curve2_name("CGS_bspline_curve_2.kjs");
+static const std::string curveC_name("CGS_bspline_curve_C.kjs");
+static const std::string curveS_name("CGS_bspline_curve_S.kjs");
+static const std::string surf1_name("CGS_bspline_surface_1.kjs");
+
 // テストというか仮描画！！！！！
 
 // 描画したいのをおく
@@ -30,15 +37,15 @@ static vector<function<void(void)>> TestRegisterDraw
     //DrawCylinder_CGS3, // Nurbs曲面で円柱を描く
     //DrawApproxCurve_CGS4, // 近似曲線を描画
     //DrawApproxSurface_CGS5, // 近似曲面を描画
-    DrawCurveNearest_CGS6, // 最近点を描画_曲線
-    //DrawSurfaceNearest_CGS7, // 最近点を描画_曲面
+  DrawCurveNearest_CGS6, // 最近点を描画_曲線
+  //DrawSurfaceNearest_CGS7, // 最近点を描画_曲面
     //DrawSplitCurve_CGS8, // 分割曲線を描画
 };
 
 // 分割曲線描画
 void DrawSplitCurve_CGS8()
 {
-
+  //
 }
 
 // 参照曲線から最近点を求めて描画
@@ -47,9 +54,9 @@ void DrawCurveNearest_CGS6()
     auto reader = std::make_unique<KjsReader>();
 
     // 対象曲線/曲面
-    BsplineCurve* curve1 = (BsplineCurve *)reader->GetObjectFromFile("CGS_bspline_curve_1.kjs");
+    std::shared_ptr<BsplineCurve> curve1((BsplineCurve*)reader->GetObjectFromFile(curve1_name));
     // 参照曲線
-    BsplineCurve* curveC = (BsplineCurve *)reader->GetObjectFromFile("CGS_bspline_curve_C.kjs");
+    std::shared_ptr<BsplineCurve> curveC((BsplineCurve*)reader->GetObjectFromFile(curveC_name));
     
     //// 対象曲線をセグメント8分割した点群
     //{
@@ -105,8 +112,8 @@ void DrawCurveNearest_CGS6()
 
     if (isFirst)
     {
-        test_scene->AddObject(curve1);
-        test_scene->AddObject(curveC);
+      test_scene->AddObject(curve1_name, curve1);
+      test_scene->AddObject(curveC_name, curveC);
     }
 }
 
@@ -116,9 +123,9 @@ void DrawSurfaceNearest_CGS7()
     auto reader = std::make_unique<KjsReader>();
 
     // 対象曲線/曲面
-    BsplineSurface* surf1 = (BsplineSurface *)reader->GetObjectFromFile("CGS_bspline_surface_1.kjs");
+    std::shared_ptr<BsplineSurface> surf1((BsplineSurface *)reader->GetObjectFromFile(surf1_name));
     // 参照曲線
-    Curve* curveS = (Curve *)reader->GetObjectFromFile("CGS_bspline_curve_S.kjs");
+    std::shared_ptr<BsplineCurve> curveS((BsplineCurve *)reader->GetObjectFromFile(curveS_name));
 
     // 参照点群(21点)を取得
     vector<Vector3d> ref_pnts;
@@ -187,8 +194,8 @@ void DrawSurfaceNearest_CGS7()
 
     if (isFirst)
     {
-        test_scene->AddObject(surf1);
-        test_scene->AddObject(curveS);
+      test_scene->AddObject(surf1_name, surf1);
+      test_scene->AddObject(curveS_name, curveS);
     }
 }
 
@@ -197,7 +204,7 @@ void DrawApproxSurface_CGS5()
 {
     auto reader = std::make_unique<KjsReader>();
 
-    auto surf = (BsplineSurface *)reader->GetObjectFromFile("CGS_bspline_surface_1.kjs");
+    std::shared_ptr<BsplineSurface> surf((BsplineSurface *)reader->GetObjectFromFile(surf1_name));
 
     // 近似曲面
     std::unique_ptr<Surface> surf_knot_remake, surf_knot_split_remake;
@@ -223,9 +230,9 @@ void DrawApproxSurface_CGS5()
 
     if (isFirst)
     {
-        test_scene->AddObject(surf);
+      test_scene->AddObject(surf1_name, surf);
         //test_scene->AddObject(surf_knot_remake);
-        test_scene->AddObject(surf_knot_split_remake.get());
+      test_scene->AddObject("surf1_knot_split_remake", std::move(surf_knot_split_remake));
     }
 }
 
@@ -234,8 +241,8 @@ void DrawApproxCurve_CGS4()
 {
     auto reader = std::make_unique<KjsReader>();
 
-    BsplineCurve* curve1 = (BsplineCurve *)reader->GetObjectFromFile("CGS_bspline_curve_1.kjs");
-    BsplineCurve* curve2 = (BsplineCurve *)reader->GetObjectFromFile("CGS_bspline_curve_2.kjs");
+    shared_ptr<BsplineCurve> curve1((BsplineCurve *)reader->GetObjectFromFile("CGS_bspline_curve_1.kjs"));
+    shared_ptr<BsplineCurve> curve2((BsplineCurve *)reader->GetObjectFromFile("CGS_bspline_curve_2.kjs"));
 
     // 近似曲線
     std::unique_ptr<Curve> curve1_remake, curve2_remake;
@@ -310,13 +317,13 @@ void DrawApproxCurve_CGS4()
 
     if (isFirst)
     {
-        test_scene->AddObject(curve1);
-        test_scene->AddObject(curve1_remake.get());
-        test_scene->AddObject(curve1_remake_split.get());
+      test_scene->AddObject(curve1_name, curve1);
+      test_scene->AddObject("curve1_remake", std::move(curve1_remake));
+      test_scene->AddObject("curve1_remake_split", std::move(curve1_remake_split));
 
-        test_scene->AddObject(curve2);
-        test_scene->AddObject(curve2_remake.get());
-        test_scene->AddObject(curve2_remake_split.get());
+      test_scene->AddObject(curve2_name, curve2);
+      test_scene->AddObject("curve2_remake", std::move(curve2_remake));
+      test_scene->AddObject("curve2_remake_split", std::move(curve2_remake_split));
     }
 }
 
@@ -362,15 +369,15 @@ void DrawCylinder_CGS3()
     double knotU[6] = { 0, 0, 0, 1, 1, 1 };
     double knotV[4] = { 0, 0, 1, 1 };
 
-    NurbsSurface* surf0 = new NurbsSurface(3, 2, cp0, 3, 2, knotU, knotV, Color::green_alpha);
-    NurbsSurface* surf1 = new NurbsSurface(3, 2, cp1, 3, 2, knotU, knotV, Color::green_alpha);
-    NurbsSurface* surf2 = new NurbsSurface(3, 2, cp2, 3, 2, knotU, knotV, Color::green_alpha);
+    shared_ptr<NurbsSurface> surf0(new NurbsSurface(3, 2, cp0, 3, 2, knotU, knotV, Color::green_alpha));
+    shared_ptr<NurbsSurface> surf1(new NurbsSurface(3, 2, cp1, 3, 2, knotU, knotV, Color::green_alpha));
+    shared_ptr<NurbsSurface> surf2(new NurbsSurface(3, 2, cp2, 3, 2, knotU, knotV, Color::green_alpha));
 
     if (isFirst)
     {
-        test_scene->AddObject(surf0);
-        test_scene->AddObject(surf1);
-        test_scene->AddObject(surf2);
+      test_scene->AddObject("cylinder_part0", surf0);
+      test_scene->AddObject("cylinder_part1", surf1);
+      test_scene->AddObject("cylinder_part2", surf2);
     }
 }
 
@@ -493,25 +500,25 @@ void DrawSphere_CGS3()
     double knotU[6] = { 0, 0, 0, 1, 1, 1 };
     double knotV[6] = { 0, 0, 0, 1, 1, 1 };
 
-    NurbsSurface* surf0 = new NurbsSurface(3, 3, cp0, 3, 3, knotU, knotV, Color::green_alpha);
-    NurbsSurface* surf1 = new NurbsSurface(3, 3, cp1, 3, 3, knotU, knotV, Color::green_alpha);
-    NurbsSurface* surf2 = new NurbsSurface(3, 3, cp2, 3, 3, knotU, knotV, Color::green_alpha);
-    NurbsSurface* surf3 = new NurbsSurface(3, 3, cp3, 3, 3, knotU, knotV, Color::green_alpha);
-    NurbsSurface* surf4 = new NurbsSurface(3, 3, cp4, 3, 3, knotU, knotV, Color::green_alpha);
-    NurbsSurface* surf5 = new NurbsSurface(3, 3, cp5, 3, 3, knotU, knotV, Color::green_alpha);
-    NurbsSurface* surf6 = new NurbsSurface(3, 3, cp6, 3, 3, knotU, knotV, Color::green_alpha);
-    NurbsSurface* surf7 = new NurbsSurface(3, 3, cp7, 3, 3, knotU, knotV, Color::green_alpha);
+    shared_ptr<NurbsSurface> surf0(new NurbsSurface(3, 3, cp0, 3, 3, knotU, knotV, Color::green_alpha));
+    shared_ptr<NurbsSurface> surf1(new NurbsSurface(3, 3, cp1, 3, 3, knotU, knotV, Color::green_alpha));
+    shared_ptr<NurbsSurface> surf2(new NurbsSurface(3, 3, cp2, 3, 3, knotU, knotV, Color::green_alpha));
+    shared_ptr<NurbsSurface> surf3(new NurbsSurface(3, 3, cp3, 3, 3, knotU, knotV, Color::green_alpha));
+    shared_ptr<NurbsSurface> surf4(new NurbsSurface(3, 3, cp4, 3, 3, knotU, knotV, Color::green_alpha));
+    shared_ptr<NurbsSurface> surf5(new NurbsSurface(3, 3, cp5, 3, 3, knotU, knotV, Color::green_alpha));
+    shared_ptr<NurbsSurface> surf6(new NurbsSurface(3, 3, cp6, 3, 3, knotU, knotV, Color::green_alpha));
+    shared_ptr<NurbsSurface> surf7(new NurbsSurface(3, 3, cp7, 3, 3, knotU, knotV, Color::green_alpha));
 
     if (isFirst)
     {
-        test_scene->AddObject(surf0);
-        test_scene->AddObject(surf1);
-        test_scene->AddObject(surf2);
-        test_scene->AddObject(surf3);
-        test_scene->AddObject(surf4);
-        test_scene->AddObject(surf5);
-        test_scene->AddObject(surf6);
-        test_scene->AddObject(surf7);
+      test_scene->AddObject("sphere_part0", surf0);
+      test_scene->AddObject("sphere_part1", surf1);
+      test_scene->AddObject("sphere_part2", surf2);
+      test_scene->AddObject("sphere_part3", surf3);
+      test_scene->AddObject("sphere_part4", surf4);
+      test_scene->AddObject("sphere_part5", surf5);
+      test_scene->AddObject("sphere_part6", surf6);
+      test_scene->AddObject("sphere_part7", surf7);
     }
 }
 
@@ -545,17 +552,17 @@ void DrawCircle_CGS3()
 
     double knot[6] = { 0, 0, 0, 1, 1, 1 };
 
-    NurbsCurve* curve0 = new NurbsCurve(3, cp0, 3, knot, Color::blue, 2.0);
-    NurbsCurve* curve1 = new NurbsCurve(3, cp1, 3, knot, Color::blue, 2.0);
-    NurbsCurve* curve2 = new NurbsCurve(3, cp2, 3, knot, Color::blue, 2.0);
-    NurbsCurve* curve3 = new NurbsCurve(3, cp3, 3, knot, Color::blue, 2.0);
+    shared_ptr<NurbsCurve> curve0(new NurbsCurve(3, cp0, 3, knot, Color::blue, 2.0));
+    shared_ptr<NurbsCurve> curve1(new NurbsCurve(3, cp1, 3, knot, Color::blue, 2.0));
+    shared_ptr<NurbsCurve> curve2(new NurbsCurve(3, cp2, 3, knot, Color::blue, 2.0));
+    shared_ptr<NurbsCurve> curve3(new NurbsCurve(3, cp3, 3, knot, Color::blue, 2.0));
 
     if (isFirst)
     {
-        test_scene->AddObject(curve0);
-        test_scene->AddObject(curve1);
-        test_scene->AddObject(curve2);
-        test_scene->AddObject(curve3);
+      test_scene->AddObject("circle_part0", curve0);
+      test_scene->AddObject("circle_part1", curve1);
+      test_scene->AddObject("circle_part2", curve2);
+      test_scene->AddObject("circle_part3", curve3);
     }
 }
 

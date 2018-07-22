@@ -144,7 +144,7 @@ void Display()
       // テスト描画
       TestDraw();
       // 形状描画
-      scene->Draw();
+      //scene->Draw();
 
       // 回転中心描画
       ShowRotateCenter(rotate_flag);

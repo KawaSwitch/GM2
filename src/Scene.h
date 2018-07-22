@@ -3,33 +3,34 @@
 #include "Object.h"
 #include "Box.h"
 #include <list>
-using namespace std;
+#include <map>
+#include <memory>
 
 class Object;
 
 class Scene
 {
-private:
-    list<Object *> ObjList;
+ private:
+  std::map<std::string, shared_ptr<Object>> _objTable;
 
-public:
-    Scene();
+ public:
+  Scene();
 
-    void AddObject(Object *);
-    void DeleteObjectAll();
-    void DeleteObjectEnd();
+  void AddObject(std::string, shared_ptr<Object>);
+  void DeleteObjectAll();
+  void DeleteObjectEnd();
 
-    void ToggleDrawControlPoints();
-    void ToggleDrawFirstDiffVectors();
-    void ToggleDrawSecondDiffVectors();
-    void ToggleDrawBox();
-    void ToggleDrawNormalVectors();
-    void ToggleDrawCurvatureVectors();
+  void ToggleDrawControlPoints();
+  void ToggleDrawFirstDiffVectors();
+  void ToggleDrawSecondDiffVectors();
+  void ToggleDrawBox();
+  void ToggleDrawNormalVectors();
+  void ToggleDrawCurvatureVectors();
 
-    void Draw();
-    void DrawForPick();
+  void Draw();
+  void DrawForPick();
 
-    Box GetCoverBound();
+  Box GetCoverBound();
 
-    ~Scene();
+  ~Scene();
 };

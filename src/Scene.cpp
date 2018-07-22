@@ -1,162 +1,162 @@
 #include "Scene.h"
 #include "Axis.h"
+#include <memory>
 
 Scene::Scene()
 {
 
 }
 
-void Scene::AddObject(Object* obj)
+void Scene::AddObject(std::string key, shared_ptr<Object> obj)
 {
-    ObjList.push_back(obj);
+  _objTable.emplace(key, obj);
 }
 
 void Scene::DeleteObjectAll()
 {
-    auto it = ObjList.begin();
+    auto it = _objTable.begin();
 
-    while (it != ObjList.end())
+    while (it != _objTable.end())
     {
-        (*it)->RaiseDeleteFlag();
-
+        (*it).second->RaiseDeleteFlag();
         it++;
     }
 }
 
 void Scene::DeleteObjectEnd()
 {
-    auto it = ObjList.begin();
+    auto it = _objTable.begin();
 
-    if (it == ObjList.end())
+    if (it == _objTable.end())
         return;
 
-    while (it != ObjList.end())
+    while (it != _objTable.end())
         it++;
 
-    (*(--it))->RaiseDeleteFlag();
+    (*(--it)).second->RaiseDeleteFlag();
 }
 
 void Scene::ToggleDrawControlPoints()
 {
-    auto it = ObjList.begin();
+    auto it = _objTable.begin();
 
     // 制御点表示トグル
-    while (it != ObjList.end())
+    while (it != _objTable.end())
     {
-        (*it)->SetUnsetIsDrawCtrlp();
+        (*it).second->SetUnsetIsDrawCtrlp();
         it++;
     }
 }
 
 void Scene::ToggleDrawFirstDiffVectors()
 {
-    auto it = ObjList.begin();
+    auto it = _objTable.begin();
 
     // 接線表示トグル
-    while (it != ObjList.end())
+    while (it != _objTable.end())
     {
-        (*it)->SetUnsetIsDrawFisrtDiff();
+        (*it).second->SetUnsetIsDrawFisrtDiff();
         it++;
     }
 }
 
 void Scene::ToggleDrawSecondDiffVectors()
 {
-    auto it = ObjList.begin();
+    auto it = _objTable.begin();
 
     // 2階微分ベクトル表示トグル
-    while (it != ObjList.end())
+    while (it != _objTable.end())
     {
-        (*it)->SetUnsetIsDrawSecondDiff();
+        (*it).second->SetUnsetIsDrawSecondDiff();
         it++;
     }
 }
 
 void Scene::ToggleDrawBox()
 {
-    auto it = ObjList.begin();
+    auto it = _objTable.begin();
 
     // ミニマクスボックス表示トグル
-    while (it != ObjList.end())
+    while (it != _objTable.end())
     {
-        (*it)->SetUnsetIsDrawBox();
+        (*it).second->SetUnsetIsDrawBox();
         it++;
     }
 }
 
 void Scene::ToggleDrawNormalVectors()
 {
-    auto it = ObjList.begin();
+    auto it = _objTable.begin();
 
     // 法線表示トグル
-    while (it != ObjList.end())
+    while (it != _objTable.end())
     {
-        (*it)->SetUnsetIsDrawNormal();
+        (*it).second->SetUnsetIsDrawNormal();
         it++;
     }
 }
 
 void Scene::ToggleDrawCurvatureVectors()
 {
-    auto it = ObjList.begin();
+    auto it = _objTable.begin();
 
     // 曲率ベクトル表示トグル
-    while (it != ObjList.end())
+    while (it != _objTable.end())
     {
-        (*it)->SetUnsetIsDrawCurvature();
+        (*it).second->SetUnsetIsDrawCurvature();
         it++;
     }
 }
 
 void Scene::Draw()
 {
-    // α値がある場合を考慮して最後に描く
+// α値がある場合を考慮して最後に描く
     // 形状情報描画(非透明)
-    for (const auto& obj : ObjList)
+  for (const auto& obj : _objTable)
     {
-        obj->DrawControlPointsAndLines(); // 制御点描画
-        obj->DrawFirstDiffVectors(); // 接線描画
-        obj->DrawSecondDiffVectors(); // 2階微分ベクトル描画
-        obj->DrawBox(); // ミニマクスボックス描画
-        obj->DrawNormalVectors(); // 法線描画
-        obj->DrawCurvatureVectors(); // 曲率ベクトル描画
+        obj.second->DrawControlPointsAndLines(); // 制御点描画
+        obj.second->DrawFirstDiffVectors(); // 接線描画
+        obj.second->DrawSecondDiffVectors(); // 2階微分ベクトル描画
+        obj.second->DrawBox(); // ミニマクスボックス描画
+        obj.second->DrawNormalVectors(); // 法線描画
+        obj.second->DrawCurvatureVectors(); // 曲率ベクトル描画
     }
     // 形状描画
     // 形状同士のαでの順番考慮
-    for (const auto& obj : ObjList)
+  for (const auto& obj : _objTable)
     {
-        if (!obj->IsSemiTransparent())
-            obj->Draw(); // モデル描画
+        if (!obj.second->IsSemiTransparent())
+            obj.second->Draw(); // モデル描画
     }
-    for (const auto& obj : ObjList)
+  for (const auto& obj : _objTable)
     {
-        if (obj->IsSemiTransparent())
-            obj->Draw(); // モデル描画
-    }
-
-    for (auto it = ObjList.begin(), end = ObjList.end(); it != end; it++)
-    {
-        // 削除フラグチェック
-        if ((*it)->IsDeleteFlagRaised())
-        {
-            delete *it;
-            (*it) = NULL;
-        }
+        if (obj.second->IsSemiTransparent())
+            obj.second->Draw(); // モデル描画
     }
 
-    ObjList.remove(NULL);
+    // for (auto it = ObjList.begin(), end = ObjList.end(); it != end; it++)
+    // {
+    //     // 削除フラグチェック
+    //     if ((*it)->IsDeleteFlagRaised())
+    //     {
+    //         delete *it;
+    //         (*it) = NULL;
+    //     }
+    // }
+
+    // ObjList.remove(NULL);
 }
 
 // マウスピッキング用描画
 void Scene::DrawForPick()
 {
-    auto it = ObjList.begin();
+    auto it = _objTable.begin();
 
     // リスト全描画
-    while (it != ObjList.end())
+    while (it != _objTable.end())
     {
-        glLoadName((*it)->GetObjectNumber());
-        (*it)->DrawAsItIs();
+        glLoadName((*it).second->GetObjectNumber());
+        (*it).second->DrawAsItIs();
 
         it++;
     }
@@ -167,14 +167,12 @@ Box Scene::GetCoverBound()
 {
     vector<Box> allBound;
 
-    for (auto it = ObjList.begin(); it != ObjList.end(); ++it)
-        allBound.push_back((*it)->GetBound());
+    for (auto it = _objTable.begin(); it != _objTable.end(); ++it)
+        allBound.push_back((*it).second->GetBound());
 
     return Box(allBound);
 }
 
 Scene::~Scene()
 {
-    for (auto it = ObjList.begin(); it != ObjList.end(); it++)
-        delete *it;
 }
