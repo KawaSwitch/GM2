@@ -7,12 +7,14 @@ GM1はWindows/VisualStudioで開発
 GM2はLinux/g++コンパイラで開発(GM1からの派生)  
 
 # 開発環境
-Linux Mint Cinnamon 19  
+Linux Mint 19 Cinnamon  
 g++ 7.3.0
 
 # 動作確認済み/推奨環境
-Linux Mint Cinnamon 19  
-Ubuntu 18.04 LTS  
+* Linux Mint 19 Cinnamon
+* Linux Mint 19 MATE
+* Ubuntu 16.04 LTS
+* Ubuntu 18.04 LTS
 
 # ビルドに必要なパッケージ
 _Debian系OSの場合です_  
