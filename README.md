@@ -10,6 +10,10 @@ GM2はLinux/g++コンパイラで開発(GM1からの派生)
 Linux Mint Cinnamon 19  
 g++ 7.3.0
 
+# 動作確認済み/推奨環境
+Linux Mint Cinnamon 19  
+Ubuntu 18.04 LTS  
+
 # ビルドに必要なパッケージ
 _Debian系OSの場合です_  
 freeglut  
