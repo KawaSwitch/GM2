@@ -4,15 +4,15 @@ NurbsCurve::NurbsCurve(const int mord, const ControlPoint* const cp, const int c
     const GLdouble* const color, const GLdouble width)
     : BsplineCurve(mord, cp, cp_size, knot, color, width) { }
 
-// ˆÊ’uƒxƒNƒgƒ‹æ“¾
+// ä½ç½®ãƒ™ã‚¯ãƒˆãƒ«å–å¾—
 Vector3d NurbsCurve::GetPositionVector(const double t) const
 {
     Vector3d Q;
     double W = 0.0;
 
-    // •K—v‚È’l‚ğŒvZ‚·‚é
+    // å¿…è¦ãªå€¤ã‚’è¨ˆç®—ã™ã‚‹
     for (int i = 0; i < _ncpnt; i++)
-        Q += CalcBsplineFunc(i, _ord, t, &_knot[0]) * (_ctrlp[i] * _ctrlp[i].W); // §Œä“_‚ğ“¯ŸÀ•W‚É•ÏŠ·
+        Q += CalcBsplineFunc(i, _ord, t, &_knot[0]) * (_ctrlp[i] * _ctrlp[i].W); // åˆ¶å¾¡ç‚¹ã‚’åŒæ¬¡åº§æ¨™ã«å¤‰æ›
 
     for (int i = 0; i < _ncpnt; i++)
         W += CalcBsplineFunc(i, _ord, t, &_knot[0]) * _ctrlp[i].W;
@@ -20,13 +20,13 @@ Vector3d NurbsCurve::GetPositionVector(const double t) const
     return Q / W;
 }
 
-// ÚüƒxƒNƒgƒ‹æ“¾
+// æ¥ç·šãƒ™ã‚¯ãƒˆãƒ«å–å¾—
 Vector3d NurbsCurve::GetFirstDiffVector(const double t) const
 {
     Vector3d P, Qt;
     double W = 0.0, Wt = 0.0;
 
-    // •K—v‚È’l‚ğŒvZ‚·‚é
+    // å¿…è¦ãªå€¤ã‚’è¨ˆç®—ã™ã‚‹
     P = this->GetPositionVector(t);
 
     for (int i = 0; i < _ncpnt; i++)
@@ -40,13 +40,13 @@ Vector3d NurbsCurve::GetFirstDiffVector(const double t) const
     return (Qt - Wt * P) / W;
 }
 
-// 2ŠK”÷•ªƒxƒNƒgƒ‹æ“¾
+// 2éšå¾®åˆ†ãƒ™ã‚¯ãƒˆãƒ«å–å¾—
 Vector3d NurbsCurve::GetSecondDiffVector(const double t) const
 {
     Vector3d P, Pt, Qtt;
     double W = 0.0, Wt = 0.0, Wtt = 0.0;
 
-    // •K—v‚È’l‚ğŒvZ‚·‚é
+    // å¿…è¦ãªå€¤ã‚’è¨ˆç®—ã™ã‚‹
     P = this->GetPositionVector(t);
     Pt = this->GetFirstDiffVector(t);
 

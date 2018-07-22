@@ -2,12 +2,12 @@
 
 #include "GV.h"
 
-// ƒ[ƒJƒ‹À•W‚ÌƒfƒvƒX’l‚ðŽæ“¾‚·‚é
+// ¥í¡¼¥«¥ëºÂÉ¸¤Î¥Ç¥×¥¹ÃÍ¤ò¼èÆÀ¤¹¤ë
 float GetDepth(int x, int y);
 
-// ƒ[ƒJƒ‹À•W -> ƒ[ƒ‹ƒhÀ•W
+// ¥í¡¼¥«¥ëºÂÉ¸ -> ¥ï¡¼¥ë¥ÉºÂÉ¸
 Vector3d GetWorldCoord(int x, int y, float depth);
-// ƒ[ƒ‹ƒhÀ•W -> ƒ[ƒJƒ‹À•W
+// ¥ï¡¼¥ë¥ÉºÂÉ¸ -> ¥í¡¼¥«¥ëºÂÉ¸
 Vector3d GetLocalCoord(int x, int y, int z);
 
 unsigned int GetObjNumberOnMousePointer(int x, int y);

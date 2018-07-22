@@ -2,7 +2,7 @@
 
 #include "define.h"
 
-// ƒNƒH[ƒ^ƒjƒIƒ“
+// ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³
 struct Quaternion
 {
     double x;
@@ -10,13 +10,13 @@ struct Quaternion
     double z;
     double w;
 
-    // ’·‚³
+    // é•·ã•
     double Length() const { return sqrt(x*x + y*y + z*z + w*w); }
 
-    // ’PˆÊ‰»
+    // å˜ä½åŒ–
     Quaternion Normalize() const { return *this / Length(); }
 
-    // ’è””{
+    // å®šæ•°å€
     constexpr Quaternion operator*(double value) const
     {
         return{ x * value, y * value, z * value, w * value };
@@ -27,7 +27,7 @@ struct Quaternion
     }
 };
 
-// 2ŸŒ³“_
+// 2æ¬¡å…ƒç‚¹
 template<class T>
 struct Point
 {
@@ -35,23 +35,23 @@ struct Point
     T y;
 };
 
-// ‹È–Ê‚ÌUVƒpƒ‰ƒ[ƒ^
+// æ›²é¢ã®UVãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 enum ParamUV
 {
     U,
     V,
 };
 
-// ‹È–Ê‚Ì’[(‹Èü)
+// æ›²é¢ã®ç«¯(æ›²ç·š)
 enum SurfaceEdge
 {
-    U_min, // Uƒpƒ‰ƒ[ƒ^‚ªÅ¬‚Ì‚Æ‚«‚ÌƒAƒCƒ\‹Èü
-    U_max, // ˆÈ‰º“¯—l
+    U_min, // Uãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãŒæœ€å°ã®ã¨ãã®ã‚¢ã‚¤ã‚½æ›²ç·š
+    U_max, // ä»¥ä¸‹åŒæ§˜
     V_min,
     V_max,
 };
 
-// ‘I‘ğƒf[ƒ^
+// é¸æŠãƒ‡ãƒ¼ã‚¿
 struct SelectionData
 {
     unsigned int minZ;
@@ -67,19 +67,19 @@ struct SelectionData
     }
 };
 
-// ƒXƒeƒ“ƒVƒ‹QÆ’l
+// ã‚¹ãƒ†ãƒ³ã‚·ãƒ«å‚ç…§å€¤
 enum class StencilRef
 {
-    Background = 0, // ”wŒi‚Í0(‰Šú’l)
+    Background = 0, // èƒŒæ™¯ã¯0(åˆæœŸå€¤)
     Grid,
-    Entity, // ‹ÈüE‹È–Ê—p
-    HiddenLine, // ‰Aü
-    RotateCenter, // ‰ñ“]’†S
+    Entity, // æ›²ç·šãƒ»æ›²é¢ç”¨
+    HiddenLine, // é™°ç·š
+    RotateCenter, // å›è»¢ä¸­å¿ƒ
     Axis,
-    Ignore, // ˆÓ–¡‚È‚µ Keep‚µ‚Äg‚¤‚Ì‚ğ‘z’è
+    Ignore, // æ„å‘³ãªã— Keepã—ã¦ä½¿ã†ã®ã‚’æƒ³å®š
 };
 
-// ƒOƒŠƒbƒh‚Ì•\¦–@
+// ã‚°ãƒªãƒƒãƒ‰ã®è¡¨ç¤ºæ³•
 enum GridType
 {
     NonAxis,

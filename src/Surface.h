@@ -7,108 +7,108 @@
 
 extern Scene* test_scene;
 
-// ‹È–ÊŠî’êƒNƒ‰ƒX
+// æ›²é¢åŸºåº•ã‚¯ãƒ©ã‚¹
 class Surface : public Object
 {
 public:
-    // Å‹ß“_“±o–@
+    // æœ€è¿‘ç‚¹å°å‡ºæ³•
     enum NearestSearch
     {
-        Project, // Ë‰e–@
-        Isoline, // ƒAƒCƒ\ƒ‰ƒCƒ“–@
+        Project, // å°„å½±æ³•
+        Isoline, // ã‚¢ã‚¤ã‚½ãƒ©ã‚¤ãƒ³æ³•
     };
 
 protected:
 
-    int _ordU, _ordV; // ŠK”
-    int _ncpntU, _ncpntV; // §Œä“_”
-    vector<double> _ctrlpX; // ŒvZ—p
+    int _ordU, _ordV; // éšæ•°
+    int _ncpntU, _ncpntV; // åˆ¶å¾¡ç‚¹æ•°
+    vector<double> _ctrlpX; // è¨ˆç®—ç”¨
     vector<double> _ctrlpY;
     vector<double> _ctrlpZ;
     vector<double> _weight;
 
-    mutable GLuint _vbo_nor = 0; // –@ü—pvbo
-    mutable GLuint _ibo_nor = 0; // –@ü—pibo
-    mutable int _nVertex_cache; // ’¸“_ŒÂ”
+    mutable GLuint _vbo_nor = 0; // æ³•ç·šç”¨vbo
+    mutable GLuint _ibo_nor = 0; // æ³•ç·šç”¨ibo
+    mutable int _nVertex_cache; // é ‚ç‚¹å€‹æ•°
 
-    // •`‰æ”ÍˆÍƒpƒ‰ƒ[ƒ^
+    // æç”»ç¯„å›²ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
     double _min_draw_param_U, _max_draw_param_U;
     double _min_draw_param_V, _max_draw_param_V;
 
-    mutable int _mesh_displayList = 0; // ƒƒbƒVƒ…—pƒfƒBƒXƒvƒŒƒCƒŠƒXƒg
-    double _mesh_width; // ƒƒbƒVƒ…ü‚Ì•
+    mutable int _mesh_displayList = 0; // ãƒ¡ãƒƒã‚·ãƒ¥ç”¨ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆ
+    double _mesh_width; // ãƒ¡ãƒƒã‚·ãƒ¥ç·šã®å¹…
 
-    // §Œä“_İ’è
+    // åˆ¶å¾¡ç‚¹è¨­å®š
     void SetControlPoint(const ControlPoint* const cp, int size);
 
-    // ƒxƒNƒgƒ‹æ“¾ŠÖ”
-    virtual Vector3d GetPositionVector(double u, double v) const = 0; // ˆÊ’uƒxƒNƒgƒ‹
-    virtual Vector3d GetFirstDiffVectorU(double u, double v) const = 0; // ÚüƒxƒNƒgƒ‹
+    // ãƒ™ã‚¯ãƒˆãƒ«å–å¾—é–¢æ•°
+    virtual Vector3d GetPositionVector(double u, double v) const = 0; // ä½ç½®ãƒ™ã‚¯ãƒˆãƒ«
+    virtual Vector3d GetFirstDiffVectorU(double u, double v) const = 0; // æ¥ç·šãƒ™ã‚¯ãƒˆãƒ«
     virtual Vector3d GetFirstDiffVectorV(double u, double v) const = 0;
-    virtual Vector3d GetSecondDiffVectorUU(double u, double v) const = 0; // 2ŠK”÷•ªƒxƒNƒgƒ‹
+    virtual Vector3d GetSecondDiffVectorUU(double u, double v) const = 0; // 2éšå¾®åˆ†ãƒ™ã‚¯ãƒˆãƒ«
     virtual Vector3d GetSecondDiffVectorUV(double u, double v) const = 0;
     virtual Vector3d GetSecondDiffVectorVV(double u, double v) const = 0;
 
-    // –@üƒxƒNƒgƒ‹æ“¾
+    // æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«å–å¾—
     Vector3d GetNormalVector(double u, double v) const { return (GetFirstDiffVectorU(u, v) * GetFirstDiffVectorV(u, v)); }
 
-    // •`‰æ—p‹È—¦ƒxƒNƒgƒ‹æ“¾
+    // æç”»ç”¨æ›²ç‡ãƒ™ã‚¯ãƒˆãƒ«å–å¾—
     Vector3d GetCurvatureVector(double u, double v) const;
 
-    // w’è‚µ‚½’[‚Ì‹Èü‚Ì§Œä“_‚ğæ“¾‚·‚é
+    // æŒ‡å®šã—ãŸç«¯ã®æ›²ç·šã®åˆ¶å¾¡ç‚¹ã‚’å–å¾—ã™ã‚‹
     vector<ControlPoint> GetEdgeCurveControlPoint(SurfaceEdge edge) const;
 
-    // Å‹ß“_æ“¾
+    // æœ€è¿‘ç‚¹å–å¾—
     NearestPointInfoS GetNearestPointInfoInternal(const Vector3d& ref, const vector<vector<Point3dS>>& startPnts, const NearestSearch search) const;
-    // Å‹ß“_‚ğæ“¾‚·‚é(Ë‰e–@)
+    // æœ€è¿‘ç‚¹ã‚’å–å¾—ã™ã‚‹(å°„å½±æ³•)
     NearestPointInfoS GetNearestPointFromRefByProjectionMethod(const Vector3d& ref, const Point3dS& start) const;
     NearestPointInfoS GetNearestPointWhenParamOver(const Vector3d& ref, double u, double v) const;
-    //// Å‹ß“_‚ğæ“¾‚·‚é(ƒAƒCƒ\ƒ‰ƒCƒ“–@)
+    //// æœ€è¿‘ç‚¹ã‚’å–å¾—ã™ã‚‹(ã‚¢ã‚¤ã‚½ãƒ©ã‚¤ãƒ³æ³•)
     //NearestPointInfoS GetNearestPointFromRefByIsolineMethod(const Vector3d& ref, const Point3dS& start) const;
 
-    // ƒƒbƒVƒ…•\¦
+    // ãƒ¡ãƒƒã‚·ãƒ¥è¡¨ç¤º
     virtual void DrawMeshInternal() const { };
     void DrawMesh() const { DrawUsingDisplayList(&_mesh_displayList, [&] { return (*this).DrawMeshInternal(); }); }
 
-    // ƒ°[i=1tok]ƒ°[j=1toL] Q(i,j)N[i,n](u)N[j,m](v) ‚ğŒvZ‚·‚é
+    // Î£[i=1tok]Î£[j=1toL] Q(i,j)N[i,n](u)N[j,m](v) ã‚’è¨ˆç®—ã™ã‚‹
     Vector3d CalcVectorWithBasisFunctions(const double* const BF_array_U, const double* const BF_array_V) const;
 
-    // ƒ°[i=1tok]ƒ°[j=1toL] w(i,j)N[i,n](u)N[j,m](v) ‚ğŒvZ‚·‚é
+    // Î£[i=1tok]Î£[j=1toL] w(i,j)N[i,n](u)N[j,m](v) ã‚’è¨ˆç®—ã™ã‚‹
     double CalcWeightWithBasisFunctions(const double* const BF_array_U, const double* const BF_array_V) const;
 
 private:
 
-    // ƒIƒuƒWƒFƒNƒg•`‰æ
+    // ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæç”»
     void Draw() const override;
 
-    // §Œä“_•`‰æ
+    // åˆ¶å¾¡ç‚¹æç”»
     void DrawCPsInternal() const override;
 
-    // å‹È—¦‚ğæ“¾
+    // ä¸»æ›²ç‡ã‚’å–å¾—
     void GetPrincipalCurvatures(double u, double v, double* const max_kappa, double* const min_kappa) const;
-    // •½‹Ï‹È—¦æ“¾
+    // å¹³å‡æ›²ç‡å–å¾—
     double GetMeanCurvature(double u, double v) const;
-    // ƒKƒEƒX‹È—¦æ“¾
+    // ã‚¬ã‚¦ã‚¹æ›²ç‡å–å¾—
     double GetGaussianCurvature(double u, double v) const;
 
 public:
 
-    // w’è‚µ‚½’[‚Ì‹Èü‚ğæ“¾‚·‚é
+    // æŒ‡å®šã—ãŸç«¯ã®æ›²ç·šã‚’å–å¾—ã™ã‚‹
     virtual std::unique_ptr<Curve> GetEdgeCurve(SurfaceEdge edge) const = 0;
 
-    // w’è‚µ‚½ƒpƒ‰ƒ[ƒ^‚ÌƒAƒCƒ\‹Èü‚ğæ“¾‚·‚é
+    // æŒ‡å®šã—ãŸãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®ã‚¢ã‚¤ã‚½æ›²ç·šã‚’å–å¾—ã™ã‚‹
     virtual std::unique_ptr<Curve> GetIsoCurve(ParamUV const_param, double param, const GLdouble* const color = Color::red, GLdouble width = 3) const ;
 
-    // QÆ“_‚©‚ç‚ÌÅ‹ß“_‚ğæ“¾
+    // å‚ç…§ç‚¹ã‹ã‚‰ã®æœ€è¿‘ç‚¹ã‚’å–å¾—
     virtual NearestPointInfoS GetNearestPointInfoFromRef(const Vector3d& ref, const NearestSearch search = Project) const = 0;
 
-    // Å‹ß“_‚ğæ“¾‚·‚é(ƒAƒCƒ\ƒ‰ƒCƒ“–@)
+    // æœ€è¿‘ç‚¹ã‚’å–å¾—ã™ã‚‹(ã‚¢ã‚¤ã‚½ãƒ©ã‚¤ãƒ³æ³•)
     NearestPointInfoS GetNearestPointFromRefByIsolineMethod(const Vector3d& ref, const Point3dS& start) const;
 
-    // •`‰æ”ÍˆÍ‚ğŠe•ûŒüsplit_numŒÂ‚É•ªŠ„‚·‚é‚æ‚¤‚ÈˆÊ’uƒxƒNƒgƒ‹‚ğæ“¾‚·‚é
+    // æç”»ç¯„å›²ã‚’å„æ–¹å‘split_numå€‹ã«åˆ†å‰²ã™ã‚‹ã‚ˆã†ãªä½ç½®ãƒ™ã‚¯ãƒˆãƒ«ã‚’å–å¾—ã™ã‚‹
     void GetPositionVectors(vector<vector<Vector3d>>& pnts, int U_split_num, int V_split_num) const;
 
-    // ’Ê‰ß“_‚©‚ç‹t•ÏŠ·‚µ‚Ä‹È–Ê‚ğæ“¾‚·‚é
+    // é€šéç‚¹ã‹ã‚‰é€†å¤‰æ›ã—ã¦æ›²é¢ã‚’å–å¾—ã™ã‚‹
     virtual std::unique_ptr<Surface> GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, GLdouble width) const = 0;
 
     virtual ~Surface() { glDeleteLists(_mesh_displayList, 1); }

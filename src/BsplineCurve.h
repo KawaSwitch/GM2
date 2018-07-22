@@ -2,28 +2,28 @@
 
 #include "Curve.h"
 
-// BƒXƒvƒ‰ƒCƒ“‹Èü
+// Bã‚¹ãƒ—ãƒ©ã‚¤ãƒ³æ›²ç·š
 class BsplineCurve : public Curve
 {
 protected:
 
-    int _nknot; // ƒmƒbƒgƒxƒNƒgƒ‹ƒTƒCƒY
-    vector<double> _knot; // ƒmƒbƒgƒxƒNƒgƒ‹
+    int _nknot; // ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«ã‚µã‚¤ã‚º
+    vector<double> _knot; // ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«
 
-    // ŠeíƒxƒNƒgƒ‹•`‰æ
+    // å„ç¨®ãƒ™ã‚¯ãƒˆãƒ«æç”»
     void DrawFirstDiffVectorsInternal() const override;
     void DrawSecondDiffVectorsInternal() const override;
     void DrawNormalVectorsInternal() const override;
     void DrawCurvatureVectorsInternal() const override;
 
-    // –‘O•`‰æ
+    // äº‹å‰æç”»
     void PreDraw() const override;
 
-    // ƒoƒbƒtƒ@ƒIƒuƒWƒFƒNƒg
+    // ãƒãƒƒãƒ•ã‚¡ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
     void CreateVBO() const override;
     void DrawVBO() const override;
 
-    // ƒmƒbƒgƒxƒNƒgƒ‹İ’è
+    // ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«è¨­å®š
     void SetKnotVector(const double* const knot, int size);
 
 public:
@@ -34,20 +34,20 @@ public:
     virtual vector<Vector3d> GetPositionVectorsByKnots(int splitSegCnt = 1) const;
     virtual vector<Point3dC> GetPointsByKnots(int splitSegCnt = 1) const;
 
-    // ŠeíƒxƒNƒgƒ‹æ“¾
+    // å„ç¨®ãƒ™ã‚¯ãƒˆãƒ«å–å¾—
     Vector3d GetPositionVector(double t) const override;
     Vector3d GetFirstDiffVector(double t) const override;
     Vector3d GetSecondDiffVector(double t) const override;
 
-    // ‹t•ÏŠ·
+    // é€†å¤‰æ›
     std::unique_ptr<Curve> GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdouble* const color, GLdouble width) const override;
 
-    // Å‹ß“_æ“¾
+    // æœ€è¿‘ç‚¹å–å¾—
     NearestPointInfoC GetNearestPointInfoFromRef(const Vector3d& ref) const override;
 
-    // ƒmƒbƒg’Ç‰Á
+    // ãƒãƒƒãƒˆè¿½åŠ 
     void AddKnot(double t, bool isDeleteOrigin = true);
 };
 
-// ’ÊŠÏ“_‚©‚ç‹t•ÏŠ·‚µ‚Ä‹Èü‚ğæ“¾‚·‚é
+// é€šè¦³ç‚¹ã‹ã‚‰é€†å¤‰æ›ã—ã¦æ›²ç·šã‚’å–å¾—ã™ã‚‹
 std::unique_ptr<Curve> GetBsplineCurveFromPoints(const vector<Vector3d>& pnts, int ord, const GLdouble* const color, GLdouble width);

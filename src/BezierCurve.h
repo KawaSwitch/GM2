@@ -6,16 +6,16 @@ class BezierCurve : public Curve
 {
 private:
 
-    // ŠeíƒxƒNƒgƒ‹•`‰æ 
+    // å„ç¨®ãƒ™ã‚¯ãƒˆãƒ«æç”» 
     void DrawFirstDiffVectorsInternal() const override;
     void DrawSecondDiffVectorsInternal() const override;
     void DrawNormalVectorsInternal() const override;
     void DrawCurvatureVectorsInternal() const override;
 
-    // –‘O•`‰æ
+    // äº‹å‰æç”»
     void PreDraw() const override;
 
-    // ƒoƒbƒtƒ@ƒIƒuƒWƒFƒNƒg
+    // ãƒãƒƒãƒ•ã‚¡ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
     void CreateVBO() const override;
     void DrawVBO() const override;
 
@@ -23,14 +23,14 @@ public:
 
     BezierCurve(int mord, const ControlPoint* const cp, int cp_size, const GLdouble* const color, GLdouble width = 1.0, double resol = 20);
 
-    // ŠeíƒxƒNƒgƒ‹æ“¾
+    // å„ç¨®ãƒ™ã‚¯ãƒˆãƒ«å–å¾—
     Vector3d GetPositionVector(double t) const override;
     Vector3d GetFirstDiffVector(double t) const override;
     Vector3d GetSecondDiffVector(double t) const override;
 
-    // ‹t•ÏŠ·
+    // é€†å¤‰æ›
     std::unique_ptr<Curve> GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdouble* const color, GLdouble width) const override;
 
-    // Å‹ß“_æ“¾
+    // æœ€è¿‘ç‚¹å–å¾—
     NearestPointInfoC GetNearestPointInfoFromRef(const Vector3d& ref) const override;
 };

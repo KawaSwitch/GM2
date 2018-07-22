@@ -22,24 +22,24 @@ BsplineSurface::BsplineSurface(
     SetColor(color);
     _resolution = resol;
 
-    // VBO‚ğg‚¤
+    // VBOã‚’ä½¿ã†
     _isUseVBO = true;
-    // IBO‚ğg‚¤
+    // IBOã‚’ä½¿ã†
     //_isUseIBO = true;
 }
 
-// ƒmƒbƒgƒxƒNƒgƒ‹İ’è
+// ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«è¨­å®š
 void BsplineSurface::SetKnotVector(const double* const knot, int size, vector<double>& _knot)
 {
     if (size <= 0)
-        Error::ShowAndExit("ƒmƒbƒgƒxƒNƒgƒ‹İ’è¸”s", "knot-vector size must be over 0.");
+        Error::ShowAndExit("ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«è¨­å®šå¤±æ•—", "knot-vector size must be over 0.");
 
     _knot.reserve(size);
     for (int i = 0; i < size; i++)
         _knot.emplace_back(knot[i]);
 }
 
-// w’è‚µ‚½’[‚Ì‹Èü‚ğæ“¾‚·‚é
+// æŒ‡å®šã—ãŸç«¯ã®æ›²ç·šã‚’å–å¾—ã™ã‚‹
 std::unique_ptr<Curve> BsplineSurface::GetEdgeCurve(const SurfaceEdge edge) const
 {
     vector<ControlPoint> edge_cp = GetEdgeCurveControlPoint(edge);
@@ -49,16 +49,16 @@ std::unique_ptr<Curve> BsplineSurface::GetEdgeCurve(const SurfaceEdge edge) cons
     return std::unique_ptr<Curve>(new BsplineCurve(edge_ord, &edge_cp[0], (int)edge_cp.size(), &edge_knot[0], Color::red, _mesh_width));
 }
 
-// –‘O•`‰æ
+// äº‹å‰æç”»
 void BsplineSurface::PreDraw() const
 {   
-    // ‰ğ‘œ“x
+    // è§£åƒåº¦
     int RES = (int)_resolution;
 
     vector<vector<Vector3d>> pnt;
     vector<vector<Vector3d>> nor;
 
-    // •`‰æ”ÍˆÍ‚ğ—\‚ßİ’è
+    // æç”»ç¯„å›²ã‚’äºˆã‚è¨­å®š
     int u_min = (int)(_knotU[_ordU - 1] * RES);
     int v_min = (int)(_knotV[_ordV - 1] * RES);
     int u_max = (int)(_knotU[_ncpntU] * RES);
@@ -88,14 +88,14 @@ void BsplineSurface::PreDraw() const
 
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, _color);
 
-    // OŠpƒ|ƒŠƒSƒ“•\¦
+    // ä¸‰è§’ãƒãƒªã‚´ãƒ³è¡¨ç¤º
     for (int i = u_min; i < u_max; i++)
     {
         for (int j = v_min; j < v_max; j++)
         {
             glBegin(GL_TRIANGLES);
 
-            // ãOŠp
+            // ä¸Šä¸‰è§’
             glNormal3d(nor[i - u_min][j - v_min]);
             glVertex3d(pnt[i - u_min][j - v_min]);
 
@@ -105,7 +105,7 @@ void BsplineSurface::PreDraw() const
             glNormal3d(nor[i - u_min][j + 1 - v_min]);
             glVertex3d(pnt[i - u_min][j + 1 - v_min]);
             
-            // ‰ºOŠp
+            // ä¸‹ä¸‰è§’
             glNormal3d(nor[i + 1 - u_min][j - v_min]);
             glVertex3d(pnt[i + 1 - u_min][j - v_min]);
             
@@ -120,16 +120,16 @@ void BsplineSurface::PreDraw() const
     };
 }
 
-// ƒƒbƒVƒ…•`‰æ
+// ãƒ¡ãƒƒã‚·ãƒ¥æç”»
 void BsplineSurface::DrawMeshInternal() const
 {
     Vector3d pnt;
 
-    // ƒƒbƒVƒ…‚ÌF‚Í3dv‚Å“n‚µ‚½•û‚ªãY—í(ƒ¿=0)
+    // ãƒ¡ãƒƒã‚·ãƒ¥ã®è‰²ã¯3dvã§æ¸¡ã—ãŸæ–¹ãŒç¶ºéº—(Î±=0)
     glColor4dv(_color);
     glLineWidth(_mesh_width);
 
-    // U•ûŒü
+    // Uæ–¹å‘
     for (int i = (int)(_knotU[_ordU - 1] * 100); i <= (int)(_knotU[_ncpntU] * 100); i += 10)
     {
         glBegin(GL_LINE_STRIP);
@@ -145,7 +145,7 @@ void BsplineSurface::DrawMeshInternal() const
 
         glEnd();
     }
-    // V•ûŒü
+    // Væ–¹å‘
     for (int i = (int)(_knotV[_ordV - 1] * 100); i <= (int)(_knotV[_ncpntV] * 100); i += 10)
     {
         glBegin(GL_LINE_STRIP);
@@ -163,10 +163,10 @@ void BsplineSurface::DrawMeshInternal() const
     }
 }
 
-// ’¸“_ƒoƒbƒtƒ@(VBO)ì¬
+// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡(VBO)ä½œæˆ
 void BsplineSurface::CreateVBO() const
 {
-    // ‰ğ‘œ“x
+    // è§£åƒåº¦
     int RES = (int)_resolution;
 
     vector<vector<Vector3d>> pnt;
@@ -174,7 +174,7 @@ void BsplineSurface::CreateVBO() const
     vector<Vector3d> pnt_vbo;
     vector<Vector3d> nor_vbo;
 
-    // •`‰æ”ÍˆÍ‚ğ—\‚ßİ’è
+    // æç”»ç¯„å›²ã‚’äºˆã‚è¨­å®š
     int u_min = (int)(_knotU[_ordU - 1] * RES);
     int v_min = (int)(_knotV[_ordV - 1] * RES);
     int u_max = (int)(_knotU[_ncpntU] * RES);
@@ -202,22 +202,22 @@ void BsplineSurface::CreateVBO() const
         }
     }
 
-    // VBO—p‚Ì’¸“_æ“¾
+    // VBOç”¨ã®é ‚ç‚¹å–å¾—
     for (int i = u_min; i < u_max; i++)
     {
         for (int j = v_min; j < v_max; j++)
         {
-            // ãOŠp
+            // ä¸Šä¸‰è§’
             pnt_vbo.push_back(pnt[i - u_min][j - v_min]);
             pnt_vbo.push_back(pnt[i + 1 - u_min][j - v_min]);
             pnt_vbo.push_back(pnt[i - u_min][j + 1 - v_min]);
 
-            // ‰ºOŠp
+            // ä¸‹ä¸‰è§’
             pnt_vbo.push_back(pnt[i + 1 - u_min][j - v_min]);
             pnt_vbo.push_back(pnt[i + 1 - u_min][j + 1 - v_min]);
             pnt_vbo.push_back(pnt[i - u_min][j + 1 - v_min]);
 
-            // –@ü
+            // æ³•ç·š
             nor_vbo.push_back(nor[i - u_min][j - v_min]);
             nor_vbo.push_back(nor[i + 1 - u_min][j - v_min]);
             nor_vbo.push_back(nor[i - u_min][j + 1 - v_min]);
@@ -230,7 +230,7 @@ void BsplineSurface::CreateVBO() const
 
     _nVertex_cache = (int)pnt_vbo.size();
 
-    // VBO‚Ìİ’è
+    // VBOã®è¨­å®š
     glGenBuffers(1, &_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(double) * _nVertex_cache * 3, &pnt_vbo[0], GL_DYNAMIC_DRAW);
@@ -242,22 +242,22 @@ void BsplineSurface::CreateVBO() const
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-// VBO‚Å•`‰æ
+// VBOã§æç”»
 void BsplineSurface::DrawVBO() const
 {
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, _color);
 
-    // ’¸“_
+    // é ‚ç‚¹
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(3, GL_DOUBLE, 0, 0);
 
-    // –@ü
+    // æ³•ç·š
     glBindBuffer(GL_ARRAY_BUFFER, _vbo_nor);
     glEnableClientState(GL_NORMAL_ARRAY);
     glNormalPointer(GL_DOUBLE, 0, (void *)0);
 
-    // •`‰æ
+    // æç”»
     glDrawArrays(GL_TRIANGLES, 0, _nVertex_cache);
 
     // clean up
@@ -266,10 +266,10 @@ void BsplineSurface::DrawVBO() const
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-// ’¸“_ƒoƒbƒtƒ@(IBO)ì¬
+// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡(IBO)ä½œæˆ
 void BsplineSurface::CreateIBO() const
 {
-    // ‰ğ‘œ“x
+    // è§£åƒåº¦
     int RES = 15;
 
     vector<vector<Vector3d>> pnt;
@@ -278,7 +278,7 @@ void BsplineSurface::CreateIBO() const
     vector<Vector3d> nor_vbo;
     vector<GLushort> pnt_ibo;
 
-    // •`‰æ”ÍˆÍ‚ğ—\‚ßİ’è
+    // æç”»ç¯„å›²ã‚’äºˆã‚è¨­å®š
     int u_min = (int)(_knotU[_ordU - 1] * RES);
     int v_min = (int)(_knotV[_ordV - 1] * RES);
     int u_max = (int)(_knotU[_ncpntU] * RES);
@@ -306,7 +306,7 @@ void BsplineSurface::CreateIBO() const
         }
     }
 
-    // IBO—p‚Ì’¸“_æ“¾
+    // IBOç”¨ã®é ‚ç‚¹å–å¾—
     for (int i = u_min; i < u_max; i++)
     {
         for (int j = v_min; j < v_max; j++)
@@ -321,7 +321,7 @@ void BsplineSurface::CreateIBO() const
             //pnt_vbo.push_back(pnt[i + 1 - u_min][j + 1 - v_min]);
             //pnt_vbo.push_back(pnt[i - u_min][j + 1 - v_min]);
 
-            //// –@ü
+            //// æ³•ç·š
             //nor_vbo.push_back(nor[i - u_min][j - v_min]);
             //nor_vbo.push_back(nor[i + 1 - u_min][j - v_min]);
             //nor_vbo.push_back(nor[i - u_min][j + 1 - v_min]);
@@ -334,13 +334,13 @@ void BsplineSurface::CreateIBO() const
 
     _nVertex_cache = (int)pnt_vbo.size();
 
-    // VBO‚Ìİ’è
+    // VBOã®è¨­å®š
     glGenBuffers(1, &_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(double) * _nVertex_cache * 3, &pnt_vbo[0], GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    // IBO‚Ìİ’è
+    // IBOã®è¨­å®š
     glGenBuffers(1, &_ibo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(double) * _nVertex_cache * 3, &pnt_vbo[0], GL_DYNAMIC_DRAW);
@@ -352,22 +352,22 @@ void BsplineSurface::CreateIBO() const
     //glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-// IBO‚Å•`‰æ
+// IBOã§æç”»
 void BsplineSurface::DrawIBO() const
 {
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, _color);
 
-    // ’¸“_
+    // é ‚ç‚¹
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo);
     //glEnableClientState(GL_VERTEX_ARRAY);
     //glVertexPointer(3, GL_DOUBLE, 0, 0);
 
-    //// –@ü
+    //// æ³•ç·š
     //glBindBuffer(GL_ARRAY_BUFFER, _vbo_nor);
     //glEnableClientState(GL_NORMAL_ARRAY);
     //glNormalPointer(GL_DOUBLE, 0, (void *)0);
 
-    // •`‰æ
+    // æç”»
     glDrawElements(GL_TRIANGLES, _nVertex_cache, GL_UNSIGNED_INT, (void *)0);
 
     // clean up
@@ -376,7 +376,7 @@ void BsplineSurface::DrawIBO() const
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-// ÚüƒxƒNƒgƒ‹•`‰æ
+// æ¥ç·šãƒ™ã‚¯ãƒˆãƒ«æç”»
 void BsplineSurface::DrawFirstDiffVectorsInternal() const
 {
     Vector3d pnt, diff;
@@ -391,15 +391,15 @@ void BsplineSurface::DrawFirstDiffVectorsInternal() const
             double u = (double)i / 100;
             double v = (double)j / 100;
 
-            // U•ûŒü
-            glColor4dv(Color::red); // Ô
+            // Uæ–¹å‘
+            glColor4dv(Color::red); // èµ¤
             pnt = GetPositionVector(u, v);
             diff = GetFirstDiffVectorU(u, v).Normalize();
             glVertex3d(pnt);
             glVertex3d(pnt + diff);
 
-            // V•ûŒü
-            glColor4dv(Color::green); // —Î
+            // Væ–¹å‘
+            glColor4dv(Color::green); // ç·‘
             diff = GetFirstDiffVectorV(u, v).Normalize();
             glVertex3d(pnt);
             glVertex3d(pnt + diff);
@@ -409,7 +409,7 @@ void BsplineSurface::DrawFirstDiffVectorsInternal() const
     glEnd();
 }
 
-// 2ŠK”÷•ªƒxƒNƒgƒ‹•`‰æ
+// 2éšå¾®åˆ†ãƒ™ã‚¯ãƒˆãƒ«æç”»
 void BsplineSurface::DrawSecondDiffVectorsInternal() const
 {
     Vector3d pnt, diff;
@@ -424,21 +424,21 @@ void BsplineSurface::DrawSecondDiffVectorsInternal() const
             double u = (double)i / 100;
             double v = (double)j / 100;
 
-            // UU”÷•ª
-            glColor3d(1.0, 0.2, 0.2); // Ô
+            // UUå¾®åˆ†
+            glColor3d(1.0, 0.2, 0.2); // èµ¤
             pnt = GetPositionVector(u, v);
             diff = GetSecondDiffVectorUU(u, v).Normalize();
             glVertex3d(pnt);
             glVertex3d(pnt + diff);
 
-            // UV”÷•ª
-            glColor3d(0.2, 1.0, 0.2); // —Î
+            // UVå¾®åˆ†
+            glColor3d(0.2, 1.0, 0.2); // ç·‘
             diff = GetSecondDiffVectorUV(u, v).Normalize();
             glVertex3d(pnt);
             glVertex3d(pnt + diff);
 
-            // VV”÷•ª
-            glColor3d(0.2, 0.2, 1.0); // Â
+            // VVå¾®åˆ†
+            glColor3d(0.2, 0.2, 1.0); // é’
             diff = GetSecondDiffVectorVV(u, v).Normalize();
             glVertex3d(pnt);
             glVertex3d(pnt + diff);
@@ -448,7 +448,7 @@ void BsplineSurface::DrawSecondDiffVectorsInternal() const
     glEnd();
 }
 
-// –@üƒxƒNƒgƒ‹•`‰æ
+// æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«æç”»
 void BsplineSurface::DrawNormalVectorsInternal() const
 { 
     Vector3d pnt, normal;
@@ -463,8 +463,8 @@ void BsplineSurface::DrawNormalVectorsInternal() const
             double u = (double)i / 100;
             double v = (double)j / 100;
 
-            // –@ü
-            glColor4dv(Color::blue); // Â
+            // æ³•ç·š
+            glColor4dv(Color::blue); // é’
             pnt = GetPositionVector(u, v);
             normal = GetNormalVector(u, v).Normalize();
             glVertex3d(pnt);
@@ -475,7 +475,7 @@ void BsplineSurface::DrawNormalVectorsInternal() const
     glEnd();
 }
 
-// ‹È—¦”¼Œa•`‰æ
+// æ›²ç‡åŠå¾„æç”»
 void BsplineSurface::DrawCurvatureVectorsInternal() const
 {
     Vector3d pnt, curv;
@@ -493,15 +493,15 @@ void BsplineSurface::DrawCurvatureVectorsInternal() const
             pnt = GetPositionVector(u, v);
             curv = GetCurvatureVector(u, v);
 
-            // ‹È—¦”¼Œa
-            glColor4dv(Color::pink); // ƒsƒ“ƒN
+            // æ›²ç‡åŠå¾„
+            glColor4dv(Color::pink); // ãƒ”ãƒ³ã‚¯
             glBegin(GL_LINES);
             glVertex3d(pnt);
             glVertex3d(pnt + curv);
             glEnd();
 
-            // ‹È—¦’†S
-            glColor4dv(Color::light_green); // ‰©—Î
+            // æ›²ç‡ä¸­å¿ƒ
+            glColor4dv(Color::light_green); // é»„ç·‘
             glBegin(GL_POINTS);
             glVertex3d(pnt + curv);
             glEnd();
@@ -509,7 +509,7 @@ void BsplineSurface::DrawCurvatureVectorsInternal() const
     }
 }
 
-// w’èƒpƒ‰ƒ[ƒ^‚ÌƒxƒNƒgƒ‹‚ğŠî’êŠÖ”‚©‚çZo‚·‚é
+// æŒ‡å®šãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’åŸºåº•é–¢æ•°ã‹ã‚‰ç®—å‡ºã™ã‚‹
 Vector3d BsplineSurface::CalcVector(
     const double u, const double v,
     const function<double(const unsigned, const unsigned, const double, const double* const)> BasisFuncU,
@@ -517,31 +517,31 @@ Vector3d BsplineSurface::CalcVector(
 {
     Vector3d vector;
 
-    // Šî’êŠÖ””z—ñ(s—ñŒvZ—p)
+    // åŸºåº•é–¢æ•°é…åˆ—(è¡Œåˆ—è¨ˆç®—ç”¨)
     double* N_array_U = new double[_ncpntU];
     double* N_array_V = new double[_ncpntV];
 
-    // Šî’êŠÖ””z—ñ‚ÖŠeŠî’êŠÖ”‚ğ‘ã“ü
+    // åŸºåº•é–¢æ•°é…åˆ—ã¸å„åŸºåº•é–¢æ•°ã‚’ä»£å…¥
     for (int i = 0; i < _ncpntU; i++)
         N_array_U[i] = BasisFuncU(i, _ordU, u, &_knotU[0]);
     for (int i = 0; i < _ncpntV; i++)
         N_array_V[i] = BasisFuncV(i, _ordV, v, &_knotV[0]);
 
-    // ƒxƒNƒgƒ‹Zo(s—ñŒvZ)
+    // ãƒ™ã‚¯ãƒˆãƒ«ç®—å‡º(è¡Œåˆ—è¨ˆç®—)
     vector = CalcVectorWithBasisFunctions(&N_array_U[0], &N_array_V[0]);
 
     delete[](delete[] N_array_U, N_array_V);
     return vector;
 }
 
-// ˆÊ’uƒxƒNƒgƒ‹æ“¾
+// ä½ç½®ãƒ™ã‚¯ãƒˆãƒ«å–å¾—
 Vector3d BsplineSurface::GetPositionVector(const double u, const double v) const
 {
     // u:0-diff v:0-diff
     return CalcVector(u, v, CalcBsplineFunc, CalcBsplineFunc);
 }
 
-// ÚüƒxƒNƒgƒ‹æ“¾
+// æ¥ç·šãƒ™ã‚¯ãƒˆãƒ«å–å¾—
 Vector3d BsplineSurface::GetFirstDiffVectorU(const double u, const double v) const
 {
     // u:1-diff v:0-diff
@@ -553,7 +553,7 @@ Vector3d BsplineSurface::GetFirstDiffVectorV(const double u, const double v) con
     return CalcVector(u, v, CalcBsplineFunc, Calc1DiffBsplineFunc);
 }
 
-// 2ŠK”÷•ªƒxƒNƒgƒ‹æ“¾
+// 2éšå¾®åˆ†ãƒ™ã‚¯ãƒˆãƒ«å–å¾—
 Vector3d BsplineSurface::GetSecondDiffVectorUU(const double u, const double v) const
 {
     // u:2diff v:0-diff
@@ -570,13 +570,13 @@ Vector3d BsplineSurface::GetSecondDiffVectorVV(const double u, const double v) c
     return CalcVector(u, v, CalcBsplineFunc, Calc2DiffBsplineFunc);
 }
 
-// ƒmƒbƒgƒxƒNƒgƒ‹‚ğ‚à‚Æ‚É‚µ‚Ä“_ŒQ‚ğæ“¾‚·‚é(pnts[v][u]‚Æ•À‚×‚é)
-// splitSegCnt: ƒZƒOƒƒ“ƒg‚ğ‰½•ªŠ„‚·‚é‚©‚Ì‰ñ”(ƒfƒtƒHƒ‹ƒg‚Í1 = •ªŠ„‚µ‚È‚¢)
-// NOTE: Vector3d‚ÆPoint3d‚ÍŒp³ŠÖŒW‚É‚ ‚èŒ^•ÏŠ·‰Â”\‚Å‚ ‚é‚ª,
-//           ƒRƒ“ƒeƒig—p‚Ì”h¶—v‘f‚Ì“n‚µ•û‚ª•¡G‚È‚½‚ß‚±‚ÌŠÖ”‚ğc‚µ‚½
+// ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«ã‚’ã‚‚ã¨ã«ã—ã¦ç‚¹ç¾¤ã‚’å–å¾—ã™ã‚‹(pnts[v][u]ã¨ä¸¦ã¹ã‚‹)
+// splitSegCnt: ã‚»ã‚°ãƒ¡ãƒ³ãƒˆã‚’ä½•åˆ†å‰²ã™ã‚‹ã‹ã®å›æ•°(ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯1 = åˆ†å‰²ã—ãªã„)
+// NOTE: Vector3dã¨Point3dã¯ç¶™æ‰¿é–¢ä¿‚ã«ã‚ã‚Šå‹å¤‰æ›å¯èƒ½ã§ã‚ã‚‹ãŒ,
+//           ã‚³ãƒ³ãƒ†ãƒŠä½¿ç”¨æ™‚ã®æ´¾ç”Ÿè¦ç´ ã®æ¸¡ã—æ–¹ãŒè¤‡é›‘ãªãŸã‚ã“ã®é–¢æ•°ã‚’æ®‹ã—ãŸ
 void BsplineSurface::GetPointsByKnots(vector<vector<Vector3d>>& pnts, const int splitSegCnt_U, const int splitSegCnt_V) const
 {
-    // “_ŒQ‚ÌƒNƒŠƒA
+    // ç‚¹ç¾¤ã®ã‚¯ãƒªã‚¢
     for (auto& pntRow : pnts)
         pntRow.clear();
     pnts.clear();
@@ -592,7 +592,7 @@ void BsplineSurface::GetPointsByKnots(vector<vector<Vector3d>>& pnts, const int 
     vector<vector<Point3dS>> pntsInfo;
     this->GetPointsInfoByKnots(pntsInfo, splitSegCnt_U, splitSegCnt_V);
 
-    // “_ŒQî•ñ‚©‚çÀ•Wî•ñ‚¾‚¯‚ğ”²‚«æ‚é
+    // ç‚¹ç¾¤æƒ…å ±ã‹ã‚‰åº§æ¨™æƒ…å ±ã ã‘ã‚’æŠœãå–ã‚‹
     for (int i = 0, r = (int)pntsInfo.size(); i < r; ++i)
     {
         vector<Vector3d> pntsRow;
@@ -604,19 +604,19 @@ void BsplineSurface::GetPointsByKnots(vector<vector<Vector3d>>& pnts, const int 
         pnts.push_back(pntsRow);
     }
 }
-// ƒmƒbƒgƒxƒNƒgƒ‹‚ğ‚à‚Æ‚É‚µ‚Ä“_ŒQî•ñ‚ğæ“¾‚·‚é(pnts[v][u]‚Æ•À‚×‚é)
-// splitSegCnt: ƒZƒOƒƒ“ƒg‚ğ‰½•ªŠ„‚·‚é‚©‚Ì‰ñ”(ƒfƒtƒHƒ‹ƒg‚Í1 = •ªŠ„‚µ‚È‚¢)
+// ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«ã‚’ã‚‚ã¨ã«ã—ã¦ç‚¹ç¾¤æƒ…å ±ã‚’å–å¾—ã™ã‚‹(pnts[v][u]ã¨ä¸¦ã¹ã‚‹)
+// splitSegCnt: ã‚»ã‚°ãƒ¡ãƒ³ãƒˆã‚’ä½•åˆ†å‰²ã™ã‚‹ã‹ã®å›æ•°(ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯1 = åˆ†å‰²ã—ãªã„)
 void BsplineSurface::GetPointsInfoByKnots(vector<vector<Point3dS>>& pnts, const int splitSegCnt_U, const int splitSegCnt_V) const
 {
-    // “_ŒQî•ñ‚ÌƒNƒŠƒA
+    // ç‚¹ç¾¤æƒ…å ±ã®ã‚¯ãƒªã‚¢
     for (auto& pntRow : pnts)
         pntRow.clear();
     pnts.clear();
 
     double skip;
-    vector<double> knotsU, knotsV; // “_ŒQ‚ğæ“¾‚·‚éƒpƒ‰ƒ[ƒ^
+    vector<double> knotsU, knotsV; // ç‚¹ç¾¤ã‚’å–å¾—ã™ã‚‹ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 
-    // U•ûŒüƒpƒ‰ƒ[ƒ^ˆÊ’u
+    // Uæ–¹å‘ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ä½ç½®
     {
         for (size_t i = _ordU - 1, kn = _knotU.size(); i < kn - _ordU; ++i)
         {
@@ -627,7 +627,7 @@ void BsplineSurface::GetPointsInfoByKnots(vector<vector<Point3dS>>& pnts, const 
         }
         knotsU.push_back(_knotU[_knotU.size() - _ordU]);
     }
-    // V•ûŒüƒpƒ‰ƒ[ƒ^ˆÊ’u
+    // Væ–¹å‘ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ä½ç½®
     {
         for (size_t i = _ordV - 1, kn = _knotV.size(); i < kn - _ordV; ++i)
         {
@@ -639,7 +639,7 @@ void BsplineSurface::GetPointsInfoByKnots(vector<vector<Point3dS>>& pnts, const 
         knotsV.push_back(_knotV[_knotV.size() - _ordV]);
     }
 
-    // ˆÊ’uƒxƒNƒgƒ‹‚ğ‹‚ß‚é
+    // ä½ç½®ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ±‚ã‚ã‚‹
     for (size_t j = 0, kv_size = knotsV.size(); j < kv_size; ++j)
     {
         vector<Point3dS> p_vec;
@@ -652,22 +652,22 @@ void BsplineSurface::GetPointsInfoByKnots(vector<vector<Point3dS>>& pnts, const 
     }
 }
 
-// ’Ê‰ß“_‚©‚ç‹t•ÏŠ·‚µ‚ÄBƒXƒvƒ‰ƒCƒ“‹È–Ê‚ğæ“¾‚·‚é(ƒƒ“ƒoŠÖ””Å)
+// é€šéç‚¹ã‹ã‚‰é€†å¤‰æ›ã—ã¦Bã‚¹ãƒ—ãƒ©ã‚¤ãƒ³æ›²é¢ã‚’å–å¾—ã™ã‚‹(ãƒ¡ãƒ³ãƒé–¢æ•°ç‰ˆ)
 std::unique_ptr<Surface> BsplineSurface::GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, const GLdouble resol) const
 {
     return GetBsplineSurfaceFromPoints(pnts, 4, 4, color, resol);
 }
-// ’Ê‰ß“_‚©‚ç‹t•Ï‰»‚µ‚ÄBƒXƒvƒ‰ƒCƒ“‹È–Ê‚ğæ“¾‚·‚é
+// é€šéç‚¹ã‹ã‚‰é€†å¤‰åŒ–ã—ã¦Bã‚¹ãƒ—ãƒ©ã‚¤ãƒ³æ›²é¢ã‚’å–å¾—ã™ã‚‹
 std::unique_ptr<Surface> GetBsplineSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const int ordU, const int ordV, const GLdouble* const color, const GLdouble resol)
 {
-    int passPntsCntU, passPntsCntV; // Še•ûŒü‚Ì’Ê‰ß“_”
-    int new_ncpntU, new_ncpntV; // §Œä“_”
-    //int new_nknotU, new_nknotV; // ƒmƒbƒg—ñƒTƒCƒY
+    int passPntsCntU, passPntsCntV; // å„æ–¹å‘ã®é€šéç‚¹æ•°
+    int new_ncpntU, new_ncpntV; // åˆ¶å¾¡ç‚¹æ•°
+    //int new_nknotU, new_nknotV; // ãƒãƒƒãƒˆåˆ—ã‚µã‚¤ã‚º
 
-    vector<double> knotU, knotV; // ƒmƒbƒgƒxƒNƒgƒ‹
-    vector<ControlPoint> cps; // §Œä“_
+    vector<double> knotU, knotV; // ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«
+    vector<ControlPoint> cps; // åˆ¶å¾¡ç‚¹
 
-    // Še•Ï”‰Šú‰»
+    // å„å¤‰æ•°åˆæœŸåŒ–
     if (IsPassingPntsSetCorrectly(pnts))
     {
         passPntsCntU = (int)pnts[0].size();
@@ -682,15 +682,15 @@ std::unique_ptr<Surface> GetBsplineSurfaceFromPoints(const vector<vector<Vector3
     else
         return nullptr;
 
-    // ƒmƒbƒgƒxƒNƒgƒ‹‚ÌŒˆ’è
+    // ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«ã®æ±ºå®š
     CalcKnotVectorByPassingPnts(pnts, ordU, ordV, &knotU, &knotV);
 
-    // §Œä“_‚ÌŒˆ’è
+    // åˆ¶å¾¡ç‚¹ã®æ±ºå®š
     {
         vector<vector<ControlPoint>> temp_cpsU(passPntsCntV), temp_cpsV(new_ncpntU);
         cps.resize(new_ncpntU * new_ncpntV);
 
-        // U•ûŒü‚©‚ç§Œä“_ŒQ‚ğZo
+        // Uæ–¹å‘ã‹ã‚‰åˆ¶å¾¡ç‚¹ç¾¤ã‚’ç®—å‡º
         for (int i = 0; i < passPntsCntV; ++i)
         {
             vector<Vector3d> pntsU(passPntsCntU);
@@ -703,7 +703,7 @@ std::unique_ptr<Surface> GetBsplineSurfaceFromPoints(const vector<vector<Vector3
             temp_cpsU[i] = ctrlpU;
         }
 
-        // V•ûŒü‚©‚ç§Œä“_ŒQ‚ğZo
+        // Væ–¹å‘ã‹ã‚‰åˆ¶å¾¡ç‚¹ç¾¤ã‚’ç®—å‡º
         for (int i = 0; i < new_ncpntU; ++i)
         {
             vector<Vector3d> pntsV(passPntsCntV);
@@ -712,13 +712,13 @@ std::unique_ptr<Surface> GetBsplineSurfaceFromPoints(const vector<vector<Vector3
             for (int j = 0; j < passPntsCntV; ++j)
                 pntsV[j] = temp_cpsU[j][i];
 
-            // ’) ’Ê‰ß“_‚ÍU•ûŒü‚©‚ç‚Ì§Œä“_
-            // ‚±‚±‚Å‹‚ß‚½§Œä“_‚ª‹È–Ê‚Ì§Œä“_‚Æ‚È‚é
+            // æ³¨) é€šéç‚¹ã¯Uæ–¹å‘ã‹ã‚‰ã®åˆ¶å¾¡ç‚¹
+            // ã“ã“ã§æ±‚ã‚ãŸåˆ¶å¾¡ç‚¹ãŒæ›²é¢ã®åˆ¶å¾¡ç‚¹ã¨ãªã‚‹
             CalcControlPointsByPassingPnts(pntsV, ordV, knotV, &ctrlpV);
             temp_cpsV[i] = ctrlpV;
         }
 
-        // “]’u
+        // è»¢ç½®
         for (int i = 0; i < new_ncpntU; ++i)
         {
             for (int j = 0; j < new_ncpntV; ++j)
@@ -731,21 +731,21 @@ std::unique_ptr<Surface> GetBsplineSurfaceFromPoints(const vector<vector<Vector3
     return std::unique_ptr<Surface>(new BsplineSurface(ordU, ordV, &cps[0], new_ncpntU, new_ncpntV, &knotU[0], &knotV[0], color));
 }
 
-// Å‹ß“_æ“¾
+// æœ€è¿‘ç‚¹å–å¾—
 NearestPointInfoS BsplineSurface::GetNearestPointInfoFromRef(const Vector3d& ref, const NearestSearch search) const
 {
-    int seg_split_u, seg_split_v; // ƒZƒOƒƒ“ƒg•ªŠ„”
-    vector<vector<Point3dS>> startPnts; // ŠJn“_ŒQ
+    int seg_split_u, seg_split_v; // ã‚»ã‚°ãƒ¡ãƒ³ãƒˆåˆ†å‰²æ•°
+    vector<vector<Point3dS>> startPnts; // é–‹å§‹ç‚¹ç¾¤
 
     if (search == Project)
     {
-        // ‹ß‚¢ŠJn“_‚ğ—^‚¦‚Ä‚àŠÔ‚ª‚©‚©‚é‚¾‚¯‚È‚Ì‚Å‘åG”c‚É
+        // è¿‘ã„é–‹å§‹ç‚¹ã‚’ä¸ãˆã¦ã‚‚æ™‚é–“ãŒã‹ã‹ã‚‹ã ã‘ãªã®ã§å¤§é›‘æŠŠã«
         seg_split_u = seg_split_v = 1;
         this->GetPointsInfoByKnots(startPnts, seg_split_u, seg_split_v);
     }
     else if (search == Isoline)
     {
-        seg_split_u = seg_split_v = 8; // ‚Æ‚è‚ ‚¦‚¸
+        seg_split_u = seg_split_v = 8; // ã¨ã‚Šã‚ãˆãš
         this->GetPointsInfoByKnots(startPnts, seg_split_u, seg_split_v);
     }
     else

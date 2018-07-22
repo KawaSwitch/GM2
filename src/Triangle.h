@@ -3,18 +3,18 @@
 #include "GV.h"
 #include "Object.h"
 
-// デバグクラス
-// 三角形状
+// 繝�繝舌げ繧ｯ繝ｩ繧ｹ
+// 荳芽ｧ貞ｽ｢迥ｶ
 class Triangle : public Object
 {
 private:
 
     Vector3d A, B, C;
 
-    // 事前描画
+    // 莠句燕謠冗判
     virtual void PreDraw() const override
     {
-        glColor3d(1.0, 0.0, 0.0); // とりあえず赤
+        glColor3d(1.0, 0.0, 0.0); // 縺ｨ繧翫≠縺医★襍､
         glBegin(GL_TRIANGLES);
         glVertex3d(A.X, A.Y, A.Z);
         glVertex3d(B.X, B.Y, B.Z);

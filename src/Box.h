@@ -4,7 +4,7 @@
 #include "ControlPoint.h"
 #include <float.h>
 
-// ƒ~ƒjƒ}ƒNƒXƒ{ƒbƒNƒX
+// ãƒŸãƒ‹ãƒã‚¯ã‚¹ãƒœãƒƒã‚¯ã‚¹
 class Box
 {
 private:
@@ -21,13 +21,13 @@ public:
     double MaxY() const { return _ymax; }
     double MaxZ() const { return _zmax; }
 
-    // ƒ{ƒbƒNƒX‚Ì‘ÌÏ
+    // ãƒœãƒƒã‚¯ã‚¹ã®ä½“ç©
     double Volume()
     {
         return ((_xmax - _xmin) * (_ymax - _ymin) * (_zmax - _zmin));
     }
 
-    // ’†SÀ•W
+    // ä¸­å¿ƒåº§æ¨™
     Vector3d Center()
     {
         return Vector3d(
@@ -36,7 +36,7 @@ public:
             (_zmin + _zmax) * 0.5);
     }
 
-    // ‘¼ƒ{ƒbƒNƒX‚ÆŠ±Â‚·‚é‚©
+    // ä»–ãƒœãƒƒã‚¯ã‚¹ã¨å¹²æ¸‰ã™ã‚‹ã‹
     bool IsInterfere(const Box& other)
     {
         return _xmax >= other._xmin
@@ -47,7 +47,7 @@ public:
             && other._zmax >= _zmin;
     }
 
-    // ƒ{ƒbƒNƒX‚ª“K³‚©
+    // ãƒœãƒƒã‚¯ã‚¹ãŒé©æ­£ã‹
     bool IsValid()
     {
         return _xmax >= _xmin
@@ -55,7 +55,7 @@ public:
             && _zmax >= _zmin;
     }
 
-    // •`‰æ
+    // æç”»
     void Draw(GLdouble* color, GLdouble width)
     {
         glColor4dv(color);
@@ -112,7 +112,7 @@ public:
         _xmax = max.X; _ymax = max.Y; _zmax = max.Z;
     }
 
-    // §Œä“_‚ğˆÍ‚Şƒ{ƒbƒNƒX‚ğæ“¾(ƒoƒEƒ“ƒfƒBƒ“ƒOƒ{ƒbƒNƒX)
+    // åˆ¶å¾¡ç‚¹ã‚’å›²ã‚€ãƒœãƒƒã‚¯ã‚¹ã‚’å–å¾—(ãƒã‚¦ãƒ³ãƒ‡ã‚£ãƒ³ã‚°ãƒœãƒƒã‚¯ã‚¹)
     Box(vector<ControlPoint> cp)
     {
         double xmin, ymin, zmin;
@@ -120,7 +120,7 @@ public:
         xmin = ymin = zmin = DBL_MAX;
         xmax = ymax = zmax = -DBL_MAX;
 
-        // Å¬/Å‘å‚ğŒ©‚Â‚¯‚é
+        // æœ€å°/æœ€å¤§ã‚’è¦‹ã¤ã‘ã‚‹
         for (unsigned int i = 0; i < cp.size(); i++)
         {
             if (cp[i].X < xmin) xmin = cp[i].X;
@@ -135,7 +135,7 @@ public:
         _xmax = xmax; _ymax = ymax;  _zmax = zmax;
     }
 
-    // ‚·‚×‚Ä‚Ìƒ{ƒbƒNƒX‚ğˆÍ‚Şƒ{ƒbƒNƒX‚ğæ“¾
+    // ã™ã¹ã¦ã®ãƒœãƒƒã‚¯ã‚¹ã‚’å›²ã‚€ãƒœãƒƒã‚¯ã‚¹ã‚’å–å¾—
     Box(vector<Box> box)
     {
         double xmin, ymin, zmin;
@@ -143,10 +143,10 @@ public:
         xmin = ymin = zmin = DBL_MAX;
         xmax = ymax = zmax = -DBL_MAX;
 
-        // Å¬/Å‘å‚ğŒ©‚Â‚¯‚é
+        // æœ€å°/æœ€å¤§ã‚’è¦‹ã¤ã‘ã‚‹
         for (unsigned int i = 0; i < box.size(); i++)
         {
-            // ‹^: C++‚Á‚Ä“¯ƒNƒ‰ƒX‚¾‚Á‚½‚çˆø”‚Ìƒƒ“ƒo‚ÉƒAƒNƒZƒX‚µ‚Ä‚æ‚©‚Á‚½‚Á‚¯?
+            // ç–‘: C++ã£ã¦åŒã‚¯ãƒ©ã‚¹ã ã£ãŸã‚‰å¼•æ•°ã®ãƒ¡ãƒ³ãƒã«ã‚¢ã‚¯ã‚»ã‚¹ã—ã¦ã‚ˆã‹ã£ãŸã£ã‘?
             if (box[i]._xmin < xmin) xmin = box[i]._xmin;
             if (box[i]._ymin < ymin) ymin = box[i]._ymin;
             if (box[i]._zmin < zmin) zmin = box[i]._zmin;
@@ -160,7 +160,7 @@ public:
     }
 };
 
-// 2ŸŒ³ ƒ{ƒbƒNƒX
+// 2æ¬¡å…ƒ ãƒœãƒƒã‚¯ã‚¹
 struct Box2d
 {
 public:

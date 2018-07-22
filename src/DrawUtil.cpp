@@ -2,7 +2,7 @@
 #include "CalcUtil.h"
 #include "glUtil.h"
 
-// “_ŒQ‚ğ•`‰æ‚·‚é
+// ç‚¹ç¾¤ã‚’æç”»ã™ã‚‹
 void DrawPoints(vector<Vector3d> vec, GLdouble* color, GLdouble pSize)
 {
     glColor4dv(color);
@@ -15,16 +15,16 @@ void DrawPoints(vector<Vector3d> vec, GLdouble* color, GLdouble pSize)
     }
     glEnd();
 
-    glPointSize(1.0); // –ß‚µ‚Ä‚¨‚­
+    glPointSize(1.0); // æˆ»ã—ã¦ãŠã
 }
 
-// Šî’êŠÖ”‚ğ•`‰æ‚·‚é
+// åŸºåº•é–¢æ•°ã‚’æç”»ã™ã‚‹
 void DrawBsplineFunc(int mord, int ncpnt, int nknot, double* knot, double min_t, double max_t)
 {
-    // ƒfƒBƒXƒvƒŒƒCƒŠƒXƒg
+    // ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆ
     static int displayList = 0;
 
-    // Œë·–h~
+    // èª¤å·®é˜²æ­¢
     int MIN = (int)(min_t * 100);
     int MAX = (int)(max_t * 100);
 
@@ -32,22 +32,22 @@ void DrawBsplineFunc(int mord, int ncpnt, int nknot, double* knot, double min_t,
 
     if (displayList != 0)
     {
-        // ƒfƒBƒXƒvƒŒƒCƒŠƒXƒgì¬Ï‚İ‚È‚çƒR[ƒ‹
+        // ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆä½œæˆæ¸ˆã¿ãªã‚‰ã‚³ãƒ¼ãƒ«
         glCallList(displayList);
     }
     else
     {
         if (!(displayList = glGenLists(1)))
-            Error::ShowAndExit("ƒfƒBƒXƒvƒŒƒCƒŠƒXƒgì¬¸”s");
+            Error::ShowAndExit("ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆä½œæˆå¤±æ•—");
 
         glNewList(displayList, GL_COMPILE);
 
-        // Šî’êŠÖ”‚Í§Œä“_”ŒÂ‚ ‚é
+        // åŸºåº•é–¢æ•°ã¯åˆ¶å¾¡ç‚¹æ•°å€‹ã‚ã‚‹
         for (int i = 0; i < ncpnt; i++)
         {
             glBegin(GL_LINE_STRIP);
 
-            // F‚Íƒ‰ƒ“ƒ_ƒ€
+            // è‰²ã¯ãƒ©ãƒ³ãƒ€ãƒ 
             GLdouble color[4];
             Color::GetRandomColor(color);
             glColor4dv(color);
@@ -67,7 +67,7 @@ void DrawBsplineFunc(int mord, int ncpnt, int nknot, double* knot, double min_t,
     }
 }
 
-// ƒfƒBƒXƒvƒŒƒCƒŠƒXƒg‚Æ•`‰æŠÖ”‚ğ—p‚¢‚Ä•`‰æ‚·‚é
+// ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆã¨æç”»é–¢æ•°ã‚’ç”¨ã„ã¦æç”»ã™ã‚‹
 void DrawUsingDisplayList(int* const displayList, const function<void(void)> RegisterDraw)
 {
     if (*displayList == 0)
@@ -75,7 +75,7 @@ void DrawUsingDisplayList(int* const displayList, const function<void(void)> Reg
         if (!(*displayList = glGenLists(1)))
             return;
 
-        // “o˜^
+        // ç™»éŒ²
         glNewList(*displayList, GL_COMPILE);
         RegisterDraw();
         glEndList();

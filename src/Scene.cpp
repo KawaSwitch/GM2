@@ -40,7 +40,7 @@ void Scene::ToggleDrawControlPoints()
 {
     auto it = _objTable.begin();
 
-    // §Œä“_•\¦ƒgƒOƒ‹
+    // åˆ¶å¾¡ç‚¹è¡¨ç¤ºãƒˆã‚°ãƒ«
     while (it != _objTable.end())
     {
         (*it).second->SetUnsetIsDrawCtrlp();
@@ -52,7 +52,7 @@ void Scene::ToggleDrawFirstDiffVectors()
 {
     auto it = _objTable.begin();
 
-    // Úü•\¦ƒgƒOƒ‹
+    // æ¥ç·šè¡¨ç¤ºãƒˆã‚°ãƒ«
     while (it != _objTable.end())
     {
         (*it).second->SetUnsetIsDrawFisrtDiff();
@@ -64,7 +64,7 @@ void Scene::ToggleDrawSecondDiffVectors()
 {
     auto it = _objTable.begin();
 
-    // 2ŠK”÷•ªƒxƒNƒgƒ‹•\¦ƒgƒOƒ‹
+    // 2éšå¾®åˆ†ãƒ™ã‚¯ãƒˆãƒ«è¡¨ç¤ºãƒˆã‚°ãƒ«
     while (it != _objTable.end())
     {
         (*it).second->SetUnsetIsDrawSecondDiff();
@@ -76,7 +76,7 @@ void Scene::ToggleDrawBox()
 {
     auto it = _objTable.begin();
 
-    // ƒ~ƒjƒ}ƒNƒXƒ{ƒbƒNƒX•\¦ƒgƒOƒ‹
+    // ãƒŸãƒ‹ãƒã‚¯ã‚¹ãƒœãƒƒã‚¯ã‚¹è¡¨ç¤ºãƒˆã‚°ãƒ«
     while (it != _objTable.end())
     {
         (*it).second->SetUnsetIsDrawBox();
@@ -88,7 +88,7 @@ void Scene::ToggleDrawNormalVectors()
 {
     auto it = _objTable.begin();
 
-    // –@ü•\¦ƒgƒOƒ‹
+    // æ³•ç·šè¡¨ç¤ºãƒˆã‚°ãƒ«
     while (it != _objTable.end())
     {
         (*it).second->SetUnsetIsDrawNormal();
@@ -100,7 +100,7 @@ void Scene::ToggleDrawCurvatureVectors()
 {
     auto it = _objTable.begin();
 
-    // ‹È—¦ƒxƒNƒgƒ‹•\¦ƒgƒOƒ‹
+    // æ›²ç‡ãƒ™ã‚¯ãƒˆãƒ«è¡¨ç¤ºãƒˆã‚°ãƒ«
     while (it != _objTable.end())
     {
         (*it).second->SetUnsetIsDrawCurvature();
@@ -110,33 +110,33 @@ void Scene::ToggleDrawCurvatureVectors()
 
 void Scene::Draw()
 {
-// ƒ¿’l‚ª‚ ‚éê‡‚ğl—¶‚µ‚ÄÅŒã‚É•`‚­
-    // Œ`óî•ñ•`‰æ(”ñ“§–¾)
+// Î±å€¤ãŒã‚ã‚‹å ´åˆã‚’è€ƒæ…®ã—ã¦æœ€å¾Œã«æã
+    // å½¢çŠ¶æƒ…å ±æç”»(éé€æ˜)
   for (const auto& obj : _objTable)
     {
-        obj.second->DrawControlPointsAndLines(); // §Œä“_•`‰æ
-        obj.second->DrawFirstDiffVectors(); // Úü•`‰æ
-        obj.second->DrawSecondDiffVectors(); // 2ŠK”÷•ªƒxƒNƒgƒ‹•`‰æ
-        obj.second->DrawBox(); // ƒ~ƒjƒ}ƒNƒXƒ{ƒbƒNƒX•`‰æ
-        obj.second->DrawNormalVectors(); // –@ü•`‰æ
-        obj.second->DrawCurvatureVectors(); // ‹È—¦ƒxƒNƒgƒ‹•`‰æ
+        obj.second->DrawControlPointsAndLines(); // åˆ¶å¾¡ç‚¹æç”»
+        obj.second->DrawFirstDiffVectors(); // æ¥ç·šæç”»
+        obj.second->DrawSecondDiffVectors(); // 2éšå¾®åˆ†ãƒ™ã‚¯ãƒˆãƒ«æç”»
+        obj.second->DrawBox(); // ãƒŸãƒ‹ãƒã‚¯ã‚¹ãƒœãƒƒã‚¯ã‚¹æç”»
+        obj.second->DrawNormalVectors(); // æ³•ç·šæç”»
+        obj.second->DrawCurvatureVectors(); // æ›²ç‡ãƒ™ã‚¯ãƒˆãƒ«æç”»
     }
-    // Œ`ó•`‰æ
-    // Œ`ó“¯m‚Ìƒ¿‚Å‚Ì‡”Ôl—¶
+    // å½¢çŠ¶æç”»
+    // å½¢çŠ¶åŒå£«ã®Î±ã§ã®é †ç•ªè€ƒæ…®
   for (const auto& obj : _objTable)
     {
         if (!obj.second->IsSemiTransparent())
-            obj.second->Draw(); // ƒ‚ƒfƒ‹•`‰æ
+            obj.second->Draw(); // ãƒ¢ãƒ‡ãƒ«æç”»
     }
   for (const auto& obj : _objTable)
     {
         if (obj.second->IsSemiTransparent())
-            obj.second->Draw(); // ƒ‚ƒfƒ‹•`‰æ
+            obj.second->Draw(); // ãƒ¢ãƒ‡ãƒ«æç”»
     }
 
     // for (auto it = ObjList.begin(), end = ObjList.end(); it != end; it++)
     // {
-    //     // íœƒtƒ‰ƒOƒ`ƒFƒbƒN
+    //     // å‰Šé™¤ãƒ•ãƒ©ã‚°ãƒã‚§ãƒƒã‚¯
     //     if ((*it)->IsDeleteFlagRaised())
     //     {
     //         delete *it;
@@ -147,12 +147,12 @@ void Scene::Draw()
     // ObjList.remove(NULL);
 }
 
-// ƒ}ƒEƒXƒsƒbƒLƒ“ƒO—p•`‰æ
+// ãƒã‚¦ã‚¹ãƒ”ãƒƒã‚­ãƒ³ã‚°ç”¨æç”»
 void Scene::DrawForPick()
 {
     auto it = _objTable.begin();
 
-    // ƒŠƒXƒg‘S•`‰æ
+    // ãƒªã‚¹ãƒˆå…¨æç”»
     while (it != _objTable.end())
     {
         glLoadName((*it).second->GetObjectNumber());
@@ -162,7 +162,7 @@ void Scene::DrawForPick()
     }
 }
 
-// ‚·‚×‚Ä‚ÌMMƒ{ƒbƒNƒX‚ğˆÍ‚Şƒ{ƒbƒNƒX‚ğæ“¾‚·‚é
+// ã™ã¹ã¦ã®MMãƒœãƒƒã‚¯ã‚¹ã‚’å›²ã‚€ãƒœãƒƒã‚¯ã‚¹ã‚’å–å¾—ã™ã‚‹
 Box Scene::GetCoverBound()
 {
     vector<Box> allBound;

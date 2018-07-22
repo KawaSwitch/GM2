@@ -8,15 +8,15 @@
 #include <algorithm>
 #include <cstring>
 
-// w’èŠg’£q‚Ìƒtƒ@ƒCƒ‹–¼‚ğ‚·‚×‚Äæ“¾
+// æŒ‡å®šæ‹¡å¼µå­ã®ãƒ•ã‚¡ã‚¤ãƒ«åã‚’ã™ã¹ã¦å–å¾—
 vector<string> Reader::GetFilenames(const string& extension) const
 {
     vector<string> returnFiles;
 
-    DIR *dp;       // ƒfƒBƒŒƒNƒgƒŠƒ|ƒCƒ“ƒ^
-    dirent* entry; // readdir() ‚Å•Ô‚³‚ê‚éƒGƒ“ƒgƒŠ[ƒ|ƒCƒ“ƒg
+    DIR *dp;       // ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãƒã‚¤ãƒ³ã‚¿
+    dirent* entry; // readdir() ã§è¿”ã•ã‚Œã‚‹ã‚¨ãƒ³ãƒˆãƒªãƒ¼ãƒã‚¤ãƒ³ãƒˆ
 
-    string path = (_path == "") ? "./" : _path; // ƒpƒXw’è‚ª‚È‚¯‚ê‚ÎƒJƒŒƒ“ƒg
+    string path = (_path == "") ? "./" : _path; // ãƒ‘ã‚¹æŒ‡å®šãŒãªã‘ã‚Œã°ã‚«ãƒ¬ãƒ³ãƒˆ
     string ext = "." + extension;
 
     dp = opendir(path.c_str());
@@ -24,8 +24,8 @@ vector<string> Reader::GetFilenames(const string& extension) const
     if (dp == NULL)
     {
         Error::ShowMessage(
-            "ƒtƒ@ƒCƒ‹“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½.",
-            "ƒtƒ@ƒCƒ‹‚ÌƒfƒBƒŒƒNƒgƒŠ‚ªQÆ‚Å‚«‚Ü‚¹‚ñ.");
+            "ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸ.",
+            "ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãŒå‚ç…§ã§ãã¾ã›ã‚“.");
     }
 
     do
@@ -34,7 +34,7 @@ vector<string> Reader::GetFilenames(const string& extension) const
 
         if (entry != NULL)
         {
-            if (ext.size() == 1) // Šg’£qw’è‚È‚µ
+            if (ext.size() == 1) // æ‹¡å¼µå­æŒ‡å®šãªã—
                 returnFiles.push_back(entry->d_name);
             else
             {
@@ -44,7 +44,7 @@ vector<string> Reader::GetFilenames(const string& extension) const
 
                 string buf = filename.substr(strlen(entry->d_name) - ext.size(), ext.size());
 
-                if (buf == ext) // Šg’£qƒ`ƒFƒbƒN
+                if (buf == ext) // æ‹¡å¼µå­ãƒã‚§ãƒƒã‚¯
                     returnFiles.push_back(filename);
             }
         }
@@ -55,7 +55,7 @@ vector<string> Reader::GetFilenames(const string& extension) const
     return returnFiles;
 }
 
-// 1s‚¸‚Â‚·‚×‚Ä“Ç‚İ‚ñ‚Å•Ô‚·
+// 1è¡Œãšã¤ã™ã¹ã¦èª­ã¿è¾¼ã‚“ã§è¿”ã™
 vector<string> Reader::ReadAllLines(const string& filepath) const
 {
     vector<string> returnLines;
@@ -65,8 +65,8 @@ vector<string> Reader::ReadAllLines(const string& filepath) const
     if (ifs.fail())
     {
         Error::ShowMessage(
-            "ƒtƒ@ƒCƒ‹“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½.",
-            "ƒtƒ@ƒCƒ‹‚ªQÆ‚Å‚«‚Ü‚¹‚ñ.");
+            "ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸ.",
+            "ãƒ•ã‚¡ã‚¤ãƒ«ãŒå‚ç…§ã§ãã¾ã›ã‚“.");
     }
 
     while (getline(ifs, str))
@@ -75,19 +75,19 @@ vector<string> Reader::ReadAllLines(const string& filepath) const
     return returnLines;
 }
 
-// ƒtƒ@ƒCƒ‹‚©‚çƒIƒuƒWƒFƒNƒg‚ğæ“¾‚·‚é
+// ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—ã™ã‚‹
 Object* KjsReader::GetObjectFromFile(const string& file_name) const
 {
     string file_path = KJS_FILE_NAME + "/" + file_name;
 
-    //// @‚ª‚ ‚ê‚ÎÁ‹
+    //// @ãŒã‚ã‚Œã°æ¶ˆå»
     //for (size_t c = file_path.find_first_of("@"); c != string::npos; c = c = file_path.find_first_of("@"))
     //    file_path.erase(c, 1);
 
     std::ifstream ifs(file_path);
     bool canOpen = ifs.is_open();
 
-    //// @•t‚«‚à‚·
+    //// @ä»˜ãã‚‚è©¦ã™
     //if (!canOpen)
     //{
     //    file_path = KJS_FILE_NAME + "/" + "@" + file_name;
@@ -98,20 +98,20 @@ Object* KjsReader::GetObjectFromFile(const string& file_name) const
 
     if (!canOpen)
     {
-        auto detail = file_path + "‚Æ‚¢‚¤ƒtƒ@ƒCƒ‹‚Í‘¶İ‚µ‚Ü‚¹‚ñ.";
-        Error::ShowMessage("ƒtƒ@ƒCƒ‹“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½");
+        auto detail = file_path + "ã¨ã„ã†ãƒ•ã‚¡ã‚¤ãƒ«ã¯å­˜åœ¨ã—ã¾ã›ã‚“.";
+        Error::ShowMessage("ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸ");
         return NULL;
         //Error::ShowAndExit(
-        //    "ƒtƒ@ƒCƒ‹“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½.",
+        //    "ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸ.",
         //    detail.c_str());
     }
 
     auto lines = ReadAllLines(file_path);
 
-    if (lines.size() < 5) // –¾‚ç‚©‚É‚¨‚©‚µ‚¢‚Æ‚«
+    if (lines.size() < 5) // æ˜ã‚‰ã‹ã«ãŠã‹ã—ã„ã¨ã
         return nullptr;
 
-    // ‘å•¶š•ÏŠ·
+    // å¤§æ–‡å­—å¤‰æ›
     transform(lines[0].begin(), lines[0].end(), lines[0].begin(), ::toupper);
     transform(lines[1].begin(), lines[1].end(), lines[1].begin(), ::toupper);
     
@@ -138,26 +138,26 @@ Object* KjsReader::GetObjectFromFile(const string& file_name) const
     }
     else
     {
-        Error::ShowMessage("kjsƒtƒ@ƒCƒ‹“Ç‚İ‚İ¸”s");
+        Error::ShowMessage("kjsãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿å¤±æ•—");
         return nullptr;
     }
 }
 
-// KJSƒtƒHƒ‹ƒ_“à‚Ìæ“ª‚É@‚Ì‚Â‚¢‚½.kjsƒtƒ@ƒCƒ‹‚·‚×‚Ä‚©‚çƒIƒuƒWƒFƒNƒg‚ğæ“¾‚·‚é
+// KJSãƒ•ã‚©ãƒ«ãƒ€å†…ã®å…ˆé ­ã«@ã®ã¤ã„ãŸ.kjsãƒ•ã‚¡ã‚¤ãƒ«ã™ã¹ã¦ã‹ã‚‰ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—ã™ã‚‹
 vector<Object *> KjsReader::GetObjectsFromKjsFolder() const
 {
     vector<Object *> returnObjs;
 
-    // kjsŠg’£qƒtƒ@ƒCƒ‹‚ğæ“¾
+    // kjsæ‹¡å¼µå­ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å–å¾—
     auto kjsFiles = GetFilenames("kjs");
 
     for (unsigned i = 0; i < kjsFiles.size(); i++)
     {
-        // ƒtƒ@ƒCƒ‹–¼‚Ìæ“ª‚ª @ ‚Ìƒtƒ@ƒCƒ‹‚Ì‚İ“Ç‚İ‚Ş!
+        // ãƒ•ã‚¡ã‚¤ãƒ«åã®å…ˆé ­ãŒ @ ã®ãƒ•ã‚¡ã‚¤ãƒ«ã®ã¿èª­ã¿è¾¼ã‚€!
         if (kjsFiles[i].front() != '@')
             continue;
 
-        // ƒtƒ@ƒCƒ‹‚©‚çƒIƒuƒWƒFƒNƒg‚ğæ“¾‚·‚é
+        // ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—ã™ã‚‹
         Object* obj = GetObjectFromFile(kjsFiles[i]);
         if (obj != NULL)
             returnObjs.push_back(GetObjectFromFile(kjsFiles[i]));
@@ -166,7 +166,7 @@ vector<Object *> KjsReader::GetObjectsFromKjsFolder() const
     return returnObjs;
 }
 
-// •¶š—ñ‚Ì’†‚©‚ç”š‚Ì‚İ‚ğæ‚èo‚·
+// æ–‡å­—åˆ—ã®ä¸­ã‹ã‚‰æ•°å­—ã®ã¿ã‚’å–ã‚Šå‡ºã™
 void KjsReader::ExtractNumberFromString(char* dest, const char* src) const
 {
     while (*src)
@@ -179,35 +179,35 @@ void KjsReader::ExtractNumberFromString(char* dest, const char* src) const
     }
 }
 
-// ˆÈ‰ºŠeƒIƒuƒWƒFƒNƒg‚ÌƒŠ[ƒ_[(ƒQƒbƒ^[)ŠÖ”
-// ’·X‚µ‚¢‚Ì‚Å‚Ü‚Æ‚ß‚ê‚½‚ç‚Ü‚Æ‚ß‚½‚¢
+// ä»¥ä¸‹å„ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ãƒªãƒ¼ãƒ€ãƒ¼(ã‚²ãƒƒã‚¿ãƒ¼)é–¢æ•°
+// é•·ã€…ã—ã„ã®ã§ã¾ã¨ã‚ã‚ŒãŸã‚‰ã¾ã¨ã‚ãŸã„
 Object* KjsReader::BezierCurveReader(const vector<string>& lines) const
 {
-    int current = 2; // 3s–Ú‚©‚ç“Ç‚İ‚Ş
-    char mord[8]; // ŠK”
-    char ncpnt[8]; // §Œä“_”
-    GLdouble color[4]; // F
-    GLdouble width; // •
+    int current = 2; // 3è¡Œç›®ã‹ã‚‰èª­ã¿è¾¼ã‚€
+    char mord[8]; // éšæ•°
+    char ncpnt[8]; // åˆ¶å¾¡ç‚¹æ•°
+    GLdouble color[4]; // è‰²
+    GLdouble width; // å¹…
 
-    // F
+    // è‰²
     {
         stringstream ss(lines[current++]);
         ss >> color[0] >> color[1] >> color[2] >> color[3];
     }
 
-    // •
+    // å¹…
     {
         stringstream ss(lines[current++]);
         ss >> width;
     }
 
-    // ŠeƒvƒƒpƒeƒBæ“¾
+    // å„ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£å–å¾—
     ExtractNumberFromString(mord, lines[current++].c_str());
     ExtractNumberFromString(ncpnt, lines[current++].c_str());
 
     vector<ControlPoint> cps;
     cps.resize(atoi(ncpnt));
-    current++; // CONTROL POINTéŒ¾
+    current++; // CONTROL POINTå®£è¨€
 
     for (unsigned i = 0; i < cps.size(); i++)
     {
@@ -226,27 +226,27 @@ Object* KjsReader::BezierCurveReader(const vector<string>& lines) const
 }
 Object* KjsReader::BezierSurfaceReader(const vector<string>& lines) const
 {
-    int current = 2; // 3s–Ú‚©‚ç“Ç‚İ‚Ş
-    char uord[8]; // uŠK”
-    char ucpnt[8]; // u§Œä“_”
-    char vord[8]; // vŠK”
-    char vcpnt[8]; // v§Œä“_”
-    GLdouble color[4]; // F
-    GLdouble resol; // ‰ğ‘œ“x
+    int current = 2; // 3è¡Œç›®ã‹ã‚‰èª­ã¿è¾¼ã‚€
+    char uord[8]; // uéšæ•°
+    char ucpnt[8]; // uåˆ¶å¾¡ç‚¹æ•°
+    char vord[8]; // véšæ•°
+    char vcpnt[8]; // våˆ¶å¾¡ç‚¹æ•°
+    GLdouble color[4]; // è‰²
+    GLdouble resol; // è§£åƒåº¦
 
-    // F
+    // è‰²
     {
         stringstream ss(lines[current++]);
         ss >> color[0] >> color[1] >> color[2] >> color[3];
     }
 
-    // ‰ğ‘œ“x
+    // è§£åƒåº¦
     {
         stringstream ss(lines[current++]);
         ss >> resol;
     }
 
-    // ŠeƒvƒƒpƒeƒBæ“¾
+    // å„ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£å–å¾—
     ExtractNumberFromString(uord, lines[current++].c_str());
     ExtractNumberFromString(ucpnt, lines[current++].c_str());
     ExtractNumberFromString(vord, lines[current++].c_str());
@@ -254,7 +254,7 @@ Object* KjsReader::BezierSurfaceReader(const vector<string>& lines) const
 
     vector<ControlPoint> cps;
     cps.resize(atoi(ucpnt) * atoi(vcpnt));
-    current++; // CONTROL POINTéŒ¾
+    current++; // CONTROL POINTå®£è¨€
 
     for (unsigned i = 0; i < cps.size(); i++)
     {
@@ -273,33 +273,33 @@ Object* KjsReader::BezierSurfaceReader(const vector<string>& lines) const
 }
 Object* KjsReader::BsplineCurveReader(const vector<string>& lines) const
 {
-    int current = 2; // 3s–Ú‚©‚ç“Ç‚İ‚Ş
-    char mord[8]; // ŠK”
-    char ncpnt[8]; // §Œä“_”
-    GLdouble color[4]; // F
-    GLdouble width; // •
+    int current = 2; // 3è¡Œç›®ã‹ã‚‰èª­ã¿è¾¼ã‚€
+    char mord[8]; // éšæ•°
+    char ncpnt[8]; // åˆ¶å¾¡ç‚¹æ•°
+    GLdouble color[4]; // è‰²
+    GLdouble width; // å¹…
 
-    // F
+    // è‰²
     {
         stringstream ss(lines[current++]);
         ss >> color[0] >> color[1] >> color[2] >> color[3];
     }
 
-    // •
+    // å¹…
     {
         stringstream ss(lines[current++]);
         ss >> width;
     }
 
-    // ŠeƒvƒƒpƒeƒBæ“¾
+    // å„ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£å–å¾—
     ExtractNumberFromString(mord, lines[current++].c_str());
     ExtractNumberFromString(ncpnt, lines[current++].c_str());
 
     vector<ControlPoint> cps;
     cps.resize(atoi(ncpnt));
-    current++; // CONTROL POINTéŒ¾
+    current++; // CONTROL POINTå®£è¨€
 
-    // §Œä“_æ“¾
+    // åˆ¶å¾¡ç‚¹å–å¾—
     for (unsigned i = 0; i < cps.size(); i++)
     {
         double x, y, z;
@@ -316,9 +316,9 @@ Object* KjsReader::BsplineCurveReader(const vector<string>& lines) const
 
     vector<double> knot;
     knot.resize(atoi(mord) + atoi(ncpnt));
-    current++; // KNOTSéŒ¾
+    current++; // KNOTSå®£è¨€
 
-    // ƒmƒbƒg—ñæ“¾
+    // ãƒãƒƒãƒˆåˆ—å–å¾—
     for (unsigned i = 0; i < knot.size(); i++)
     {
         double buf[4];
@@ -332,27 +332,27 @@ Object* KjsReader::BsplineCurveReader(const vector<string>& lines) const
 }
 Object* KjsReader::BsplineSurfaceReader(const vector<string>& lines) const
 {
-    int current = 2; // 3s–Ú‚©‚ç“Ç‚İ‚Ş
-    char uord[8]; // uŠK”
-    char ucpnt[8]; // u§Œä“_”
-    char vord[8]; // vŠK”
-    char vcpnt[8]; // v§Œä“_”
-    GLdouble color[4]; // F
-    GLdouble resol; // ‰ğ‘œ“x
+    int current = 2; // 3è¡Œç›®ã‹ã‚‰èª­ã¿è¾¼ã‚€
+    char uord[8]; // uéšæ•°
+    char ucpnt[8]; // uåˆ¶å¾¡ç‚¹æ•°
+    char vord[8]; // véšæ•°
+    char vcpnt[8]; // våˆ¶å¾¡ç‚¹æ•°
+    GLdouble color[4]; // è‰²
+    GLdouble resol; // è§£åƒåº¦
 
-    // F
+    // è‰²
     {
         stringstream ss(lines[current++]);
         ss >> color[0] >> color[1] >> color[2] >> color[3];
     }
 
-    // ‰ğ‘œ“x
+    // è§£åƒåº¦
     {
         stringstream ss(lines[current++]);
         ss >> resol;
     }
 
-    // ŠeƒvƒƒpƒeƒBæ“¾
+    // å„ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£å–å¾—
     ExtractNumberFromString(uord, lines[current++].c_str());
     ExtractNumberFromString(ucpnt, lines[current++].c_str());
     ExtractNumberFromString(vord, lines[current++].c_str());
@@ -360,9 +360,9 @@ Object* KjsReader::BsplineSurfaceReader(const vector<string>& lines) const
 
     vector<ControlPoint> cps;
     cps.resize(atoi(ucpnt) * atoi(vcpnt));
-    current++; // CONTROL POINTéŒ¾
+    current++; // CONTROL POINTå®£è¨€
 
-    // §Œä“_æ“¾
+    // åˆ¶å¾¡ç‚¹å–å¾—
     for (unsigned i = 0; i < cps.size(); i++)
     {
         double x, y, z;
@@ -377,9 +377,9 @@ Object* KjsReader::BsplineSurfaceReader(const vector<string>& lines) const
 
     vector<double> knotU;
     knotU.resize(atoi(uord) + atoi(ucpnt));
-    current++; // U KNOTSéŒ¾
+    current++; // U KNOTSå®£è¨€
 
-    // Uƒmƒbƒg—ñæ“¾
+    // Uãƒãƒƒãƒˆåˆ—å–å¾—
     for (unsigned i = 0; i < knotU.size(); i++)
     {
         double buf[4];
@@ -390,9 +390,9 @@ Object* KjsReader::BsplineSurfaceReader(const vector<string>& lines) const
 
     vector<double> knotV;
     knotV.resize(atoi(vord) + atoi(vcpnt));
-    current++; // V KNOTSéŒ¾
+    current++; // V KNOTSå®£è¨€
 
-    // Vƒmƒbƒg—ñæ“¾
+    // Vãƒãƒƒãƒˆåˆ—å–å¾—
     for (unsigned i = 0; i < knotV.size(); i++)
     {
         double buf[4];
@@ -408,33 +408,33 @@ Object* KjsReader::BsplineSurfaceReader(const vector<string>& lines) const
 }
 Object* KjsReader::NurbsCurveReader(const vector<string>& lines) const
 {
-    int current = 2; // 3s–Ú‚©‚ç“Ç‚İ‚Ş
-    char mord[8]; // ŠK”
-    char ncpnt[8]; // §Œä“_”
-    GLdouble color[4]; // F
-    GLdouble width; // •
+    int current = 2; // 3è¡Œç›®ã‹ã‚‰èª­ã¿è¾¼ã‚€
+    char mord[8]; // éšæ•°
+    char ncpnt[8]; // åˆ¶å¾¡ç‚¹æ•°
+    GLdouble color[4]; // è‰²
+    GLdouble width; // å¹…
 
-    // F
+    // è‰²
     {
         stringstream ss(lines[current++]);
         ss >> color[0] >> color[1] >> color[2] >> color[3];
     }
 
-    // •
+    // å¹…
     {
         stringstream ss(lines[current++]);
         ss >> width;
     }
 
-    // ŠeƒvƒƒpƒeƒBæ“¾
+    // å„ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£å–å¾—
     ExtractNumberFromString(mord, lines[current++].c_str());
     ExtractNumberFromString(ncpnt, lines[current++].c_str());
 
     vector<ControlPoint> cps;
     cps.resize(atoi(ncpnt));
-    current++; // CONTROL POINTéŒ¾
+    current++; // CONTROL POINTå®£è¨€
 
-    // §Œä“_æ“¾
+    // åˆ¶å¾¡ç‚¹å–å¾—
     for (unsigned i = 0; i < cps.size(); i++)
     {
         double x, y, z, w;
@@ -449,9 +449,9 @@ Object* KjsReader::NurbsCurveReader(const vector<string>& lines) const
 
     vector<double> knot;
     knot.resize(atoi(mord) + atoi(ncpnt));
-    current++; // KNOTSéŒ¾
+    current++; // KNOTSå®£è¨€
 
-    // ƒmƒbƒg—ñæ“¾
+    // ãƒãƒƒãƒˆåˆ—å–å¾—
     for (unsigned i = 0; i < knot.size(); i++)
     {
         double buf[4];
@@ -465,27 +465,27 @@ Object* KjsReader::NurbsCurveReader(const vector<string>& lines) const
 }
 Object* KjsReader::NurbsSurfaceReader(const vector<string>& lines) const
 {
-    int current = 2; // 3s–Ú‚©‚ç“Ç‚İ‚Ş
-    char uord[8]; // uŠK”
-    char ucpnt[8]; // u§Œä“_”
-    char vord[8]; // vŠK”
-    char vcpnt[8]; // v§Œä“_”
-    GLdouble color[4]; // F
-    GLdouble resol; // ‰ğ‘œ“x
+    int current = 2; // 3è¡Œç›®ã‹ã‚‰èª­ã¿è¾¼ã‚€
+    char uord[8]; // uéšæ•°
+    char ucpnt[8]; // uåˆ¶å¾¡ç‚¹æ•°
+    char vord[8]; // véšæ•°
+    char vcpnt[8]; // våˆ¶å¾¡ç‚¹æ•°
+    GLdouble color[4]; // è‰²
+    GLdouble resol; // è§£åƒåº¦
 
-    // F
+    // è‰²
     {
         stringstream ss(lines[current++]);
         ss >> color[0] >> color[1] >> color[2] >> color[3];
     }
 
-    // ‰ğ‘œ“x
+    // è§£åƒåº¦
     {
         stringstream ss(lines[current++]);
         ss >> resol;
     }
 
-    // ŠeƒvƒƒpƒeƒBæ“¾
+    // å„ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£å–å¾—
     ExtractNumberFromString(uord, lines[current++].c_str());
     ExtractNumberFromString(ucpnt, lines[current++].c_str());
     ExtractNumberFromString(vord, lines[current++].c_str());
@@ -493,9 +493,9 @@ Object* KjsReader::NurbsSurfaceReader(const vector<string>& lines) const
 
     vector<ControlPoint> cps;
     cps.resize(atoi(ucpnt) * atoi(vcpnt));
-    current++; // CONTROL POINTéŒ¾
+    current++; // CONTROL POINTå®£è¨€
 
-    // §Œä“_æ“¾
+    // åˆ¶å¾¡ç‚¹å–å¾—
     for (unsigned i = 0; i < cps.size(); i++)
     {
         double x, y, z, w;
@@ -510,9 +510,9 @@ Object* KjsReader::NurbsSurfaceReader(const vector<string>& lines) const
 
     vector<double> knotU;
     knotU.resize(atoi(uord) + atoi(ucpnt));
-    current++; // U KNOTSéŒ¾
+    current++; // U KNOTSå®£è¨€
 
-    // Uƒmƒbƒg—ñæ“¾
+    // Uãƒãƒƒãƒˆåˆ—å–å¾—
     for (unsigned i = 0; i < knotU.size(); i++)
     {
         double buf[4];
@@ -523,9 +523,9 @@ Object* KjsReader::NurbsSurfaceReader(const vector<string>& lines) const
 
     vector<double> knotV;
     knotV.resize(atoi(vord) + atoi(vcpnt));
-    current++; // V KNOTSéŒ¾
+    current++; // V KNOTSå®£è¨€
 
-    // Vƒmƒbƒg—ñæ“¾
+    // Vãƒãƒƒãƒˆåˆ—å–å¾—
     for (unsigned i = 0; i < knotV.size(); i++)
     {
         double buf[4];

@@ -1,10 +1,10 @@
 #include "Camera.h"
 
-// “§‹“Š‰e’è”
-const double PersParam::fovy = 30; // y•ûŒü‚Ì‹–ìŠp
+// é€è¦–æŠ•å½±å®šæ•°
+const double PersParam::fovy = 30; // yæ–¹å‘ã®è¦–é‡è§’
 const double PersParam::zNear = 0.1;
-const double PersParam::zFar = 10000; // “K“–
+const double PersParam::zFar = 10000; // é©å½“
 
-// “Š‰e–@
+// æŠ•å½±æ³•
 ProjectType mainProjType = ProjectType::Perspective;
 ProjectType axisProjType = ProjectType::Ortho;

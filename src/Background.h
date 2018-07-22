@@ -13,39 +13,39 @@ template<class IBackGround> void DrawBackground(const IBackGround& grid)
     grid.Draw();
 }
 
-// ”wŒiƒCƒ“ƒ^[ƒtƒF[ƒX
+// èƒŒæ™¯ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹
 class IBackGround
 {
     void virtual Draw() const = 0;
 };
 
-// ’Êí”wŒi
+// é€šå¸¸èƒŒæ™¯
 struct BackgroundNormal : IBackGround
 {
     void Draw() const override
     {
-        double elev_angle = PersParam::fovy / 2; // ‹ÂŠp(“x”–@)
-        double backHeightHalf, backWidthHalf; // ”wŒi‚Ì‘å‚«‚³(Œ´“_‚©‚ç‚Ì’·‚³)
+        double elev_angle = PersParam::fovy / 2; // ä»°è§’(åº¦æ•°æ³•)
+        double backHeightHalf, backWidthHalf; // èƒŒæ™¯ã®å¤§ãã•(åŸç‚¹ã‹ã‚‰ã®é•·ã•)
 
         glPushMatrix();
         {
-            // ‹‘ÌÏ‚É‡‚¤‚æ‚¤‚É”wŒi‚Ì‘å‚«‚³‚ÆˆÊ’u‚ğŒˆ’è‚·‚é
-            // Œ»óƒƒCƒ“ƒrƒ…[‚Í“§‹“Š‰e‚Ì‚İ
+            // è¦–ä½“ç©ã«åˆã†ã‚ˆã†ã«èƒŒæ™¯ã®å¤§ãã•ã¨ä½ç½®ã‚’æ±ºå®šã™ã‚‹
+            // ç¾çŠ¶ãƒ¡ã‚¤ãƒ³ãƒ“ãƒ¥ãƒ¼ã¯é€è¦–æŠ•å½±ã®ã¿
             if (mainProjType == ProjectType::Perspective)
             {
-                // NOTE: ƒAƒX”ä•Ï‚¦‚½‚Æ‚«‚ÉƒoƒO‚ ‚è, ‚¢‚Â‚©SlicerWpf‚É‡‚í‚¹‚é
+                // NOTE: ã‚¢ã‚¹æ¯”å¤‰ãˆãŸã¨ãã«ãƒã‚°ã‚ã‚Š, ã„ã¤ã‹SlicerWpfã«åˆã‚ã›ã‚‹
                 backHeightHalf = PersParam::zNear * std::tan(ToRad(elev_angle));
                 backWidthHalf = PersParam::zNear * std::tan(ToRad(elev_angle * ((GLdouble)width / height)));
 
-                // ‹‘Ì‚Ì‘O–Ê‚Éİ’è‚·‚é
-                // NOTE: Œã–Ê‚¾‚Æ‚È‚º‚©‚¸‚ç‚·•K—v‚ª‚ ‚Á‚½‚Ì‚Å‘O–Ê‚É‚µ‚½
+                // è¦–éŒä½“ã®å‰é¢ã«è¨­å®šã™ã‚‹
+                // NOTE: å¾Œé¢ã ã¨ãªãœã‹ãšã‚‰ã™å¿…è¦ãŒã‚ã£ãŸã®ã§å‰é¢ã«ã—ãŸ
                 glTranslated(0, 0, -PersParam::zNear);
             }
             else
-                Error::ShowAndExit("”wŒiİ’è•s‰Â", "“Š‰e–@‚ª–³Œø‚È’l‚Å‚·");
+                Error::ShowAndExit("èƒŒæ™¯è¨­å®šä¸å¯", "æŠ•å½±æ³•ãŒç„¡åŠ¹ãªå€¤ã§ã™");
 
 
-            // ”wŒi•`‰æ
+            // èƒŒæ™¯æç”»
             glBegin(GL_QUADS);
 
             glColor4dv(color_top);

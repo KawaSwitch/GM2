@@ -6,16 +6,16 @@
 
 int main(int argc, char* argv[])
 {
-    // gl‰Šú‰»
+    // glåˆæœŸåŒ–
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_ALPHA | GLUT_DOUBLE | GLUT_DEPTH);
 
-    // ƒEƒBƒ“ƒhƒEİ’è
+    // ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦è¨­å®š
     glutInitWindowSize(DEF_WIN_X, DEF_WIN_Y);
     glutInitWindowPosition(90, 20);
     glutCreateWindow("Geometric Modeling g++ fork ver.");
 
-    // ŠeíƒR[ƒ‹ƒoƒbƒN
+    // å„ç¨®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯
     glutDisplayFunc(Display);
     glutReshapeFunc(Resize);
     glutKeyboardFunc(Keyboard);
@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
     glutMotionFunc(Motion);
     glutMouseWheelFunc(Wheel);
 
-    // ‰Šú‰»
+    // åˆæœŸåŒ–
     Initialize();
 
     glutMainLoop();

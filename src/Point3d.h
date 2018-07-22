@@ -1,36 +1,36 @@
 #pragma once
 
-// 3ŸŒ³À•W‚Ì1“_
+// 3æ¬¡å…ƒåº§æ¨™ã®1ç‚¹
 class Point3d
 {
 public:
     
     double X, Y, Z;
 
-    // Vector3dŒİŠ·
+    // Vector3däº’æ›
     explicit operator Vector3d() { return Vector3d(X, Y, Z); }
 
     Point3d(double x, double y, double z) { X = x; Y = y; Z = z; }
     Point3d(const Vector3d& v) { X = v.X; Y = v.Y; Z = v.Z; }
 };
 
-// ‹Èüã‚ÌÀ•W
+// æ›²ç·šä¸Šã®åº§æ¨™
 class Point3dC : public Point3d
 {
 public:
 
-    double param; // ƒpƒ‰ƒ[ƒ^
+    double param; // ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 
     Point3dC(double x, double y, double z, double t) : Point3d(x, y, z) { param = t; }
     Point3dC(const Vector3d& v, double t) : Point3d(v) { param = t; }
 };
 
-// ‹È–Êã‚ÌÀ•W
+// æ›²é¢ä¸Šã®åº§æ¨™
 class Point3dS : public Point3d
 {
 public:
 
-    double paramU, paramV; // ƒpƒ‰ƒ[ƒ^
+    double paramU, paramV; // ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 
     Point3dS(double x, double y, double z, double u, double v) : Point3d(x, y, z) { paramU = u;  paramV = v; }
     Point3dS(const Vector3d& vec, double u, double v) : Point3d(vec) { paramU = u; paramV = v; }

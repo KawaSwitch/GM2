@@ -4,13 +4,13 @@
 
 extern Scene* scene;
 
-// ƒ[ƒJƒ‹À•W‚ÌƒfƒvƒX’l‚ğæ“¾‚·‚é
+// ¥í¡¼¥«¥ëºÂÉ¸¤Î¥Ç¥×¥¹ÃÍ¤ò¼èÆÀ¤¹¤ë
 float GetDepth(int x, int y)
 {
     float z;
-    GLint viewport[4];  // ƒrƒ…[ƒ|[ƒg
+    GLint viewport[4];  // ¥Ó¥å¡¼¥İ¡¼¥È
                         
-    // ƒfƒoƒCƒXÀ•WŒn‚ÆƒEƒBƒ“ƒhƒEÀ•WŒn‚Ì•ÏŠ·
+    // ¥Ç¥Ğ¥¤¥¹ºÂÉ¸·Ï¤È¥¦¥£¥ó¥É¥¦ºÂÉ¸·Ï¤ÎÊÑ´¹
     glGetIntegerv(GL_VIEWPORT, viewport);
 
     glReadBuffer(GL_BACK);
@@ -23,19 +23,19 @@ float GetDepth(int x, int y)
     return z;
 }
 
-// ƒ[ƒJƒ‹À•W‚©‚çƒ[ƒ‹ƒhÀ•W‚ğæ“¾‚·‚é
+// ¥í¡¼¥«¥ëºÂÉ¸¤«¤é¥ï¡¼¥ë¥ÉºÂÉ¸¤ò¼èÆÀ¤¹¤ë
 Vector3d GetWorldCoord(int x, int y, float depth)
 {
     double wx, wy, wz;
     GLdouble mvMatrix[16], pjMatrix[16];
     GLint viewport[4];
 
-    // ƒpƒ‰ƒ[ƒ^æ“¾
+    // ¥Ñ¥é¥á¡¼¥¿¼èÆÀ
     glGetIntegerv(GL_VIEWPORT, viewport);
     glGetDoublev(GL_MODELVIEW_MATRIX, mvMatrix);
     glGetDoublev(GL_PROJECTION_MATRIX, pjMatrix);
 
-    // ¢ŠEÀ•W‚ğæ“¾‚·‚é
+    // À¤³¦ºÂÉ¸¤ò¼èÆÀ¤¹¤ë
     gluUnProject((double)x, (double)viewport[3] - y - 1, depth,
         mvMatrix,
         pjMatrix,
@@ -47,19 +47,19 @@ Vector3d GetWorldCoord(int x, int y, float depth)
     return Vector3d(wx, wy, wz);
 }
 
-// ƒ[ƒ‹ƒhÀ•W‚©‚çƒ[ƒJƒ‹À•W‚ğæ“¾‚·‚é
+// ¥ï¡¼¥ë¥ÉºÂÉ¸¤«¤é¥í¡¼¥«¥ëºÂÉ¸¤ò¼èÆÀ¤¹¤ë
 Vector3d GetLocalCoord(int x, int y, int z)
 {
     double winX, winY, depth;
     GLdouble mvMatrix[16], pjMatrix[16];
     GLint viewport[4];
 
-    // ƒpƒ‰ƒ[ƒ^æ“¾
+    // ¥Ñ¥é¥á¡¼¥¿¼èÆÀ
     glGetIntegerv(GL_VIEWPORT, viewport);
     glGetDoublev(GL_MODELVIEW_MATRIX, mvMatrix);
     glGetDoublev(GL_PROJECTION_MATRIX, pjMatrix);
 
-    // ¢ŠEÀ•W‚ğæ“¾‚·‚é
+    // À¤³¦ºÂÉ¸¤ò¼èÆÀ¤¹¤ë
     gluProject((double)x, (double)viewport[3] - y - 1, z,
         mvMatrix,
         pjMatrix,
@@ -71,68 +71,68 @@ Vector3d GetLocalCoord(int x, int y, int z)
     return Vector3d(winX, winY, depth);
 }
 
-// ƒ}ƒEƒX‚ÌÀ•W‚Æd‚È‚Á‚Ä‚¢‚éƒIƒuƒWƒFƒNƒg‚Ì¯•Ê”Ô†‚ğ•Ô‚·
+// ¥Ş¥¦¥¹¤ÎºÂÉ¸¤È½Å¤Ê¤Ã¤Æ¤¤¤ë¥ª¥Ö¥¸¥§¥¯¥È¤Î¼±ÊÌÈÖ¹æ¤òÊÖ¤¹
 unsigned int GetObjNumberOnMousePointer(int x, int y)
 {
-    GLuint selectBuf[128] = { 0 };  // ƒZƒŒƒNƒVƒ‡ƒ“ƒoƒbƒtƒ@
-    GLuint hits; // ƒqƒbƒgƒiƒ“ƒo[
-    GLint viewport[4];  // ƒrƒ…[ƒ|[ƒg
+    GLuint selectBuf[128] = { 0 };  // ¥»¥ì¥¯¥·¥ç¥ó¥Ğ¥Ã¥Õ¥¡
+    GLuint hits; // ¥Ò¥Ã¥È¥Ê¥ó¥Ğ¡¼
+    GLint viewport[4];  // ¥Ó¥å¡¼¥İ¡¼¥È
     unsigned int objNum = 0;
 
-    // ƒZƒŒƒNƒVƒ‡ƒ“ŠJn
+    // ¥»¥ì¥¯¥·¥ç¥ó³«»Ï
 
-    // Œ»İ‚Ìƒrƒ…[ƒ|[ƒg‚ğæ“¾
+    // ¸½ºß¤Î¥Ó¥å¡¼¥İ¡¼¥È¤ò¼èÆÀ
     glGetIntegerv(GL_VIEWPORT, viewport);
     
-    // ƒZƒŒƒNƒVƒ‡ƒ“—pƒoƒbƒtƒ@‚ğOpenGL‚Ö“n‚·
+    // ¥»¥ì¥¯¥·¥ç¥óÍÑ¥Ğ¥Ã¥Õ¥¡¤òOpenGL¤ØÅÏ¤¹
     glSelectBuffer(BUF_MAX, selectBuf);
     
-    // OpenGL•`‰æƒ‚[ƒh‚ğƒZƒŒƒNƒVƒ‡ƒ“ƒ‚[ƒh‚Ö
+    // OpenGLÉÁ²è¥â¡¼¥É¤ò¥»¥ì¥¯¥·¥ç¥ó¥â¡¼¥É¤Ø
     (void)glRenderMode(GL_SELECT);
 
     glInitNames();
     glPushName(0);
 
-    // “Š‰e•ÏŠ·s—ñ‚ğ‘€ì‘ÎÛ‚Æ‚µAŒ»İ‚Ì“Š‰e•ÏŠ·s—ñ‚ğƒXƒ^ƒbƒN‚Ö“ü‚ê‚é
+    // Åê±ÆÊÑ´¹¹ÔÎó¤òÁàºîÂĞ¾İ¤È¤·¡¢¸½ºß¤ÎÅê±ÆÊÑ´¹¹ÔÎó¤ò¥¹¥¿¥Ã¥¯¤ØÆş¤ì¤ë
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     
-    // “Š‰es—ñ‚ğ‰Šú‰»
+    // Åê±Æ¹ÔÎó¤ò½é´ü²½
     glLoadIdentity();
 
-    // ƒ}ƒEƒXƒsƒbƒLƒ“ƒO‚Ì”ÍˆÍ‚Ìİ’è
+    // ¥Ş¥¦¥¹¥Ô¥Ã¥­¥ó¥°¤ÎÈÏ°Ï¤ÎÀßÄê
     gluPickMatrix(x,
-        viewport[3] - y, // ƒEƒBƒ“ƒhƒE¶‰º‚ğŒ´“_‚Æ‚µ‚½ƒEƒBƒ“ƒhƒEyÀ•W‚ğ—^‚¦‚é
-        100.0, // ƒsƒNƒZƒ‹’PˆÊ‚ÌƒZƒŒƒNƒVƒ‡ƒ“”ÍˆÍ X‚ÆY
-        100.0, // ‚¨D‚İ‚Å’²®
+        viewport[3] - y, // ¥¦¥£¥ó¥É¥¦º¸²¼¤ò¸¶ÅÀ¤È¤·¤¿¥¦¥£¥ó¥É¥¦yºÂÉ¸¤òÍ¿¤¨¤ë
+        100.0, // ¥Ô¥¯¥»¥ëÃ±°Ì¤Î¥»¥ì¥¯¥·¥ç¥óÈÏ°Ï X¤ÈY
+        100.0, // ¤ª¹¥¤ß¤ÇÄ´À°
         viewport);
 
     glMatrixMode(GL_MODELVIEW);
-    // ‚±‚±‚ÅglLoadName‚Â‚«‚Å•`‰æ‚µ‚Ä–¼‘O‚ğ‚Â‚¯‚é
-    // ŠK‘w‚Ì[‚³‚Í1‚É‚·‚é‚±‚ÆI
+    // ¤³¤³¤ÇglLoadName¤Ä¤­¤ÇÉÁ²è¤·¤ÆÌ¾Á°¤ò¤Ä¤±¤ë
+    // ³¬ÁØ¤Î¿¼¤µ¤Ï1¤Ë¤¹¤ë¤³¤È¡ª
     scene->DrawForPick();
 
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
 
-    // ƒŒƒ“ƒ_[ƒ‚[ƒh‚Ö–ß‚·
-    hits = glRenderMode(GL_RENDER); // ƒqƒbƒgƒŒƒR[ƒh‚Ì–ß‚è’l
+    // ¥ì¥ó¥À¡¼¥â¡¼¥É¤ØÌá¤¹
+    hits = glRenderMode(GL_RENDER); // ¥Ò¥Ã¥È¥ì¥³¡¼¥É¤ÎÌá¤êÃÍ
 
-    // ˆê”Ôè‘O‚ÌƒIƒuƒWƒFƒNƒg‚ğ•Ô‚·
+    // °ìÈÖ¼êÁ°¤Î¥ª¥Ö¥¸¥§¥¯¥È¤òÊÖ¤¹
     if (hits > 0)
         objNum = GetNearestNumber(hits, selectBuf);
 
-    glMatrixMode(GL_MODELVIEW);        //ƒ‚ƒfƒ‹ƒrƒ…[ƒ‚[ƒh‚Ö–ß‚·
+    glMatrixMode(GL_MODELVIEW);        //¥â¥Ç¥ë¥Ó¥å¡¼¥â¡¼¥É¤ØÌá¤¹
 
-    // Œ©‚Â‚©‚ç‚È‚¯‚ê‚Î0‚ğ•Ô‚·
+    // ¸«¤Ä¤«¤é¤Ê¤±¤ì¤Ğ0¤òÊÖ¤¹
     return objNum;
 }
 
-// ŠK‘w1‚Æ‚µ‚Ä‘I‘ğƒf[ƒ^‚ğ®—ifree‚µ–Y‚ê‚È‚¢‚Å, Œã‚ÅƒXƒ}[ƒgƒ|ƒCƒ“ƒ^À‘•j
+// ³¬ÁØ1¤È¤·¤ÆÁªÂò¥Ç¡¼¥¿¤òÀ°Íı¡Êfree¤·Ëº¤ì¤Ê¤¤¤Ç, ¸å¤Ç¥¹¥Ş¡¼¥È¥İ¥¤¥ó¥¿¼ÂÁõ¡Ë
 void GetSelectionData(GLuint hits, GLuint* buf, SelectionData* datas)
 {
-    // ŠK‘w1‚Æ‚µ‚Äƒf[ƒ^‚ğ®—
+    // ³¬ÁØ1¤È¤·¤Æ¥Ç¡¼¥¿¤òÀ°Íı
     for (unsigned int i = 0, dataI = 0; i < 128; dataI++)
     {
         if (buf[i++] == 0)
@@ -144,7 +144,7 @@ void GetSelectionData(GLuint hits, GLuint* buf, SelectionData* datas)
     }
 }
 
-// ‚à‚Á‚Æ‚àè‘O‚É‚ ‚éƒIƒuƒWƒFƒNƒg”Ô†‚ğæ“¾
+// ¤â¤Ã¤È¤â¼êÁ°¤Ë¤¢¤ë¥ª¥Ö¥¸¥§¥¯¥ÈÈÖ¹æ¤ò¼èÆÀ
 unsigned int GetNearestNumber(GLuint hits, GLuint* buf)
 {
     SelectionData* data = (SelectionData *)malloc(sizeof(SelectionData) * hits);
@@ -167,7 +167,7 @@ unsigned int GetNearestNumber(GLuint hits, GLuint* buf)
     return nearest_num;
 }
 
-// ‚à‚Á‚Æ‚à‰œ‚É‚ ‚éƒIƒuƒWƒFƒNƒg”Ô†‚ğæ“¾
+// ¤â¤Ã¤È¤â±ü¤Ë¤¢¤ë¥ª¥Ö¥¸¥§¥¯¥ÈÈÖ¹æ¤ò¼èÆÀ
 unsigned int GetFarthestNumber(GLuint hits, GLuint* buf)
 {
     SelectionData* data = (SelectionData *)malloc(sizeof(SelectionData) * hits);

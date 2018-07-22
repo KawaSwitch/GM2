@@ -6,36 +6,36 @@ class BsplineSurface : public Surface
 {
 protected:
 
-    int _nknotU, _nknotV; // ƒmƒbƒgƒxƒNƒgƒ‹ƒTƒCƒY
-    vector<double> _knotU, _knotV; // ƒmƒbƒgƒxƒNƒgƒ‹
+    int _nknotU, _nknotV; // ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«ã‚µã‚¤ã‚º
+    vector<double> _knotU, _knotV; // ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«
 
-    // ŠeíƒxƒNƒgƒ‹•`‰æ
+    // å„ç¨®ãƒ™ã‚¯ãƒˆãƒ«æç”»
     void DrawFirstDiffVectorsInternal() const override;
     void DrawSecondDiffVectorsInternal() const override;
     void DrawNormalVectorsInternal() const override;
     void DrawCurvatureVectorsInternal() const override;
 
-    // ƒƒbƒVƒ…•`‰æ
+    // ãƒ¡ãƒƒã‚·ãƒ¥æç”»
     void DrawMeshInternal() const override;
 
-    // –‘O•`‰æ
+    // äº‹å‰æç”»
     void PreDraw() const override;
 
-    // ƒoƒbƒtƒ@ƒIƒuƒWƒFƒNƒg
+    // ãƒãƒƒãƒ•ã‚¡ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
     void CreateVBO() const override;
     void DrawVBO() const override;
     void CreateIBO() const override;
     void DrawIBO() const override;
 
-    // ƒmƒbƒgƒxƒNƒgƒ‹İ’è
+    // ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«è¨­å®š
     void SetKnotVector(const double* const knot, int size, vector<double>& _knot);
 
 private:
 
-    // w’è‚µ‚½’[‚Ì‹Èü‚ğæ“¾‚·‚é
+    // æŒ‡å®šã—ãŸç«¯ã®æ›²ç·šã‚’å–å¾—ã™ã‚‹
     std::unique_ptr<Curve> GetEdgeCurve(SurfaceEdge edge) const override;
 
-    // w’èƒpƒ‰ƒ[ƒ^‚ÌƒxƒNƒgƒ‹‚ğŠî’êŠÖ”‚©‚çZo‚·‚é
+    // æŒ‡å®šãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’åŸºåº•é–¢æ•°ã‹ã‚‰ç®—å‡ºã™ã‚‹
     Vector3d CalcVector(
         double u, double v,
         function<double(unsigned, unsigned, double, const double* const)> BasisFuncU,
@@ -48,7 +48,7 @@ public:
         const double* const u_knot, const double* const v_knot,
         const GLdouble* const color, GLdouble resol = 20);
 
-    // ŠeíƒxƒNƒgƒ‹æ“¾
+    // å„ç¨®ãƒ™ã‚¯ãƒˆãƒ«å–å¾—
     Vector3d GetPositionVector(double u, double v) const override;
     Vector3d GetFirstDiffVectorU(double u, double v) const override;
     Vector3d GetFirstDiffVectorV(double u, double v) const override;
@@ -56,17 +56,17 @@ public:
     Vector3d GetSecondDiffVectorUV(double u, double v) const override;
     Vector3d GetSecondDiffVectorVV(double u, double v) const override;
 
-    // ƒmƒbƒgƒxƒNƒgƒ‹‚ğ‚à‚Æ‚É‚µ‚Ä“_ŒQ‚ğæ“¾‚·‚é
+    // ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«ã‚’ã‚‚ã¨ã«ã—ã¦ç‚¹ç¾¤ã‚’å–å¾—ã™ã‚‹
     void GetPointsByKnots(vector<vector<Vector3d>>& pnts, int splitSegCnt_U = 1, int splitSegCnt_V = 1) const;
-    // ƒmƒbƒgƒxƒNƒgƒ‹‚ğ‚à‚Æ‚É‚µ‚Ä“_ŒQî•ñ‚ğæ“¾‚·‚é
+    // ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«ã‚’ã‚‚ã¨ã«ã—ã¦ç‚¹ç¾¤æƒ…å ±ã‚’å–å¾—ã™ã‚‹
     void GetPointsInfoByKnots(vector<vector<Point3dS>>& pnts, int splitSegCnt_U = 1, int splitSegCnt_V = 1) const;
 
-    // ‹t•ÏŠ·
+    // é€†å¤‰æ›
     std::unique_ptr<Surface> GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, GLdouble resol) const override;
 
-    // Å‹ß“_æ“¾
+    // æœ€è¿‘ç‚¹å–å¾—
     NearestPointInfoS GetNearestPointInfoFromRef(const Vector3d& ref, const NearestSearch search = Project) const override;
 };
 
-// ’Ê‰ß“_‚©‚ç‹t•Ï‰»‚µ‚ÄBƒXƒvƒ‰ƒCƒ“‹È–Ê‚ğæ“¾‚·‚é
+// é€šéç‚¹ã‹ã‚‰é€†å¤‰åŒ–ã—ã¦Bã‚¹ãƒ—ãƒ©ã‚¤ãƒ³æ›²é¢ã‚’å–å¾—ã™ã‚‹
 std::unique_ptr<Surface> GetBsplineSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, int ordU, int ordV, const GLdouble* const color, GLdouble resol);

@@ -1,6 +1,6 @@
 #include "Quaternion.h"
 
-// �N�H�[�^�j�I���̂̐ς̒�`
+// クォータニオンのの積の定義
 Quaternion& operator*(Quaternion& q1, Quaternion& q2)
 {
     Quaternion q0 =
@@ -15,7 +15,7 @@ Quaternion& operator*(Quaternion& q1, Quaternion& q2)
     return q1;
 }
 
-// �N�H�[�^�j�I��->��]�s����Z�o
+// クォータニオン->回転行列を算出
 void CalcRotateMatrix(double *r, Quaternion q)
 {
     double x2 = q.x + q.x;

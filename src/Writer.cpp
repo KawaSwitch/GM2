@@ -4,7 +4,7 @@
 #include <error.h>
 #include <time.h>
 
-// ƒ^ƒCƒ€ƒXƒ^ƒ“ƒv‚ğ‘‚«o‚·
+// ã‚¿ã‚¤ãƒ ã‚¹ã‚¿ãƒ³ãƒ—ã‚’æ›¸ãå‡ºã™
 void ExportTimeStamp(std::ofstream* log)
 {
     char buf[256];
@@ -18,15 +18,15 @@ void ExportTimeStamp(std::ofstream* log)
     *log << buf << std::endl;
 }
 
-// ‹Èü‚ÌÅ‹ß“_î•ñ‚ğCSV‚É‘‚«o‚·
+// æ›²ç·šã®æœ€è¿‘ç‚¹æƒ…å ±ã‚’CSVã«æ›¸ãå‡ºã™
 void ExportCsv_NearestInfoCurve(std::string path, std::vector<NearestPointInfoC> np_infos, bool isNeedTimestamp)
 {
     char buf[256];
 
     std::ofstream log;
-    log.open(path, std::ios::trunc); // “¯ƒtƒ@ƒCƒ‹–¼‚ª‚ ‚ê‚Îã‘‚«
+    log.open(path, std::ios::trunc); // åŒãƒ•ã‚¡ã‚¤ãƒ«åãŒã‚ã‚Œã°ä¸Šæ›¸ã
 
-    std::string value = ", Å‹ß“_XÀ•W, Å‹ß“_YÀ•W, Å‹ß“_ZÀ•W, ƒpƒ‰ƒ[ƒ^, “_ŠÔ‹——£";
+    std::string value = ", æœ€è¿‘ç‚¹Xåº§æ¨™, æœ€è¿‘ç‚¹Yåº§æ¨™, æœ€è¿‘ç‚¹Zåº§æ¨™, ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿, ç‚¹é–“è·é›¢";
     log << value << std::endl;
     
     int cnt = 0;
@@ -34,11 +34,11 @@ void ExportCsv_NearestInfoCurve(std::string path, std::vector<NearestPointInfoC>
     {
         std::string np_data;
 
-        // ƒCƒ“ƒfƒbƒNƒX
+        // ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
         sprintf(buf, "%d,", ++cnt);
         np_data += buf;
 
-        // À•W
+        // åº§æ¨™
         sprintf(buf, "%f,", info.nearestPnt.X);
         np_data += buf;
         sprintf(buf, "%f,", info.nearestPnt.Y);
@@ -46,11 +46,11 @@ void ExportCsv_NearestInfoCurve(std::string path, std::vector<NearestPointInfoC>
         sprintf(buf, "%f,", info.nearestPnt.Z);
         np_data += buf;
 
-        // ƒpƒ‰ƒ[ƒ^
+        // ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
         sprintf(buf, "%f,", info.param);
         np_data += buf;
 
-        // “_ŠÔ‹——£
+        // ç‚¹é–“è·é›¢
         sprintf(buf, "%f", info.dist);
         np_data += buf;
 
@@ -63,15 +63,15 @@ void ExportCsv_NearestInfoCurve(std::string path, std::vector<NearestPointInfoC>
     log.close();
 }
 
-// ‹È–Ê‚ÌÅ‹ß“_î•ñ‚ğCSV‚É‘‚«o‚·
+// æ›²é¢ã®æœ€è¿‘ç‚¹æƒ…å ±ã‚’CSVã«æ›¸ãå‡ºã™
 void ExportCsv_NearestInfoSurface(std::string path, std::vector<NearestPointInfoS> np_infos, bool isNeedTimestamp)
 {
     char buf[256];
 
     std::ofstream log;
-    log.open(path, std::ios::trunc); // “¯ƒtƒ@ƒCƒ‹–¼‚ª‚ ‚ê‚Îã‘‚«
+    log.open(path, std::ios::trunc); // åŒãƒ•ã‚¡ã‚¤ãƒ«åãŒã‚ã‚Œã°ä¸Šæ›¸ã
 
-    std::string value = ", Å‹ß“_XÀ•W, Å‹ß“_YÀ•W, Å‹ß“_ZÀ•W, Uƒpƒ‰ƒ[ƒ^, Vƒpƒ‰ƒ[ƒ^, “_ŠÔ‹——£";
+    std::string value = ", æœ€è¿‘ç‚¹Xåº§æ¨™, æœ€è¿‘ç‚¹Yåº§æ¨™, æœ€è¿‘ç‚¹Zåº§æ¨™, Uãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿, Vãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿, ç‚¹é–“è·é›¢";
     log << value << std::endl;
 
     int cnt = 0;
@@ -79,11 +79,11 @@ void ExportCsv_NearestInfoSurface(std::string path, std::vector<NearestPointInfo
     {
         std::string np_data;
 
-        // ƒCƒ“ƒfƒbƒNƒX
+        // ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
         sprintf(buf, "%d,", ++cnt);
         np_data += buf;
 
-        // À•W
+        // åº§æ¨™
         sprintf(buf, "%f,", info.nearestPnt.X);
         np_data += buf;
         sprintf(buf, "%f,", info.nearestPnt.Y);
@@ -91,13 +91,13 @@ void ExportCsv_NearestInfoSurface(std::string path, std::vector<NearestPointInfo
         sprintf(buf, "%f,", info.nearestPnt.Z);
         np_data += buf;
 
-        // ƒpƒ‰ƒ[ƒ^
+        // ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
         sprintf(buf, "%f,", info.paramU);
         np_data += buf;
         sprintf(buf, "%f,", info.paramV);
         np_data += buf;
 
-        // “_ŠÔ‹——£
+        // ç‚¹é–“è·é›¢
         sprintf(buf, "%f", info.dist);
         np_data += buf;
 

@@ -2,8 +2,8 @@
 
 #include "GV.h"
 
-// Ï‚Ì’è‹`
+// ç©ã®å®šç¾©
 Quaternion& operator*(Quaternion& q1, Quaternion& q2);
 
-// ƒNƒH[ƒ^ƒjƒIƒ“->‰ñ“]s—ñ‚ÌŒvZ
+// ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³->å›è»¢è¡Œåˆ—ã®è¨ˆç®—
 void CalcRotateMatrix(double* r, Quaternion q);

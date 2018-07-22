@@ -10,35 +10,35 @@ void Keyboard(unsigned char key, int x, int y)
 {
     switch (key)
     {
-        case '\033': // I—¹
+        case '\033': // çµ‚äº†
             exit(0);
             break;
-        case 'p': // §Œä“_ƒgƒOƒ‹
+        case 'p': // åˆ¶å¾¡ç‚¹ãƒˆã‚°ãƒ«
             scene->ToggleDrawControlPoints();
             test_scene->ToggleDrawControlPoints();
             break;
-        case 'f': // ÚüƒgƒOƒ‹
+        case 'f': // æ¥ç·šãƒˆã‚°ãƒ«
             scene->ToggleDrawFirstDiffVectors();
             test_scene->ToggleDrawFirstDiffVectors();
             break;
-        case 's': // 2ŠK”÷•ªƒxƒNƒgƒ‹ƒgƒOƒ‹
+        case 's': // 2éšå¾®åˆ†ãƒ™ã‚¯ãƒˆãƒ«ãƒˆã‚°ãƒ«
             scene->ToggleDrawSecondDiffVectors();
             test_scene->ToggleDrawSecondDiffVectors();
             break;
-        case 'n': // –@üƒgƒOƒ‹
+        case 'n': // æ³•ç·šãƒˆã‚°ãƒ«
             scene->ToggleDrawNormalVectors();
             test_scene->ToggleDrawNormalVectors();
             break;
-        case 'c': // ‹È—¦ƒxƒNƒgƒ‹ƒgƒOƒ‹
+        case 'c': // æ›²ç‡ãƒ™ã‚¯ãƒˆãƒ«ãƒˆã‚°ãƒ«
             scene->ToggleDrawCurvatureVectors();
             test_scene->ToggleDrawCurvatureVectors();
             break;
-        case 'b': // ƒ~ƒjƒ}ƒNƒXƒ{ƒbƒNƒXƒgƒOƒ‹
+        case 'b': // ãƒŸãƒ‹ãƒã‚¯ã‚¹ãƒœãƒƒã‚¯ã‚¹ãƒˆã‚°ãƒ«
             scene->ToggleDrawBox();
             test_scene->ToggleDrawBox();
             break;
 
-        case 'a': // ²•\¦•ÏX
+        case 'a': // è»¸è¡¨ç¤ºå¤‰æ›´
             switch (axisShowType)
             {
             case AxisShowType::None:
@@ -55,7 +55,7 @@ void Keyboard(unsigned char key, int x, int y)
                 break;
             }
             break;
-        case 'g': // ƒOƒŠƒbƒh•\¦•ÏX
+        case 'g': // ã‚°ãƒªãƒƒãƒ‰è¡¨ç¤ºå¤‰æ›´
             switch (gridType)
             {
                 case GridType::InVisible:
@@ -72,7 +72,7 @@ void Keyboard(unsigned char key, int x, int y)
                     break;
             }
             break;
-        case 'i': // ‰ŠúˆÊ’u‚Ì•\¦‚É–ß‚·
+        case 'i': // åˆæœŸä½ç½®ã®è¡¨ç¤ºã«æˆ»ã™
             isViewInitRequested = true;
             break;
     case 'j':
@@ -81,7 +81,7 @@ void Keyboard(unsigned char key, int x, int y)
     case 'k':
       dist_Z -= 2.0;
       break;
-        //case 'l': // ƒ‰ƒCƒeƒBƒ“ƒOƒgƒOƒ‹
+        //case 'l': // ãƒ©ã‚¤ãƒ†ã‚£ãƒ³ã‚°ãƒˆã‚°ãƒ«
         //    isUseLight = !isUseLight;
         //    break;
         default:

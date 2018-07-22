@@ -18,11 +18,11 @@ BezierCurve::BezierCurve(const int mord, const ControlPoint* const cp, const int
     _length = this->GetLength();
     _draw_vec_length = _length * _draw_vector_ratio;
 
-    // VBOg‚¤
+    // VBOä½¿ã†
     _isUseVBO = true;
 }
 
-// –‘O•`‰æ
+// äº‹å‰æç”»
 void BezierCurve::PreDraw() const
 {
     glColor4dv(_color);
@@ -41,12 +41,12 @@ void BezierCurve::PreDraw() const
     glEnd();
 }
 
-// ’¸“_ƒoƒbƒtƒ@ì¬
+// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ä½œæˆ
 void BezierCurve::CreateVBO() const
 {
     vector<Vector3d> pnts;
 
-    // ’¸“_æ“¾
+    // é ‚ç‚¹å–å¾—
     for (int i = 0; i <= 100; i += 1)
     {
         double t = (double)i / 100;
@@ -60,7 +60,7 @@ void BezierCurve::CreateVBO() const
     glBufferData(GL_ARRAY_BUFFER, pnts.size() * 3 * sizeof(double), (GLdouble*)&pnts[0], GL_DYNAMIC_DRAW);
 }
 
-// VBO‚Å•`‰æ
+// VBOã§æç”»
 void BezierCurve::DrawVBO() const
 {
     glColor4dv(_color);
@@ -77,7 +77,7 @@ void BezierCurve::DrawVBO() const
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-// ÚüƒxƒNƒgƒ‹•`‰æ
+// æ¥ç·šãƒ™ã‚¯ãƒˆãƒ«æç”»
 void BezierCurve::DrawFirstDiffVectorsInternal() const
 {
     Vector3d pnt, diff;
@@ -99,7 +99,7 @@ void BezierCurve::DrawFirstDiffVectorsInternal() const
     glEnd();
 }
 
-// 2ŠK”÷•ªƒxƒNƒgƒ‹•`‰æ
+// 2éšå¾®åˆ†ãƒ™ã‚¯ãƒˆãƒ«æç”»
 void BezierCurve::DrawSecondDiffVectorsInternal() const
 {
     Vector3d pnt, diff;
@@ -121,7 +121,7 @@ void BezierCurve::DrawSecondDiffVectorsInternal() const
     glEnd();
 }
 
-// –@üƒxƒNƒgƒ‹•`‰æ
+// æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«æç”»
 void BezierCurve::DrawNormalVectorsInternal() const
 {
     Vector3d pnt, normal;
@@ -143,7 +143,7 @@ void BezierCurve::DrawNormalVectorsInternal() const
     glEnd();
 }
 
-// ‹È—¦”¼Œa•`‰æ
+// æ›²ç‡åŠå¾„æç”»
 void BezierCurve::DrawCurvatureVectorsInternal() const
 {
     Vector3d pnt, curv;
@@ -158,14 +158,14 @@ void BezierCurve::DrawCurvatureVectorsInternal() const
         pnt = GetPositionVector(t);
         curv = GetCurvatureVector(t);
 
-        // ‹È—¦”¼Œa•`‰æ
+        // æ›²ç‡åŠå¾„æç”»
         glColor4dv(Color::pink);
         glBegin(GL_LINES);
         glVertex3d(pnt);
         glVertex3d(pnt + curv);
         glEnd();
 
-        // ‹È—¦’†S•`‰æ
+        // æ›²ç‡ä¸­å¿ƒæç”»
         glColor4dv(Color::light_green);
         glBegin(GL_POINTS);
         glVertex3d(pnt + curv);
@@ -173,7 +173,7 @@ void BezierCurve::DrawCurvatureVectorsInternal() const
     }
 }
 
-// ˆÊ’uƒxƒNƒgƒ‹æ“¾
+// ä½ç½®ãƒ™ã‚¯ãƒˆãƒ«å–å¾—
 Vector3d BezierCurve::GetPositionVector(const double t) const
 {
     Vector3d pnt;
@@ -184,7 +184,7 @@ Vector3d BezierCurve::GetPositionVector(const double t) const
     return pnt;
 }
 
-// ÚüƒxƒNƒgƒ‹æ“¾
+// æ¥ç·šãƒ™ã‚¯ãƒˆãƒ«å–å¾—
 Vector3d BezierCurve::GetFirstDiffVector(const double t) const
 {
     Vector3d diff;
@@ -195,7 +195,7 @@ Vector3d BezierCurve::GetFirstDiffVector(const double t) const
     return diff;
 }
 
-// 2ŠK”÷•ªƒxƒNƒgƒ‹æ“¾
+// 2éšå¾®åˆ†ãƒ™ã‚¯ãƒˆãƒ«å–å¾—
 Vector3d BezierCurve::GetSecondDiffVector(const double t) const
 {
     Vector3d diff;
@@ -206,7 +206,7 @@ Vector3d BezierCurve::GetSecondDiffVector(const double t) const
     return diff;
 }
 
-// ’Ê‰ß“_‚©‚ç‹t•ÏŠ·‚µ‚Ä‹Èü‚ğæ“¾
+// é€šéç‚¹ã‹ã‚‰é€†å¤‰æ›ã—ã¦æ›²ç·šã‚’å–å¾—
 std::unique_ptr<Curve> BezierCurve::GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdouble* const color, const GLdouble width) const
 {
     vector<ControlPoint> new_cps;
@@ -216,7 +216,7 @@ std::unique_ptr<Curve> BezierCurve::GetCurveFromPoints(const vector<Vector3d>& p
     //double dist1 = sample_pnt[1].GetDistance(sample_pnt[2]);
     //double dist2 = sample_pnt[2].GetDistance(sample_pnt[3]);
 
-    //// ’Ê‰ß“_‚ÌƒTƒ“ƒvƒ‹ˆÊ’u
+    //// é€šéç‚¹ã®ã‚µãƒ³ãƒ—ãƒ«ä½ç½®
     //double sample_t[4] =
     //{
     //    0.0,
@@ -225,13 +225,13 @@ std::unique_ptr<Curve> BezierCurve::GetCurveFromPoints(const vector<Vector3d>& p
     //    1.0,
     //};
 
-    //// V‚µ‚¢§Œä“_‚ğ‹‚ß‚é
-    //// Šî’êŠÖ”—ps—ñ
+    //// æ–°ã—ã„åˆ¶å¾¡ç‚¹ã‚’æ±‚ã‚ã‚‹
+    //// åŸºåº•é–¢æ•°ç”¨è¡Œåˆ—
     //double **B_matrix = new double*[_ncpnt];
     //for (int i = 0; i < _ncpnt; i++)
     //    B_matrix[i] = new double[_ncpnt];
 
-    //// Šî’êŠÖ”s—ñ‚ğì¬
+    //// åŸºåº•é–¢æ•°è¡Œåˆ—ã‚’ä½œæˆ
     //for (int i = 0; i < _ncpnt; i++)
     //{
     //    for (int j = 0; j < _ncpnt; j++)
@@ -241,9 +241,9 @@ std::unique_ptr<Curve> BezierCurve::GetCurveFromPoints(const vector<Vector3d>& p
     return  std::unique_ptr<Curve>(new BezierCurve(_ord, &new_cps[0], _ncpnt, color, width));
 }
 
-// Å‹ß“_æ“¾
+// æœ€è¿‘ç‚¹å–å¾—
 NearestPointInfoC BezierCurve::GetNearestPointInfoFromRef(const Vector3d& ref) const
 {
-    // NOTE: –¢À‘•
+    // NOTE: æœªå®Ÿè£…
     return NearestPointInfoC(Vector3d(), ref, 0);
 }

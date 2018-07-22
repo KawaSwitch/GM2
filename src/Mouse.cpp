@@ -1,3 +1,4 @@
+
 #define _USE_MATH_DEFINES
 
 // compatibility with original GLUT

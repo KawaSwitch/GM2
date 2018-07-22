@@ -1,7 +1,7 @@
 #pragma once
 #include <GL/freeglut.h>
 
-// F‚Ü‚Æ‚ß
+// è‰²ã¾ã¨ã‚
 struct Color
 {
 public:
@@ -30,7 +30,7 @@ public:
         for (int i = 0; i < 3; i++)
             color[i] = (double)rand() / 32767.0;
 
-        color[3] = 0.5; // ƒ¿’l‚ÍŒÅ’è
+        color[3] = 0.5; // Î±å€¤ã¯å›ºå®š
     }
 
 public:

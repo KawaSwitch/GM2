@@ -2,11 +2,11 @@
 
 #include "Point3d.h"
 
-// P~Q ‚Æ Q~R ‚Ìs—ñ‚ÌÏ‚ğŒvZ‚·‚é
+// PÃ—Q ã¨ QÃ—R ã®è¡Œåˆ—ã®ç©ã‚’è¨ˆç®—ã™ã‚‹
 template <class T>
 void MatrixMultiply(int P, int Q, int R, const T* const xmat, const T* const ymat, T* const zmat)
 {
-    // ‰Šú‰»
+    // åˆæœŸåŒ–
     for (int i = 0; i < P; i++)
     {
         for (int j = 0; j < R; j++)
@@ -25,7 +25,7 @@ void MatrixMultiply(int P, int Q, int R, const T* const xmat, const T* const yma
     }
 }
 
-// (1sP—ñs—ñ)~(Ps1—ñs—ñ) ‚ÌŒvZ
+// (1è¡ŒPåˆ—è¡Œåˆ—)Ã—(Pè¡Œ1åˆ—è¡Œåˆ—) ã®è¨ˆç®—
 template <class T>
 T MatrixMultiply(int P, const T* const xmat, const T* const ymat)
 {
@@ -37,7 +37,7 @@ T MatrixMultiply(int P, const T* const xmat, const T* const ymat)
     return dot;
 }
 
-// s—ñ‚Ì“]’u‚ğæ“¾‚·‚é
+// è¡Œåˆ—ã®è»¢ç½®ã‚’å–å¾—ã™ã‚‹
 template <class T>
 void Transpose(int row, int col, const T* const mat, T* const res_mat)
 {

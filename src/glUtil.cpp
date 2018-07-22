@@ -1,7 +1,7 @@
 #include "GV.h"
 
-// OpenGL‚ÉŠÖ‚·‚éƒ†[ƒeƒBƒŠƒeƒB‚ğ’è‹`‚µ‚Ü‚·
-// •`‰æŒn‚ÍDrawUtil.cpp‚Å’è‹`‚µ‚Ä‚­‚¾‚³‚¢
+// OpenGLã«é–¢ã™ã‚‹ãƒ¦ãƒ¼ãƒ†ã‚£ãƒªãƒ†ã‚£ã‚’å®šç¾©ã—ã¾ã™
+// æç”»ç³»ã¯DrawUtil.cppã§å®šç¾©ã—ã¦ãã ã•ã„
 
 void glVertex3d(const Vector3d& vec) { glVertex3d(vec.X, vec.Y, vec.Z); }
 void glPointSize(const GLdouble size) { glPointSize((GLfloat)size); }
@@ -31,16 +31,16 @@ void glVertex(const vector<Vector3d> vec)
         glVertex3d(*it);
 }
 
-// ‰ñ“]’†S‚ğw’è‚µ‚Ä‰ñ“]
+// å›è»¢ä¸­å¿ƒã‚’æŒ‡å®šã—ã¦å›è»¢
 void RotateAt(const double* mat, const Vector3d center)
 {
-    // Œ´“_‚É–ß‚µ‚Ä‰ñ“]‚·‚é(s—ñ‚ÌŠ|‚¯Z‚Í‹t!)
+    // åŸç‚¹ã«æˆ»ã—ã¦å›è»¢ã™ã‚‹(è¡Œåˆ—ã®æ›ã‘ç®—ã¯é€†!)
     glTranslated(center.X, center.Y, center.Z);
     glMultMatrixd(mat);
     glTranslated(-center.X, -center.Y, -center.Z);
 }
 
-// Œ»İ‚Ìƒrƒ…[ƒ|[ƒg‚ğæ“¾‚µ‚Ü‚·
+// ç¾åœ¨ã®ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆã‚’å–å¾—ã—ã¾ã™
 void GetCurrentViewPort(std::unique_ptr<int>& viewPort)
 {
     int* array = new int[4];
@@ -48,7 +48,7 @@ void GetCurrentViewPort(std::unique_ptr<int>& viewPort)
     glGetIntegerv(GL_VIEWPORT, array);
     viewPort = make_unique<int>(*array);
 }
-// Œ»İ‚ÌƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñ‚ğæ“¾‚µ‚Ü‚·
+// ç¾åœ¨ã®ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³è¡Œåˆ—ã‚’å–å¾—ã—ã¾ã™
 void GetCurrentProjectionMatrix(std::unique_ptr<double>& projection)
 {
     double* array = new double[16];
@@ -56,7 +56,7 @@ void GetCurrentProjectionMatrix(std::unique_ptr<double>& projection)
     glGetDoublev(GL_PROJECTION_MATRIX, array);
     projection = make_unique<double>(*array);
 }
-// Œ»İ‚Ìƒ‚ƒfƒ‹ƒrƒ…[s—ñ‚ğæ“¾‚µ‚Ü‚·
+// ç¾åœ¨ã®ãƒ¢ãƒ‡ãƒ«ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—ã‚’å–å¾—ã—ã¾ã™
 void GetCurrentModelviewMatrix(std::unique_ptr<double>& modelview)
 {
     double* array = new double[16];
@@ -65,7 +65,7 @@ void GetCurrentModelviewMatrix(std::unique_ptr<double>& modelview)
     modelview = make_unique<double>(*array);
 }
 
-// ƒ[ƒ‹ƒhÀ•W‚ğƒ[ƒJƒ‹À•W‚Ö•ÏŠ·‚·‚é
+// ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã‚’ãƒ­ãƒ¼ã‚«ãƒ«åº§æ¨™ã¸å¤‰æ›ã™ã‚‹
 vector<Vector3d> GetLocalCoord(int size, const Vector3d* const pnt)
 {
     std::vector<Vector3d> local;

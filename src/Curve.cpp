@@ -1,13 +1,13 @@
 #include "Curve.h"
 #include <cfloat>
 
-// §Œä“_İ’è
+// åˆ¶å¾¡ç‚¹è¨­å®š
 void Curve::SetControlPoint(const ControlPoint* const cp, const int size)
 {
     if (size <= 0)
-        Error::ShowAndExit("§Œä“_İ’è¸”s", "CP size must be over 0.");
+        Error::ShowAndExit("åˆ¶å¾¡ç‚¹è¨­å®šå¤±æ•—", "CP size must be over 0.");
 
-    // ƒŠƒZƒbƒg
+    // ãƒªã‚»ãƒƒãƒˆ
     if (_ctrlp.size() > 0)
       {
 	_ctrlp.clear();
@@ -20,81 +20,81 @@ void Curve::SetControlPoint(const ControlPoint* const cp, const int size)
         _ctrlp.emplace_back(cp[i]);
 }
 
-// §Œä“_•`‰æ
+// åˆ¶å¾¡ç‚¹æç”»
 void Curve::DrawCPsInternal() const
 {
     glColor4dv(_color);
     glPointSize(10.0);
     glLineWidth(1.0);
 
-    // “_ŒQ
+    // ç‚¹ç¾¤
     glBegin(GL_POINTS);
     for (unsigned int i = 0; i < _ctrlp.size(); i++)
         glVertex3d(_ctrlp[i].X, _ctrlp[i].Y, _ctrlp[i].Z);
     glEnd();
 
-    // üŒQ
+    // ç·šç¾¤
     glBegin(GL_LINE_STRIP);
     for (unsigned int i = 0; i < _ctrlp.size(); i++)
         glVertex3d(_ctrlp[i].X, _ctrlp[i].Y, _ctrlp[i].Z);
     glEnd();
 }
 
-// ‹È—¦ƒxƒNƒgƒ‹æ“¾
+// æ›²ç‡ãƒ™ã‚¯ãƒˆãƒ«å–å¾—
 Vector3d Curve::GetCurvatureVector(const double t) const
 {
-    double kappa =  // ƒÈ = |Pt~Ptt| / |Pt|^3
-        (GetFirstDiffVector(t) * GetSecondDiffVector(t)).Length() // |Pt~Ptt|
+    double kappa =  // Îº = |PtÃ—Ptt| / |Pt|^3
+        (GetFirstDiffVector(t) * GetSecondDiffVector(t)).Length() // |PtÃ—Ptt|
         / pow(GetFirstDiffVector(t).Length(), 3); // |Pt|^3
 
-    // –@ü•ûŒüN = (Pt ~ Ptt) ~ Pt
+    // æ³•ç·šæ–¹å‘N = (Pt Ã— Ptt) Ã— Pt
     Vector3d direct = (GetFirstDiffVector(t) * GetSecondDiffVector(t)) * GetFirstDiffVector(t);
 
     return (1 / kappa) * direct.Normalize();
 }
 
-// •`‰æ”ÍˆÍ‚ğsplit_numŒÂ‚É•ªŠ„‚·‚é‚æ‚¤‚ÈˆÊ’uƒxƒNƒgƒ‹‚ğæ“¾‚·‚é
+// æç”»ç¯„å›²ã‚’split_numå€‹ã«åˆ†å‰²ã™ã‚‹ã‚ˆã†ãªä½ç½®ãƒ™ã‚¯ãƒˆãƒ«ã‚’å–å¾—ã™ã‚‹
 void Curve::GetPositionVectors(vector<Vector3d>& pnts, const int split_num) const
 {
     pnts.clear();
 
-    // •ªŠ„‹æŠÔ‚ğŒvZ
+    // åˆ†å‰²åŒºé–“ã‚’è¨ˆç®—
     double skip = (fabs(_min_draw_param) + fabs(_max_draw_param)) / split_num;
 
-    // doubleŒ^‚ÌŒë·l—¶
+    // doubleå‹ã®èª¤å·®è€ƒæ…®
     for (double t = _min_draw_param; t < _max_draw_param + skip / 2; t += skip)
         pnts.push_back(GetPositionVector(t));
 }
 
-// ‘¼‹Èü‚Æ‚Ì‘Šˆá“x‚ğŒvZ‚µ‚Ü‚·
-// NOTE: Œ»İƒmƒbƒgˆÊ’u‚Ì•ª•z‚É•Î‚è‚ª‚ ‚é‚Æ‹@”\‚µ‚È‚¢
+// ä»–æ›²ç·šã¨ã®ç›¸é•åº¦ã‚’è¨ˆç®—ã—ã¾ã™
+// NOTE: ç¾åœ¨ãƒãƒƒãƒˆä½ç½®ã®åˆ†å¸ƒã«åã‚ŠãŒã‚ã‚‹ã¨æ©Ÿèƒ½ã—ãªã„
 double Curve::CalcDifferency(const Curve* const other) const
 {
-    int checkCnt = 100; // ‹——£‚ğ‘ª‚é“_‚Ì”
-    double sumDistance = 0.0; // ‘Šˆá‹——£‚Ì‡Œv
+    int checkCnt = 100; // è·é›¢ã‚’æ¸¬ã‚‹ç‚¹ã®æ•°
+    double sumDistance = 0.0; // ç›¸é•è·é›¢ã®åˆè¨ˆ
 
-    // •ªŠ„‹æŠÔ‚ğŒvZ
+    // åˆ†å‰²åŒºé–“ã‚’è¨ˆç®—
     double skip = (fabs(_min_draw_param) + fabs(_max_draw_param)) / checkCnt;
 
-    // doubleŒ^‚ÌŒë·l—¶
+    // doubleå‹ã®èª¤å·®è€ƒæ…®
     for (double t = _min_draw_param; t < _max_draw_param + skip / 2; t += skip)
         sumDistance += this->GetPositionVector(t).DistanceFrom(other->GetPositionVector(t / this->GetDrawParamRange()));
 
-    // ‘Šˆá‹——£‚Ì•½‹Ï‚ğ•Ô‚·
+    // ç›¸é•è·é›¢ã®å¹³å‡ã‚’è¿”ã™
     return sumDistance / (double)checkCnt;
 }
-// ‘¼‹Èü‚Æ‚Ì‘Šˆá“x‚ğŒvZ‚µ‚Ü‚·
-// Å‹ß“_•½‹Ï
+// ä»–æ›²ç·šã¨ã®ç›¸é•åº¦ã‚’è¨ˆç®—ã—ã¾ã™
+// æœ€è¿‘ç‚¹å¹³å‡
 double Curve::CalcDifferency2(const Curve* const other) const
 {
-    int checkCnt = 100; // ‹——£‚ğ‘ª‚é“_‚Ì”
-    double sumDistance = 0.0; // ‘Šˆá‹——£‚Ì‡Œv
+    int checkCnt = 100; // è·é›¢ã‚’æ¸¬ã‚‹ç‚¹ã®æ•°
+    double sumDistance = 0.0; // ç›¸é•è·é›¢ã®åˆè¨ˆ
 
-    // QÆ“_ŒQ‚ğæ“¾
+    // å‚ç…§ç‚¹ç¾¤ã‚’å–å¾—
     vector<Vector3d> ref_pnts;
     other->GetPositionVectors(ref_pnts, checkCnt - 1);
 
-    // Å‹ß“_æ“¾
+    // æœ€è¿‘ç‚¹å–å¾—
     vector<NearestPointInfoC> nearest_pnts;
     for (int i = 0; i < (int)ref_pnts.size(); i++)
         nearest_pnts.push_back(this->GetNearestPointInfoFromRef(ref_pnts[i]));
@@ -102,21 +102,21 @@ double Curve::CalcDifferency2(const Curve* const other) const
     for (const auto& p : nearest_pnts)
         sumDistance += p.dist;
 
-    // ‘Šˆá‹——£‚Ì•½‹Ï‚ğ•Ô‚·
+    // ç›¸é•è·é›¢ã®å¹³å‡ã‚’è¿”ã™
     return sumDistance / (double)checkCnt;
 }
 
-// 2‹Èü‚Åˆê”Ô‰“‚´‚©‚é‹——£‚ğŒvZ‚·‚é
+// 2æ›²ç·šã§ä¸€ç•ªé ã–ã‹ã‚‹è·é›¢ã‚’è¨ˆç®—ã™ã‚‹
 double Curve::CalcFarthestDistant(const Curve* const other) const
 {
-    int checkCnt = 100; // ‹——£‚ğ‘ª‚é“_‚Ì”
-    double farthestDist = -DBL_MAX; // 2‹Èü‚Åˆê”Ô‰“‚¢‹——£
+    int checkCnt = 100; // è·é›¢ã‚’æ¸¬ã‚‹ç‚¹ã®æ•°
+    double farthestDist = -DBL_MAX; // 2æ›²ç·šã§ä¸€ç•ªé ã„è·é›¢
 
-    // QÆ“_ŒQ‚ğæ“¾
+    // å‚ç…§ç‚¹ç¾¤ã‚’å–å¾—
     vector<Vector3d> ref_pnts;
    other->GetPositionVectors(ref_pnts, checkCnt - 1);
 
-    // Å‹ß“_æ“¾
+    // æœ€è¿‘ç‚¹å–å¾—
     vector<NearestPointInfoC> nearest_pnts;
     for (int i = 0; i < (int)ref_pnts.size(); i++)
         nearest_pnts.push_back(this->GetNearestPointInfoFromRef(ref_pnts[i]));
@@ -130,30 +130,30 @@ double Curve::CalcFarthestDistant(const Curve* const other) const
     return farthestDist;
 }
 
-// ‹Èü’·‚ğæ“¾‚µ‚Ü‚·
-// split : •ªŠ„”
+// æ›²ç·šé•·ã‚’å–å¾—ã—ã¾ã™
+// split : åˆ†å‰²æ•°
 double Curve::GetLength(int split) const
 {
-    double dist = 0.0; // ‹Èü’·
+    double dist = 0.0; // æ›²ç·šé•·
 
-    // •ªŠ„‹æŠÔ‚ğŒvZ
+    // åˆ†å‰²åŒºé–“ã‚’è¨ˆç®—
     double skip = (fabs(_min_draw_param) + fabs(_max_draw_param)) / split;
 
-    // doubleŒ^‚ÌŒë·l—¶
+    // doubleå‹ã®èª¤å·®è€ƒæ…®
     for (double t = _min_draw_param; t < _max_draw_param - skip - skip / 2; t += skip)
         dist += this->GetPositionVector(t).DistanceFrom(this->GetPositionVector(t + skip));
 
     return dist;
 }
 
-// QÆ“_‚©‚ç‚ÌÅ‹ß“_î•ñ‚ğ2•ª’Tõ‚Åæ“¾‚µ‚Ü‚·
-// ref : QÆ“_, startPnts : 2•ª’TõŠJn“_ˆÊ’uî•ñ
+// å‚ç…§ç‚¹ã‹ã‚‰ã®æœ€è¿‘ç‚¹æƒ…å ±ã‚’2åˆ†æ¢ç´¢ã§å–å¾—ã—ã¾ã™
+// ref : å‚ç…§ç‚¹, startPnts : 2åˆ†æ¢ç´¢é–‹å§‹ç‚¹ä½ç½®æƒ…å ±
 NearestPointInfoC Curve::GetNearestPointInfoInternal(const Vector3d& ref, const vector<Point3dC>& startPnts) const
 {
-    vector<NearestPointInfoC> possiblePnts; // Å‹ßŒó•â“_
-    double left, right; // 2•ª’Tõ—pƒpƒ‰ƒ[ƒ^
+    vector<NearestPointInfoC> possiblePnts; // æœ€è¿‘å€™è£œç‚¹
+    double left, right; // 2åˆ†æ¢ç´¢ç”¨ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 
-    // ŠJn“_”ÍˆÍ–ˆ‚ÌÅ‹ß“_‚ğæ“¾‚µŒó•â“_‚Æ‚·‚é
+    // é–‹å§‹ç‚¹ç¯„å›²æ¯ã®æœ€è¿‘ç‚¹ã‚’å–å¾—ã—å€™è£œç‚¹ã¨ã™ã‚‹
     for (size_t i = 0, s = startPnts.size(); i < s; ++i)
     {
         left = startPnts[(i == 0) ? i : i - 1].param;
@@ -162,7 +162,7 @@ NearestPointInfoC Curve::GetNearestPointInfoInternal(const Vector3d& ref, const 
         possiblePnts.push_back(GetSectionNearestPointInfoByBinary(ref, left, right));
     }
 
-    // Œó•â‚Ì’†‚Åˆê”Ô‹——£‚Ì’Z‚¢‚à‚Ì‚ğÅ‹ß“_‚Æ‚·‚é
+    // å€™è£œã®ä¸­ã§ä¸€ç•ªè·é›¢ã®çŸ­ã„ã‚‚ã®ã‚’æœ€è¿‘ç‚¹ã¨ã™ã‚‹
     NearestPointInfoC nearestPnt(Vector3d(), Vector3d(DBL_MAX, DBL_MAX, DBL_MAX), 0);
     for (const auto& p : possiblePnts)
     {
@@ -173,14 +173,14 @@ NearestPointInfoC Curve::GetNearestPointInfoInternal(const Vector3d& ref, const 
     return nearestPnt;
 }
 
-// ‹æŠÔ“àÅ‹ß“_æ“¾(2•ª’Tõ)
-// ƒRƒƒ“ƒg“à‚Ìe_‚Í‘—¿‚ÌI—¹ğŒ”Ô†
+// åŒºé–“å†…æœ€è¿‘ç‚¹å–å¾—(2åˆ†æ¢ç´¢)
+// ã‚³ãƒ¡ãƒ³ãƒˆå†…ã®e_ã¯è³‡æ–™ã®çµ‚äº†æ¡ä»¶ç•ªå·
 NearestPointInfoC Curve::GetSectionNearestPointInfoByBinary(const Vector3d& ref, const double ini_left, const double ini_right) const
 {
     Vector3d pnt, vec_ref_pnt, tan;
-    double left, right, middle; // 2•ª’Tõ—pƒpƒ‰ƒ[ƒ^
-    double dot; // “àÏ’l
-    int count = 0; // 2•ª’TõƒXƒeƒbƒv”
+    double left, right, middle; // 2åˆ†æ¢ç´¢ç”¨ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
+    double dot; // å†…ç©å€¤
+    int count = 0; // 2åˆ†æ¢ç´¢ã‚¹ãƒ†ãƒƒãƒ—æ•°
 
     left = ini_left; right = ini_right;
 
@@ -190,63 +190,63 @@ NearestPointInfoC Curve::GetSectionNearestPointInfoByBinary(const Vector3d& ref,
         pnt = GetPositionVector(middle);
         tan = GetFirstDiffVector(middle);
         vec_ref_pnt = pnt - ref;
-        dot = tan.Dot(vec_ref_pnt); // “àÏ’l
+        dot = tan.Dot(vec_ref_pnt); // å†…ç©å€¤
     };
 
-    // ‰ŠúXV
+    // åˆæœŸæ›´æ–°
     update();
 
     while (left <= right)
     {
-        // e5. QÆ“_‚ª‘ÎÛ‹Èü‚Ì•ªŠ„üã‚É‚ ‚é(’†‰›À•W‚ÆQÆ“_‚ªd‚È‚é)
+        // e5. å‚ç…§ç‚¹ãŒå¯¾è±¡æ›²ç·šã®åˆ†å‰²ç·šä¸Šã«ã‚ã‚‹(ä¸­å¤®åº§æ¨™ã¨å‚ç…§ç‚¹ãŒé‡ãªã‚‹)
         if (fabs(pnt.DistanceFrom(ref)) < EPS::DIST_SQRT)
             break;
 
-        // e2. ƒpƒ‰ƒ[ƒ^‚ÌˆÚ“®—Ê0
+        // e2. ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®ç§»å‹•é‡0
         if (fabs(left - middle) < EPS::NEAREST || fabs(right - middle) < EPS::NEAREST)
             break;
-        // e3. ÀÀ•W‚ÌˆÚ“®—Ê0
+        // e3. å®Ÿåº§æ¨™ã®ç§»å‹•é‡0
         if (fabs(GetPositionVector(left).DistanceFrom(GetPositionVector(middle))) < EPS::NEAREST ||
             fabs(GetPositionVector(right).DistanceFrom(GetPositionVector(middle))) < EPS::NEAREST)
             break;
 
-        // e1. ƒxƒNƒgƒ‹‚Ì“àÏ‚ª0
+        // e1. ãƒ™ã‚¯ãƒˆãƒ«ã®å†…ç©ãŒ0
         if (-EPS::NEAREST < dot && dot < EPS::NEAREST)
         {
-            // \•ª‚È¸“x‚È‚Ì‚ÅŒ©‚Â‚©‚Á‚½‚±‚Æ‚É‚·‚é
+            // ååˆ†ãªç²¾åº¦ãªã®ã§è¦‹ã¤ã‹ã£ãŸã“ã¨ã«ã™ã‚‹
             break;
         }
         else if (dot >= EPS::NEAREST)
         {
-            // ‰E’[XV
+            // å³ç«¯æ›´æ–°
             right = middle;
         }
         else if (dot <= -EPS::NEAREST)
         {
-            // ¶’[XV
+            // å·¦ç«¯æ›´æ–°
             left = middle;
         }
 
-        // Še’lXV
+        // å„å€¤æ›´æ–°
         update();
 
-        // e4. ƒXƒeƒbƒv”ãŒÀ‚É’B‚µ‚½‚ç‚»‚Ì“_‚Ì“_‚ğ•Ô‚·
+        // e4. ã‚¹ãƒ†ãƒƒãƒ—æ•°ä¸Šé™ã«é”ã—ãŸã‚‰ãã®æ™‚ç‚¹ã®ç‚¹ã‚’è¿”ã™
         if (++count > EPS::COUNT_MAX)
             break;
     }
 
     return NearestPointInfoC(pnt, ref, middle);
 }
-// ‹æŠÔ“àÅ‹ß“_æ“¾(2•ª’Tõ)
+// åŒºé–“å†…æœ€è¿‘ç‚¹å–å¾—(2åˆ†æ¢ç´¢)
 NearestPointInfoC Curve::GetSectionNearestPointInfoByBinary(const Vector3d& ref, double ini_left, double ini_right, int split) const
 {
-    vector<NearestPointInfoC> possiblePnts; // Å‹ßŒó•â“_
+    vector<NearestPointInfoC> possiblePnts; // æœ€è¿‘å€™è£œç‚¹
     double skip = (ini_right - ini_left) / split;
 
-    // ƒpƒ‰ƒ[ƒ^”ÍˆÍ‚ğ•ªŠ„‚µ‚ÄÅ‹ß“_‚ğæ“¾‚·‚é
+    // ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ç¯„å›²ã‚’åˆ†å‰²ã—ã¦æœ€è¿‘ç‚¹ã‚’å–å¾—ã™ã‚‹
     if (fabs(ini_left - ini_right) < EPS::DIST)
     {
-        // ¶’l‚Æ‰E’l‚ª“™‚µ‚¢ê‡
+        // å·¦å€¤ã¨å³å€¤ãŒç­‰ã—ã„å ´åˆ
         possiblePnts.push_back(GetSectionNearestPointInfoByBinary(ref, ini_left, ini_right));
     }
     else
@@ -255,7 +255,7 @@ NearestPointInfoC Curve::GetSectionNearestPointInfoByBinary(const Vector3d& ref,
             possiblePnts.push_back(GetSectionNearestPointInfoByBinary(ref, param, param + skip));
     }
 
-    // Œó•â‚Ì’†‚Åˆê”Ô‹——£‚Ì’Z‚¢‚à‚Ì‚ğÅ‹ß“_‚Æ‚·‚é
+    // å€™è£œã®ä¸­ã§ä¸€ç•ªè·é›¢ã®çŸ­ã„ã‚‚ã®ã‚’æœ€è¿‘ç‚¹ã¨ã™ã‚‹
     NearestPointInfoC nearestPnt(Vector3d(), Vector3d(DBL_MAX, DBL_MAX, DBL_MAX), 0);
     for (const auto& p : possiblePnts)
     {

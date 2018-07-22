@@ -7,30 +7,30 @@ extern const int grid_interval;
 class GeoGrid2D
 {
 private:
-    int _len; // Œ´“_‚©‚ç‚Ì’·‚³
-    int _skip; // ƒOƒŠƒbƒhŠÔ‚Ì’·‚³
+    int _len; // åŸç‚¹ã‹ã‚‰ã®é•·ã•
+    int _skip; // ã‚°ãƒªãƒƒãƒ‰é–“ã®é•·ã•
 
-    // “à•”•`‰æ(²‚ ‚è)
+    // å†…éƒ¨æç”»(è»¸ã‚ã‚Š)
     void DrawInternal()
     {
         glLineWidth(2.0);
 
-        // ²‚¾‚¯F‚ğ•Ê‚É‚µ‚Ä•`‚­
+        // è»¸ã ã‘è‰²ã‚’åˆ¥ã«ã—ã¦æã
         glBegin(GL_LINES);
         {
-            // x²
+            // xè»¸
             glColor4dv(Color::red);
             glVertex2d(-_len, 0);
             glVertex2d(_len, 0);
 
-            // y²
+            // yè»¸
             glColor4dv(Color::blue);
             glVertex2d(0, -_len);
             glVertex2d(0, _len);
         }
         glEnd();
 
-        // FFƒOƒŒ[
+        // è‰²ï¼šã‚°ãƒ¬ãƒ¼
         glColor4d(0.8, 0.8, 0.8, 1.0);
 
         for (int x = -_len; x <= _len; x += _skip)
@@ -60,12 +60,12 @@ private:
         glLineWidth(1.0);
     }
 
-    // ²‚È‚µ
+    // è»¸ãªã—
     void DrawInternalNonAxis()
     {
         glLineWidth(2.0);
 
-        // FFƒOƒŒ[
+        // è‰²ï¼šã‚°ãƒ¬ãƒ¼
         glColor4d(0.8, 0.8, 0.8, 1.0);
 
         for (int x = -_len; x <= _len; x += _skip)
@@ -93,20 +93,20 @@ public:
     
     GeoGrid2D(int len, int skip) { _len = len; _skip = skip; }
     
-    // ƒfƒBƒXƒvƒŒƒCƒŠƒXƒg•`‰æ
+    // ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆæç”»
     void Draw()
     {
-        // ƒfƒBƒXƒvƒŒƒCƒŠƒXƒg
+        // ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆ
         static int displayListAxis, displayListNonAxis;
         static bool isRendered = false;
 
-        // ŒõŒ¹‚ÍƒIƒt
+        // å…‰æºã¯ã‚ªãƒ•
         if (glIsEnabled(GL_LIGHTING))
             glDisable(GL_LIGHTING);
 
         if (isRendered)
         {
-            // ƒfƒBƒXƒvƒŒƒCƒŠƒXƒgì¬Ï‚İ‚È‚çƒR[ƒ‹
+            // ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆä½œæˆæ¸ˆã¿ãªã‚‰ã‚³ãƒ¼ãƒ«
             if (gridType == GridType::WithAxis)
                 glCallList(displayListAxis);
             else if (gridType == GridType::NonAxis)
@@ -114,10 +114,10 @@ public:
         }
         else
         {
-            // ²‚ ‚è
+            // è»¸ã‚ã‚Š
             {
                 if (!(displayListAxis = glGenLists(1)))
-                    Error::ShowAndExit("ƒfƒBƒXƒvƒŒƒCƒŠƒXƒgì¬¸”s");
+                    Error::ShowAndExit("ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆä½œæˆå¤±æ•—");
 
                 glNewList(displayListAxis, GL_COMPILE);
 
@@ -128,10 +128,10 @@ public:
                 glEndList();
             }
 
-            // ²‚È‚µ
+            // è»¸ãªã—
             {
                 if (!(displayListNonAxis = glGenLists(1)))
-                    Error::ShowAndExit("ƒfƒBƒXƒvƒŒƒCƒŠƒXƒgì¬¸”s");
+                    Error::ShowAndExit("ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆä½œæˆå¤±æ•—");
 
                 glNewList(displayListNonAxis, GL_COMPILE);
 

@@ -2,14 +2,14 @@
 
 #include "EPS.h"
 
-// §Œä“_ƒNƒ‰ƒX
-// “¯ŸÀ•Wl—¶
+// åˆ¶å¾¡ç‚¹ã‚¯ãƒ©ã‚¹
+// åŒæ¬¡åº§æ¨™è€ƒæ…®
 class ControlPoint
 {
 public:
 
-    double X, Y, Z; // À•W
-    double W; // ƒEƒFƒCƒg
+    double X, Y, Z; // åº§æ¨™
+    double W; // ã‚¦ã‚§ã‚¤ãƒˆ
 
     constexpr ControlPoint() : X(0), Y(0), Z(0), W(1.0) { }
     constexpr ControlPoint(double x, double y, double z) : X(x), Y(y), Z(z), W(1.0) { }
@@ -17,7 +17,7 @@ public:
 
     operator Vector3d()
     {
-        // ’ÊíÀ•WŒn‚É–ß‚·
+        // é€šå¸¸åº§æ¨™ç³»ã«æˆ»ã™
         return Vector3d(X / W, Y / W, Z / W);
     }
 
@@ -44,7 +44,7 @@ public:
             (Z - other.Z)*(Z - other.Z));
     }
 
-    // ƒxƒNƒgƒ‹ŒvZ—p’è””{
+    // ãƒ™ã‚¯ãƒˆãƒ«è¨ˆç®—ç”¨å®šæ•°å€
     constexpr Vector3d operator*(double value) const
     {
         return { X * value, Y * value, Z * value };

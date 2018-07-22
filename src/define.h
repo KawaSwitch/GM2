@@ -1,6 +1,6 @@
 #pragma once
 
-// デフォルトのウィンドウサイズ
+// 繝�繝輔か繝ｫ繝医�ｮ繧ｦ繧｣繝ｳ繝峨え繧ｵ繧､繧ｺ
 #define DEF_WIN_X 960
 #define DEF_WIN_Y 960
 

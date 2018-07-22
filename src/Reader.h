@@ -5,12 +5,12 @@
 #include <sstream>
 #include "Object.h"
 
-// ƒtƒ@ƒCƒ‹“Ç‚İ‚İƒNƒ‰ƒX
+// ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿ã‚¯ãƒ©ã‚¹
 class Reader
 {
 protected:
 
-    string _path; // ƒfƒBƒŒƒNƒgƒŠƒpƒX
+    string _path; // ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãƒ‘ã‚¹
 
 public:
 
@@ -22,21 +22,21 @@ public:
     ~Reader() {};
 };
 
-// Œ`óˆ— ‹Èü/‹È–Ê“Ç‚İ‚İ—pƒNƒ‰ƒX
+// å½¢çŠ¶å‡¦ç† æ›²ç·š/æ›²é¢èª­ã¿è¾¼ã¿ç”¨ã‚¯ãƒ©ã‚¹
 class KjsReader : public Reader
 {
 private:
 
-    const string KJS_FILE_NAME = "KJS_FILE"; // .kjsƒtƒ@ƒCƒ‹‚ÌŠi”[ƒtƒHƒ‹ƒ_–¼
+    const string KJS_FILE_NAME = "KJS_FILE"; // .kjsãƒ•ã‚¡ã‚¤ãƒ«ã®æ ¼ç´ãƒ•ã‚©ãƒ«ãƒ€å
 
     void ExtractNumberFromString(char* dest, const char* src) const;
 
-    Object* BezierCurveReader(const vector<string>& lines) const; // ƒxƒWƒG‹Èü
-    Object* BezierSurfaceReader(const vector<string>& lines) const; // ƒxƒWƒG‹È–Ê
-    Object* BsplineCurveReader(const vector<string>& lines) const; // BƒXƒvƒ‰ƒCƒ“‹Èü
-    Object* BsplineSurfaceReader(const vector<string>& lines) const; // BƒXƒvƒ‰ƒCƒ“‹È–Ê
-    Object* NurbsCurveReader(const vector<string>& lines) const; // Nurbs‹Èü
-    Object* NurbsSurfaceReader(const vector<string>& lines) const; // Nurbs‹È–Ê
+    Object* BezierCurveReader(const vector<string>& lines) const; // ãƒ™ã‚¸ã‚¨æ›²ç·š
+    Object* BezierSurfaceReader(const vector<string>& lines) const; // ãƒ™ã‚¸ã‚¨æ›²é¢
+    Object* BsplineCurveReader(const vector<string>& lines) const; // Bã‚¹ãƒ—ãƒ©ã‚¤ãƒ³æ›²ç·š
+    Object* BsplineSurfaceReader(const vector<string>& lines) const; // Bã‚¹ãƒ—ãƒ©ã‚¤ãƒ³æ›²é¢
+    Object* NurbsCurveReader(const vector<string>& lines) const; // Nurbsæ›²ç·š
+    Object* NurbsSurfaceReader(const vector<string>& lines) const; // Nurbsæ›²é¢
 
 public:
 

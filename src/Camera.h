@@ -1,19 +1,19 @@
 #pragma once
 
-// “§‹“Š‰e’è”
+// é€è¦–æŠ•å½±å®šæ•°
 struct PersParam
 {
-    static const double fovy; // y•ûŒü‚Ì‹–ìŠp
+    static const double fovy; // yæ–¹å‘ã®è¦–é‡è§’
     static const double zNear;
     static const double zFar;
 };
 
-// “Š‰e–@
+// æŠ•å½±æ³•
 enum ProjectType
 {
-    Perspective,    // “§‹“Š‰e
-    Ortho,          // •½s“Š‰e
+    Perspective,    // é€è¦–æŠ•å½±
+    Ortho,          // å¹³è¡ŒæŠ•å½±
 };
 
-extern ProjectType mainProjType; // ƒƒCƒ“ƒrƒ…[‚Ì“Š‰e–@
-extern ProjectType axisProjType; // ²‚Ì“Š‰e–@
+extern ProjectType mainProjType; // ãƒ¡ã‚¤ãƒ³ãƒ“ãƒ¥ãƒ¼ã®æŠ•å½±æ³•
+extern ProjectType axisProjType; // è»¸ã®æŠ•å½±æ³•

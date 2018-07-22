@@ -24,28 +24,28 @@
 
 #include "template.h"
 
-GLOBAL int width, height; // ƒEƒBƒ“ƒhƒEƒTƒCƒY
+GLOBAL int width, height; // ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚µã‚¤ã‚º
 
-GLOBAL int mouse_X, mouse_Y; // ƒ}ƒEƒXÀ•Wi‰ñ“]—pj
-GLOBAL double xStart, yStart; // ƒ}ƒEƒXÀ•WiˆÚ“®—pj
-GLOBAL double dist_X, dist_Y, dist_Z; // ˆÚ“®‹——£
+GLOBAL int mouse_X, mouse_Y; // ãƒã‚¦ã‚¹åº§æ¨™ï¼ˆå›è»¢ç”¨ï¼‰
+GLOBAL double xStart, yStart; // ãƒã‚¦ã‚¹åº§æ¨™ï¼ˆç§»å‹•ç”¨ï¼‰
+GLOBAL double dist_X, dist_Y, dist_Z; // ç§»å‹•è·é›¢
 
-GLOBAL bool rotate_flag, move_flag; // ‰ñ“], ˆÚ“®ƒtƒ‰ƒO
+GLOBAL bool rotate_flag, move_flag; // å›è»¢, ç§»å‹•ãƒ•ãƒ©ã‚°
 
-GLOBAL double rot_mat[16]; // ‰ñ“]ƒ}ƒgƒŠƒNƒX
+GLOBAL double rot_mat[16]; // å›è»¢ãƒãƒˆãƒªã‚¯ã‚¹
 
-GLOBAL unsigned int obj_number; // ƒIƒuƒWƒFƒNƒg¯•Êq
+GLOBAL unsigned int obj_number; // ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆè­˜åˆ¥å­
 
-GLOBAL bool isUseLight; // ƒ‰ƒCƒeƒBƒ“ƒOˆ—‚ğs‚¤‚©
+GLOBAL bool isUseLight; // ãƒ©ã‚¤ãƒ†ã‚£ãƒ³ã‚°å‡¦ç†ã‚’è¡Œã†ã‹
 
-GLOBAL GridType gridType; // ƒOƒŠƒbƒh•`‰æƒ^ƒCƒv
+GLOBAL GridType gridType; // ã‚°ãƒªãƒƒãƒ‰æç”»ã‚¿ã‚¤ãƒ—
 
-GLOBAL bool isViewInitRequested; // ‰æ–Ê•\¦‚ğ‰Šú‚É–ß‚·‚©
+GLOBAL bool isViewInitRequested; // ç”»é¢è¡¨ç¤ºã‚’åˆæœŸã«æˆ»ã™ã‹
 
-// \‘¢‘Ì
+// æ§‹é€ ä½“
 GLOBAL Quaternion target;
 GLOBAL Quaternion current;
 
-// ƒ‰ƒCƒg
+// ãƒ©ã‚¤ãƒˆ
 GLOBAL vector<Light *> lights;
 GLOBAL vector<Light *> axisLight, modelLight;

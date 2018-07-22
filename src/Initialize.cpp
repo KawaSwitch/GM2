@@ -20,9 +20,9 @@ const int grid_interval = 5;
 void InitScene()
 {
     scene = new Scene();
-    test_scene = new Scene(); // ƒeƒXƒg—p‚à‚±‚±‚Å‰Šú‰»
+    test_scene = new Scene(); // ãƒ†ã‚¹ãƒˆç”¨ã‚‚ã“ã“ã§åˆæœŸåŒ–
 
-    // @ƒtƒ@ƒCƒ‹“Ç‚İ‚İ TODO: ƒtƒ@ƒCƒ‹“Ç‚İ‚İ•œŠˆ
+    // @ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿ TODO: ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿å¾©æ´»
     // auto reader = new KjsReader("KJS_FILE/");
     // auto objs = reader->GetObjectsFromKjsFolder();
 
@@ -32,39 +32,39 @@ void InitScene()
 
 void InitQuaternion()
 {
-    // ‰ñ“]s—ñ
+    // å›è»¢è¡Œåˆ—
     for (int i = 0; i < 16; i++)
         rot_mat[i] = 0.0;
 
-    // ƒNƒH[ƒ^ƒjƒIƒ“
+    // ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³
     target.x = 0.0; target.y = 0.0;
     target.z = 0.0; target.w = 0.0;
     current.x = 0.0; current.y = 0.0;
     current.z = 0.0; current.w = 1.0;
 
-    // ƒNƒH[ƒ^ƒjƒIƒ“‰Šú‰»
+    // ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³åˆæœŸåŒ–
     CalcRotateMatrix(rot_mat, current);
 }
 
 void Initialize()
 {
-    glewInit(); // glewŠg’£
+    glewInit(); // glewæ‹¡å¼µ
 
-    glClearColor(1.0, 1.0, 1.0, 1.0);   // ”wŒiFF”’
-    glClearStencil(0); // ƒXƒeƒ“ƒVƒ‹’l‚Í0‚Å‰Šú‰»
+    glClearColor(1.0, 1.0, 1.0, 1.0);   // èƒŒæ™¯è‰²ï¼šç™½
+    glClearStencil(0); // ã‚¹ãƒ†ãƒ³ã‚·ãƒ«å€¤ã¯0ã§åˆæœŸåŒ–
 
-    glEnable(GL_DEPTH_TEST); // ƒfƒvƒX’l —LŒø‰»
+    glEnable(GL_DEPTH_TEST); // ãƒ‡ãƒ—ã‚¹å€¤ æœ‰åŠ¹åŒ–
     glDepthFunc(GL_LESS);
 
-    glEnable(GL_POINT_SMOOTH); // “_‚ÉƒAƒ“ƒ`ƒGƒCƒŠƒAƒVƒ“ƒOˆ—‚ğs‚¤
-    glHint(GL_POINT_SMOOTH_HINT, GL_NICEST); // ƒAƒ“ƒ`ƒGƒCƒŠƒAƒVƒ“ƒO•i¿‚ğÅ‚‚É
+    glEnable(GL_POINT_SMOOTH); // ç‚¹ã«ã‚¢ãƒ³ãƒã‚¨ã‚¤ãƒªã‚¢ã‚·ãƒ³ã‚°å‡¦ç†ã‚’è¡Œã†
+    glHint(GL_POINT_SMOOTH_HINT, GL_NICEST); // ã‚¢ãƒ³ãƒã‚¨ã‚¤ãƒªã‚¢ã‚·ãƒ³ã‚°å“è³ªã‚’æœ€é«˜ã«
 
     glShadeModel(GL_SMOOTH);
     
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_BLEND); // ƒuƒŒƒ“ƒh —LŒø‰»
+    glEnable(GL_BLEND); // ãƒ–ãƒ¬ãƒ³ãƒ‰ æœ‰åŠ¹åŒ–
     
-    // ƒƒCƒ“ƒ‰ƒCƒg‰Šú‰»
+    // ãƒ¡ã‚¤ãƒ³ãƒ©ã‚¤ãƒˆåˆæœŸåŒ–
     {
         lights.push_back(new Light(GL_LIGHT0, 50, 50, -50));
         lights.push_back(new Light(GL_LIGHT1, 50, 0, 50));
@@ -72,38 +72,38 @@ void Initialize()
         lights.push_back(new Light(GL_LIGHT3, 50, 50, 50));
         lights.push_back(new Light(GL_LIGHT4, -50, 0, 0));
 
-        // ²—pƒ‰ƒCƒg‚Ìİ’è
+        // è»¸ç”¨ãƒ©ã‚¤ãƒˆã®è¨­å®š
         for (const auto light : lights)
             axisLight.push_back(light);
-        // Œ`ó—pƒ‰ƒCƒg‚Ìİ’è
+        // å½¢çŠ¶ç”¨ãƒ©ã‚¤ãƒˆã®è¨­å®š
         {
             modelLight.push_back(lights[0]);
             modelLight.push_back(lights[1]);
         }
 
-        isUseLight = true; // •K—v‚È‚Æ‚±‚ë‚Ì‚İˆ—‚ğ{‚·
+        isUseLight = true; // å¿…è¦ãªã¨ã“ã‚ã®ã¿å‡¦ç†ã‚’æ–½ã™
     }
 
-    // ƒOƒŠƒbƒh‰Šú‰»
+    // ã‚°ãƒªãƒƒãƒ‰åˆæœŸåŒ–
     gridType = GridType::InVisible;
     grid = new GeoGrid2D(grid_length, grid_interval);
 
-    // ²‰Šú‰»
+    // è»¸åˆæœŸåŒ–
     axisShowType = AxisShowType::Normal;
-    axis = new NormalAxis(10); // ²
+    axis = new NormalAxis(10); // è»¸
 
-    obj_number = 1; // ‰Šú¯•Êq‚Í1
+    obj_number = 1; // åˆæœŸè­˜åˆ¥å­ã¯1
 
-    // ‰ñ“]ˆÚ“®Œn‰Šú‰»
+    // å›è»¢ç§»å‹•ç³»åˆæœŸåŒ–
     rotate_flag = GL_FALSE;
     move_flag = GL_FALSE;
     InitQuaternion();
 
-    isViewInitRequested = false; // s—ñŒ³‚É–ß‚·‚©
+    isViewInitRequested = false; // è¡Œåˆ—å…ƒã«æˆ»ã™ã‹
 
-    // ƒV[ƒ“‰Šú‰»
+    // ã‚·ãƒ¼ãƒ³åˆæœŸåŒ–
     InitScene();
 
-    // ƒRƒ“ƒ\[ƒ‹o—Í
+    // ã‚³ãƒ³ã‚½ãƒ¼ãƒ«å‡ºåŠ›
     ShowConsoleDiscription();
 }

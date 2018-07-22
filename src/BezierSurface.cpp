@@ -14,11 +14,11 @@ BezierSurface::BezierSurface(
     SetColor(color);
     _resolution = resol;
 
-    // VBO‚ğg‚¤
+    // VBOã‚’ä½¿ã†
     _isUseVBO = true;
 }
 
-// w’è‚µ‚½’[‚Ì‹Èü‚ğæ“¾‚·‚é
+// æŒ‡å®šã—ãŸç«¯ã®æ›²ç·šã‚’å–å¾—ã™ã‚‹
 std::unique_ptr<Curve> BezierSurface::GetEdgeCurve(const SurfaceEdge edge) const
 {
     vector<ControlPoint> edge_cp = GetEdgeCurveControlPoint(edge);
@@ -27,7 +27,7 @@ std::unique_ptr<Curve> BezierSurface::GetEdgeCurve(const SurfaceEdge edge) const
     return std::unique_ptr<Curve>(new BezierCurve(edge_ord, &edge_cp[0], (int)edge_cp.size(), _color, _mesh_width));
 }
 
-// –‘O•`‰æ
+// äº‹å‰æç”»
 void BezierSurface::PreDraw() const
 {
     vector<vector<Vector3d>> pnt;
@@ -56,7 +56,7 @@ void BezierSurface::PreDraw() const
     //glColor4dv(_color);
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, _color);
 
-    // OŠpƒ|ƒŠƒSƒ“•\¦
+    // ä¸‰è§’ãƒãƒªã‚´ãƒ³è¡¨ç¤º
     for (int i = 0; i <= 99; i += 1)
     {
         for (int j = 0; j <= 99; j += 1)
@@ -80,16 +80,16 @@ void BezierSurface::PreDraw() const
     }
 }
 
-// ƒƒbƒVƒ…•`‰æ
+// ãƒ¡ãƒƒã‚·ãƒ¥æç”»
 void BezierSurface::DrawMeshInternal() const
 {
     Vector3d pnt;
 
-    // ƒƒbƒVƒ…‚ÌF‚Í3dv‚Å“n‚µ‚½•û‚ªãY—í(ƒ¿=0)
+    // ãƒ¡ãƒƒã‚·ãƒ¥ã®è‰²ã¯3dvã§æ¸¡ã—ãŸæ–¹ãŒç¶ºéº—(Î±=0)
     glColor4dv(_color);
     glLineWidth(_mesh_width);
 
-    // U•ûŒü
+    // Uæ–¹å‘
     for (int i = 0; i <= 100; i += 5)
     {
         glBegin(GL_LINE_STRIP);
@@ -105,7 +105,7 @@ void BezierSurface::DrawMeshInternal() const
 
         glEnd();
     }
-    // V•ûŒü
+    // Væ–¹å‘
     for (int i = 0; i <= 100; i += 5)
     {
         glBegin(GL_LINE_STRIP);
@@ -123,7 +123,7 @@ void BezierSurface::DrawMeshInternal() const
     }
 }
 
-// ’¸“_ƒoƒbƒtƒ@ì¬
+// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ä½œæˆ
 void BezierSurface::CreateVBO() const
 {
     vector<vector<Vector3d>> pnt;
@@ -151,7 +151,7 @@ void BezierSurface::CreateVBO() const
         }
     }
 
-    // VBO—p‚Ì’¸“_æ“¾
+    // VBOç”¨ã®é ‚ç‚¹å–å¾—
     for (int i = 0; i < 100; i++)
     {
         for (int j = 0; j < 100; j++)
@@ -164,7 +164,7 @@ void BezierSurface::CreateVBO() const
             pnt_vbo.push_back(pnt[i][j + 1]);
             pnt_vbo.push_back(pnt[i + 1][j + 1]);
 
-            // –@ü
+            // æ³•ç·š
             nor_vbo.push_back(nor[i][j]);
             nor_vbo.push_back(nor[i + 1][j]);
             nor_vbo.push_back(nor[i + 1][j + 1]);
@@ -177,7 +177,7 @@ void BezierSurface::CreateVBO() const
 
     _nVertex_cache = (int)pnt_vbo.size();
 
-    // VBO‚Ìİ’è
+    // VBOã®è¨­å®š
     glGenBuffers(1, &_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(double) * _nVertex_cache * 3, &pnt_vbo[0], GL_DYNAMIC_DRAW);
@@ -189,23 +189,23 @@ void BezierSurface::CreateVBO() const
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-// VBO‚Å•`‰æ
+// VBOã§æç”»
 void BezierSurface::DrawVBO() const
 {
     //glColor4dv(_color);
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, _color);
 
-    // ’¸“_
+    // é ‚ç‚¹
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(3, GL_DOUBLE, 0, 0);
 
-    // –@ü
+    // æ³•ç·š
     glBindBuffer(GL_ARRAY_BUFFER, _vbo_nor);
     glEnableClientState(GL_NORMAL_ARRAY);
     glNormalPointer(GL_DOUBLE, 0, (void *)0);
 
-    // •`‰æ
+    // æç”»
     glDrawArrays(GL_TRIANGLES, 0, _nVertex_cache);
 
     // clean up
@@ -214,7 +214,7 @@ void BezierSurface::DrawVBO() const
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-// ÚüƒxƒNƒgƒ‹•`‰æ
+// æ¥ç·šãƒ™ã‚¯ãƒˆãƒ«æç”»
 void BezierSurface::DrawFirstDiffVectorsInternal() const
 {
     Vector3d pnt, diff;
@@ -229,15 +229,15 @@ void BezierSurface::DrawFirstDiffVectorsInternal() const
             double u = (double)i / 100;
             double v = (double)j / 100;
 
-            // U•ûŒü
-            glColor4dv(Color::red); // Ô
+            // Uæ–¹å‘
+            glColor4dv(Color::red); // èµ¤
             pnt = GetPositionVector(u, v);
             diff = GetFirstDiffVectorU(u, v).Normalize();
             glVertex3d(pnt);
             glVertex3d(pnt + diff);
 
-            // V•ûŒü
-            glColor4dv(Color::green); // —Î
+            // Væ–¹å‘
+            glColor4dv(Color::green); // ç·‘
             diff = GetFirstDiffVectorV(u, v).Normalize();
             glVertex3d(pnt);
             glVertex3d(pnt + diff);
@@ -247,7 +247,7 @@ void BezierSurface::DrawFirstDiffVectorsInternal() const
     glEnd();
 }
 
-// 2ŠK”÷•ªƒxƒNƒgƒ‹•`‰æ
+// 2éšå¾®åˆ†ãƒ™ã‚¯ãƒˆãƒ«æç”»
 void BezierSurface::DrawSecondDiffVectorsInternal() const
 {
     Vector3d pnt, diff;
@@ -262,21 +262,21 @@ void BezierSurface::DrawSecondDiffVectorsInternal() const
             double u = (double)i / 100;
             double v = (double)j / 100;
 
-            // UU”÷•ª
-            glColor3d(1.0, 0.2, 0.2); // Ô
+            // UUå¾®åˆ†
+            glColor3d(1.0, 0.2, 0.2); // èµ¤
             pnt = GetPositionVector(u, v);
             diff = GetSecondDiffVectorUU(u, v).Normalize();
             glVertex3d(pnt);
             glVertex3d(pnt + diff);
 
-            // UV”÷•ª
-            glColor3d(0.2, 1.0, 0.2); // —Î
+            // UVå¾®åˆ†
+            glColor3d(0.2, 1.0, 0.2); // ç·‘
             diff = GetSecondDiffVectorUV(u, v).Normalize();
             glVertex3d(pnt);
             glVertex3d(pnt + diff);
 
-            // VV”÷•ª
-            glColor3d(0.2, 0.2, 1.0); // Â
+            // VVå¾®åˆ†
+            glColor3d(0.2, 0.2, 1.0); // é’
             diff = GetSecondDiffVectorVV(u, v).Normalize();
             glVertex3d(pnt);
             glVertex3d(pnt + diff);
@@ -286,7 +286,7 @@ void BezierSurface::DrawSecondDiffVectorsInternal() const
     glEnd();
 }
 
-// –@üƒxƒNƒgƒ‹•`‰æ
+// æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«æç”»
 void BezierSurface::DrawNormalVectorsInternal() const
 {
     Vector3d pnt, normal;
@@ -301,8 +301,8 @@ void BezierSurface::DrawNormalVectorsInternal() const
             double u = (double)i / 100;
             double v = (double)j / 100;
 
-            // –@ü
-            glColor4dv(Color::blue); // Â
+            // æ³•ç·š
+            glColor4dv(Color::blue); // é’
             pnt = GetPositionVector(u, v);
             normal = GetNormalVector(u, v).Normalize();
             glVertex3d(pnt);
@@ -313,7 +313,7 @@ void BezierSurface::DrawNormalVectorsInternal() const
     glEnd();
 }
 
-// ‹È—¦”¼Œa•`‰æ
+// æ›²ç‡åŠå¾„æç”»
 void BezierSurface::DrawCurvatureVectorsInternal() const
 {
     Vector3d pnt, curv;
@@ -331,15 +331,15 @@ void BezierSurface::DrawCurvatureVectorsInternal() const
             pnt = GetPositionVector(u, v);
             curv = GetCurvatureVector(u, v);
 
-            // ‹È—¦”¼Œa
-            glColor4dv(Color::pink); // ƒsƒ“ƒN
+            // æ›²ç‡åŠå¾„
+            glColor4dv(Color::pink); // ãƒ”ãƒ³ã‚¯
             glBegin(GL_LINES);
             glVertex3d(pnt);
             glVertex3d(pnt + curv);
             glEnd();
 
-            // ‹È—¦’†S
-            glColor4dv(Color::light_green); // ‰©—Î
+            // æ›²ç‡ä¸­å¿ƒ
+            glColor4dv(Color::light_green); // é»„ç·‘
             glBegin(GL_POINTS);
             glVertex3d(pnt + curv);
             glEnd();
@@ -347,7 +347,7 @@ void BezierSurface::DrawCurvatureVectorsInternal() const
     }
 }
 
-// w’èƒpƒ‰ƒ[ƒ^‚ÌƒxƒNƒgƒ‹‚ğŠî’êŠÖ”‚©‚çZo‚·‚é
+// æŒ‡å®šãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’åŸºåº•é–¢æ•°ã‹ã‚‰ç®—å‡ºã™ã‚‹
 Vector3d BezierSurface::CalcVector(
     const double u, const double v,
     const function<double(const unsigned, const unsigned, const double)> BasisFuncU,
@@ -355,17 +355,17 @@ Vector3d BezierSurface::CalcVector(
 {
     Vector3d vector;
 
-    // Šî’êŠÖ””z—ñ(s—ñŒvZ—p)
+    // åŸºåº•é–¢æ•°é…åˆ—(è¡Œåˆ—è¨ˆç®—ç”¨)
     double* N_array_U = new double[_ncpntU];
     double* N_array_V = new double[_ncpntV];
 
-    // Šî’êŠÖ””z—ñ‚ÖŠeŠî’êŠÖ”‚ğ‘ã“ü
+    // åŸºåº•é–¢æ•°é…åˆ—ã¸å„åŸºåº•é–¢æ•°ã‚’ä»£å…¥
     for (int i = 0; i < _ncpntU; i++)
         N_array_U[i] = BasisFuncU(i, _ordU - 1, u);
     for (int i = 0; i < _ncpntV; i++)
         N_array_V[i] = BasisFuncV(i, _ordV - 1, v);
 
-    // ƒxƒNƒgƒ‹Zo(s—ñŒvZ)
+    // ãƒ™ã‚¯ãƒˆãƒ«ç®—å‡º(è¡Œåˆ—è¨ˆç®—)
     vector = CalcVectorWithBasisFunctions(N_array_U, N_array_V);
 
     delete[] N_array_U;
@@ -373,14 +373,14 @@ Vector3d BezierSurface::CalcVector(
     return vector;
 }
 
-// ˆÊ’uƒxƒNƒgƒ‹æ“¾
+// ä½ç½®ãƒ™ã‚¯ãƒˆãƒ«å–å¾—
 Vector3d BezierSurface::GetPositionVector(const double u, const double v) const
 {
     // u:0-diff v:0-diff
     return CalcVector(u, v, CalcBernsteinFunc, CalcBernsteinFunc);
 }
 
-// ÚüƒxƒNƒgƒ‹æ“¾
+// æ¥ç·šãƒ™ã‚¯ãƒˆãƒ«å–å¾—
 Vector3d BezierSurface::GetFirstDiffVectorU(const double u, const double v) const
 {
     // u:1-diff v:0-diff
@@ -392,7 +392,7 @@ Vector3d BezierSurface::GetFirstDiffVectorV(const double u, const double v) cons
     return CalcVector(u, v, CalcBernsteinFunc, Calc1DiffBernsteinFunc);
 }
 
-// 2ŠK”÷•ªƒxƒNƒgƒ‹æ“¾
+// 2éšå¾®åˆ†ãƒ™ã‚¯ãƒˆãƒ«å–å¾—
 Vector3d BezierSurface::GetSecondDiffVectorUU(const double u, const double v) const
 {
     // u:2diff v:0-diff
@@ -409,16 +409,16 @@ Vector3d BezierSurface::GetSecondDiffVectorVV(const double u, const double v) co
     return CalcVector(u, v, CalcBernsteinFunc, Calc2DiffBernsteinFunc);
 }
 
-// ‹t•ÏŠ·
+// é€†å¤‰æ›
 std::unique_ptr<Surface> BezierSurface::GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, const GLdouble resol) const
 {
-    // –¢À‘•
+    // æœªå®Ÿè£…
     return nullptr;
 }
 
-// Å‹ß“_æ“¾
+// æœ€è¿‘ç‚¹å–å¾—
 NearestPointInfoS BezierSurface::GetNearestPointInfoFromRef(const Vector3d& ref, const NearestSearch search) const
 {
-    // –¢À‘•
+    // æœªå®Ÿè£…
     return NearestPointInfoS(Vector3d(), ref, 0, 0);
 }

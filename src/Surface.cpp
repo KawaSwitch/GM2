@@ -1,11 +1,11 @@
 #include "Surface.h"
 #include "BsplineCurve.h"
 
-// §Œä“_İ’è
+// åˆ¶å¾¡ç‚¹è¨­å®š
 void Surface::SetControlPoint(const ControlPoint* const cp, const int size)
 {
     if (size <= 0)
-        Error::ShowAndExit("§Œä“_İ’è¸”s", "CP size must be over 0.");
+        Error::ShowAndExit("åˆ¶å¾¡ç‚¹è¨­å®šå¤±æ•—", "CP size must be over 0.");
 
     //_ctrlp.reserve(size); _ctrlpX.reserve(size);
     //_ctrlpY.reserve(size); _ctrlpZ.reserve(size);
@@ -14,7 +14,7 @@ void Surface::SetControlPoint(const ControlPoint* const cp, const int size)
     for (int i = 0; i < size; i++)
         _ctrlp.emplace_back(cp[i]);
 
-    // ŒvZ—p‚ÉŠe¬•ªŠ„‚èU‚é
+    // è¨ˆç®—ç”¨ã«å„æˆåˆ†å‰²ã‚ŠæŒ¯ã‚‹
     for (int i = 0; i < _ncpntU; i++)
     {
         for (int j = 0; j < _ncpntV; j++)
@@ -27,32 +27,32 @@ void Surface::SetControlPoint(const ControlPoint* const cp, const int size)
     }
 }
 
-// •`‰æ—p‹È—¦ƒxƒNƒgƒ‹æ“¾
+// æç”»ç”¨æ›²ç‡ãƒ™ã‚¯ãƒˆãƒ«å–å¾—
 Vector3d Surface::GetCurvatureVector(const double u, const double v) const
 {
-    // å‹È—¦æ“¾
+    // ä¸»æ›²ç‡å–å¾—
     double max_kappa, min_kappa;
     GetPrincipalCurvatures(u, v, &max_kappa, &min_kappa);
 
-    // ’PˆÊ–@üƒxƒNƒgƒ‹
+    // å˜ä½æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«
     Vector3d e = GetNormalVector(u, v).Normalize();
 
-    // â‘Î’l‚ª‘å‚«‚¢•û‚ğ•Ô‚·
+    // çµ¶å¯¾å€¤ãŒå¤§ãã„æ–¹ã‚’è¿”ã™
     return (fabs(max_kappa) > fabs(min_kappa)) ?
         (1 / max_kappa) * e :
         (1 / min_kappa) * e;
 }
 
-// ƒ°[i=1tok]ƒ°[j=1toL] Q(i,j)N[i,n](u)N[j,m](v) ‚ğŒvZ‚·‚é
-// <!>”ñ—L—‹È–Ê‚ÌˆÊ’uƒxƒNƒgƒ‹, —L—‹È–Ê‚Ì•ªq
+// Î£[i=1tok]Î£[j=1toL] Q(i,j)N[i,n](u)N[j,m](v) ã‚’è¨ˆç®—ã™ã‚‹
+// <!>éæœ‰ç†æ›²é¢ã®ä½ç½®ãƒ™ã‚¯ãƒˆãƒ«, æœ‰ç†æ›²é¢ã®åˆ†å­
 Vector3d Surface::CalcVectorWithBasisFunctions(const double* const BF_array_U, const double* const BF_array_V) const
 {
     Vector3d retVec;
-    double temp[100]; // ŒvZ—p
+    double temp[100]; // è¨ˆç®—ç”¨
 
     vector<double> ctrlpX_w, ctrlpY_w, ctrlpZ_w;
 
-    // “¯ŸÀ•W•ÏŠ·‚ğs‚¤
+    // åŒæ¬¡åº§æ¨™å¤‰æ›ã‚’è¡Œã†
     for (int i = 0; i < _ncpntU * _ncpntV; i++)
     {
         ctrlpX_w.push_back(_ctrlpX[i] * _weight[i]);
@@ -60,7 +60,7 @@ Vector3d Surface::CalcVectorWithBasisFunctions(const double* const BF_array_U, c
         ctrlpZ_w.push_back(_ctrlpZ[i] * _weight[i]);
     }
 
-    // s—ñŒvZ‚Í‹t‚©‚çI
+    // è¡Œåˆ—è¨ˆç®—ã¯é€†ã‹ã‚‰ï¼
     MatrixMultiply(1, _ncpntV, _ncpntU, BF_array_V, &ctrlpX_w[0], temp);
     retVec.X = MatrixMultiply(_ncpntU, temp, BF_array_U);
 
@@ -73,18 +73,18 @@ Vector3d Surface::CalcVectorWithBasisFunctions(const double* const BF_array_U, c
     return retVec;
 }
 
-// ƒ°[i=1tok]ƒ°[j=1toL] w(i,j)N[i,n](u)N[j,m](v) ‚ğŒvZ‚·‚é
-// <!>—L—‹È–Ê‚Ì•ª•ê
+// Î£[i=1tok]Î£[j=1toL] w(i,j)N[i,n](u)N[j,m](v) ã‚’è¨ˆç®—ã™ã‚‹
+// <!>æœ‰ç†æ›²é¢ã®åˆ†æ¯
 double Surface::CalcWeightWithBasisFunctions(const double* const BF_array_U, const double* const BF_array_V) const
 {
-    double temp[100]; // ŒvZ—p
+    double temp[100]; // è¨ˆç®—ç”¨
 
-    // s—ñŒvZ‚Í‹t‚©‚çI
+    // è¡Œåˆ—è¨ˆç®—ã¯é€†ã‹ã‚‰ï¼
     MatrixMultiply(1, _ncpntV, _ncpntU, BF_array_V, &_weight[0], temp);
     return MatrixMultiply(_ncpntU, temp, BF_array_U);
 }
 
-// w’è‚µ‚½’[‚Ì‹Èü‚Ì§Œä“_‚ğæ“¾‚·‚é
+// æŒ‡å®šã—ãŸç«¯ã®æ›²ç·šã®åˆ¶å¾¡ç‚¹ã‚’å–å¾—ã™ã‚‹
 vector<ControlPoint> Surface::GetEdgeCurveControlPoint(const SurfaceEdge edge) const
 {
     vector<ControlPoint> edge_cp;
@@ -113,10 +113,10 @@ vector<ControlPoint> Surface::GetEdgeCurveControlPoint(const SurfaceEdge edge) c
     return edge_cp;
 }
 
-// w’èƒpƒ‰ƒ[ƒ^ŒÅ’è‚ÌƒAƒCƒ\‹Èü‚ğæ“¾‚·‚é
+// æŒ‡å®šãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿å›ºå®šã®ã‚¢ã‚¤ã‚½æ›²ç·šã‚’å–å¾—ã™ã‚‹
 std::unique_ptr<Curve> Surface::GetIsoCurve(const ParamUV const_param, const double param, const GLdouble* const color, const GLdouble width) const
 {
-    vector<Vector3d> pnts; // ƒAƒCƒ\‹Èüæ“¾—p‚ÌQÆ“_ŒQ
+    vector<Vector3d> pnts; // ã‚¢ã‚¤ã‚½æ›²ç·šå–å¾—ç”¨ã®å‚ç…§ç‚¹ç¾¤
     const int split = 30;
 
     if (const_param == ParamUV::U)
@@ -137,12 +137,12 @@ std::unique_ptr<Curve> Surface::GetIsoCurve(const ParamUV const_param, const dou
     return GetBsplineCurveFromPoints(pnts, 4, color, width);
 }
 
-// å‹È—¦‚ğæ“¾
+// ä¸»æ›²ç‡ã‚’å–å¾—
 void Surface::GetPrincipalCurvatures(const double u, const double v, double* const max_kappa, double* const min_kappa) const
 {
-    Vector3d e = GetNormalVector(u, v).Normalize(); // ’PˆÊ–@üƒxƒNƒgƒ‹
+    Vector3d e = GetNormalVector(u, v).Normalize(); // å˜ä½æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«
 
-    // Še©•K—v‚È’l‚ğŒvZ
+    // å„è‡ªå¿…è¦ãªå€¤ã‚’è¨ˆç®—
     double L = e.Dot(GetSecondDiffVectorUU(u, v));
     double M = e.Dot(GetSecondDiffVectorUV(u, v));
     double N = e.Dot(GetSecondDiffVectorVV(u, v));
@@ -154,62 +154,62 @@ void Surface::GetPrincipalCurvatures(const double u, const double v, double* con
     double B = 2 * F * M - E * N - G * L;
     double C = L * N - M * M;
 
-    // å‹È—¦ƒÈ‚ğŒvZ‚·‚éiAƒÈ^2 + BƒÈ + C = 0 ‚Ì2‰ğj
+    // ä¸»æ›²ç‡Îºã‚’è¨ˆç®—ã™ã‚‹ï¼ˆAÎº^2 + BÎº + C = 0 ã®2è§£ï¼‰
     double kappa1, kappa2;
     SolveQuadraticEquation(A, B, C, &kappa1, &kappa2);
 
-    // Å‘åå‹È—¦‚ÆÅ¬å‹È—¦‚ğ•Ô‚·
+    // æœ€å¤§ä¸»æ›²ç‡ã¨æœ€å°ä¸»æ›²ç‡ã‚’è¿”ã™
     *max_kappa = (kappa1 > kappa2) ? kappa1 : kappa2;
     *min_kappa = (kappa1 < kappa2) ? kappa1 : kappa2;
 }
 
-// •½‹Ï‹È—¦æ“¾
+// å¹³å‡æ›²ç‡å–å¾—
 double Surface::GetMeanCurvature(const double u, const double v) const
 {
-    // å‹È—¦æ“¾
+    // ä¸»æ›²ç‡å–å¾—
     double max_kappa, min_kappa;
     GetPrincipalCurvatures(u, v, &max_kappa, &min_kappa);
 
     return (max_kappa + min_kappa) / 2.0;
 }
 
-// ƒKƒEƒX‹È—¦æ“¾
+// ã‚¬ã‚¦ã‚¹æ›²ç‡å–å¾—
 double Surface::GetGaussianCurvature(const double u, const double v) const
 {
-    // å‹È—¦æ“¾
+    // ä¸»æ›²ç‡å–å¾—
     double max_kappa, min_kappa;
     GetPrincipalCurvatures(u, v, &max_kappa, &min_kappa);
 
     return max_kappa * min_kappa;
 }
 
-// ƒIƒuƒWƒFƒNƒg•`‰æ
+// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæç”»
 void Surface::Draw() const
 {
-    if (isUseLight) // ‹È–Ê‚É‚Íƒ‰ƒCƒeƒBƒ“ƒOˆ—‚ğ{‚·
+    if (isUseLight) // æ›²é¢ã«ã¯ãƒ©ã‚¤ãƒ†ã‚£ãƒ³ã‚°å‡¦ç†ã‚’æ–½ã™
         glEnable(GL_LIGHTING);
 
-    // Šî’ê‚Ì•`‰æ
+    // åŸºåº•ã®æç”»
     Object::Draw();
 
     glDisable(GL_LIGHTING);
 }
 
-// §Œä“_ü•`‰æ
+// åˆ¶å¾¡ç‚¹ç·šæç”»
 void Surface::DrawCPsInternal() const
 {
-    //glColor3d(1.0, 0.0, 0.0); // Ô
+    //glColor3d(1.0, 0.0, 0.0); // èµ¤
     glColor3dv(_color);
     glPointSize(10.0);
     glLineWidth(1.0);
 
-    // “_ŒQ
+    // ç‚¹ç¾¤
     glBegin(GL_POINTS);
     for (unsigned int i = 0; i < _ctrlp.size(); i++)
         glVertex3d(_ctrlp[i].X, _ctrlp[i].Y, _ctrlp[i].Z);
     glEnd();
 
-    // U•ûŒüüŒQ
+    // Uæ–¹å‘ç·šç¾¤
     for (int i = 0; i < _ncpntV; i++)
     {
         glBegin(GL_LINE_STRIP);
@@ -217,7 +217,7 @@ void Surface::DrawCPsInternal() const
             glVertex3d(_ctrlp[i * _ncpntU + j].X, _ctrlp[i * _ncpntU + j].Y, _ctrlp[i * _ncpntU + j].Z);
         glEnd();
     }
-    // V•ûŒüüŒQ
+    // Væ–¹å‘ç·šç¾¤
     for (int i = 0; i < _ncpntU; i++)
     {
         glBegin(GL_LINE_STRIP);
@@ -227,21 +227,21 @@ void Surface::DrawCPsInternal() const
     }
 }
 
-// •`‰æ”ÍˆÍ‚ğŠe•ûŒüsplit_numŒÂ‚É•ªŠ„‚·‚é‚æ‚¤‚ÈˆÊ’uƒxƒNƒgƒ‹‚ğæ“¾‚·‚é(pnts[v][u]‚Æ•À‚×‚é)
+// æç”»ç¯„å›²ã‚’å„æ–¹å‘split_numå€‹ã«åˆ†å‰²ã™ã‚‹ã‚ˆã†ãªä½ç½®ãƒ™ã‚¯ãƒˆãƒ«ã‚’å–å¾—ã™ã‚‹(pnts[v][u]ã¨ä¸¦ã¹ã‚‹)
 void Surface::GetPositionVectors(vector<vector<Vector3d>>& pnts, const int U_split_num, const int V_split_num) const
 {
-    // “_ŒQ‚ÌƒNƒŠƒA
+    // ç‚¹ç¾¤ã®ã‚¯ãƒªã‚¢
     for (auto& pntRow : pnts)
         pntRow.clear();
     pnts.clear();
 
     vector<Vector3d> pos;
 
-    // •ªŠ„‹æŠÔ‚ğŒvZ
+    // åˆ†å‰²åŒºé–“ã‚’è¨ˆç®—
     double skip_U = (fabs(_min_draw_param_U) + fabs(_max_draw_param_U)) / U_split_num;
     double skip_V = (fabs(_min_draw_param_V) + fabs(_max_draw_param_V)) / V_split_num;
 
-    // doubleŒ^‚ÌŒë·l—¶
+    // doubleå‹ã®èª¤å·®è€ƒæ…®
     for (double v = _min_draw_param_V; v < _max_draw_param_V + skip_V / 2; v += skip_V)
     {
         for (double u = _min_draw_param_U; u < _max_draw_param_U + skip_U / 2; u += skip_U)
@@ -252,21 +252,21 @@ void Surface::GetPositionVectors(vector<vector<Vector3d>>& pnts, const int U_spl
     }
 }
 
-// QÆ“_‚©‚ç‚ÌÅ‹ß“_‚ğæ“¾
+// å‚ç…§ç‚¹ã‹ã‚‰ã®æœ€è¿‘ç‚¹ã‚’å–å¾—
 NearestPointInfoS Surface::GetNearestPointInfoInternal(const Vector3d& ref, const vector<vector<Point3dS>>& startPnts, const NearestSearch search) const
 {
     if (search == Project)
     {
-        vector<NearestPointInfoS> possiblePnts; // Å‹ßŒó•â“_
+        vector<NearestPointInfoS> possiblePnts; // æœ€è¿‘å€™è£œç‚¹
 
-        // ŠJn“_–ˆ‚ÌÅ‹ß“_‚ğæ“¾‚µŒó•â“_‚Æ‚·‚é
+        // é–‹å§‹ç‚¹æ¯ã®æœ€è¿‘ç‚¹ã‚’å–å¾—ã—å€™è£œç‚¹ã¨ã™ã‚‹
         for (const auto& startPntRow : startPnts)
         {
             for (const auto& startPnt : startPntRow)
                 possiblePnts.push_back(this->GetNearestPointFromRefByProjectionMethod(ref, startPnt));
         }
 
-        // Œó•â‚Ì’†‚Åˆê”Ô‹——£‚Ì’Z‚¢‚à‚Ì‚ğÅ‹ß“_‚Æ‚·‚é
+        // å€™è£œã®ä¸­ã§ä¸€ç•ªè·é›¢ã®çŸ­ã„ã‚‚ã®ã‚’æœ€è¿‘ç‚¹ã¨ã™ã‚‹
         NearestPointInfoS nearestPnt(Vector3d(), Vector3d(DBL_MAX, DBL_MAX, DBL_MAX), 0, 0);
         for (const auto& p : possiblePnts)
         {
@@ -278,7 +278,7 @@ NearestPointInfoS Surface::GetNearestPointInfoInternal(const Vector3d& ref, cons
     }
     else if (search == Isoline)
     {
-        // ŠeŠJn“_‚Ì“à, ‘ÎÛ“_‚Æ‚Ì‹——£‚ªÅ’Z‚Ì‚à‚Ì‚ğŠJn“_‚Æ‚·‚é
+        // å„é–‹å§‹ç‚¹ã®å†…, å¯¾è±¡ç‚¹ã¨ã®è·é›¢ãŒæœ€çŸ­ã®ã‚‚ã®ã‚’é–‹å§‹ç‚¹ã¨ã™ã‚‹
         double dist;
         double min_dist = DBL_MAX;
         Point3dS start(Vector3d(DBL_MAX, DBL_MAX, DBL_MAX), 0, 0);
@@ -296,82 +296,82 @@ NearestPointInfoS Surface::GetNearestPointInfoInternal(const Vector3d& ref, cons
             }
         }
 
-        // ƒAƒCƒ\ƒ‰ƒCƒ“–@‚Í“KØ‚ÈŠJn“_‚Ì‘I‘ğ‚Å1”­‚ÅÅ‹ß“_‚ªŒˆ’è‚·‚é
+        // ã‚¢ã‚¤ã‚½ãƒ©ã‚¤ãƒ³æ³•ã¯é©åˆ‡ãªé–‹å§‹ç‚¹ã®é¸æŠã§1ç™ºã§æœ€è¿‘ç‚¹ãŒæ±ºå®šã™ã‚‹
         return this->GetNearestPointFromRefByIsolineMethod(ref, start);
     }
     else
         throw;
 }
-// Å‹ß“_‚ğæ“¾‚·‚é(Ë‰e–@)
-// ƒRƒƒ“ƒg“à‚Ìe_.‚Í‘—¿‚ÌI—¹ğŒ”Ô†
+// æœ€è¿‘ç‚¹ã‚’å–å¾—ã™ã‚‹(å°„å½±æ³•)
+// ã‚³ãƒ¡ãƒ³ãƒˆå†…ã®e_.ã¯è³‡æ–™ã®çµ‚äº†æ¡ä»¶ç•ªå·
 NearestPointInfoS Surface::GetNearestPointFromRefByProjectionMethod(const Vector3d& ref, const Point3dS& start) const
 {
-    int count = 0; // ƒXƒeƒbƒv”
+    int count = 0; // ã‚¹ãƒ†ãƒƒãƒ—æ•°
 
-    // ‰Šúƒpƒ‰ƒ[ƒ^
+    // åˆæœŸãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
     double u = start.paramU;
     double v = start.paramV;
 
-    Vector3d p; // ˆÊ’uƒxƒNƒgƒ‹
-    Vector3d pu; // U•ûŒüÚüƒxƒNƒgƒ‹
-    Vector3d pv; // V•ûŒüÚüƒxƒNƒgƒ‹
-    double delta_u; // U•ûŒüƒpƒ‰ƒ[ƒ^ˆÚ“®—Ê
-    double delta_v; // V•ûŒüƒpƒ‰ƒ[ƒ^ˆÚ“®—Ê
+    Vector3d p; // ä½ç½®ãƒ™ã‚¯ãƒˆãƒ«
+    Vector3d pu; // Uæ–¹å‘æ¥ç·šãƒ™ã‚¯ãƒˆãƒ«
+    Vector3d pv; // Væ–¹å‘æ¥ç·šãƒ™ã‚¯ãƒˆãƒ«
+    double delta_u; // Uæ–¹å‘ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ç§»å‹•é‡
+    double delta_v; // Væ–¹å‘ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ç§»å‹•é‡
 
-    // XV
+    // æ›´æ–°
     auto update = [&]()
     {
-        // ŠeƒxƒNƒgƒ‹XV
+        // å„ãƒ™ã‚¯ãƒˆãƒ«æ›´æ–°
         p = GetPositionVector(u, v);
         pu = GetFirstDiffVectorU(u, v);
         pv = GetFirstDiffVectorV(u, v);
-        // ƒpƒ‰ƒ[ƒ^ˆÚ“®—ÊXV
+        // ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ç§»å‹•é‡æ›´æ–°
         delta_u = (ref - p).Dot(pu) / pow(pu.Length(), 2.0) * 0.7;
         delta_v = (ref - p).Dot(pv) / pow(pv.Length(), 2.0) * 0.7;
     };
 
-    update(); // ‰ŠúXV
+    update(); // åˆæœŸæ›´æ–°
 
     while (true)
     {
         u += delta_u;
         v += delta_v;
 
-        // ƒpƒ‰ƒ[ƒ^‚ª•`‰æ”ÍˆÍ‚©‚ç‚Í‚İo‚·ê‡
+        // ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãŒæç”»ç¯„å›²ã‹ã‚‰ã¯ã¿å‡ºã™å ´åˆ
         if (u < _min_draw_param_U || u > _max_draw_param_U ||
             v < _min_draw_param_V || v > _max_draw_param_V)
             return this->GetNearestPointWhenParamOver(ref, u, v);
 
-        update(); // XV
+        update(); // æ›´æ–°
 
-        // e1. ’–ÚƒxƒNƒgƒ‹‚ÆPu‚ª’¼Œğ ‚©‚Â ’–ÚƒxƒNƒgƒ‹‚ÆPv‚ª’¼Œğ
+        // e1. æ³¨ç›®ãƒ™ã‚¯ãƒˆãƒ«ã¨PuãŒç›´äº¤ ã‹ã¤ æ³¨ç›®ãƒ™ã‚¯ãƒˆãƒ«ã¨PvãŒç›´äº¤
         if (fabs((ref - p).Dot(pu)) < EPS::NEAREST && fabs((ref - p).Dot(pv) < EPS::NEAREST))
             break;
-        // e2. ÀÀ•W‚ÌˆÚ“®—Ê‚ªU,V•ûŒü‚Æ‚à‚É0
+        // e2. å®Ÿåº§æ¨™ã®ç§»å‹•é‡ãŒU,Væ–¹å‘ã¨ã‚‚ã«0
         if (GetPositionVector(u, v).DistanceFrom(GetPositionVector(u - delta_u, v)) < EPS::NEAREST &&
             GetPositionVector(u, v).DistanceFrom(GetPositionVector(u, v - delta_v)) < EPS::NEAREST)
             break;
-        // e3. ƒpƒ‰ƒ[ƒ^ˆÚ“®—Ê‚ªU,V•ûŒü‚Æ‚à‚É0
+        // e3. ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ç§»å‹•é‡ãŒU,Væ–¹å‘ã¨ã‚‚ã«0
         if (fabs(delta_u) < EPS::NEAREST && fabs(delta_v) < EPS::NEAREST)
             break;
-        // e4. ƒXƒeƒbƒv”ãŒÀ
+        // e4. ã‚¹ãƒ†ãƒƒãƒ—æ•°ä¸Šé™
         if (++count > EPS::COUNT_MAX)
             break;
-        // e5. ‹È–Êã‚Ì“_
+        // e5. æ›²é¢ä¸Šã®ç‚¹
         if (ref.DistanceFrom(p) < EPS::DIST)
             break;
     }
 
     return NearestPointInfoS(p, ref, u, v);
 }
-// ƒpƒ‰ƒ[ƒ^‚ª‚Í‚İo‚µ‚½‚Æ‚«‚ÌÅ‹ß“_æ“¾(‹È–Ê‚Ì’[‚ÉÅ‹ß“_‚ª‚ ‚é‚Í‚¸)
-// u,v•ûŒü‚ª‚Æ‚à‚É‚Í‚İo‚·ê‡‚àOK
+// ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãŒã¯ã¿å‡ºã—ãŸã¨ãã®æœ€è¿‘ç‚¹å–å¾—(æ›²é¢ã®ç«¯ã«æœ€è¿‘ç‚¹ãŒã‚ã‚‹ã¯ãš)
+// u,væ–¹å‘ãŒã¨ã‚‚ã«ã¯ã¿å‡ºã™å ´åˆã‚‚OK
 NearestPointInfoS Surface::GetNearestPointWhenParamOver(const Vector3d& ref, const double u, const double v) const
 {
-    std::unique_ptr<Curve> edge; // ‹È–Ê‚Ì’[
-    std::unique_ptr<NearestPointInfoC> nearInfo; // Å‹ß“Xî•ñ
+    std::unique_ptr<Curve> edge; // æ›²é¢ã®ç«¯
+    std::unique_ptr<NearestPointInfoC> nearInfo; // æœ€è¿‘åº—æƒ…å ±
 
-    // u•ûŒü‚ª‚Í‚İo‚éê‡
+    // uæ–¹å‘ãŒã¯ã¿å‡ºã‚‹å ´åˆ
     if (u < _min_draw_param_U || u > _max_draw_param_U)
     {
         if (u < _min_draw_param_U)
@@ -387,7 +387,7 @@ NearestPointInfoS Surface::GetNearestPointWhenParamOver(const Vector3d& ref, con
             return NearestPointInfoS(nearInfo->nearestPnt, ref, _max_draw_param_U, nearInfo->param);
         }
     }
-    // v•ûŒü‚ª‚Í‚İo‚éê‡
+    // væ–¹å‘ãŒã¯ã¿å‡ºã‚‹å ´åˆ
     else if (v < _min_draw_param_V || v > _max_draw_param_V)
     {
         if (v < _min_draw_param_V)
@@ -406,21 +406,21 @@ NearestPointInfoS Surface::GetNearestPointWhenParamOver(const Vector3d& ref, con
 
     throw;
 }
-// Å‹ß“_‚ğæ“¾‚·‚é(ƒAƒCƒ\ƒ‰ƒCƒ“–@)
-// ƒRƒƒ“ƒg“à‚Ìe_‚Í‘—¿‚ÌI—¹ğŒ”Ô†
+// æœ€è¿‘ç‚¹ã‚’å–å¾—ã™ã‚‹(ã‚¢ã‚¤ã‚½ãƒ©ã‚¤ãƒ³æ³•)
+// ã‚³ãƒ¡ãƒ³ãƒˆå†…ã®e_ã¯è³‡æ–™ã®çµ‚äº†æ¡ä»¶ç•ªå·
 NearestPointInfoS Surface::GetNearestPointFromRefByIsolineMethod(const Vector3d& ref, const Point3dS& start) const
 {
-    int count = 0; // ƒXƒeƒbƒv”
-    std::unique_ptr<Curve> iso; // ƒAƒCƒ\‹Èü
-    std::unique_ptr<NearestPointInfoC> nearInfo; // Å‹ß“_î•ñ
-    double u, v; // Œ»İ‚Ìƒpƒ‰ƒ[ƒ^
-    double end_param; // I—¹“_‚Ìƒpƒ‰ƒ[ƒ^
-    double dot; // “àÏ’l
+    int count = 0; // ã‚¹ãƒ†ãƒƒãƒ—æ•°
+    std::unique_ptr<Curve> iso; // ã‚¢ã‚¤ã‚½æ›²ç·š
+    std::unique_ptr<NearestPointInfoC> nearInfo; // æœ€è¿‘ç‚¹æƒ…å ±
+    double u, v; // ç¾åœ¨ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
+    double end_param; // çµ‚äº†ç‚¹ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
+    double dot; // å†…ç©å€¤
 
     double ori_rangeU = _max_draw_param_U - _min_draw_param_U;
     double ori_rangeV = _max_draw_param_V - _min_draw_param_V;
 
-    // ‰ŠúXV
+    // åˆæœŸæ›´æ–°
     u = start.paramU;
     v = start.paramV;
     iso = this->GetIsoCurve(ParamUV::V, v);
@@ -432,7 +432,7 @@ NearestPointInfoS Surface::GetNearestPointFromRefByIsolineMethod(const Vector3d&
 
     while (true)
     {
-        // Å‹ß“_î•ñæ“¾
+        // æœ€è¿‘ç‚¹æƒ…å ±å–å¾—
         if (count % 2 == 0)
         {
             if (u < end_param)
@@ -449,8 +449,8 @@ NearestPointInfoS Surface::GetNearestPointFromRefByIsolineMethod(const Vector3d&
         }
         ++count;
 
-        // U, V•ûŒü‚ÌƒAƒCƒ\‹Èü‚ğŒğŒİ‚Éæ‚é
-        if (count % 2 == 0) // U•ûŒü
+        // U, Væ–¹å‘ã®ã‚¢ã‚¤ã‚½æ›²ç·šã‚’äº¤äº’ã«å–ã‚‹
+        if (count % 2 == 0) // Uæ–¹å‘
         {
             v = nearInfo->param * ori_rangeV;
             iso = this->GetIsoCurve(ParamUV::V, v);
@@ -461,7 +461,7 @@ NearestPointInfoS Surface::GetNearestPointFromRefByIsolineMethod(const Vector3d&
             else
                 end_param = _min_draw_param_U;
         }
-        else // V•ûŒü
+        else // Væ–¹å‘
         {
             u = nearInfo->param * ori_rangeU;
             iso = this->GetIsoCurve(ParamUV::U, u);
@@ -473,24 +473,24 @@ NearestPointInfoS Surface::GetNearestPointFromRefByIsolineMethod(const Vector3d&
                 end_param = _min_draw_param_V;
         }
 
-        // e1. ƒxƒNƒgƒ‹‚Ì“àÏ‚ªU,V•ûŒü‚Æ‚à‚É’¼Œğ
+        // e1. ãƒ™ã‚¯ãƒˆãƒ«ã®å†…ç©ãŒU,Væ–¹å‘ã¨ã‚‚ã«ç›´äº¤
         if ((fabs((ref - nearInfo->nearestPnt).Dot(GetFirstDiffVectorU(u, v))) < EPS::NEAREST) &&
             (fabs((ref - nearInfo->nearestPnt).Dot(GetFirstDiffVectorV(u, v))) < EPS::NEAREST))
             break;
-        if (count > 1) // 1‰ñ–Ú‚Í’[‚ªÅ‹ß“_‚¾‚ÆV•ûŒü‚É“®‚©‚È‚¢‚©‚çˆÚ“®ğŒ‚ÍŠO‚·
+        if (count > 1) // 1å›ç›®ã¯ç«¯ãŒæœ€è¿‘ç‚¹ã ã¨Væ–¹å‘ã«å‹•ã‹ãªã„ã‹ã‚‰ç§»å‹•æ¡ä»¶ã¯å¤–ã™
         {
-            // e2. ÀÀ•W‚ÌˆÚ“®—Ê‚ªU,V•ûŒü‚Æ‚à‚É0
+            // e2. å®Ÿåº§æ¨™ã®ç§»å‹•é‡ãŒU,Væ–¹å‘ã¨ã‚‚ã«0
             if (GetPositionVector(u, v).DistanceFrom(GetPositionVector(u - nearInfo->param * ori_rangeU, v)) < EPS::NEAREST &&
                 GetPositionVector(u, v).DistanceFrom(GetPositionVector(u, v - nearInfo->param * ori_rangeV)) < EPS::NEAREST)
                 break;
-            // e3. ƒpƒ‰ƒ[ƒ^ˆÚ“®—Ê‚ªU,V•ûŒü‚Æ‚à‚É0
+            // e3. ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ç§»å‹•é‡ãŒU,Væ–¹å‘ã¨ã‚‚ã«0
             if (fabs(u - nearInfo->param * ori_rangeU) < EPS::NEAREST && fabs(v - nearInfo->param * ori_rangeV) < EPS::NEAREST)
                 break;
         }
-        // e4. ƒXƒeƒbƒv”ãŒÀ
+        // e4. ã‚¹ãƒ†ãƒƒãƒ—æ•°ä¸Šé™
         if (count > EPS::COUNT_MAX)
             break;
-        // e5. ‹È–Êã‚Ì“_
+        // e5. æ›²é¢ä¸Šã®ç‚¹
         if (ref.DistanceFrom(nearInfo->nearestPnt) < EPS::DIST)
             break;
     }

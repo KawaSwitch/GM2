@@ -3,25 +3,25 @@
 #include <cmath>
 #include <iostream>
 
-// doubleŒ^3ŸŒ³ƒxƒNƒgƒ‹ƒNƒ‰ƒX
+// doubleå‹3æ¬¡å…ƒãƒ™ã‚¯ãƒˆãƒ«ã‚¯ãƒ©ã‚¹
 struct Vector3d
 {
     double X, Y, Z;
 
-    constexpr Vector3d() : X(0), Y(0), Z(0) { } // ƒfƒtƒHƒ‹ƒg‚Í0‰Šú‰»
+    constexpr Vector3d() : X(0), Y(0), Z(0) { } // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯0åˆæœŸåŒ–
     constexpr Vector3d(double x, double y, double z) : X(x), Y(y), Z(z) { }
 
-    // •\¦—p
+    // è¡¨ç¤ºç”¨
     void Show() const { std::cout << X << " " << Y << " " << Z << std::endl; }
 
-    // “àÏ
+    // å†…ç©
     constexpr double Dot(const Vector3d& other) const 
     {
         return
             (X * other.X) + (Y * other.Y) + (Z * other.Z);
     }
 
-    // ŠOÏ
+    // å¤–ç©
     constexpr Vector3d Cross(const Vector3d& other) const
     {
         return {
@@ -30,43 +30,43 @@ struct Vector3d
         (X * other.Y) - (Y * other.X) };
     }
 
-    // ’·‚³
+    // é•·ã•
     double Length() const { return sqrt(X*X + Y*Y + Z*Z); }
     constexpr double LengthSquared() const { return Dot(*this); }
     
-    // â‘Î’l
+    // çµ¶å¯¾å€¤
     double Absolute() const { return Length(); }
 
-    // ‹——£
+    // è·é›¢
     double DistanceFrom(const Vector3d& other) const { return (other - *this).Length(); }
 
-    // ’PˆÊ‰»
+    // å˜ä½åŒ–
     Vector3d Normalize() const { return *this / Length(); }
 
-    // 0Šm”F
+    // 0ç¢ºèª
     constexpr bool IsZero() const { return (X == 0.0) && (Y == 0.0) && (Z == 0.0); }
 
-    // 0ƒxƒNƒgƒ‹
+    // 0ãƒ™ã‚¯ãƒˆãƒ«
     constexpr static Vector3d Zero() { return { 0, 0, 0 }; }
 
-    // ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Æ‘ã“ü‰‰Z‚ÍƒfƒtƒHƒ‹ƒg‚ğg—p
+    // ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã¨ä»£å…¥æ¼”ç®—ã¯ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚’ä½¿ç”¨
 
 
 #pragma region operator
 
-    constexpr Vector3d operator + () const { return *this; } // ’P€+
-    constexpr Vector3d operator - () const { return { -X, -Y, -Z }; } // ’P€-
-    // ˜a
+    constexpr Vector3d operator + () const { return *this; } // å˜é …+
+    constexpr Vector3d operator - () const { return { -X, -Y, -Z }; } // å˜é …-
+    // å’Œ
     constexpr Vector3d operator+(const Vector3d& other) const
     {
         return { X + other.X, Y + other.Y, Z + other.Z };
     }
-    // ·
+    // å·®
     constexpr Vector3d operator-(const Vector3d& other) const
     {
         return { X - other.X, Y - other.Y, Z - other.Z };
     }
-    // ’è””{
+    // å®šæ•°å€
     constexpr Vector3d operator*(double value) const
     {
         return { X * value, Y * value, Z * value };
@@ -77,12 +77,12 @@ struct Vector3d
     }
     friend 
         constexpr Vector3d operator*(double value, const Vector3d& v);
-    // ŠOÏ
+    // å¤–ç©
     constexpr Vector3d operator*(const Vector3d& other) const
     {
         return this->Cross(other);
     }
-    // •¡‡‘ã“ü‰‰Z
+    // è¤‡åˆä»£å…¥æ¼”ç®—
     Vector3d& operator+=(const Vector3d& other)
     {
         X += other.X; Y += other.Y; Z += other.Z;

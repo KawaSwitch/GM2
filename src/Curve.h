@@ -4,37 +4,37 @@
 #include "ControlPoint.h"
 #include "NearestPointInfo.h"
 
-// ‹ÈüŠî’êƒNƒ‰ƒX
+// æ›²ç·šåŸºåº•ã‚¯ãƒ©ã‚¹
 class Curve : public Object
 {
 protected:
 
-    int _ord; // ŠK”
-    int _ncpnt; // §Œä“_”
-    double _width; // ‹Èü‚Ì•
-    double _min_draw_param, _max_draw_param; // •`‰æ”ÍˆÍƒpƒ‰ƒ[ƒ^
+    int _ord; // éšæ•°
+    int _ncpnt; // åˆ¶å¾¡ç‚¹æ•°
+    double _width; // æ›²ç·šã®å¹…
+    double _min_draw_param, _max_draw_param; // æç”»ç¯„å›²ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 
-    double _length; // ‹Èü’·
-    double _draw_vec_length; // •`‰æƒxƒNƒgƒ‹’·
-    const double _draw_vector_ratio = (double)1 / 20; // •`‰æƒxƒNƒgƒ‹’·‚Ì‹Èü’·‚Æ‚Ì”ä
+    double _length; // æ›²ç·šé•·
+    double _draw_vec_length; // æç”»ãƒ™ã‚¯ãƒˆãƒ«é•·
+    const double _draw_vector_ratio = (double)1 / 20; // æç”»ãƒ™ã‚¯ãƒˆãƒ«é•·ã®æ›²ç·šé•·ã¨ã®æ¯”
 
-    // ƒoƒbƒtƒ@ƒIƒuƒWƒFƒNƒg—p
-    mutable int _nVertex_cache; // ’¸“_ŒÂ”
+    // ãƒãƒƒãƒ•ã‚¡ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç”¨
+    mutable int _nVertex_cache; // é ‚ç‚¹å€‹æ•°
 
-    // –@üƒxƒNƒgƒ‹æ“¾
+    // æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«å–å¾—
     Vector3d GetNormalVector(double t) const { return (Vector3d(0, 0, 1) * GetFirstDiffVector(t)); }
-    // ‹È—¦ƒxƒNƒgƒ‹æ“¾
+    // æ›²ç‡ãƒ™ã‚¯ãƒˆãƒ«å–å¾—
     Vector3d GetCurvatureVector(double t) const;
 
-    // §Œä“_İ’è
+    // åˆ¶å¾¡ç‚¹è¨­å®š
     void SetControlPoint(const ControlPoint* const cp, int size);
 
-    // Å‹ß“_æ“¾(2•ª’Tõ–@)
+    // æœ€è¿‘ç‚¹å–å¾—(2åˆ†æ¢ç´¢æ³•)
     NearestPointInfoC GetNearestPointInfoInternal(const Vector3d& ref, const vector<Point3dC>& startPnts) const;
 
 private:
 
-    // §Œä“_•`‰æ
+    // åˆ¶å¾¡ç‚¹æç”»
     void DrawCPsInternal() const override;
 
 public:
@@ -42,24 +42,24 @@ public:
     double GetDrawParamRange() const { return _max_draw_param - _min_draw_param; }
     double GetLength(int split = 100) const;
 
-    // ƒxƒNƒgƒ‹æ“¾ŠÖ”
-    virtual Vector3d GetPositionVector(double t) const = 0; // ˆÊ’uƒxƒNƒgƒ‹
-    virtual Vector3d GetFirstDiffVector(double t) const = 0; // ÚüƒxƒNƒgƒ‹
-    virtual Vector3d GetSecondDiffVector(double t) const = 0; // 2ŠK”÷•ªƒxƒNƒgƒ‹
+    // ãƒ™ã‚¯ãƒˆãƒ«å–å¾—é–¢æ•°
+    virtual Vector3d GetPositionVector(double t) const = 0; // ä½ç½®ãƒ™ã‚¯ãƒˆãƒ«
+    virtual Vector3d GetFirstDiffVector(double t) const = 0; // æ¥ç·šãƒ™ã‚¯ãƒˆãƒ«
+    virtual Vector3d GetSecondDiffVector(double t) const = 0; // 2éšå¾®åˆ†ãƒ™ã‚¯ãƒˆãƒ«
 
-    // QÆ“_‚©‚ç‚ÌÅ‹ß“_‚ğæ“¾‚·‚é
+    // å‚ç…§ç‚¹ã‹ã‚‰ã®æœ€è¿‘ç‚¹ã‚’å–å¾—ã™ã‚‹
     virtual NearestPointInfoC GetNearestPointInfoFromRef(const Vector3d& ref) const = 0;
-    // ‹æŠÔ“àÅ‹ß“_æ“¾(2•ª’Tõ)
+    // åŒºé–“å†…æœ€è¿‘ç‚¹å–å¾—(2åˆ†æ¢ç´¢)
     NearestPointInfoC GetSectionNearestPointInfoByBinary(const Vector3d& ref, double ini_left, double ini_right) const;
     NearestPointInfoC GetSectionNearestPointInfoByBinary(const Vector3d& ref, double ini_left, double ini_right, int split) const;
 
-    // •`‰æ”ÍˆÍ‚ğsplit_numŒÂ‚É•ªŠ„‚·‚é‚æ‚¤‚ÈˆÊ’uƒxƒNƒgƒ‹‚ğæ“¾‚·‚é
+    // æç”»ç¯„å›²ã‚’split_numå€‹ã«åˆ†å‰²ã™ã‚‹ã‚ˆã†ãªä½ç½®ãƒ™ã‚¯ãƒˆãƒ«ã‚’å–å¾—ã™ã‚‹
     void GetPositionVectors(vector<Vector3d>& pnts, int split_num) const;
 
-    // ’Ê‰ß“_‚©‚ç‹t•ÏŠ·‚µ‚Ä‹Èü‚ğæ“¾‚·‚é
+    // é€šéç‚¹ã‹ã‚‰é€†å¤‰æ›ã—ã¦æ›²ç·šã‚’å–å¾—ã™ã‚‹
     virtual std::unique_ptr<Curve> GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdouble* const color, GLdouble width) const = 0;
 
-    // ‘¼‹Èü‚Æ‚Ì‘Šˆá“x‚ğŒvZ‚µ‚Ü‚·
+    // ä»–æ›²ç·šã¨ã®ç›¸é•åº¦ã‚’è¨ˆç®—ã—ã¾ã™
     double CalcFarthestDistant(const Curve* const other) const;
     double CalcDifferency(const Curve* const other) const;
     double CalcDifferency2(const Curve* const other) const;

@@ -9,11 +9,11 @@ void Resize(int w, int h)
 
     glViewport(0, 0, w, h);
 
-    // ƒvƒƒWƒFƒNƒVƒ‡ƒ“ƒ‚[ƒh‚ÖˆÈ~
+    // ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³ãƒ¢ãƒ¼ãƒ‰ã¸ä»¥é™
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(30.0, (GLdouble)w / h, 0.1, 10000.0);
 
-    // ƒ‚ƒfƒ‹ƒrƒ…[ƒ‚[ƒh‚Ö–ß‚·
+    // ãƒ¢ãƒ‡ãƒ«ãƒ“ãƒ¥ãƒ¼ãƒ¢ãƒ¼ãƒ‰ã¸æˆ»ã™
     glMatrixMode(GL_MODELVIEW);
 }

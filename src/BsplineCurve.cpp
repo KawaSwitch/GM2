@@ -23,17 +23,17 @@ BsplineCurve::BsplineCurve(const int mord, const ControlPoint* const cp, const i
     _length = this->GetLength();
     _draw_vec_length = _length * _draw_vector_ratio;
 
-    // VBOg‚¤
+    // VBOä½¿ã†
     _isUseVBO = true;
 }
 
-// ƒmƒbƒgƒxƒNƒgƒ‹İ’è
+// ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«è¨­å®š
 void BsplineCurve::SetKnotVector(const double* const knot, const int size)
 {
     if (size <= 0)
-        Error::ShowAndExit("ƒmƒbƒgƒxƒNƒgƒ‹İ’è¸”s", "knot-vector size must be over 0.");
+        Error::ShowAndExit("ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«è¨­å®šå¤±æ•—", "knot-vector size must be over 0.");
 
-    // Šù‚Éİ’è‚³‚ê‚Ä‚¢‚ê‚Îíœ
+    // æ—¢ã«è¨­å®šã•ã‚Œã¦ã„ã‚Œã°å‰Šé™¤
     if (_knot.size() > 0)
       {
 	_knot.clear();
@@ -45,8 +45,8 @@ void BsplineCurve::SetKnotVector(const double* const knot, const int size)
         _knot.emplace_back(knot[i]);
 }
 
-// ƒmƒbƒgƒxƒNƒgƒ‹‚ğ‚à‚Æ‚É‚µ‚Ä“_ŒQ‚ğæ“¾‚·‚é
-// splitSegCnt: ƒZƒOƒƒ“ƒg‚ğ‰½•ªŠ„‚·‚é‚©‚Ì‰ñ”(ƒfƒtƒHƒ‹ƒg‚Í1 = •ªŠ„‚µ‚È‚¢)
+// ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«ã‚’ã‚‚ã¨ã«ã—ã¦ç‚¹ç¾¤ã‚’å–å¾—ã™ã‚‹
+// splitSegCnt: ã‚»ã‚°ãƒ¡ãƒ³ãƒˆã‚’ä½•åˆ†å‰²ã™ã‚‹ã‹ã®å›æ•°(ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯1 = åˆ†å‰²ã—ãªã„)
 vector<Vector3d> BsplineCurve::GetPositionVectorsByKnots(const int splitSegCnt) const
 {
     vector<Vector3d> pnts;
@@ -54,13 +54,13 @@ vector<Vector3d> BsplineCurve::GetPositionVectorsByKnots(const int splitSegCnt) 
 
     for (unsigned i = 0; i < _knot.size(); ++i)
     {
-        // ƒmƒbƒg‚ÌŠK”’[‚Ì”ñ•`‰æ•”•ªord•¡‚ÍÈ‚­
+        // ãƒãƒƒãƒˆã®éšæ•°ç«¯ã®éæç”»éƒ¨åˆ†oré‡è¤‡ã¯çœã
       if ((i > 0 && i < (unsigned)_ord) || (i >= _knot.size() - _ord && i < _knot.size() - 1))
             continue;
 
         pnts.push_back(this->GetPositionVector(_knot[i]));
 
-        // ÅŒã‚Í’Ç‰Á‚µ‚È‚¢
+        // æœ€å¾Œã¯è¿½åŠ ã—ãªã„
         if (i != _knot.size() - 1)
         {
             for (int j = 1; j < splitSegCnt; j++)
@@ -70,8 +70,8 @@ vector<Vector3d> BsplineCurve::GetPositionVectorsByKnots(const int splitSegCnt) 
 
     return pnts;
 }
-// ƒmƒbƒgƒxƒNƒgƒ‹‚ğ‚à‚Æ‚É‚µ‚Ä“_ŒQ‚ğæ“¾‚·‚é
-// splitSegCnt: ƒZƒOƒƒ“ƒg‚ğ‰½•ªŠ„‚·‚é‚©‚Ì‰ñ”(ƒfƒtƒHƒ‹ƒg‚Í1 = •ªŠ„‚µ‚È‚¢)
+// ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«ã‚’ã‚‚ã¨ã«ã—ã¦ç‚¹ç¾¤ã‚’å–å¾—ã™ã‚‹
+// splitSegCnt: ã‚»ã‚°ãƒ¡ãƒ³ãƒˆã‚’ä½•åˆ†å‰²ã™ã‚‹ã‹ã®å›æ•°(ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯1 = åˆ†å‰²ã—ãªã„)
 vector<Point3dC> BsplineCurve::GetPointsByKnots(const int splitSegCnt) const
 {
     vector<Point3dC> pnts;
@@ -79,13 +79,13 @@ vector<Point3dC> BsplineCurve::GetPointsByKnots(const int splitSegCnt) const
 
     for (unsigned i = 0; i < _knot.size(); ++i)
     {
-        // ƒmƒbƒg‚ÌŠK”’[‚Ì”ñ•`‰æ•”•ªord•¡‚ÍÈ‚­
+        // ãƒãƒƒãƒˆã®éšæ•°ç«¯ã®éæç”»éƒ¨åˆ†oré‡è¤‡ã¯çœã
       if ((i > 0 && i < (unsigned)_ord) || (i >= _knot.size() - _ord && i < _knot.size() - 1))
             continue;
 
         pnts.push_back(Point3dC(this->GetPositionVector(_knot[i]), _knot[i]));
 
-        // ÅŒã‚Í’Ç‰Á‚µ‚È‚¢
+        // æœ€å¾Œã¯è¿½åŠ ã—ãªã„
         if (i != _knot.size() - 1)
         {
             for (int j = 1; j < splitSegCnt; j++)
@@ -96,7 +96,7 @@ vector<Point3dC> BsplineCurve::GetPointsByKnots(const int splitSegCnt) const
     return pnts;
 }
 
-// –‘O•`‰æ
+// äº‹å‰æç”»
 void BsplineCurve::PreDraw() const
 {
     Vector3d pnt;
@@ -116,12 +116,12 @@ void BsplineCurve::PreDraw() const
     glEnd();
 }
 
-// ’¸“_ƒoƒbƒtƒ@ì¬
+// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ä½œæˆ
 void BsplineCurve::CreateVBO() const
 {
     vector<Vector3d> pnts;
 
-    // ’¸“_æ“¾
+    // é ‚ç‚¹å–å¾—
     for (int i = (int)(_knot[_ord - 1] * 100); i <= (int)(_knot[_ncpnt] * 100); i++)
     {
         double t = (double)i / 100;
@@ -135,7 +135,7 @@ void BsplineCurve::CreateVBO() const
     glBufferData(GL_ARRAY_BUFFER, pnts.size() * 3 * sizeof(double), (GLdouble*)&pnts[0], GL_DYNAMIC_DRAW);
 }
 
-// VBO‚Å•`‰æ
+// VBOã§æç”»
 void BsplineCurve::DrawVBO() const
 {
     glColor4dv(_color);
@@ -152,7 +152,7 @@ void BsplineCurve::DrawVBO() const
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-// ÚüƒxƒNƒgƒ‹•`‰æ
+// æ¥ç·šãƒ™ã‚¯ãƒˆãƒ«æç”»
 void BsplineCurve::DrawFirstDiffVectorsInternal() const
 {
     Vector3d pnt, diff;
@@ -174,7 +174,7 @@ void BsplineCurve::DrawFirstDiffVectorsInternal() const
     glEnd();
 }
 
-// 2ŠK”÷•ªƒxƒNƒgƒ‹•`‰æ
+// 2éšå¾®åˆ†ãƒ™ã‚¯ãƒˆãƒ«æç”»
 void BsplineCurve::DrawSecondDiffVectorsInternal() const
 {
     Vector3d pnt, diff;
@@ -196,7 +196,7 @@ void BsplineCurve::DrawSecondDiffVectorsInternal() const
     glEnd();
 }
 
-// –@üƒxƒNƒgƒ‹•`‰æ
+// æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«æç”»
 void BsplineCurve::DrawNormalVectorsInternal() const
 {
     Vector3d pnt, normal;
@@ -218,7 +218,7 @@ void BsplineCurve::DrawNormalVectorsInternal() const
     glEnd();
 }
 
-// ‹È—¦”¼Œa•`‰æ
+// æ›²ç‡åŠå¾„æç”»
 void BsplineCurve::DrawCurvatureVectorsInternal() const
 {
     Vector3d pnt, curv;
@@ -233,14 +233,14 @@ void BsplineCurve::DrawCurvatureVectorsInternal() const
         pnt = GetPositionVector(t);
         curv = GetCurvatureVector(t);
 
-        // ‹È—¦”¼Œa•`‰æ
+        // æ›²ç‡åŠå¾„æç”»
         glColor4dv(Color::pink);
         glBegin(GL_LINES);
         glVertex3d(pnt);
         glVertex3d(pnt + curv);
         glEnd();
 
-        // ‹È—¦’†S•`‰æ
+        // æ›²ç‡ä¸­å¿ƒæç”»
         glColor4dv(Color::light_green);
         glBegin(GL_POINTS);
         glVertex3d(pnt + curv);
@@ -250,19 +250,19 @@ void BsplineCurve::DrawCurvatureVectorsInternal() const
     glEnd();
 }
 
-// ˆÊ’uƒxƒNƒgƒ‹æ“¾
+// ä½ç½®ãƒ™ã‚¯ãƒˆãƒ«å–å¾—
 Vector3d BsplineCurve::GetPositionVector(const double t) const
 {
     Vector3d pnt;
 
-    // •W€“I
+    // æ¨™æº–çš„
     for (int i = 0; i < _ncpnt; i++)
         pnt += CalcBsplineFunc(i, _ord, t, &_knot[0]) * _ctrlp[i];
 
     return pnt;
 }
 
-// ÚüƒxƒNƒgƒ‹æ“¾
+// æ¥ç·šãƒ™ã‚¯ãƒˆãƒ«å–å¾—
 Vector3d BsplineCurve::GetFirstDiffVector(const double t) const
 {
     Vector3d diff;
@@ -273,7 +273,7 @@ Vector3d BsplineCurve::GetFirstDiffVector(const double t) const
     return diff;
 }
 
-// 2ŠK”÷•ªƒxƒNƒgƒ‹æ“¾
+// 2éšå¾®åˆ†ãƒ™ã‚¯ãƒˆãƒ«å–å¾—
 Vector3d BsplineCurve::GetSecondDiffVector(const double t) const
 {
     Vector3d diff;
@@ -284,16 +284,16 @@ Vector3d BsplineCurve::GetSecondDiffVector(const double t) const
     return diff;
 }
 
-// ’Ê‰ß“_‚©‚ç‹t•ÏŠ·‚µ‚Ä‹Èü‚ğæ“¾‚·‚é(ƒƒ“ƒoŠÖ””Å)
+// é€šéç‚¹ã‹ã‚‰é€†å¤‰æ›ã—ã¦æ›²ç·šã‚’å–å¾—ã™ã‚‹(ãƒ¡ãƒ³ãƒé–¢æ•°ç‰ˆ)
 std::unique_ptr<Curve> BsplineCurve::GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdouble* const color, const GLdouble width) const
 {
     return GetBsplineCurveFromPoints(pnts, 4, color, width);
 }
-// ’ÊŠÏ“_‚©‚ç‹t•ÏŠ·‚µ‚Ä‹Èü‚ğæ“¾‚·‚é
+// é€šè¦³ç‚¹ã‹ã‚‰é€†å¤‰æ›ã—ã¦æ›²ç·šã‚’å–å¾—ã™ã‚‹
 std::unique_ptr<Curve> GetBsplineCurveFromPoints(const vector<Vector3d>& pnts, int ord, const GLdouble* const color, GLdouble width)
 {
-    int passPntsCnt = (int)pnts.size(); // ’Ê‰ß“_”
-    int new_ncpnt = (passPntsCnt - 1) + (ord - 1); // V‚µ‚¢§Œä“_”
+    int passPntsCnt = (int)pnts.size(); // é€šéç‚¹æ•°
+    int new_ncpnt = (passPntsCnt - 1) + (ord - 1); // æ–°ã—ã„åˆ¶å¾¡ç‚¹æ•°
 
     vector<double> new_knots;
     CalcKnotVectorByPassingPnts(pnts, ord, &new_knots);
@@ -304,24 +304,24 @@ std::unique_ptr<Curve> GetBsplineCurveFromPoints(const vector<Vector3d>& pnts, i
     return std::unique_ptr<BsplineCurve>(new BsplineCurve(ord, &new_cps[0], new_ncpnt, &new_knots[0], color, width));
 }
 
-// QÆ“_‚©‚ç‚ÌÅ‹ß“_î•ñ‚ğæ“¾
+// å‚ç…§ç‚¹ã‹ã‚‰ã®æœ€è¿‘ç‚¹æƒ…å ±ã‚’å–å¾—
 NearestPointInfoC BsplineCurve::GetNearestPointInfoFromRef(const Vector3d& ref) const
 {
-    const int seg_split = 8; // ƒZƒOƒƒ“ƒg•ªŠ„”
-    auto startPnts = this->GetPointsByKnots(seg_split); // ŠJn“_ŒQ
+    const int seg_split = 8; // ã‚»ã‚°ãƒ¡ãƒ³ãƒˆåˆ†å‰²æ•°
+    auto startPnts = this->GetPointsByKnots(seg_split); // é–‹å§‹ç‚¹ç¾¤
 
     return Curve::GetNearestPointInfoInternal(ref, startPnts);
 }
 
-// ƒmƒbƒg‚Ì’Ç‰Á
+// ãƒãƒƒãƒˆã®è¿½åŠ 
 void BsplineCurve::AddKnot(const double t, const bool isDeleteOrigin)
 {
-  unsigned t_i; // ƒmƒbƒg‘}“ü‚É•K—v‚ÈˆÊ’u
-  vector<ControlPoint> new_cps; // V‚µ‚¢§Œä“_
-  vector<double> new_knot; // V‚µ‚¢ƒmƒbƒgƒxƒNƒgƒ‹
+  unsigned t_i; // ãƒãƒƒãƒˆæŒ¿å…¥ã«å¿…è¦ãªä½ç½®
+  vector<ControlPoint> new_cps; // æ–°ã—ã„åˆ¶å¾¡ç‚¹
+  vector<double> new_knot; // æ–°ã—ã„ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«
   Vector3d Q;
   
-  // 1. ‘}“üæ‚ÌŒˆ’è
+  // 1. æŒ¿å…¥å…ˆã®æ±ºå®š
   {
     for (unsigned i = 0, s = _knot.size(); i < s - 1; ++i)
       {
@@ -329,15 +329,15 @@ void BsplineCurve::AddKnot(const double t, const bool isDeleteOrigin)
 	  t_i = i;
       }
     
-    // V‚µ‚¢ƒmƒbƒgƒxƒNƒgƒ‹‚ğì¬
+    // æ–°ã—ã„ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«ã‚’ä½œæˆ
     for (unsigned i = 0; i <= t_i; ++i) new_knot.push_back(_knot[i]);
     new_knot.push_back(t);
     for (unsigned i = t_i+1; i < _knot.size(); ++i) new_knot.push_back(_knot[i]);
   }
 
-  // 2. V§Œä“_‚ÌZo
+  // 2. æ–°åˆ¶å¾¡ç‚¹ã®ç®—å‡º
   {
-    // V§Œä“_Zo—p‚Ì”ä—¦•Ï”
+    // æ–°åˆ¶å¾¡ç‚¹ç®—å‡ºç”¨ã®æ¯”ç‡å¤‰æ•°
     auto alpha = [&](int i, int j) -> double
       {
 	if (j <= i-_ord +1)
@@ -348,7 +348,7 @@ void BsplineCurve::AddKnot(const double t, const bool isDeleteOrigin)
 	  return 0;
       };
 
-    // V‚µ‚¢§Œä“_‚ğì¬
+    // æ–°ã—ã„åˆ¶å¾¡ç‚¹ã‚’ä½œæˆ
     new_cps.push_back(_ctrlp[0]);
     for (int j = 1; j < _ncpnt; ++j)
       {
@@ -358,16 +358,16 @@ void BsplineCurve::AddKnot(const double t, const bool isDeleteOrigin)
     new_cps.push_back(_ctrlp[_ncpnt-1]);
   }
   
-  // 3. ‹Èüƒf[ƒ^‚Ì’²®
+  // 3. æ›²ç·šãƒ‡ãƒ¼ã‚¿ã®èª¿æ•´
   {
-    // Še’lİ’è
+    // å„å€¤è¨­å®š
     _nknot = new_knot.size();
     SetKnotVector(&(new_knot[0]), new_knot.size());
     
     _ncpnt = new_cps.size();
     SetControlPoint(&(new_cps[0]), new_cps.size());
 
-    // •\¦—pƒoƒbƒtƒ@‚ğ‚·‚×‚ÄƒNƒŠƒA
+    // è¡¨ç¤ºç”¨ãƒãƒƒãƒ•ã‚¡ã‚’ã™ã¹ã¦ã‚¯ãƒªã‚¢
     Object::ClearAllShowingIds();
   }
 }

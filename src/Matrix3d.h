@@ -1,7 +1,7 @@
 #pragma once
 #include "Quaternion.h"
 
-// “¯•ÏŠ·s—ñ
+// åŒæ™‚å¤‰æ›è¡Œåˆ—
 struct Matrix3d
 {
     double M11, M12, M13, M14;
@@ -28,7 +28,7 @@ struct Matrix3d
         M31(0), M32(0), M33(1), M34(0),
         M41(0), M42(0), M43(0), M44(1) { }
 
-    // ’PˆÊs—ñ‚Ì¶¬
+    // å˜ä½è¡Œåˆ—ã®ç”Ÿæˆ
     constexpr static Matrix3d CreateIdentity()
     {
         return
@@ -40,7 +40,7 @@ struct Matrix3d
         };
     }
 
-    // •½sˆÚ“®
+    // å¹³è¡Œç§»å‹•
     static void Translate(Matrix3d& matrix, double dx, double dy, double dz)
     {
         matrix.M11 += matrix.M14 * dx; matrix.M12 += matrix.M14 * dy; matrix.M13 += matrix.M14 * dz;
@@ -67,7 +67,7 @@ struct Matrix3d
         return result;
     }
 
-    // ‰ñ“]
+    // å›è»¢
     static void Rotate(Matrix3d& matrix, Quaternion& quaternion, Matrix3d& result)
     {
         Matrix3d rotation;
@@ -97,7 +97,7 @@ struct Matrix3d
         return result;
     }
 
-    // ƒNƒI[ƒ^ƒjƒIƒ“‚©‚ç‰ñ“]s—ñ‚Ì¶¬
+    // ã‚¯ã‚ªãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã‹ã‚‰å›è»¢è¡Œåˆ—ã®ç”Ÿæˆ
     static void CreateRotation(Quaternion& quaternion, Matrix3d& matrix)
     {
         double x2 = quaternion.x + quaternion.x;
@@ -126,7 +126,7 @@ struct Matrix3d
         matrix.M33 = 1.0 - (xx + yy);
     }
 
-    // Ï
+    // ç©
     static void Multiply(Matrix3d& left, Matrix3d& right, Matrix3d& result)
     {
         result.M11 = left.M11 * right.M11 + left.M12 * right.M21 + left.M13 * right.M31 + left.M14 * right.M41;

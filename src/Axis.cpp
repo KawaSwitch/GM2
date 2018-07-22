@@ -6,9 +6,9 @@ AxisShowType axisShowType = AxisShowType::None;
 
 void NormalAxis::Draw()
 {
-    // ƒfƒBƒXƒvƒŒƒCƒŠƒXƒg
+     // ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆ
     static int displayList;
-    static int displayListLabel; // •¶š—p
+    static int displayListLabel; // æ–‡å­—ç”¨
     static bool isRendered = false;
 
     if (isUseLight)
@@ -16,22 +16,22 @@ void NormalAxis::Draw()
 
     if (isRendered)
     {
-        // ƒfƒBƒXƒvƒŒƒCƒŠƒXƒgì¬Ï‚İ‚È‚çƒR[ƒ‹
+        // ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆä½œæˆæ¸ˆã¿ãªã‚‰ã‚³ãƒ¼ãƒ«
         if (axisShowType != AxisShowType::None)
         {
             glCallList(displayList);
 
-            // ƒ‰ƒxƒ‹•\¦
+            // ãƒ©ãƒ™ãƒ«è¡¨ç¤º
             if (axisShowType == AxisShowType::WithLabel)
                 glCallList(displayListLabel);
         }
     }
-    else // ‰‰ñ‚Í“o˜^
+    else // åˆå›ã¯ç™»éŒ²
     {
-        // ²
+        // è»¸
         {
             if (!(displayList = glGenLists(1)))
-                Error::ShowAndExit("ƒfƒBƒXƒvƒŒƒCƒŠƒXƒgì¬¸”s");
+                Error::ShowAndExit("ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆä½œæˆå¤±æ•—");
 
             glNewList(displayList, GL_COMPILE);
 
@@ -42,10 +42,10 @@ void NormalAxis::Draw()
             glEndList();
         }
 
-        // •¶š
+        // æ–‡å­—
         {
             if (!(displayListLabel = glGenLists(1)))
-                Error::ShowAndExit("ƒfƒBƒXƒvƒŒƒCƒŠƒXƒgì¬¸”s");
+                Error::ShowAndExit("ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆä½œæˆå¤±æ•—");
 
             glNewList(displayListLabel, GL_COMPILE);
 
@@ -81,7 +81,7 @@ void NormalAxis::DrawInternal()
         glColor4dv(Color::red);
     }
 
-    // ²‚Ì“·•”•ª•`‰æ
+    // è»¸ã®èƒ´éƒ¨åˆ†æç”»
     glPushMatrix();
     {
         base_arrows[0] = gluNewQuadric();
@@ -93,7 +93,7 @@ void NormalAxis::DrawInternal()
 
     glPushMatrix();
     {
-        // ²‚Ì–îˆó•”•ª•`‰æ
+        // è»¸ã®çŸ¢å°éƒ¨åˆ†æç”»
         arrows[0] = gluNewQuadric();
         gluQuadricDrawStyle(arrows[0], GLU_FILL);
         glTranslated(_bodyLength, 0.0f, 0.0f);
@@ -173,9 +173,9 @@ void NormalAxis::DrawInternal()
 void NormalAxis::DrawCharacter()
 {
     glDisable(GL_LIGHTING);
-    glColor(204, 40, 255); // ‡F
+    glColor(204, 40, 255); // ç´«è‰²
 
-    glDepthFunc(GL_ALWAYS); // –Ê“|‚È‚Ì‚Å‘S•”’Ê‚·
+    glDepthFunc(GL_ALWAYS); // é¢å€’ãªã®ã§å…¨éƒ¨é€šã™
 
     // X - axis
     glPushMatrix();

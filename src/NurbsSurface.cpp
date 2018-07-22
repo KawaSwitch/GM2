@@ -1,7 +1,7 @@
 #include "NurbsSurface.h"
 #include "NurbsCurve.h"
 
-// Bspline‚Æ“¯‚¶
+// Bspline¤ÈÆ±¤¸
 NurbsSurface::NurbsSurface(
     const int u_mord, const int v_mord,
     const ControlPoint* const cp, const int u_cp_size, const int v_cp_size,
@@ -9,7 +9,7 @@ NurbsSurface::NurbsSurface(
     const GLdouble* const color, const GLdouble resol)
         : BsplineSurface(u_mord, v_mord, cp, u_cp_size, v_cp_size, u_knot, v_knot, color, resol) { }
 
-// w’è‚µ‚½’[‚Ì‹Èü‚ğæ“¾‚·‚é
+// »ØÄê¤·¤¿Ã¼¤Î¶ÊÀş¤ò¼èÆÀ¤¹¤ë
 std::unique_ptr<Curve> NurbsSurface::GetEdgeCurve(const SurfaceEdge edge) const
 {
     vector<ControlPoint> edge_cp = GetEdgeCurveControlPoint(edge);
@@ -19,20 +19,20 @@ std::unique_ptr<Curve> NurbsSurface::GetEdgeCurve(const SurfaceEdge edge) const
     return std::unique_ptr<Curve>(new NurbsCurve(edge_ord, &edge_cp[0], (int)edge_cp.size(), &edge_knot[0], Color::red, _mesh_width));
 }
 
-// ˆÊ’uƒxƒNƒgƒ‹æ“¾
+// °ÌÃÖ¥Ù¥¯¥È¥ë¼èÆÀ
 Vector3d NurbsSurface::GetPositionVector(const double u, const double v) const
 {
-    // Šî’êŠÖ””z—ñ(s—ñŒvZ—p)
+    // ´ğÄì´Ø¿ôÇÛÎó(¹ÔÎó·×»»ÍÑ)
     double* N_array_U = new double[_ncpntU];
     double* N_array_V = new double[_ncpntV];
 
-    // Šî’êŠÖ””z—ñ‚ÖŠeŠî’êŠÖ”‚ğ‘ã“ü
+    // ´ğÄì´Ø¿ôÇÛÎó¤Ø³Æ´ğÄì´Ø¿ô¤òÂåÆş
     for (int i = 0; i < _ncpntU; i++)
         N_array_U[i] = CalcBsplineFunc(i, _ordU, u, &_knotU[0]);
     for (int i = 0; i < _ncpntV; i++)
         N_array_V[i] = CalcBsplineFunc(i, _ordV, v, &_knotV[0]);
 
-    // ˆÊ’uƒxƒNƒgƒ‹Zo‚É•K—v‚È’l‚ğ‹‚ß‚é
+    // °ÌÃÖ¥Ù¥¯¥È¥ë»»½Ğ¤ËÉ¬Í×¤ÊÃÍ¤òµá¤á¤ë
     Vector3d Q = CalcVectorWithBasisFunctions(N_array_U, N_array_V);
     double W = CalcWeightWithBasisFunctions(N_array_U, N_array_V);
 
@@ -40,15 +40,15 @@ Vector3d NurbsSurface::GetPositionVector(const double u, const double v) const
     return Q / W;
 }
 
-// ÚüƒxƒNƒgƒ‹æ“¾
+// ÀÜÀş¥Ù¥¯¥È¥ë¼èÆÀ
 Vector3d NurbsSurface::GetFirstDiffVectorU(const double u, const double v) const
 {
-    // Šî’êŠÖ””z—ñ(s—ñŒvZ—p)
+    // ´ğÄì´Ø¿ôÇÛÎó(¹ÔÎó·×»»ÍÑ)
     double* N_array_U = new double[_ncpntU];
     double* N_array_Ud = new double[_ncpntU];
     double* N_array_V = new double[_ncpntV];
 
-    // Šî’êŠÖ””z—ñ‚ÖŠeŠî’êŠÖ”‚ğ‘ã“ü
+    // ´ğÄì´Ø¿ôÇÛÎó¤Ø³Æ´ğÄì´Ø¿ô¤òÂåÆş
     for (int i = 0; i < _ncpntU; i++)
         N_array_U[i] = CalcBsplineFunc(i, _ordU, u, &_knotU[0]);
     for (int i = 0; i < _ncpntU; i++)
@@ -56,7 +56,7 @@ Vector3d NurbsSurface::GetFirstDiffVectorU(const double u, const double v) const
     for (int i = 0; i < _ncpntV; i++)
         N_array_V[i] = CalcBsplineFunc(i, _ordV, v, &_knotV[0]);
 
-    // U•ûŒüÚüƒxƒNƒgƒ‹Zo‚É•K—v‚È’l‚ğ‹‚ß‚é
+    // UÊı¸şÀÜÀş¥Ù¥¯¥È¥ë»»½Ğ¤ËÉ¬Í×¤ÊÃÍ¤òµá¤á¤ë
     Vector3d P = this->GetPositionVector(u, v);
     Vector3d Qu = CalcVectorWithBasisFunctions(N_array_Ud, N_array_V);
     
@@ -68,12 +68,12 @@ Vector3d NurbsSurface::GetFirstDiffVectorU(const double u, const double v) const
 }
 Vector3d NurbsSurface::GetFirstDiffVectorV(const double u, const double v) const
 {
-    // Šî’êŠÖ””z—ñ(s—ñŒvZ—p)
+    // ´ğÄì´Ø¿ôÇÛÎó(¹ÔÎó·×»»ÍÑ)
     double* N_array_U = new double[_ncpntU];
     double* N_array_V = new double[_ncpntV];
     double* N_array_Vd = new double[_ncpntV];
 
-    // Šî’êŠÖ””z—ñ‚ÖŠeŠî’êŠÖ”‚ğ‘ã“ü
+    // ´ğÄì´Ø¿ôÇÛÎó¤Ø³Æ´ğÄì´Ø¿ô¤òÂåÆş
     for (int i = 0; i < _ncpntU; i++)
         N_array_U[i] = CalcBsplineFunc(i, _ordU, u, &_knotU[0]);
     for (int i = 0; i < _ncpntV; i++)
@@ -81,7 +81,7 @@ Vector3d NurbsSurface::GetFirstDiffVectorV(const double u, const double v) const
     for (int i = 0; i < _ncpntV; i++)
         N_array_Vd[i] = Calc1DiffBsplineFunc(i, _ordV, v, &_knotV[0]);
 
-    // V•ûŒüÚüƒxƒNƒgƒ‹Zo‚É•K—v‚È’l‚ğ‹‚ß‚é
+    // VÊı¸şÀÜÀş¥Ù¥¯¥È¥ë»»½Ğ¤ËÉ¬Í×¤ÊÃÍ¤òµá¤á¤ë
     Vector3d P = this->GetPositionVector(u, v);
     Vector3d Qv = CalcVectorWithBasisFunctions(N_array_U, N_array_Vd);
 
@@ -92,16 +92,16 @@ Vector3d NurbsSurface::GetFirstDiffVectorV(const double u, const double v) const
     return (Qv - Wv * P) / W;
 }
 
-// 2ŠK”÷•ªƒxƒNƒgƒ‹æ“¾
+// 2³¬ÈùÊ¬¥Ù¥¯¥È¥ë¼èÆÀ
 Vector3d NurbsSurface::GetSecondDiffVectorUU(const double u, const double v) const
 {
-    // Šî’êŠÖ””z—ñ(s—ñŒvZ—p)
+    // ´ğÄì´Ø¿ôÇÛÎó(¹ÔÎó·×»»ÍÑ)
     double* N_array_U = new double[_ncpntU];
     double* N_array_Ud = new double[_ncpntU];
     double* N_array_Udd = new double[_ncpntU];
     double* N_array_V = new double[_ncpntV];
 
-    // Šî’êŠÖ””z—ñ‚ÖŠeŠî’êŠÖ”‚ğ‘ã“ü
+    // ´ğÄì´Ø¿ôÇÛÎó¤Ø³Æ´ğÄì´Ø¿ô¤òÂåÆş
     for (int i = 0; i < _ncpntU; i++)
         N_array_U[i] = CalcBsplineFunc(i, _ordU, u, &_knotU[0]);
     for (int i = 0; i < _ncpntU; i++)
@@ -111,7 +111,7 @@ Vector3d NurbsSurface::GetSecondDiffVectorUU(const double u, const double v) con
     for (int i = 0; i < _ncpntV; i++)
         N_array_V[i] = CalcBsplineFunc(i, _ordV, v, &_knotV[0]);
 
-    // V•ûŒü2ŠK”÷•ªƒxƒNƒgƒ‹Zo‚É•K—v‚È’l‚ğ‹‚ß‚é
+    // VÊı¸ş2³¬ÈùÊ¬¥Ù¥¯¥È¥ë»»½Ğ¤ËÉ¬Í×¤ÊÃÍ¤òµá¤á¤ë
     Vector3d P = this->GetPositionVector(u, v);
     Vector3d Pu = this->GetFirstDiffVectorU(u, v);
 
@@ -126,13 +126,13 @@ Vector3d NurbsSurface::GetSecondDiffVectorUU(const double u, const double v) con
 }
 Vector3d NurbsSurface::GetSecondDiffVectorUV(const double u, const double v) const
 {
-    // Šî’êŠÖ””z—ñ(s—ñŒvZ—p)
+    // ´ğÄì´Ø¿ôÇÛÎó(¹ÔÎó·×»»ÍÑ)
     double* N_array_U = new double[_ncpntU];
     double* N_array_Ud = new double[_ncpntU];
     double* N_array_V = new double[_ncpntV];
     double* N_array_Vd = new double[_ncpntV];
 
-    // Šî’êŠÖ””z—ñ‚ÖŠeŠî’êŠÖ”‚ğ‘ã“ü
+    // ´ğÄì´Ø¿ôÇÛÎó¤Ø³Æ´ğÄì´Ø¿ô¤òÂåÆş
     for (int i = 0; i < _ncpntU; i++)
         N_array_U[i] = CalcBsplineFunc(i, _ordU, u, &_knotU[0]);
     for (int i = 0; i < _ncpntU; i++)
@@ -142,7 +142,7 @@ Vector3d NurbsSurface::GetSecondDiffVectorUV(const double u, const double v) con
     for (int i = 0; i < _ncpntV; i++)
         N_array_Vd[i] = Calc1DiffBsplineFunc(i, _ordV, v, &_knotV[0]);
 
-    // V•ûŒü2ŠK”÷•ªƒxƒNƒgƒ‹Zo‚É•K—v‚È’l‚ğ‹‚ß‚é
+    // VÊı¸ş2³¬ÈùÊ¬¥Ù¥¯¥È¥ë»»½Ğ¤ËÉ¬Í×¤ÊÃÍ¤òµá¤á¤ë
     Vector3d P = this->GetPositionVector(u, v);
     Vector3d Pu = this->GetFirstDiffVectorU(u, v);
     Vector3d Pv = this->GetFirstDiffVectorV(u, v);
@@ -159,13 +159,13 @@ Vector3d NurbsSurface::GetSecondDiffVectorUV(const double u, const double v) con
 }
 Vector3d NurbsSurface::GetSecondDiffVectorVV(const double u, const double v) const
 {
-    // Šî’êŠÖ””z—ñ(s—ñŒvZ—p)
+    // ´ğÄì´Ø¿ôÇÛÎó(¹ÔÎó·×»»ÍÑ)
     double* N_array_U = new double[_ncpntU];
     double* N_array_V = new double[_ncpntV];
     double* N_array_Vd = new double[_ncpntV];
     double* N_array_Vdd = new double[_ncpntV];
 
-    // Šî’êŠÖ””z—ñ‚ÖŠeŠî’êŠÖ”‚ğ‘ã“ü
+    // ´ğÄì´Ø¿ôÇÛÎó¤Ø³Æ´ğÄì´Ø¿ô¤òÂåÆş
     for (int i = 0; i < _ncpntU; i++)
         N_array_U[i] = CalcBsplineFunc(i, _ordU, u, &_knotU[0]);
     for (int i = 0; i < _ncpntV; i++)
@@ -175,7 +175,7 @@ Vector3d NurbsSurface::GetSecondDiffVectorVV(const double u, const double v) con
     for (int i = 0; i < _ncpntV; i++)
         N_array_Vdd[i] = Calc2DiffBsplineFunc(i, _ordV, v, &_knotV[0]);
 
-    // V•ûŒü2ŠK”÷•ªƒxƒNƒgƒ‹Zo‚É•K—v‚È’l‚ğ‹‚ß‚é
+    // VÊı¸ş2³¬ÈùÊ¬¥Ù¥¯¥È¥ë»»½Ğ¤ËÉ¬Í×¤ÊÃÍ¤òµá¤á¤ë
     Vector3d P = this->GetPositionVector(u, v);
     Vector3d Pv = this->GetFirstDiffVectorV(u, v);
 

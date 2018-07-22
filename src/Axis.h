@@ -3,12 +3,12 @@
 #include "GV.h"
 #include "Object.h"
 
-// ²‚Ì•\¦ƒ^ƒCƒv
+// è»¸ã®è¡¨ç¤ºã‚¿ã‚¤ãƒ—
 enum AxisShowType
 {
-    None,  // •\¦‚µ‚È‚¢
-    Normal, // •’Ê‚É•`‰æ
-    WithLabel, // XYZƒ‰ƒxƒ‹‚à•`‰æ
+    None,  // è¡¨ç¤ºã—ãªã„
+    Normal, // æ™®é€šã«æç”»
+    WithLabel, // XYZãƒ©ãƒ™ãƒ«ã‚‚æç”»
 };
 
 extern AxisShowType axisShowType;
@@ -16,13 +16,13 @@ extern AxisShowType axisShowType;
 class Axis
 {
 private:
-    // –îˆó•”•ª‚Ìè‚ß‚éŠ„‡
+    // çŸ¢å°éƒ¨åˆ†ã®å ã‚ã‚‹å‰²åˆ
     const double _ratio = (double)1 / 3;
 
 protected:
     double _length; 
-    double _bodyLength; // “·‘Ì•”•ª‚Ì’·‚³
-    double _arrowLength; // –îˆó•”•ª‚Ì’·‚³
+    double _bodyLength; // èƒ´ä½“éƒ¨åˆ†ã®é•·ã•
+    double _arrowLength; // çŸ¢å°éƒ¨åˆ†ã®é•·ã•
 
 public:
     Axis(double len) 
@@ -33,11 +33,11 @@ public:
         _arrowLength = len * _ratio;
     }
 
-    // –îˆó•”•ª‚ğŠÜ‚ß‚½’·‚³‚ğ•Ô‚·
+    // çŸ¢å°éƒ¨åˆ†ã‚’å«ã‚ãŸé•·ã•ã‚’è¿”ã™
     double GetLength() { return _length; }
 };
 
-// ƒ\ƒŠƒbƒh²
+// ã‚½ãƒªãƒƒãƒ‰è»¸
 class NormalAxis : public Axis
 {
 private:

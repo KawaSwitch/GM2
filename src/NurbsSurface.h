@@ -6,7 +6,7 @@ class NurbsSurface : public BsplineSurface
 {
 private:
 
-    // w’è‚µ‚½’[‚Ì‹Èü‚ğæ“¾‚·‚é
+    // »ØÄê¤·¤¿Ã¼¤Î¶ÊÀş¤ò¼èÆÀ¤¹¤ë
     std::unique_ptr<Curve> GetEdgeCurve(SurfaceEdge edge) const override;
 
 public:
@@ -16,7 +16,7 @@ public:
         const double* const u_knot, const double* const v_knot,
         const GLdouble* const color, GLdouble resol = 20);
 
-    // ŠeíƒxƒNƒgƒ‹æ“¾
+    // ³Æ¼ï¥Ù¥¯¥È¥ë¼èÆÀ
     Vector3d GetPositionVector(double u, double v) const override;
     Vector3d GetFirstDiffVectorU(double u, double v) const override;
     Vector3d GetFirstDiffVectorV(double u, double v) const override;

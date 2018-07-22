@@ -2,17 +2,17 @@
 
 struct EPS
 {
-    // 距離トレランス
+    // 霍晞屬繝医Ξ繝ｩ繝ｳ繧ｹ
     static const double DIST;
     static const double DIST_SQRT;
 
-    // 体積トレランス
+    // 菴鍋ｩ阪ヨ繝ｬ繝ｩ繝ｳ繧ｹ
     static const double VOLUME;
 
-    // 相違トレランス
+    // 逶ｸ驕輔ヨ繝ｬ繝ｩ繝ｳ繧ｹ
     static const double DIFF;
 
-    // 最近点用トレランス
+    // 譛霑醍せ逕ｨ繝医Ξ繝ｩ繝ｳ繧ｹ
     static const double NEAREST;
     static const int COUNT_MAX;
 };

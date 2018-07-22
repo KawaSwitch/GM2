@@ -11,46 +11,46 @@
 #include "Scene.h"
 #include "glUtil.h"
 
-static int current_size; // Œ»İ‚ÌƒeƒXƒg—p‚ÌƒfƒBƒXƒvƒŒƒCƒŠƒXƒg”
-static int* displayLists; // ƒfƒBƒXƒvƒŒƒCƒŠƒXƒg•ÛŠÇ—pƒ|ƒCƒ“ƒ^
+static int current_size; // ç¾åœ¨ã®ãƒ†ã‚¹ãƒˆç”¨ã®ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆæ•°
+static int* displayLists; // ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆä¿ç®¡ç”¨ãƒã‚¤ãƒ³ã‚¿
 static bool isFirst = true;
 static bool isRegistered = false;
 
 Scene* test_scene;
 
-// Œ`ó‚Ì–¼Ì(ƒtƒ@ƒCƒ‹–¼) TODO: ‚Ç‚Á‚©‚Å‹¤—L
+// å½¢çŠ¶ã®åç§°(ãƒ•ã‚¡ã‚¤ãƒ«å) TODO: ã©ã£ã‹ã§å…±æœ‰
 static const std::string curve1_name("CGS_bspline_curve_1.kjs");
 static const std::string curve2_name("CGS_bspline_curve_2.kjs");
 static const std::string curveC_name("CGS_bspline_curve_C.kjs");
 static const std::string curveS_name("CGS_bspline_curve_S.kjs");
 static const std::string surf1_name("CGS_bspline_surface_1.kjs");
 
-// ƒeƒXƒg‚Æ‚¢‚¤‚©‰¼•`‰æIIIII
+// ãƒ†ã‚¹ãƒˆã¨ã„ã†ã‹ä»®æç”»ï¼ï¼ï¼ï¼ï¼
 
-// •`‰æ‚µ‚½‚¢‚Ì‚ğ‚¨‚­
+// æç”»ã—ãŸã„ã®ã‚’ãŠã
 static vector<function<void(void)>> TestRegisterDraw
 {
-  //DrawBsplineFunctions, // BƒXƒvƒ‰ƒCƒ“Šî’êŠÖ”•`‰æ
-  //DrawBsplineCurves, // BƒXƒvƒ‰ƒCƒ“‹Èü•`‰æ
-  //DrawCircle_CGS3, // Nurbs‹Èü‚Å‰~•`‚­
-  //DrawSphere_CGS3, // Nurbs‹È–Ê‚Å‹…‚ğ•`‚­
-  //DrawCylinder_CGS3, // Nurbs‹È–Ê‚Å‰~’Œ‚ğ•`‚­
-  //DrawApproxCurve_CGS4, // ‹ß—‹Èü‚ğ•`‰æ
-  //DrawApproxSurface_CGS5, // ‹ß—‹È–Ê‚ğ•`‰æ
-  //DrawCurveNearest_CGS6, // Å‹ß“_‚ğ•`‰æ_‹Èü
-  //DrawSurfaceNearest_CGS7, // Å‹ß“_‚ğ•`‰æ_‹È–Ê
-  DrawSplitCurve_CGS8, // •ªŠ„‹Èü‚ğ•`‰æ
+  //DrawBsplineFunctions, // Bã‚¹ãƒ—ãƒ©ã‚¤ãƒ³åŸºåº•é–¢æ•°æç”»
+  //DrawBsplineCurves, // Bã‚¹ãƒ—ãƒ©ã‚¤ãƒ³æ›²ç·šæç”»
+  //DrawCircle_CGS3, // Nurbsæ›²ç·šã§å††æã
+  //DrawSphere_CGS3, // Nurbsæ›²é¢ã§çƒã‚’æã
+  //DrawCylinder_CGS3, // Nurbsæ›²é¢ã§å††æŸ±ã‚’æã
+  //DrawApproxCurve_CGS4, // è¿‘ä¼¼æ›²ç·šã‚’æç”»
+  //DrawApproxSurface_CGS5, // è¿‘ä¼¼æ›²é¢ã‚’æç”»
+  //DrawCurveNearest_CGS6, // æœ€è¿‘ç‚¹ã‚’æç”»_æ›²ç·š
+  //DrawSurfaceNearest_CGS7, // æœ€è¿‘ç‚¹ã‚’æç”»_æ›²é¢
+  DrawSplitCurve_CGS8, // åˆ†å‰²æ›²ç·šã‚’æç”»
 };
 
-// •ªŠ„‹Èü•`‰æ
+// åˆ†å‰²æ›²ç·šæç”»
 void DrawSplitCurve_CGS8()
 {
   auto reader = std::make_unique<KjsReader>();
 
-  // •ªŠ„‘ÎÛ‹Èü
+  // åˆ†å‰²å¯¾è±¡æ›²ç·š
   std::shared_ptr<BsplineCurve> curve1((BsplineCurve *)reader->GetObjectFromFile(curve1_name));
 
-  // ƒmƒbƒg’Ç‰Á‹Èü
+  // ãƒãƒƒãƒˆè¿½åŠ æ›²ç·š
   std::shared_ptr<BsplineCurve> curve1_clone((BsplineCurve *)reader->GetObjectFromFile(curve1_name));
   curve1_clone->SetColor(Color::red);
   curve1_clone->AddKnot(3);
@@ -61,7 +61,7 @@ void DrawSplitCurve_CGS8()
   // curve1_clone->AddKnot(4);
   
 
-  // •ªŠ„‹Èü
+  // åˆ†å‰²æ›²ç·š
   
   
   if (isFirst)
@@ -71,17 +71,17 @@ void DrawSplitCurve_CGS8()
     }
 }
 
-// QÆ‹Èü‚©‚çÅ‹ß“_‚ğ‹‚ß‚Ä•`‰æ
+// å‚ç…§æ›²ç·šã‹ã‚‰æœ€è¿‘ç‚¹ã‚’æ±‚ã‚ã¦æç”»
 void DrawCurveNearest_CGS6()
 {
     auto reader = std::make_unique<KjsReader>();
 
-    // ‘ÎÛ‹Èü/‹È–Ê
+    // å¯¾è±¡æ›²ç·š/æ›²é¢
     std::shared_ptr<BsplineCurve> curve1((BsplineCurve*)reader->GetObjectFromFile(curve1_name));
-    // QÆ‹Èü
+    // å‚ç…§æ›²ç·š
     std::shared_ptr<BsplineCurve> curveC((BsplineCurve*)reader->GetObjectFromFile(curveC_name));
     
-    //// ‘ÎÛ‹Èü‚ğƒZƒOƒƒ“ƒg8•ªŠ„‚µ‚½“_ŒQ
+    //// å¯¾è±¡æ›²ç·šã‚’ã‚»ã‚°ãƒ¡ãƒ³ãƒˆ8åˆ†å‰²ã—ãŸç‚¹ç¾¤
     //{
     //    vector<Vector3d> passPnts, segPassPnts;
     //    passPnts = curve1->GetPositionVectorsByKnots(8);
@@ -90,21 +90,21 @@ void DrawCurveNearest_CGS6()
     //    DrawPoints(passPnts, Color::green, 10);
     //}
 
-    // QÆ“_ŒQ‚ğæ“¾
+    // å‚ç…§ç‚¹ç¾¤ã‚’å–å¾—
     vector<Vector3d> ref_pnts;
-    curveC->GetPositionVectors(ref_pnts, 20); // 20•ªŠ„‚µ‚Ä21“_‚ğæ‚é
+    curveC->GetPositionVectors(ref_pnts, 20); // 20åˆ†å‰²ã—ã¦21ç‚¹ã‚’å–ã‚‹
 
-    // Å‹ß“_æ“¾
+    // æœ€è¿‘ç‚¹å–å¾—
     vector<NearestPointInfoC> nearest_pnts;
     for (int i = 0; i < (int)ref_pnts.size(); i++)
         nearest_pnts.push_back(curve1->GetNearestPointInfoFromRef(ref_pnts[i]));
 
-    // •`‰æ
+    // æç”»
     {
         glLineWidth(1.0);
         glBegin(GL_LINES);
         {
-            // QÆ“_‚ÆÅ‹ß“_‚ğŒ‹‚Ôü
+            // å‚ç…§ç‚¹ã¨æœ€è¿‘ç‚¹ã‚’çµã¶ç·š
             glColor4dv(Color::orange);
             for (int i = 0; i < (int)ref_pnts.size(); i++)
             {
@@ -117,12 +117,12 @@ void DrawCurveNearest_CGS6()
         glPointSize(5.0);
         glBegin(GL_POINTS);
         {
-            // QÆ“_
+            // å‚ç…§ç‚¹
             glColor4dv(Color::red);
             for (int i = 0; i < (int)ref_pnts.size(); i++)
                 glVertex3d(ref_pnts[i]);
 
-            // Å‹ß“_
+            // æœ€è¿‘ç‚¹
             glColor4dv(Color::light_green);
             for (int i = 0; i < (int)nearest_pnts.size(); i++)
                 glVertex3d(nearest_pnts[i].nearestPnt);
@@ -130,7 +130,7 @@ void DrawCurveNearest_CGS6()
         glEnd();
     }
 
-    // Ú×‚ğcsv“f‚«o‚µ
+    // è©³ç´°ã‚’csvåãå‡ºã—
     ExportCsv_NearestInfoCurve("nearest_pnt_CGS6.csv", nearest_pnts, true);
 
     if (isFirst)
@@ -140,42 +140,42 @@ void DrawCurveNearest_CGS6()
     }
 }
 
-// QÆ‹È–Ê‚©‚çÅ‹ß“_‚ğ‹‚ß‚Ä•`‰æ
+// å‚ç…§æ›²é¢ã‹ã‚‰æœ€è¿‘ç‚¹ã‚’æ±‚ã‚ã¦æç”»
 void DrawSurfaceNearest_CGS7()
 {
     auto reader = std::make_unique<KjsReader>();
 
-    // ‘ÎÛ‹Èü/‹È–Ê
+    // å¯¾è±¡æ›²ç·š/æ›²é¢
     std::shared_ptr<BsplineSurface> surf1((BsplineSurface *)reader->GetObjectFromFile(surf1_name));
-    // QÆ‹Èü
+    // å‚ç…§æ›²ç·š
     std::shared_ptr<BsplineCurve> curveS((BsplineCurve *)reader->GetObjectFromFile(curveS_name));
 
-    // QÆ“_ŒQ(21“_)‚ğæ“¾
+    // å‚ç…§ç‚¹ç¾¤(21ç‚¹)ã‚’å–å¾—
     vector<Vector3d> ref_pnts;
     curveS->GetPositionVectors(ref_pnts, 20);
-    vector<NearestPointInfoS> nearest_pnts; // Å‹ß“_ŒQ
+    vector<NearestPointInfoS> nearest_pnts; // æœ€è¿‘ç‚¹ç¾¤
 
     clock_t start = clock();
 
-    // Å‹ß“_æ“¾
+    // æœ€è¿‘ç‚¹å–å¾—
     for (const auto& ref : ref_pnts)
         //nearest_pnts.push_back(surf1->GetNearestPointInfoFromRef(ref, Surface::Project));
         nearest_pnts.push_back(surf1->GetNearestPointInfoFromRef(ref, Surface::Isoline));
 
     clock_t end = clock();
-    cout << "ƒgƒŒƒ‰ƒ“ƒX : "  << EPS::NEAREST << "  Å‹ß“_æ“¾(21“_)ŠÔ = " << (double)(end - start) / CLOCKS_PER_SEC << "sec.\n";
+    cout << "ãƒˆãƒ¬ãƒ©ãƒ³ã‚¹ : "  << EPS::NEAREST << "  æœ€è¿‘ç‚¹å–å¾—(21ç‚¹)æ™‚é–“ = " << (double)(end - start) / CLOCKS_PER_SEC << "sec.\n";
 
-    vector<vector<Vector3d>> startPnts; // ŠJn“_ŒQ
+    vector<vector<Vector3d>> startPnts; // é–‹å§‹ç‚¹ç¾¤
     int seg_split_u = 1;
     int seg_split_v = 1;
     surf1->GetPointsByKnots(startPnts, seg_split_u, seg_split_v);
 
-    // •`‰æ
+    // æç”»
     {
         glLineWidth(1.0);
         glBegin(GL_LINES);
         {
-            // QÆ“_‚ÆÅ‹ß“_‚ğŒ‹‚Ôü•ª
+            // å‚ç…§ç‚¹ã¨æœ€è¿‘ç‚¹ã‚’çµã¶ç·šåˆ†
             glColor4dv(Color::orange);
             for (int i = 0; i < (int)ref_pnts.size(); i++)
             {
@@ -188,12 +188,12 @@ void DrawSurfaceNearest_CGS7()
         glPointSize(5.0);
         glBegin(GL_POINTS);
         {
-            // QÆ“_
+            // å‚ç…§ç‚¹
             glColor4dv(Color::red);
             for (int i = 0; i < (int)ref_pnts.size(); i++)
                 glVertex3d(ref_pnts[i]);
 
-            // Å‹ß“_
+            // æœ€è¿‘ç‚¹
             glColor4dv(Color::light_green);
             for (int i = 0; i < (int)nearest_pnts.size(); i++)
                 glVertex3d(nearest_pnts[i].nearestPnt);
@@ -203,7 +203,7 @@ void DrawSurfaceNearest_CGS7()
         glPointSize(10.0);
         glBegin(GL_POINTS);
         {
-            // ŠJn“_
+            // é–‹å§‹ç‚¹
             glColor4dv(Color::pink);
             for (const auto& startRow : startPnts)
                 for (const auto& start : startRow)
@@ -212,7 +212,7 @@ void DrawSurfaceNearest_CGS7()
         glEnd();
     }
 
-    // Ú×‚ğcsv“f‚«o‚µ
+    // è©³ç´°ã‚’csvåãå‡ºã—
     ExportCsv_NearestInfoSurface("nearest_pnt_CGS7.csv", nearest_pnts, true);
 
     if (isFirst)
@@ -222,17 +222,17 @@ void DrawSurfaceNearest_CGS7()
     }
 }
 
-// ‹ß—‚µ‚Ä‹È–Ê‚ğ•`‰æ
+// è¿‘ä¼¼ã—ã¦æ›²é¢ã‚’æç”»
 void DrawApproxSurface_CGS5()
 {
     auto reader = std::make_unique<KjsReader>();
 
     std::shared_ptr<BsplineSurface> surf((BsplineSurface *)reader->GetObjectFromFile(surf1_name));
 
-    // ‹ß—‹È–Ê
+    // è¿‘ä¼¼æ›²é¢
     std::unique_ptr<Surface> surf_knot_remake, surf_knot_split_remake;
 
-    // ‹È–Ê‚Ì‹ß—(ƒmƒbƒgˆÊ’u‚Ì‚İ)
+    // æ›²é¢ã®è¿‘ä¼¼(ãƒãƒƒãƒˆä½ç½®ã®ã¿)
     {
         vector<vector<Vector3d>> passPnts;
         surf->GetPointsByKnots(passPnts, 1, 1);
@@ -241,7 +241,7 @@ void DrawApproxSurface_CGS5()
 
         surf_knot_remake = surf->GetSurfaceFromPoints(passPnts, Color::blue_alpha, 20);
     }
-    // ‹È–Ê‚Ì‹ß—(ƒmƒbƒgˆÊ’u‚Ì‚İ + ƒZƒOƒƒ“ƒgˆÊ’u3•ªŠ„)
+    // æ›²é¢ã®è¿‘ä¼¼(ãƒãƒƒãƒˆä½ç½®ã®ã¿ + ã‚»ã‚°ãƒ¡ãƒ³ãƒˆä½ç½®3åˆ†å‰²)
     {
         vector<vector<Vector3d>> passPnts;
         surf->GetPointsByKnots(passPnts, 3, 3);
@@ -259,7 +259,7 @@ void DrawApproxSurface_CGS5()
     }
 }
 
-// ‹ß—‚µ‚Ä‹Èü‚ğ•`‰æ
+// è¿‘ä¼¼ã—ã¦æ›²ç·šã‚’æç”»
 void DrawApproxCurve_CGS4()
 {
     auto reader = std::make_unique<KjsReader>();
@@ -267,11 +267,11 @@ void DrawApproxCurve_CGS4()
     shared_ptr<BsplineCurve> curve1((BsplineCurve *)reader->GetObjectFromFile("CGS_bspline_curve_1.kjs"));
     shared_ptr<BsplineCurve> curve2((BsplineCurve *)reader->GetObjectFromFile("CGS_bspline_curve_2.kjs"));
 
-    // ‹ß—‹Èü
+    // è¿‘ä¼¼æ›²ç·š
     std::unique_ptr<Curve> curve1_remake, curve2_remake;
     std::unique_ptr<Curve> curve1_remake_split, curve2_remake_split;
 
-    // ‹Èü1‚Ì‹ß—(ƒmƒbƒgˆÊ’u‚Ì‚İ)
+    // æ›²ç·š1ã®è¿‘ä¼¼(ãƒãƒƒãƒˆä½ç½®ã®ã¿)
     {
         vector<Vector3d> passPnts;
         passPnts = curve1->GetPositionVectorsByKnots();
@@ -279,7 +279,7 @@ void DrawApproxCurve_CGS4()
 
         curve1_remake = curve1->GetCurveFromPoints(passPnts, Color::red, 3);
     }
-    // ‹Èü1‚Ì‹ß—(ƒmƒbƒgˆÊ’u‚Ì‚İ + ƒZƒOƒƒ“ƒgˆÊ’u3•ªŠ„)
+    // æ›²ç·š1ã®è¿‘ä¼¼(ãƒãƒƒãƒˆä½ç½®ã®ã¿ + ã‚»ã‚°ãƒ¡ãƒ³ãƒˆä½ç½®3åˆ†å‰²)
     {
         vector<Vector3d> passPnts;
         passPnts = curve1->GetPositionVectorsByKnots(3);
@@ -291,22 +291,22 @@ void DrawApproxCurve_CGS4()
         curve1_remake_split = curve1->GetCurveFromPoints(passPnts, Color::orange, 3);
     }
 
-    printf("‹Èü1‚Æ‹ß—‹Èü‚Ì‘Šˆá‹——£•½‹Ï\n");
-    printf("ƒmƒbƒgˆÊ’u‚Ì‚İ:    %f\n", curve1->CalcDifferency(curve1_remake.get()));
-    printf("ƒZƒOƒƒ“ƒgˆÊ’u‚à:  %f\n", curve1->CalcDifferency(curve1_remake_split.get()));
+    printf("æ›²ç·š1ã¨è¿‘ä¼¼æ›²ç·šã®ç›¸é•è·é›¢å¹³å‡\n");
+    printf("ãƒãƒƒãƒˆä½ç½®ã®ã¿:    %f\n", curve1->CalcDifferency(curve1_remake.get()));
+    printf("ã‚»ã‚°ãƒ¡ãƒ³ãƒˆä½ç½®ã‚‚:  %f\n", curve1->CalcDifferency(curve1_remake_split.get()));
     printf("\n");
 
-    printf("‹Èü1‚Æ‹ß—‹Èü‚Ì‘Šˆá‹——£•½‹Ï Ver.2 \n");
-    printf("ƒmƒbƒgˆÊ’u‚Ì‚İ:    %f\n", curve1->CalcDifferency2(curve1_remake.get()));
-    printf("ƒZƒOƒƒ“ƒgˆÊ’u‚à:  %f\n", curve1->CalcDifferency2(curve1_remake_split.get()));
+    printf("æ›²ç·š1ã¨è¿‘ä¼¼æ›²ç·šã®ç›¸é•è·é›¢å¹³å‡ Ver.2 \n");
+    printf("ãƒãƒƒãƒˆä½ç½®ã®ã¿:    %f\n", curve1->CalcDifferency2(curve1_remake.get()));
+    printf("ã‚»ã‚°ãƒ¡ãƒ³ãƒˆä½ç½®ã‚‚:  %f\n", curve1->CalcDifferency2(curve1_remake_split.get()));
     printf("\n");
 
-    printf("‹Èü1‚Æ‹ß—‹Èü‚Ìˆê”Ô‰“‚´‚©‚é‹——£ \n");
-    printf("ƒmƒbƒgˆÊ’u‚Ì‚İ:    %f\n", curve1->CalcFarthestDistant(curve1_remake.get()));
-    printf("ƒZƒOƒƒ“ƒgˆÊ’u‚à:  %f\n", curve1->CalcFarthestDistant(curve1_remake_split.get()));
+    printf("æ›²ç·š1ã¨è¿‘ä¼¼æ›²ç·šã®ä¸€ç•ªé ã–ã‹ã‚‹è·é›¢ \n");
+    printf("ãƒãƒƒãƒˆä½ç½®ã®ã¿:    %f\n", curve1->CalcFarthestDistant(curve1_remake.get()));
+    printf("ã‚»ã‚°ãƒ¡ãƒ³ãƒˆä½ç½®ã‚‚:  %f\n", curve1->CalcFarthestDistant(curve1_remake_split.get()));
     printf("\n");
 
-    // ‹Èü2‚Ì‹ß—(ƒmƒbƒgˆÊ’u‚Ì‚İ)
+    // æ›²ç·š2ã®è¿‘ä¼¼(ãƒãƒƒãƒˆä½ç½®ã®ã¿)
     {
         vector<Vector3d> passPnts;
         passPnts = curve2->GetPositionVectorsByKnots();
@@ -314,7 +314,7 @@ void DrawApproxCurve_CGS4()
 
         curve2_remake = curve2->GetCurveFromPoints(passPnts, Color::red, 3);
     }
-    // ‹Èü2‚Ì‹ß—(ƒmƒbƒgˆÊ’u‚Ì‚İ + ƒZƒOƒƒ“ƒgˆÊ’u3•ªŠ„)
+    // æ›²ç·š2ã®è¿‘ä¼¼(ãƒãƒƒãƒˆä½ç½®ã®ã¿ + ã‚»ã‚°ãƒ¡ãƒ³ãƒˆä½ç½®3åˆ†å‰²)
     {
         vector<Vector3d> passPnts;
         passPnts = curve2->GetPositionVectorsByKnots(3);
@@ -326,17 +326,17 @@ void DrawApproxCurve_CGS4()
         curve2_remake_split = curve2->GetCurveFromPoints(passPnts, Color::orange, 3);
     }
 
-    printf("‹Èü2‚Æ‹ß—‹Èü‚Ì‘Šˆá‹——£•½‹Ï\n");
-    printf("ƒmƒbƒgˆÊ’u‚Ì‚İ:    %f\n", curve2->CalcDifferency(curve2_remake.get()));
-    printf("ƒZƒOƒƒ“ƒgˆÊ’u‚à:  %f\n", curve2->CalcDifferency(curve2_remake_split.get()));
+    printf("æ›²ç·š2ã¨è¿‘ä¼¼æ›²ç·šã®ç›¸é•è·é›¢å¹³å‡\n");
+    printf("ãƒãƒƒãƒˆä½ç½®ã®ã¿:    %f\n", curve2->CalcDifferency(curve2_remake.get()));
+    printf("ã‚»ã‚°ãƒ¡ãƒ³ãƒˆä½ç½®ã‚‚:  %f\n", curve2->CalcDifferency(curve2_remake_split.get()));
 
-    printf("‹Èü2‚Æ‹ß—‹Èü‚Ì‘Šˆá‹——£•½‹Ï Ver.2 \n");
-    printf("ƒmƒbƒgˆÊ’u‚Ì‚İ:    %f\n", curve2->CalcDifferency2(curve2_remake.get()));
-    printf("ƒZƒOƒƒ“ƒgˆÊ’u‚à:  %f\n", curve2->CalcDifferency2(curve2_remake_split.get()));
+    printf("æ›²ç·š2ã¨è¿‘ä¼¼æ›²ç·šã®ç›¸é•è·é›¢å¹³å‡ Ver.2 \n");
+    printf("ãƒãƒƒãƒˆä½ç½®ã®ã¿:    %f\n", curve2->CalcDifferency2(curve2_remake.get()));
+    printf("ã‚»ã‚°ãƒ¡ãƒ³ãƒˆä½ç½®ã‚‚:  %f\n", curve2->CalcDifferency2(curve2_remake_split.get()));
 
-    printf("‹Èü2‚Æ‹ß—‹Èü‚Ìˆê”Ô‰“‚´‚©‚é‹——£ \n");
-    printf("ƒmƒbƒgˆÊ’u‚Ì‚İ:    %f\n", curve2->CalcFarthestDistant(curve2_remake.get()));
-    printf("ƒZƒOƒƒ“ƒgˆÊ’u‚à:  %f\n", curve2->CalcFarthestDistant(curve2_remake_split.get()));
+    printf("æ›²ç·š2ã¨è¿‘ä¼¼æ›²ç·šã®ä¸€ç•ªé ã–ã‹ã‚‹è·é›¢ \n");
+    printf("ãƒãƒƒãƒˆä½ç½®ã®ã¿:    %f\n", curve2->CalcFarthestDistant(curve2_remake.get()));
+    printf("ã‚»ã‚°ãƒ¡ãƒ³ãƒˆä½ç½®ã‚‚:  %f\n", curve2->CalcFarthestDistant(curve2_remake_split.get()));
 
     if (isFirst)
     {
@@ -350,10 +350,10 @@ void DrawApproxCurve_CGS4()
     }
 }
 
-// Nurbs‹È–Ê‚Å‰~’Œ‚ğ•`‚­
+// Nurbsæ›²é¢ã§å††æŸ±ã‚’æã
 void DrawCylinder_CGS3()
 {
-    // ‚æ‚­‚È‚¢‚¯‚Ç–³—‚â‚è‹‚ß‚½
+    // ã‚ˆããªã„ã‘ã©ç„¡ç†ã‚„ã‚Šæ±‚ã‚ãŸ
     double cp1_p[2] = { 5, 5 * sqrt(3) };
     RotateCoord2DAroundOrigin(cp1_p, (double)2 / 3 * M_PI);
 
@@ -404,7 +404,7 @@ void DrawCylinder_CGS3()
     }
 }
 
-// Nurbs‹È–Ê‚Å‹…‚ğ•`‚­
+// Nurbsæ›²é¢ã§çƒã‚’æã
 void DrawSphere_CGS3()
 {
     ControlPoint cp0[9]
@@ -545,7 +545,7 @@ void DrawSphere_CGS3()
     }
 }
 
-// Nurbs‹Èü‚Å‰~‚ğ•`‚­
+// Nurbsæ›²ç·šã§å††ã‚’æã
 void DrawCircle_CGS3()
 {
     ControlPoint cp0[3]
@@ -589,14 +589,14 @@ void DrawCircle_CGS3()
     }
 }
 
-// Šî’êŠÖ”‚¨‚æ‚Ñ‚»‚ÌŠÖ”‚ğg‚Á‚ÄBƒXƒvƒ‰ƒCƒ“‹Èü‚ğ•`‰æ‚·‚é
-// ‘æ1‰ñ‰Û‘è
+// åŸºåº•é–¢æ•°ãŠã‚ˆã³ãã®é–¢æ•°ã‚’ä½¿ã£ã¦Bã‚¹ãƒ—ãƒ©ã‚¤ãƒ³æ›²ç·šã‚’æç”»ã™ã‚‹
+// ç¬¬1å›èª²é¡Œ
 static double knot_a[10] = { -3, -2, -1, 0, 1, 2, 3, 4, 5, 6 };
 static double knot_b[10] = { 0, 0, 0, 0, 1, 2, 3, 3, 3, 3 };
 static double knot_c[10] = { 0, 0, 0, 0, 1, 1, 3, 3, 3, 3 };
 void DrawBsplineFunctions()
 {
-    // •Ê‚Ì‚Æ‚±‚ÅƒfƒBƒXƒvƒŒƒCƒŠƒXƒg‚ğstatic‚Åg‚Á‚Ä‚é‚Ì‚Å“¯‚É‚Í‘‚¯‚È‚¢
+    // åˆ¥ã®ã¨ã“ã§ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆã‚’staticã§ä½¿ã£ã¦ã‚‹ã®ã§åŒæ™‚ã«ã¯æ›¸ã‘ãªã„
     //DrawBsplineFunc(4, 6, 10, knot_a, -3.0, 6.0);
     DrawBsplineFunc(4, 6, 10, knot_b, 0.0, 3.0);
     //DrawBsplineFunc(4, 6, 10, knot_c, 0.0, 3.0);
@@ -617,39 +617,39 @@ void DrawBsplineCurves()
     auto B = new BsplineCurve(4, cp, 6, knot_b, Color::orange, 1.0);
     auto C = new BsplineCurve(4, cp, 6, knot_c, Color::green, 1.0);
 
-    // §Œä“_‚İ‚Å•`‰æ
+    // åˆ¶å¾¡ç‚¹è¾¼ã¿ã§æç”»
     A->DrawAsItIsWithCPs();
     B->DrawAsItIsWithCPs();
     C->DrawAsItIsWithCPs();
 }
 
-// ƒeƒXƒg•`‰æ
+// ãƒ†ã‚¹ãƒˆæç”»
 void TestDraw()
 {
     if (isRegistered)
     {
-        // ‘SƒfƒBƒXƒvƒŒƒCƒŠƒXƒgƒR[ƒ‹
+        // å…¨ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆã‚³ãƒ¼ãƒ«
         for (int i = 0; i < (int)TestRegisterDraw.size(); i++)
         {
             if (displayLists[i])
                 glCallList(displayLists[i]);
         }
 
-        // ƒeƒXƒgƒV[ƒ“•`‰æ
+        // ãƒ†ã‚¹ãƒˆã‚·ãƒ¼ãƒ³æç”»
         test_scene->Draw();
     }
     else
     {
         Error::ShowMessage(
-            "ƒeƒXƒg—pƒfƒBƒXƒvƒŒƒCƒŠƒXƒg–¢ì¬",
-            "©“®‚Åì¬‚µ‚Ü‚·‚ª, “KØ‚ÈêŠ‚É“o˜^ŠÖ”‚ğ’u‚­‚±‚Æ‚ğ„§‚µ‚Ü‚·.");
+            "ãƒ†ã‚¹ãƒˆç”¨ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆæœªä½œæˆ",
+            "è‡ªå‹•ã§ä½œæˆã—ã¾ã™ãŒ, é©åˆ‡ãªå ´æ‰€ã«ç™»éŒ²é–¢æ•°ã‚’ç½®ãã“ã¨ã‚’æ¨å¥¨ã—ã¾ã™.");
 
         TestRegister();
         glutPostRedisplay();
     }
 }
 
-// ƒfƒBƒXƒvƒŒƒCƒŠƒXƒg‚É•`‰æ‚ğ“o˜^‚·‚é(•`‰æ‘O‚Éè“®‚ÅŒÄ‚Ño‚·‚±‚Æ‚ğ„§)
+// ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆã«æç”»ã‚’ç™»éŒ²ã™ã‚‹(æç”»å‰ã«æ‰‹å‹•ã§å‘¼ã³å‡ºã™ã“ã¨ã‚’æ¨å¥¨)
 void TestRegister()
 {
     for (int i = 0; i < (int)TestRegisterDraw.size(); i++)

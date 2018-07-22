@@ -7,26 +7,26 @@ class BezierSurface : public Surface
 {
 private:
 
-    // ŠeíƒxƒNƒgƒ‹•`‰æ
+    // å„ç¨®ãƒ™ã‚¯ãƒˆãƒ«æç”»
     void DrawFirstDiffVectorsInternal() const override;
     void DrawSecondDiffVectorsInternal() const override;
     void DrawNormalVectorsInternal() const override;
     void DrawCurvatureVectorsInternal() const override;
 
-    // ƒƒbƒVƒ…•`‰æ
+    // ãƒ¡ãƒƒã‚·ãƒ¥æç”»
     void DrawMeshInternal() const override;
 
-    // –‘O•`‰æ
+    // äº‹å‰æç”»
     void PreDraw() const override;
 
-    // ƒoƒbƒtƒ@ƒIƒuƒWƒFƒNƒg
+    // ãƒãƒƒãƒ•ã‚¡ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
     void CreateVBO() const override;
     void DrawVBO() const override;
 
-    // w’è‚µ‚½’[‚Ì‹Èü‚ğæ“¾‚·‚é
+    // æŒ‡å®šã—ãŸç«¯ã®æ›²ç·šã‚’å–å¾—ã™ã‚‹
     std::unique_ptr<Curve> GetEdgeCurve(SurfaceEdge edge) const override;
 
-    // w’èƒpƒ‰ƒ[ƒ^‚ÌƒxƒNƒgƒ‹‚ğŠî’êŠÖ”‚©‚çZo‚·‚é
+    // æŒ‡å®šãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’åŸºåº•é–¢æ•°ã‹ã‚‰ç®—å‡ºã™ã‚‹
     Vector3d CalcVector(
         double u, double v,
         function<double(unsigned, unsigned, double)> BasisFuncU,
@@ -36,7 +36,7 @@ public:
 
     BezierSurface(int u_mord, int v_mord, const ControlPoint* const cp, int u_cp_size, int v_cp_size, const GLdouble* const color, GLdouble resol = 20);
 
-    // ŠeíƒxƒNƒgƒ‹æ“¾
+    // å„ç¨®ãƒ™ã‚¯ãƒˆãƒ«å–å¾—
     Vector3d GetPositionVector(double u, double v) const override;
     Vector3d GetFirstDiffVectorU(double u, double v) const override;
     Vector3d GetFirstDiffVectorV(double u, double v) const override;
@@ -44,9 +44,9 @@ public:
     Vector3d GetSecondDiffVectorUV(double u, double v) const override;
     Vector3d GetSecondDiffVectorVV(double u, double v) const override;
 
-    // ‹t•ÏŠ·
+    // é€†å¤‰æ›
     std::unique_ptr<Surface> GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, GLdouble resol) const override;
 
-    // Å‹ß“_æ“¾
+    // æœ€è¿‘ç‚¹å–å¾—
     NearestPointInfoS GetNearestPointInfoFromRef(const Vector3d& ref, const NearestSearch search = Project) const override;
 };

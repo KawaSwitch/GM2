@@ -1,8 +1,8 @@
 #pragma once
 
-// •`‰æƒAƒVƒXƒg
+// æç”»ã‚¢ã‚·ã‚¹ãƒˆ
 template<class Anything> void DrawWithoutSetting(const Anything& obj)
 {
-    // ƒfƒoƒO•`‰æ—p
+    // ãƒ‡ãƒã‚°æç”»ç”¨
     obj.Draw();
 }

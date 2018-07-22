@@ -7,12 +7,12 @@
 
 extern Scene* scene;
 
-//// Nurbs‹È–Ê‚Å‰~’Œ‚ğ•`‚­
+//// Nurbsæ›²é¢ã§å††æŸ±ã‚’æã
 //void DrawCylinder_CGS3()
 //{
 //    static bool isFirst = true;
 //
-//    // ‚æ‚­‚È‚¢‚¯‚Ç–³—‚â‚è‹‚ß‚½
+//    // ã‚ˆããªã„ã‘ã©ç„¡ç†ã‚„ã‚Šæ±‚ã‚ãŸ
 //    double cp1_p[2] = { 5, 5 * sqrt(3) };
 //    RotateCoord2DAroundOrigin(cp1_p, (double)2 / 3 * M_PI);
 //
@@ -65,7 +65,7 @@ extern Scene* scene;
 //    }
 //}
 //
-//// Nurbs‹È–Ê‚Å‹…‚ğ•`‚­
+//// Nurbsæ›²é¢ã§çƒã‚’æã
 //void DrawSphere_CGS3()
 //{
 //    ControlPoint cp0[9]
@@ -206,7 +206,7 @@ extern Scene* scene;
 //    }
 //}
 //
-//// Nurbs‹Èü‚Å‰~‚ğ•`‚­
+//// Nurbsæ›²ç·šã§å††ã‚’æã
 //void DrawCircle_CGS3()
 //{
 //    ControlPoint cp0[3]

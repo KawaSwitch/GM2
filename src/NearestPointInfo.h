@@ -3,11 +3,11 @@
 #include "Vector.h"
 #include "Point3d.h"
 
-// Å‹ß“_î•ñ‚Ü‚Æ‚ß\‘¢‘Ì
+// æœ€è¿‘ç‚¹æƒ…å ±ã¾ã¨ã‚æ§‹é€ ä½“
 struct NearestPointInfo
 {
-    Vector3d nearestPnt; // Å‹ß“_
-    double dist; // Å‹ß“_‚©‚çQÆ“_‚Ü‚Å‚Ì‹——£
+    Vector3d nearestPnt; // æœ€è¿‘ç‚¹
+    double dist; // æœ€è¿‘ç‚¹ã‹ã‚‰å‚ç…§ç‚¹ã¾ã§ã®è·é›¢
 
     NearestPointInfo(Vector3d nearest, Vector3d ref)
     {
@@ -16,12 +16,12 @@ struct NearestPointInfo
     }
 };
 
-// Å‹ß“_î•ñ‚Ü‚Æ‚ß\‘¢‘Ì ‹Èü—p
+// æœ€è¿‘ç‚¹æƒ…å ±ã¾ã¨ã‚æ§‹é€ ä½“ æ›²ç·šç”¨
 struct NearestPointInfoC : public NearestPointInfo
 {
 public:
 
-    double param; // ƒpƒ‰ƒ[ƒ^ˆÊ’u
+    double param; // ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ä½ç½®
 
     NearestPointInfoC(Vector3d nearest, Vector3d ref, double t)
         : NearestPointInfo(nearest, ref)
@@ -36,12 +36,12 @@ public:
     }
 };
 
-// Å‹ß“_î•ñ‚Ü‚Æ‚ß\‘¢‘Ì ‹È–Ê—p
+// æœ€è¿‘ç‚¹æƒ…å ±ã¾ã¨ã‚æ§‹é€ ä½“ æ›²é¢ç”¨
 struct NearestPointInfoS : public NearestPointInfo
 {
 public:
 
-    double paramU, paramV; // ƒpƒ‰ƒ[ƒ^ˆÊ’u
+    double paramU, paramV; // ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ä½ç½®
 
     NearestPointInfoS(Vector3d nearest, Vector3d ref, double u, double v)
         : NearestPointInfo(nearest, ref)

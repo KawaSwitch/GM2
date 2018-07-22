@@ -2,29 +2,29 @@
 
 #include "GV.h"
 
-// ŒõŒ¹ƒNƒ‰ƒX
-// ƒƒCƒ“‚É‚µ‚©g‚¤—\’è‚È‚¢‚Ì‚Å“K“–
+// å…‰æºã‚¯ãƒ©ã‚¹
+// ãƒ¡ã‚¤ãƒ³ã«ã—ã‹ä½¿ã†äºˆå®šãªã„ã®ã§é©å½“
 class Light
 {
 private:
 
     GLenum lightNum;
 
-    // “K“–
-    GLfloat lightDiffuse[4] = { 0.7f, 0.7f, 0.7f, 1.0f }; // ŠgUŒõ
-    GLfloat lightAmbient[4] = { 0.1f, 0.1f, 0.1f, 1.0f }; // ŠÂ‹«Œõ
-    GLfloat lightSpecular[4] = { 0.2f, 0.2f, 0.2f, 1.0f }; // ‹¾–ÊŒõ
-    GLfloat* lightPosition; // ˆÊ’u
+    // é©å½“
+    GLfloat lightDiffuse[4] = { 0.7f, 0.7f, 0.7f, 1.0f }; // æ‹¡æ•£å…‰
+    GLfloat lightAmbient[4] = { 0.1f, 0.1f, 0.1f, 1.0f }; // ç’°å¢ƒå…‰
+    GLfloat lightSpecular[4] = { 0.2f, 0.2f, 0.2f, 1.0f }; // é¡é¢å…‰
+    GLfloat* lightPosition; // ä½ç½®
 
 public:
 
-    // ŒõŒ¹ƒIƒ“
+    // å…‰æºã‚ªãƒ³
     void On() const
     {
         glEnable(lightNum);
     }
 
-    // ŒõŒ¹ƒIƒt
+    // å…‰æºã‚ªãƒ•
     void Off() const
     {
         glDisable(lightNum);
@@ -37,7 +37,7 @@ public:
         GLfloat pos[4] = { (GLfloat)posX, (GLfloat)posY, (GLfloat)posZ, 1.0 };
         lightPosition = pos;
 
-        // ƒ‰ƒCƒgİ’è
+        // ãƒ©ã‚¤ãƒˆè¨­å®š
         glLightfv(lightNum, GL_POSITION, lightPosition);
         glLightfv(lightNum, GL_DIFFUSE, lightDiffuse);
         glLightfv(lightNum, GL_AMBIENT, lightAmbient);

@@ -7,45 +7,45 @@
 #include "Error.h"
 using std::vector;
 
-// “x”–@‚©‚çŒÊ“x–@‚É•ÏŠ·‚·‚é
+// åº¦æ•°æ³•ã‹ã‚‰å¼§åº¦æ³•ã«å¤‰æ›ã™ã‚‹
 double ToRad(const double degree)
 {
     constexpr double C = M_PI / 180;
     return degree * C;
 }
-// ŒÊ“x–@‚©‚ç“x”–@‚É•ÏŠ·‚·‚é
+// å¼§åº¦æ³•ã‹ã‚‰åº¦æ•°æ³•ã«å¤‰æ›ã™ã‚‹
 double ToDeg(const double radian)
 {
     constexpr double C = 180 / M_PI;
     return radian * C;
 }
 
-// •½‹Ï’l‚ğæ“¾‚·‚é
+// å¹³å‡å€¤ã‚’å–å¾—ã™ã‚‹
 double GetAverage(const vector<double>& array)
 {
     return std::accumulate(array.begin(), array.end(), 0.0) / array.size();
 }
 
-// 2Ÿ•û’ö® ax^2 + bx + c = 0 ‚Ì 2‰ğx1,x2 ‚ğ‹‚ß‚é
-// ‹•”‰ğ‚Ìê‡ x1 } x2i ‚ğ–‚½‚· x1,x2 ‚ğ‹‚ß‚é
+// 2æ¬¡æ–¹ç¨‹å¼ ax^2 + bx + c = 0 ã® 2è§£x1,x2 ã‚’æ±‚ã‚ã‚‹
+// è™šæ•°è§£ã®å ´åˆ x1 Â± x2i ã‚’æº€ãŸã™ x1,x2 ã‚’æ±‚ã‚ã‚‹
 void SolveQuadraticEquation(const double a, const double b, const double c, double* const x1, double* const x2)
 {
-    // ”»•Ê®
+    // åˆ¤åˆ¥å¼
     double D = b * b - 4 * a * c;
 
-    // ˆÙ‚È‚é2‚Â‚ÌÀ”‰ğ
+    // ç•°ãªã‚‹2ã¤ã®å®Ÿæ•°è§£
     if (D > 0)
     {
         *x1 = (-b + sqrt(D)) / (2 * a);
         *x2 = (-b - sqrt(D)) / (2 * a);
     }
-    // d‰ğ
+    // é‡è§£
     else if (D == 0)
     {
-        // d‰ğ‚Ì‚Æ‚« x = -(b / 2a)
+        // é‡è§£ã®ã¨ã x = -(b / 2a)
         *x1 = *x2 = -b / (2 * a);
     }
-    // ˆÙ‚È‚é2‚Â‚Ì‹•”‰ğ
+    // ç•°ãªã‚‹2ã¤ã®è™šæ•°è§£
     else
     {
         *x1 = -b / (2 * a); // real part
@@ -53,31 +53,31 @@ void SolveQuadraticEquation(const double a, const double b, const double c, doub
     }
 }
 
-// “ñ€ŒW”‚ğ‹‚ß‚é
+// äºŒé …ä¿‚æ•°ã‚’æ±‚ã‚ã‚‹
 constexpr double Binomial(const int n, const int k)
 {
     return Factorial(n) / (Factorial(k) * Factorial(n - k));
 }
 
-// ŠKæ’l‚ğŒvZ‚·‚é
+// éšä¹—å€¤ã‚’è¨ˆç®—ã™ã‚‹
 constexpr int Factorial(const int n)
 {
     return (n == 0) ? 1 : n * Factorial(n - 1);
 }
 
-// ƒo[ƒ“ƒXƒ^ƒCƒ“Šî’êŠÖ”‚ğ‹‚ß‚é
+// ãƒãƒ¼ãƒ³ã‚¹ã‚¿ã‚¤ãƒ³åŸºåº•é–¢æ•°ã‚’æ±‚ã‚ã‚‹
 double CalcBernsteinFunc(const unsigned int i, const unsigned int N, const double t)
 {
     return Binomial(N, i) * pow(t, i) * pow(1 - t, N - i);
 }
 
-// 1ŠK”÷•ª—pƒo[ƒ“ƒXƒ^ƒCƒ“Šî’êŠÖ”‚ğ‹‚ß‚é
+// 1éšå¾®åˆ†ç”¨ãƒãƒ¼ãƒ³ã‚¹ã‚¿ã‚¤ãƒ³åŸºåº•é–¢æ•°ã‚’æ±‚ã‚ã‚‹
 double Calc1DiffBernsteinFunc(const unsigned int i, const unsigned int N, const double t)
 {
     return Binomial(N, i) * (i * pow(t, i - 1) * pow(1 - t, N - i) - (N - i) * pow(t, i) * pow(1 - t, N - i - 1));
 }
 
-// 2ŠK”÷•ª—pƒo[ƒ“ƒXƒ^ƒCƒ“Šî’êŠÖ”‚ğ‹‚ß‚é
+// 2éšå¾®åˆ†ç”¨ãƒãƒ¼ãƒ³ã‚¹ã‚¿ã‚¤ãƒ³åŸºåº•é–¢æ•°ã‚’æ±‚ã‚ã‚‹
 double Calc2DiffBernsteinFunc(const unsigned int i, const unsigned int N, const double t)
 {
     double temp_left = i * ((i - 1) * pow(t, i - 2) * pow(1 - t, N - i)
@@ -89,12 +89,12 @@ double Calc2DiffBernsteinFunc(const unsigned int i, const unsigned int N, const 
     return Binomial(N, i) * (temp_left - temp_right);
 }
 
-// BƒXƒvƒ‰ƒCƒ“Šî’êŠÖ”’l‚ğ‹‚ß‚é
+// Bã‚¹ãƒ—ãƒ©ã‚¤ãƒ³åŸºåº•é–¢æ•°å€¤ã‚’æ±‚ã‚ã‚‹
 double CalcBsplineFunc(const unsigned int i, const unsigned int M, const double t, const double* const knot)
 {
     if (M == 1)
     {
-        // ’[‚Á‚±‚Í“Á•Êˆµ‚¢
+        // ç«¯ã£ã“ã¯ç‰¹åˆ¥æ‰±ã„
         if (fabs(t - knot[0]) < 1e-6)
         {
             if (knot[i] <= t && t < knot[i + 1]) return 1.0;
@@ -110,7 +110,7 @@ double CalcBsplineFunc(const unsigned int i, const unsigned int M, const double 
     {
         double temp_left = 0.0 , temp_right = 0.0;
 
-        // 0ƒfƒBƒoƒCƒh‚É‹C‚ğ•t‚¯‚é
+        // 0ãƒ‡ã‚£ãƒã‚¤ãƒ‰ã«æ°—ã‚’ä»˜ã‘ã‚‹
         if (fabs(knot[i + M - 1] - knot[i]) > 1e-6)
             temp_left = ((t - knot[i]) / (knot[i + M - 1] - knot[i])) * CalcBsplineFunc(i, M - 1, t, knot);
 
@@ -121,12 +121,12 @@ double CalcBsplineFunc(const unsigned int i, const unsigned int M, const double 
     }
 }
 
-// 1ŠK”÷•ª—pBƒXƒvƒ‰ƒCƒ“Šî’êŠÖ”’l‚ğ‹‚ß‚é
+// 1éšå¾®åˆ†ç”¨Bã‚¹ãƒ—ãƒ©ã‚¤ãƒ³åŸºåº•é–¢æ•°å€¤ã‚’æ±‚ã‚ã‚‹
 double Calc1DiffBsplineFunc(const unsigned int i, const unsigned int M, const double t, const double* const knot)
 {
     if (M == 1)
     {
-        // ’[‚Á‚±‚Í“Á•Êˆµ‚¢
+        // ç«¯ã£ã“ã¯ç‰¹åˆ¥æ‰±ã„
         if (fabs(t - knot[0]) < 1e-6)
         {
             if (knot[i] <= t && t < knot[i + 1]) return 1.0;
@@ -142,7 +142,7 @@ double Calc1DiffBsplineFunc(const unsigned int i, const unsigned int M, const do
     {
         double temp_left = 0.0, temp_right = 0.0;
 
-        // 0ƒfƒBƒoƒCƒh‚É‹C‚ğ•t‚¯‚é
+        // 0ãƒ‡ã‚£ãƒã‚¤ãƒ‰ã«æ°—ã‚’ä»˜ã‘ã‚‹
         if (fabs(knot[i + M - 1] - knot[i]) > 1e-6)
             temp_left = (1 / (knot[i + M - 1] - knot[i])) * CalcBsplineFunc(i, M - 1, t, knot);
 
@@ -153,12 +153,12 @@ double Calc1DiffBsplineFunc(const unsigned int i, const unsigned int M, const do
     }
 }
 
-// 2ŠK”÷•ª—pBƒXƒvƒ‰ƒCƒ“Šî’êŠÖ”’l‚ğ‹‚ß‚é
+// 2éšå¾®åˆ†ç”¨Bã‚¹ãƒ—ãƒ©ã‚¤ãƒ³åŸºåº•é–¢æ•°å€¤ã‚’æ±‚ã‚ã‚‹
 double Calc2DiffBsplineFunc(const unsigned int i, const unsigned int M, const double t, const double* const knot)
 {
     if (M == 1)
     {
-        // ’[‚Á‚±‚Í“Á•Êˆµ‚¢
+        // ç«¯ã£ã“ã¯ç‰¹åˆ¥æ‰±ã„
         if (fabs(t - knot[0]) < 1e-6)
         {
             if (knot[i] <= t && t < knot[i + 1]) return 1.0;
@@ -174,7 +174,7 @@ double Calc2DiffBsplineFunc(const unsigned int i, const unsigned int M, const do
     {
         double temp_left = 0.0, temp_right = 0.0;
 
-        // 0ƒfƒBƒoƒCƒh‚É‹C‚ğ•t‚¯‚é
+        // 0ãƒ‡ã‚£ãƒã‚¤ãƒ‰ã«æ°—ã‚’ä»˜ã‘ã‚‹
         if (fabs(knot[i + M - 1] - knot[i]) > 1e-6)
             temp_left = (1 / (knot[i + M - 1] - knot[i])) * Calc1DiffBsplineFunc(i, M - 1, t, knot);
 
@@ -185,44 +185,44 @@ double Calc2DiffBsplineFunc(const unsigned int i, const unsigned int M, const do
     }
 }
 
-// ’Ê‰ß“_‚ª³‚µ‚­ƒZƒbƒg‚³‚ê‚Ä‚¢‚é‚©
-// U•ûŒü/V•ûŒü‚Ì“_‚Ì”‚ª‚»‚ê‚¼‚ê“™‚µ‚¢‚©‚ğƒ`ƒFƒbƒN‚·‚é
+// é€šéç‚¹ãŒæ­£ã—ãã‚»ãƒƒãƒˆã•ã‚Œã¦ã„ã‚‹ã‹
+// Uæ–¹å‘/Væ–¹å‘ã®ç‚¹ã®æ•°ãŒãã‚Œãã‚Œç­‰ã—ã„ã‹ã‚’ãƒã‚§ãƒƒã‚¯ã™ã‚‹
 bool IsPassingPntsSetCorrectly(const vector<vector<Vector3d>>& pnts)
 {
     if (pnts.size() < 1)
         return false;
 
-    // “à‘¤(u•ûŒü)‚¾‚¯’²‚×‚ê‚Î‚æ‚¢
+    // å†…å´(uæ–¹å‘)ã ã‘èª¿ã¹ã‚Œã°ã‚ˆã„
     for (const auto& u_pnts : pnts)
     {
         if (pnts[0].size() != u_pnts.size())
             return false;
     }
 
-    // ‚·‚×‚Ä“¯‚¶ŒÂ”‚È‚ç³‚µ‚¢(n~mŒÂ)
+    // ã™ã¹ã¦åŒã˜å€‹æ•°ãªã‚‰æ­£ã—ã„(nÃ—må€‹)
     return true;
 }
 
-// ’Ê‰ß“_‚ÆŠK”‚©‚çƒmƒbƒgƒxƒNƒgƒ‹‚ğZo‚·‚é
+// é€šéç‚¹ã¨éšæ•°ã‹ã‚‰ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«ã‚’ç®—å‡ºã™ã‚‹
 void CalcKnotVectorByPassingPnts(const vector<Vector3d>& pnts, const int ord, vector<double>* knot)
 {
     if (knot == nullptr)
     {
-        Error::ShowAndExit("ƒkƒ‹ƒ|ƒCƒ“ƒ^");
+        Error::ShowAndExit("ãƒŒãƒ«ãƒã‚¤ãƒ³ã‚¿");
         return;
     }
 
-    // ƒmƒbƒg—ñƒTƒCƒY‚Í§Œä“_”‚ÆŠK”‚Ì˜a
+    // ãƒãƒƒãƒˆåˆ—ã‚µã‚¤ã‚ºã¯åˆ¶å¾¡ç‚¹æ•°ã¨éšæ•°ã®å’Œ
     knot->resize((pnts.size() + ord - 2) + ord);
 
-    vector<double> seg_dist; // ƒZƒOƒƒ“ƒgŠÔ‚Ì‹——£
+    vector<double> seg_dist; // ã‚»ã‚°ãƒ¡ãƒ³ãƒˆé–“ã®è·é›¢
     seg_dist.resize(pnts.size() - 1);
 
     double minParam = 0.0;
     double maxParam = 1.0;
     double paramRange = fabs(maxParam - minParam);
 
-    // ’Ê‰ß“_ŠÔ‚Ì‹——£‚Ì‘˜a
+    // é€šéç‚¹é–“ã®è·é›¢ã®ç·å’Œ
     double sum = 0.0;
     for (size_t i = 0, n = pnts.size(); i < n - 1; ++i)
     {
@@ -230,40 +230,40 @@ void CalcKnotVectorByPassingPnts(const vector<Vector3d>& pnts, const int ord, ve
         sum += seg_dist[i];
     }
 
-    // ƒmƒbƒgŠÔŠu‚ÌŠ„‡‚Í’Ê‰ß“_ŠÔ‚Ì‹——£‚É”ä—á‚³‚¹‚é
+    // ãƒãƒƒãƒˆé–“éš”ã®å‰²åˆã¯é€šéç‚¹é–“ã®è·é›¢ã«æ¯”ä¾‹ã•ã›ã‚‹
     for (size_t i = 0, n = knot->size(); i < n; ++i)
     {
-      if (i < (unsigned)ord) // Å‰‚ÍŠK”•ªd‚Ë‚é
+      if (i < (unsigned)ord) // æœ€åˆã¯éšæ•°åˆ†é‡ã­ã‚‹
             (*knot)[i] = minParam;
-        else if (i < knot->size() - ord) // ‹——£‚É”ä—á
+        else if (i < knot->size() - ord) // è·é›¢ã«æ¯”ä¾‹
         {
             (*knot)[i] = (*knot)[i - 1] + (seg_dist[i - ord] / sum) * paramRange;
         }
-        else // ÅŒã‚àŠK”•ªd‚Ë‚é
+        else // æœ€å¾Œã‚‚éšæ•°åˆ†é‡ã­ã‚‹
             (*knot)[i] = maxParam;
     }
 }
 
-// •¡”‚Ìƒmƒbƒg—ñ‚ğ³‹K‰»‚·‚é
+// è¤‡æ•°ã®ãƒãƒƒãƒˆåˆ—ã‚’æ­£è¦åŒ–ã™ã‚‹
 void NormalizeKnotVector(const vector<vector<double>>& knot_array, const int ord, vector<double>* knot_normal)
 {
     if (knot_normal == nullptr)
     {
-        Error::ShowAndExit("ƒkƒ‹ƒ|ƒCƒ“ƒ^");
+        Error::ShowAndExit("ãƒŒãƒ«ãƒã‚¤ãƒ³ã‚¿");
         return;
     }
     if (knot_array.size() < 1)
     {
-        Error::ShowAndExit("‹ów’è");
+        Error::ShowAndExit("ç©ºæŒ‡å®š");
         return;
     }
 
-    // ³‹K‰»‘O‚Í0”Ô–Ú‚Ìƒmƒbƒg—ñ‚Å‰Šú‰»‚µ‚Ä‚¨‚­
+    // æ­£è¦åŒ–å‰ã¯0ç•ªç›®ã®ãƒãƒƒãƒˆåˆ—ã§åˆæœŸåŒ–ã—ã¦ãŠã
     knot_normal->resize(knot_array[0].size());
     for (size_t i = 0, n = knot_array[0].size(); i < n; ++i)
         (*knot_normal)[i] = knot_array[0][i];
 
-    // •K—v‚ÈŒÂŠ(ŠK”–³‹)‚ğ³‹K‰»‚·‚é
+    // å¿…è¦ãªå€‹æ‰€(éšæ•°ç„¡è¦–)ã‚’æ­£è¦åŒ–ã™ã‚‹
     for (size_t col = ord, n = knot_array[0].size(); col < n - ord; ++col)
     {
         double sum = 0.0;
@@ -271,24 +271,24 @@ void NormalizeKnotVector(const vector<vector<double>>& knot_array, const int ord
         for (size_t row = 0, n = knot_array.size(); row < n; ++row)
             sum += knot_array[row][col];
 
-        // •½‹Ï
+        // å¹³å‡
         (*knot_normal)[col] = sum / knot_array.size();
     }
 }
 
-// ƒmƒbƒgƒxƒNƒgƒ‹‚ğæ“¾‚·‚é
+// ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«ã‚’å–å¾—ã™ã‚‹
 void CalcKnotVectorByPassingPnts(const vector<vector<Vector3d>>& pnts, const int ordU, const int ordV,
     vector<double>* knotU, vector<double>* knotV)
 {
-    // Še•ûŒü‚Ì’Ê‰ß“_”
+    // å„æ–¹å‘ã®é€šéç‚¹æ•°
     int passPntsCntU, passPntsCntV;
     passPntsCntU = (int)pnts[0].size();
     passPntsCntV = (int)pnts.size();
 
-    // Še•ûŒü‚Ì’Ê‰ß“_‚©‚çæ“¾‚·‚éƒmƒbƒg—ñŒQ
+    // å„æ–¹å‘ã®é€šéç‚¹ã‹ã‚‰å–å¾—ã™ã‚‹ãƒãƒƒãƒˆåˆ—ç¾¤
     vector<vector<double>> new_knotsU(passPntsCntV), new_knotsV(passPntsCntU);
 
-    // U•ûŒüƒmƒbƒgƒxƒNƒgƒ‹‚ÌŒˆ’è
+    // Uæ–¹å‘ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«ã®æ±ºå®š
     {
         for (int i = 0; i < passPntsCntV; ++i)
         {
@@ -301,10 +301,10 @@ void CalcKnotVectorByPassingPnts(const vector<vector<Vector3d>>& pnts, const int
             CalcKnotVectorByPassingPnts(pntsU, ordU, &knot);
             new_knotsU[i] = knot;
         }
-        // ³‹K‰»
+        // æ­£è¦åŒ–
         NormalizeKnotVector(new_knotsU, ordU, knotU);
     }
-    // V•ûŒüƒmƒbƒgƒxƒNƒgƒ‹‚ÌŒˆ’è
+    // Væ–¹å‘ãƒãƒƒãƒˆãƒ™ã‚¯ãƒˆãƒ«ã®æ±ºå®š
     {
         for (int i = 0; i < passPntsCntU; ++i)
         {
@@ -317,45 +317,45 @@ void CalcKnotVectorByPassingPnts(const vector<vector<Vector3d>>& pnts, const int
             CalcKnotVectorByPassingPnts(pntsV, ordV, &knot);
             new_knotsV[i] = knot;
         }
-        // ³‹K‰»
+        // æ­£è¦åŒ–
         NormalizeKnotVector(new_knotsV, ordV, knotV);
     }
 }
 
-// 1•ûŒü‚Ì“_ŒQ‚©‚ç‚»‚ê‚ç‚ğ’Ê‚é‹Èü‚Ì§Œä“_‚ğZo‚·‚é
+// 1æ–¹å‘ã®ç‚¹ç¾¤ã‹ã‚‰ãã‚Œã‚‰ã‚’é€šã‚‹æ›²ç·šã®åˆ¶å¾¡ç‚¹ã‚’ç®—å‡ºã™ã‚‹
 /*
-’Ê‰ß“_ğŒ‚ÆI’[ğŒ‚©‚ç˜A—§•û’ö®‚ğì¬‚µ‰ğ‚­
-‚½‚¾‚µ, ’Ê‰ß“_”n §Œä“_”qn(n + ŠK” - 2) ƒmƒbƒg—ñƒTƒCƒYkn ‚Æ‚·‚é
+é€šéç‚¹æ¡ä»¶ã¨çµ‚ç«¯æ¡ä»¶ã‹ã‚‰é€£ç«‹æ–¹ç¨‹å¼ã‚’ä½œæˆã—è§£ã
+ãŸã ã—, é€šéç‚¹æ•°n åˆ¶å¾¡ç‚¹æ•°qn(n + éšæ•° - 2) ãƒãƒƒãƒˆåˆ—ã‚µã‚¤ã‚ºkn ã¨ã™ã‚‹
 
-[’Ê‰ß“_ğŒ]
-<’[“_ğŒ>
+[é€šéç‚¹æ¡ä»¶]
+<ç«¯ç‚¹æ¡ä»¶>
 P(k_0) = Q_0
 P(k_kn-1) = Q_qn-1
-<‚»‚êˆÈŠO‚Ì’Ê‰ß“_ğŒ>
-P(k_ŠK”) = Q_1
-P(k_ŠK”+1) = Q_2
+<ãã‚Œä»¥å¤–ã®é€šéç‚¹æ¡ä»¶>
+P(k_éšæ•°) = Q_1
+P(k_éšæ•°+1) = Q_2
 ...
-P(k_kn-ŠK”-1) = Q_qn-2
+P(k_kn-éšæ•°-1) = Q_qn-2
 
-[I’[ğŒ]
-P''(k_ŠK”-1) = 0
-P''(k_kn-ŠK”-2) = 0
+[çµ‚ç«¯æ¡ä»¶]
+P''(k_éšæ•°-1) = 0
+P''(k_kn-éšæ•°-2) = 0
 */
 void CalcControlPointsByPassingPnts(const vector<Vector3d>& pnts, const int ord, const vector<double>& knot, vector<ControlPoint>* ctrlp)
 {
-    // Še•ûŒü‚Ì’Ê‰ß“_”
+    // å„æ–¹å‘ã®é€šéç‚¹æ•°
     int passPntsCnt = (int)pnts.size();
-    // V‚µ‚¢§Œä“_”
+    // æ–°ã—ã„åˆ¶å¾¡ç‚¹æ•°
     int new_ncpnt = (passPntsCnt - 1) + (ord - 1);
 
-    // ’Ê‰ß“_ƒxƒNƒgƒ‹(˜A—§•û’ö®—p)
+    // é€šéç‚¹ãƒ™ã‚¯ãƒˆãƒ«(é€£ç«‹æ–¹ç¨‹å¼ç”¨)
     vector<Vector3d> P_array;
-    vector<double> P_array_x, P_array_y, P_array_z; // Ë‰e”Å
+    vector<double> P_array_x, P_array_y, P_array_z; // å°„å½±ç‰ˆ
 
-                                                    // Šî’êŠÖ”s—ñ
+                                                    // åŸºåº•é–¢æ•°è¡Œåˆ—
     double* N_matrix;
 
-    // 1. ˜A—§•û’ö®‚ğ‰ğ‚­—p‚Ì’Ê‰ß“_ƒxƒNƒgƒ‹ ì¬
+    // 1. é€£ç«‹æ–¹ç¨‹å¼ã‚’è§£ãç”¨ã®é€šéç‚¹ãƒ™ã‚¯ãƒˆãƒ« ä½œæˆ
     {
         P_array.push_back(pnts[0]);
         P_array.push_back(Vector3d::Zero());
@@ -364,7 +364,7 @@ void CalcControlPointsByPassingPnts(const vector<Vector3d>& pnts, const int ord,
         P_array.push_back(Vector3d::Zero());
         P_array.push_back(pnts[passPntsCnt - 1]);
 
-        // ŒvZ—p‚ÉŠe—v‘f‚ÉË‰e
+        // è¨ˆç®—ç”¨ã«å„è¦ç´ ã«å°„å½±
         for (auto it = P_array.begin(), end = P_array.end(); it != end; ++it)
         {
             P_array_x.push_back((*it).X);
@@ -373,11 +373,11 @@ void CalcControlPointsByPassingPnts(const vector<Vector3d>& pnts, const int ord,
         }
     }
 
-    // 2. Šî’êŠÖ”—ps—ñ ì¬
+    // 2. åŸºåº•é–¢æ•°ç”¨è¡Œåˆ— ä½œæˆ
     {
         N_matrix = new double[new_ncpnt * new_ncpnt];
 
-        // —ës—ñ‚É‰Šú‰»
+        // é›¶è¡Œåˆ—ã«åˆæœŸåŒ–
         for (int i = 0; i < new_ncpnt; i++)
         {
             for (int j = 0; j < new_ncpnt; j++)
@@ -386,12 +386,12 @@ void CalcControlPointsByPassingPnts(const vector<Vector3d>& pnts, const int ord,
 
         for (int i = 0; i < new_ncpnt; i++)
         {
-            if (i == 0) // I’[ğŒ ‘O
+            if (i == 0) // çµ‚ç«¯æ¡ä»¶ å‰
             {
-                // ˆê”Ô¶‚Ì‚İ1
+                // ä¸€ç•ªå·¦ã®ã¿1
                 N_matrix[i * new_ncpnt + 0] = 1;
             }
-            else if (i == 1) // 2ŠK”÷•ªI’[ğŒ ‘O
+            else if (i == 1) // 2éšå¾®åˆ†çµ‚ç«¯æ¡ä»¶ å‰
             {
                 for (int j = i - 1; j < ord - 1; ++j)
                     N_matrix[i * new_ncpnt + j] = Calc2DiffBsplineFunc(j, ord, knot[ord - 1], &(const_cast<vector<double>&>(knot))[0]);
@@ -401,25 +401,25 @@ void CalcControlPointsByPassingPnts(const vector<Vector3d>& pnts, const int ord,
                 for (int j = i - 1; j < (ord - 1) + (i - 1); ++j)
                     N_matrix[i * new_ncpnt + j] = CalcBsplineFunc(j, ord, knot[(ord - 1) + (i - 1)], &(const_cast<vector<double>&>(knot))[0]);
             }
-            else if (i == new_ncpnt - 2) // 2ŠK”÷•ªI’[ğŒ Œã
+            else if (i == new_ncpnt - 2) // 2éšå¾®åˆ†çµ‚ç«¯æ¡ä»¶ å¾Œ
             {
                 for (int j = i - 1; j < (ord - 1) + (i - 1); ++j)
                     N_matrix[i * new_ncpnt + j] = Calc2DiffBsplineFunc(j, ord, knot[(ord - 1) + (i - 1)], &(const_cast<vector<double>&>(knot))[0]);
             }
-            else // I’[ğŒ Œã
+            else // çµ‚ç«¯æ¡ä»¶ å¾Œ
             {
-                // ˆê”Ô‰E‚Ì‚İ1
+                // ä¸€ç•ªå³ã®ã¿1
                 N_matrix[i * new_ncpnt + (new_ncpnt - 1)] = 1;
             }
         }
     }
 
-    // 3. V‚µ‚¢§Œä“_‚ğ‹‚ß‚é
+    // 3. æ–°ã—ã„åˆ¶å¾¡ç‚¹ã‚’æ±‚ã‚ã‚‹
     {
         ctrlp->resize(new_ncpnt);
         vector<double> new_cps_X, new_cps_Y, new_cps_Z;
 
-        // ˜A—§•û’ö®‚ğ‰ğ‚­
+        // é€£ç«‹æ–¹ç¨‹å¼ã‚’è§£ã
         new_cps_X = LUDecomposition(new_ncpnt, N_matrix, &P_array_x[0]);
         new_cps_Y = LUDecomposition(new_ncpnt, N_matrix, &P_array_y[0]);
         new_cps_Z = LUDecomposition(new_ncpnt, N_matrix, &P_array_z[0]);
@@ -428,11 +428,11 @@ void CalcControlPointsByPassingPnts(const vector<Vector3d>& pnts, const int ord,
             (*ctrlp)[i] = ControlPoint(new_cps_X[i], new_cps_Y[i], new_cps_Z[i]);
     }
 
-    // ‰ğ•ú
+    // è§£æ”¾
     delete N_matrix;
 }
 
-// 3“_‚©‚ç¬‚éƒ|ƒŠƒSƒ“‚Ì’PˆÊ‰»Ï‚İ–Ê–@ü‚ğæ“¾‚·‚é
+// 3ç‚¹ã‹ã‚‰æˆã‚‹ãƒãƒªã‚´ãƒ³ã®å˜ä½åŒ–æ¸ˆã¿é¢æ³•ç·šã‚’å–å¾—ã™ã‚‹
 Vector3d CalcPolygonNormal(const Vector3d& v0, const Vector3d& v1, const Vector3d& v2)
 {
     Vector3d vec01 = v1 - v0;
@@ -441,10 +441,10 @@ Vector3d CalcPolygonNormal(const Vector3d& v0, const Vector3d& v1, const Vector3
     return (vec01 * vec02).Normalize();
 }
 
-// 2D:w’èÀ•W’†S‚Éw’èrad‰ñ“]‚³‚¹‚é
+// 2D:æŒ‡å®šåº§æ¨™ä¸­å¿ƒã«æŒ‡å®šradå›è»¢ã•ã›ã‚‹
 void RotateCoord2DAroundCenter(double* const coord_2d, const double* const center, const double rad)
 {
-    // 2 ~ 2‚Ì‰ñ“]s—ñ
+    // 2 Ã— 2ã®å›è»¢è¡Œåˆ—
     double rotate_mat[2 * 2] =
     {
         cos(rad), -sin(rad),
@@ -458,29 +458,29 @@ void RotateCoord2DAroundCenter(double* const coord_2d, const double* const cente
 
     MatrixMultiply(2, 2, 1, rotate_mat, coord_2d, temp);
 
-    // Œ‹‰Ê‘ã“ü
+    // çµæœä»£å…¥
     coord_2d[0] = temp[0] + center[0];
     coord_2d[1] = temp[1] + center[1];
 }
 
-// 2D:Œ´“_’†S‚Éw’èrad‰ñ“]‚³‚¹‚é
+// 2D:åŸç‚¹ä¸­å¿ƒã«æŒ‡å®šradå›è»¢ã•ã›ã‚‹
 void RotateCoord2DAroundOrigin(double* const coord_2d, const double rad)
 {
-    double origin[2] = { 0, 0 }; // Œ´“_
+    double origin[2] = { 0, 0 }; // åŸç‚¹
     RotateCoord2DAroundCenter(coord_2d, origin, rad);
 }
 
-// LU•ª‰ğ‚Å˜A—§•û’ö®‚ğ‰ğ‚­
+// LUåˆ†è§£ã§é€£ç«‹æ–¹ç¨‹å¼ã‚’è§£ã
 std::vector<double> LUDecomposition(const int size, const double* const aMatrix, const double* const b)
 {
-    int N = size; // ‰ğ‚­”z—ñ‚ÌƒTƒCƒY
+    int N = size; // è§£ãé…åˆ—ã®ã‚µã‚¤ã‚º
 
-    // aMatrix‚Ì’lƒRƒs[‚ğì¬
+    // aMatrixã®å€¤ã‚³ãƒ”ãƒ¼ã‚’ä½œæˆ
     double* aMatCopy = new double[N * N];
     for (int i = 0; i < N * N; i++)
         aMatCopy[i] = aMatrix[i];
 
-    // Ls—ñ(—ës—ñ‚É‰Šú‰»)
+    // Lè¡Œåˆ—(é›¶è¡Œåˆ—ã«åˆæœŸåŒ–)
     double **lMatrix = new double*[N];
     for (int i = 0; i < N; i++)
         lMatrix[i] = new double[N];
@@ -491,7 +491,7 @@ std::vector<double> LUDecomposition(const int size, const double* const aMatrix,
             lMatrix[i][j] = 0;
     }
 
-    // Us—ñ(‘ÎŠp—v‘f‚ğ1‚É‰Šú‰»)
+    // Uè¡Œåˆ—(å¯¾è§’è¦ç´ ã‚’1ã«åˆæœŸåŒ–)
     double **uMatrix = new double*[N];
     for (int i = 0; i < N; i++)
         uMatrix[i] = new double[N];
@@ -502,7 +502,7 @@ std::vector<double> LUDecomposition(const int size, const double* const aMatrix,
             uMatrix[i][j] = (i == j) ? 1 : 0;
     }
 
-    // ŒvZ—p‚Ìƒoƒbƒtƒ@
+    // è¨ˆç®—ç”¨ã®ãƒãƒƒãƒ•ã‚¡
     double **buffer = new double*[N];
     for (int i = 0; i < N; i++)
         buffer[i] = new double[N];
@@ -513,14 +513,14 @@ std::vector<double> LUDecomposition(const int size, const double* const aMatrix,
             buffer[i][j] = 0;
     }
 
-    // LU•ª‰ğŠJn
+    // LUåˆ†è§£é–‹å§‹
     for (int i = 0; i < N; i++)
     {
         int n = N - i - 1;
 
         double l0 = lMatrix[i][i] = aMatCopy[0];
 
-        // l1¬•ª‚ğƒRƒs[
+        // l1æˆåˆ†ã‚’ã‚³ãƒ”ãƒ¼
         double *l1;
         l1 = new double[n];
         for (int j = 0; j < n; j++)
@@ -528,7 +528,7 @@ std::vector<double> LUDecomposition(const int size, const double* const aMatrix,
             lMatrix[j + i + 1][i] = l1[j] = aMatCopy[(j + 1) * N + 0];
         }
 
-        // u1^double¬•ª‚ğƒRƒs[
+        // u1^doubleæˆåˆ†ã‚’ã‚³ãƒ”ãƒ¼
         double *u1;
         u1 = new double[n];
         for (int j = 0; j < n; j++)
@@ -536,7 +536,7 @@ std::vector<double> LUDecomposition(const int size, const double* const aMatrix,
             uMatrix[i][j + i + 1] = u1[j] = aMatCopy[0 * N + (j + 1)] / l0;
         }
 
-        // lu‚ğ‹‚ß‚é
+        // luã‚’æ±‚ã‚ã‚‹
         for (int j = 0; j < n; j++)
         {
             for (int k = 0; k < n; k++)
@@ -548,7 +548,7 @@ std::vector<double> LUDecomposition(const int size, const double* const aMatrix,
         delete[] l1;
         delete[] u1;
 
-        // A1‚ğ‹‚ß‚é
+        // A1ã‚’æ±‚ã‚ã‚‹
         double **A1 = new double*[n];
         for (int i = 0; i < n; i++)
             A1[i] = new double[n];
@@ -559,7 +559,7 @@ std::vector<double> LUDecomposition(const int size, const double* const aMatrix,
                 A1[j][k] = aMatCopy[(j + 1) * N + (k + 1)] - buffer[j][k];
         }
 
-        // A1‚ğV‚µ‚¢aMatrix‚Æ‚µ‚Ä—˜—p‚·‚é
+        // A1ã‚’æ–°ã—ã„aMatrixã¨ã—ã¦åˆ©ç”¨ã™ã‚‹
         for (int i = 0; i < n; i++)
         {
             for (int j = 0; j < n; j++)
@@ -571,7 +571,7 @@ std::vector<double> LUDecomposition(const int size, const double* const aMatrix,
         delete[] A1;
     }
 
-    // LUs—ñ‚ğg‚Á‚Ä˜A—§•û’ö®‚ğ‰ğ‚­
+    // LUè¡Œåˆ—ã‚’ä½¿ã£ã¦é€£ç«‹æ–¹ç¨‹å¼ã‚’è§£ã
     double *y = new double[N];
     for (int i = 0; i < N; i++)
     {
@@ -583,7 +583,7 @@ std::vector<double> LUDecomposition(const int size, const double* const aMatrix,
         y[i] = (b[i] - sum) / lMatrix[i][i];
     }
 
-    std::vector<double> x; // ‰ğƒxƒNƒgƒ‹
+    std::vector<double> x; // è§£ãƒ™ã‚¯ãƒˆãƒ«
     x.resize(N);
     for (int i = N - 1; i >= 0; i--)
     {
