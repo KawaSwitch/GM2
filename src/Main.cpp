@@ -3,9 +3,13 @@
 
 #include "Callback.h"
 #include "Initialize.h"
+#include <cstring>
 
 int main(int argc, char* argv[])
 {
+  // ウィンドウタイトル
+  char winTitle[256] = "Geometric Modeling";
+  
     // gl初期化
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_ALPHA | GLUT_DOUBLE | GLUT_DEPTH);
@@ -13,7 +17,14 @@ int main(int argc, char* argv[])
     // ウィンドウ設定
     glutInitWindowSize(DEF_WIN_X, DEF_WIN_Y);
     glutInitWindowPosition(90, 20);
-    glutCreateWindow("Geometric Modeling g++ fork ver.");
+
+    // タイトル設定
+    if (argc == 1)
+      glutCreateWindow(winTitle);
+    else if (argc == 2)
+      glutCreateWindow(strcat(strcat(winTitle, " "), argv[1]));
+    else
+      perror("main");
 
     // 各種コールバック
     glutDisplayFunc(Display);
