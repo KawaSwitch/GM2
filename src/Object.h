@@ -11,27 +11,27 @@
 
 class Scene;
 
-// ¥ª¥Ö¥¸¥§¥¯¥È´ğÄì¥¯¥é¥¹
+// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆåŸºåº•ã‚¯ãƒ©ã‚¹
 class Object
 {
 private:
 
     bool _deleteFlag = false;
-    bool _isSelected = false; // ÁªÂò¾õÂÖ¤Ë¤¢¤ë¤«
-    unsigned int _number; // ¼±ÊÌÈÖ¹æ
-    std::string _name;
+    bool _isSelected = false; // é¸æŠçŠ¶æ…‹ã«ã‚ã‚‹ã‹
+    unsigned int _number; // è­˜åˆ¥ç•ªå·
 
 protected:
 
-    bool _isUseVBO = false; // VBO¤ò»È¤¦¤«
-    bool _isUseIBO = false; // IBO¤ò»È¤¦¤«
+    bool _isUseVBO = false; // VBOã‚’ä½¿ã†ã‹
+    bool _isUseIBO = false; // IBOã‚’ä½¿ã†ã‹
     mutable GLuint _vbo, _ibo;
 
-    GLdouble _color[4];  // ¿§
-    vector<ControlPoint> _ctrlp; // À©¸æÅÀ
-    double _resolution; // ²òÁüÅÙ
+    GLdouble _color[4];  // è‰²
+    std::string _name; // åå‰
+    vector<ControlPoint> _ctrlp; // åˆ¶å¾¡ç‚¹
+    double _resolution; // è§£åƒåº¦
 
-    // »öÁ°ÉÁ²è
+    // äº‹å‰æç”»
     virtual void PreDraw() const = 0;
     virtual void DrawCPsInternal() const = 0;
     virtual void DrawFirstDiffVectorsInternal() const { };
@@ -49,8 +49,8 @@ protected:
     virtual void ModifyIBO() const { };
     virtual void DrawIBO() const { };
     
-    // ¥Ç¥£¥¹¥×¥ì¥¤¥ê¥¹¥È
-    mutable int _displayList = 0; // ¥ª¥Ö¥¸¥§¥¯¥ÈÍÑ
+    // ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆ
+    mutable int _displayList = 0; // ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç”¨
     mutable int _ctrlp_displayList = 0;
     mutable int _fd_displayList = 0;
     mutable int _sd_displayList = 0;
@@ -58,18 +58,18 @@ protected:
     mutable int _nor_displayList = 0;
     mutable int _cur_displayList = 0;
 
-    // É½¼¨·Ï¥Ö¡¼¥ê¥¢¥ó
-    bool _isDrawCtrlp = false; // À©¸æÅÀ
-    bool _isDrawFirstDiff = false; // ÀÜÀş
-    bool _isDrawSecondDiff = false; // 2³¬ÈùÊ¬
-    bool _isDrawBox = false; // ¥ß¥Ë¥Ş¥¯¥¹¥Ü¥Ã¥¯¥¹
-    bool _isDrawNormal = false; // Ë¡Àş
-    bool _isDrawCurvature = false; // ¶ÊÎ¨
+    // è¡¨ç¤ºç³»ãƒ–ãƒ¼ãƒªã‚¢ãƒ³
+    bool _isDrawCtrlp = false; // åˆ¶å¾¡ç‚¹
+    bool _isDrawFirstDiff = false; // æ¥ç·š
+    bool _isDrawSecondDiff = false; // 2éšå¾®åˆ†
+    bool _isDrawBox = false; // ãƒŸãƒ‹ãƒã‚¯ã‚¹ãƒœãƒƒã‚¯ã‚¹
+    bool _isDrawNormal = false; // æ³•ç·š
+    bool _isDrawCurvature = false; // æ›²ç‡
 
-    // É½¼¨·Ï¤Î¼±ÊÌ»Ò¤ò¤¹¤Ù¤Æ¥¯¥ê¥¢¤¹¤ë
+    // è¡¨ç¤ºç³»ã®è­˜åˆ¥å­ã‚’ã™ã¹ã¦ã‚¯ãƒªã‚¢ã™ã‚‹
     void ClearAllShowingIds()
     {
-      // ¥Ç¥£¥¹¥×¥ì¥¤¥ê¥¹¥ÈÇË´ş
+      // ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆç ´æ£„
       glDeleteLists(_displayList, 1);
       glDeleteLists(_ctrlp_displayList, 1);
       glDeleteLists(_fd_displayList, 1);
@@ -77,17 +77,17 @@ protected:
       glDeleteLists(_box_displayList, 1);
       glDeleteLists(_cur_displayList, 1);
 
-      // VBOÇË´ş
+      // VBOç ´æ£„
       glDeleteBuffers(1, &_vbo);
 
-      // IBOÇË´ş
+      // IBOç ´æ£„
       glDeleteBuffers(1, &_ibo);
     }
     
 
 public:
 
-    // ¥ª¥Ö¥¸¥§¥¯¥ÈÉÁ²è
+    // ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæç”»
     virtual void Draw() const
     {
         // VBO
@@ -95,29 +95,29 @@ public:
         {
             if (_vbo == 0)
             {
-                CreateVBO(); // VBOºîÀ®
+                CreateVBO(); // VBOä½œæˆ
                 glutPostRedisplay();
             }
             else
-                DrawVBO(); // ÉÁ²è
+                DrawVBO(); // æç”»
         }
-        // IBO(Ì¤´°À®) ¢« VBO¤È°ì½ï¤Ëºî¤ë¤«¤é°ã¤¦
+        // IBO(æœªå®Œæˆ) â† VBOã¨ä¸€ç·’ã«ä½œã‚‹ã‹ã‚‰é•ã†
         else if (_isUseIBO)
         {
             if (_ibo == 0)
             {
-                CreateIBO(); // IBOºîÀ®
+                CreateIBO(); // IBOä½œæˆ
                 glutPostRedisplay();
             }
             else
-                DrawIBO(); // ÉÁ²è
+                DrawIBO(); // æç”»
         }
-        // ¥Ç¥£¥¹¥×¥ì¥¤¥ê¥¹¥È
+        // ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆ
         else
             DrawUsingDisplayList(&_displayList, [&] { return (*this).PreDraw(); });
     }
 
-    // ¤½¤Î¤Ş¤ŞÉÁ²è
+    // ãã®ã¾ã¾æç”»
     void DrawAsItIs() const
     {
         this->PreDraw();
@@ -128,14 +128,14 @@ public:
         this->DrawCPsInternal();
     }
 
-    // ¥ß¥Ë¥Ş¥¯¥¹¥Ü¥Ã¥¯¥¹ÉÁ²è
+    // ãƒŸãƒ‹ãƒã‚¯ã‚¹ãƒœãƒƒã‚¯ã‚¹æç”»
     void DrawBoxInternal() const
     {
         Box box(_ctrlp);
         box.Draw(Color::light_blue, 1.0);
     }
 
-    // ¥È¥°¥ë¥Á¥§¥ó¥¸
+    // ãƒˆã‚°ãƒ«ãƒã‚§ãƒ³ã‚¸
     void SetUnsetSelected() { _isSelected = !_isSelected; }
     void SetUnsetIsDrawCtrlp() { _isDrawCtrlp = !_isDrawCtrlp; }
     void SetUnsetIsDrawFisrtDiff() { _isDrawFirstDiff = !_isDrawFirstDiff; }
@@ -144,56 +144,56 @@ public:
     void SetUnsetIsDrawNormal() { _isDrawNormal = !_isDrawNormal; }
     void SetUnsetIsDrawCurvature() { _isDrawCurvature = !_isDrawCurvature; }
 
-    // À©¸æÅÀÀşÉÁ²è
+    // åˆ¶å¾¡ç‚¹ç·šæç”»
     void DrawControlPointsAndLines() const
     {
         if (_isDrawCtrlp)
             DrawUsingDisplayList(&_ctrlp_displayList, [&] { return (*this).DrawCPsInternal(); });
     }
-    // ÀÜÀş¥Ù¥¯¥È¥ëÉÁ²è
+    // æ¥ç·šãƒ™ã‚¯ãƒˆãƒ«æç”»
     void DrawFirstDiffVectors() const
     {
         if (_isDrawFirstDiff)
             DrawUsingDisplayList(&_fd_displayList, [&] { return (*this).DrawFirstDiffVectorsInternal(); });
     }
-    // 2³¬ÈùÊ¬¥Ù¥¯¥È¥ëÉÁ²è
+    // 2éšå¾®åˆ†ãƒ™ã‚¯ãƒˆãƒ«æç”»
     void DrawSecondDiffVectors() const
     {
         if (_isDrawSecondDiff)
             DrawUsingDisplayList(&_sd_displayList, [&] { return (*this).DrawSecondDiffVectorsInternal(); });
     }
-    // ¥ß¥Ë¥Ş¥¯¥¹¥Ü¥Ã¥¯¥¹ÉÁ²è
+    // ãƒŸãƒ‹ãƒã‚¯ã‚¹ãƒœãƒƒã‚¯ã‚¹æç”»
     void DrawBox() const
     {
         if (_isDrawBox)
             DrawUsingDisplayList(&_box_displayList, [&] { return (*this).DrawBoxInternal(); });
     }
-    // Ë¡Àş¥Ù¥¯¥È¥ëÉÁ²è
+    // æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«æç”»
     void DrawNormalVectors() const
     {
         if (_isDrawNormal)
             DrawUsingDisplayList(&_nor_displayList, [&] { return (*this).DrawNormalVectorsInternal(); });
     }
-    // ¶ÊÎ¨¥Ù¥¯¥È¥ëÉÁ²è
+    // æ›²ç‡ãƒ™ã‚¯ãƒˆãƒ«æç”»
     void DrawCurvatureVectors() const
     {
         if (_isDrawCurvature)
             DrawUsingDisplayList(&_cur_displayList, [&] { return (*this).DrawCurvatureVectorsInternal(); });
     }
 
-    // ¿§ÀßÄê
+    // è‰²è¨­å®š
     void SetColor(const GLdouble* const color)
     {
         for (int i = 0; i < 4; i++)
             _color[i] = color[i];
     }
 
-    // Ì¾Á°¤Î¥»¥Ã¥È
-    void SetName(std::string name) { _name = name; }
-    // Ì¾Á°¤Î¼èÆÀ
-    std::string GetName() const { return _name; };
-
-    // È¾Æ©ÌÀ¥ª¥Ö¥¸¥§¥¯¥È¤Ç¤¢¤ë¤«
+    // åå‰ã®ã‚»ãƒƒãƒˆ
+    void SetName(const std::string name) { _name = name; }
+    // åå‰ã®å–å¾—
+    std::string GetName() const { return _name; }
+    
+    // åŠé€æ˜ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã§ã‚ã‚‹ã‹
     bool IsSemiTransparent()
     {
         if (fabs(_color[3] - 1.0) < EPS::DIST)
@@ -202,19 +202,19 @@ public:
             return true;
     }
 
-    // ¥ª¥Ö¥¸¥§¥¯¥ÈÈÖ¹æ¤ò¼èÆÀ
+    // ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç•ªå·ã‚’å–å¾—
     unsigned int GetObjectNumber() const
     {
         return _number;
     }
 
-    // delete¥Õ¥é¥°
+    // deleteãƒ•ãƒ©ã‚°
     void RaiseDeleteFlag() { _deleteFlag = true; }
     bool IsDeleteFlagRaised() { return _deleteFlag == true; }
 
 public:
 
-    // ¥ß¥Ë¥Ş¥¯¥¹¥Ü¥Ã¥¯¥¹¼èÆÀ
+    // ãƒŸãƒ‹ãƒã‚¯ã‚¹ãƒœãƒƒã‚¯ã‚¹å–å¾—
     Box GetBound() const
     {
         Box box(_ctrlp);
@@ -223,8 +223,8 @@ public:
 
     Object()
     {
-        _number = obj_number++; // ¼±ÊÌ»Ò¤ò¿¶¤ë
-	_name = std::to_string(_number); // ¤³¤³¤Çµ¬ÄêÃÍ¤È¤·¤Æ¿¶¤Ã¤Æ¤ª¤¯
+        _number = obj_number++; // è­˜åˆ¥å­ã‚’æŒ¯ã‚‹
+	_name = std::to_string(_number); // ã“ã“ã§è¦å®šå€¤ã¨ã—ã¦æŒ¯ã£ã¦ãŠã
 
         _vbo = 0;
         _ibo = 0;
@@ -233,7 +233,7 @@ public:
 
     virtual ~Object()
     {
-        obj_number--; // ¼±ÊÌ»Ò¤ò¶õ¤±¤ë
+        obj_number--; // è­˜åˆ¥å­ã‚’ç©ºã‘ã‚‹
 
 	ClearAllShowingIds();
     }
