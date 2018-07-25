@@ -46,7 +46,21 @@ public:
     NearestPointInfoC GetNearestPointInfoFromRef(const Vector3d& ref) const override;
 
     // ノット追加
-    void AddKnot(double t, bool isDeleteOrigin = true);
+    void AddKnot(double t);
+    // 2分割した曲線を取得します
+    std::pair<std::shared_ptr<Curve>, std::shared_ptr<Curve>>
+      Get2DevidedCurves(double t) override;
+
+    // デバグ用 -------------------------------
+    
+    inline void ShowKnotVector()
+    {
+      cout << _name << " : knots = [ ";
+      for (const auto& knot : _knot) cout << knot << " ";
+      cout << "]" << endl;
+    }
+
+    // -------------------------------------
 };
 
 // 通観点から逆変換して曲線を取得する

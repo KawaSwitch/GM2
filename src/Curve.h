@@ -3,6 +3,7 @@
 #include "Object.h"
 #include "ControlPoint.h"
 #include "NearestPointInfo.h"
+#include <utility>
 
 // 曲線基底クラス
 class Curve : public Object
@@ -63,6 +64,10 @@ public:
     double CalcFarthestDistant(const Curve* const other) const;
     double CalcDifferency(const Curve* const other) const;
     double CalcDifferency2(const Curve* const other) const;
+
+    // 2分割した曲線を取得します
+    virtual std::pair<std::shared_ptr<Curve>, std::shared_ptr<Curve>>
+      Get2DevidedCurves(double t) = 0;
 
     virtual ~Curve() { };
 };
