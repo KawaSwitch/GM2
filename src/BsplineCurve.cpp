@@ -5,6 +5,7 @@
 #include <memory>
 #include <utility>
 #include <algorithm>
+#include <stdarg.h>
 
 BsplineCurve::BsplineCurve(const int mord, const ControlPoint* const cp, const int cp_size, const double* const knot,
     const GLdouble* const color, const GLdouble width, const double resol)
@@ -374,58 +375,77 @@ void BsplineCurve::AddKnot(const double t)
   }
 }
 
-// 2分割した曲線を取得します
-std::pair<std::shared_ptr<Curve>, std::shared_ptr<Curve>>
-BsplineCurve::Get2DevidedCurves(const double t)
-{
-  if (t < _knot[0] || t > _knot[_nknot-1])
-    perror("Get2DevidedCurves");
+// 指定したパラメータ位置で分割した曲線を取得します
+std::vector<std::shared_ptr<Curve>>
+BsplineCurve::GetDevidedCurves(std::vector<double>& params)
+{ 
+  // あらかじめパラメータをソートし重複を削除しておく
+  std::sort(params.begin(), params.end());
+  params.erase(std::unique(params.begin(), params.end()), params.end());
   
-  std::shared_ptr<BsplineCurve> left; // 分割曲線の小さいノット側
-  std::shared_ptr<BsplineCurve> right; // 分割曲線の大きいノット側
-  int add_cnt = 0;
-  
-  // 分割位置のノット多重度が(階数-1)個になるまでノットを挿入
-  {
-    int t_cnt_now = std::count(_knot.begin(), _knot.end(), t);
+  std::vector<std::shared_ptr<Curve>> split_curves;
 
-    for (int i = t_cnt_now; i < _ord-1; ++i, ++add_cnt)
-      AddKnot(t);
-  }
+  // 分割位置のノット多重度が(階数-1)個になるまでノットを挿入
+  for (const auto& t : params)
+    {
+      // 範囲外
+      if (t < _knot[0] || t > _knot[_nknot-1])
+	perror("GetDevidedCurves");
+
+      int t_cnt_now = std::count(_knot.begin(), _knot.end(), t);
+
+      for (int i = t_cnt_now; i < _ord-1; ++i)
+	AddKnot(t);
+    }
+
+  unsigned t_start, t_end; // 分割曲線のノットパラメータ始端/終端位置
 
   // 分割位置にノットを足して分割
-  {
-    vector<double> left_knot, right_knot;
-    vector<ControlPoint> left_ctrlp, right_ctrlp;
+  for (unsigned i = 0, s = params.size(); i < s + 1; ++i)
+    {
+      if (i == 0)
+	t_start = 0;
+	
+      vector<double> split_knot; // 分割曲線のノット列
+      vector<ControlPoint> split_ctrlp; // 分割曲線の制御点
 
-    // ノット分割
-    unsigned ki = 0;
-    for (ki = 0; _knot[ki] <= t || fabs(_knot[ki]-t) < EPS::DIFF; ++ki)
-      left_knot.push_back(_knot[ki]);
-    left_knot.push_back(t); // ノットを足す
+      // 分割最後方のノット位置を取得
+      for (unsigned j = 0, nknot = _knot.size(); j < nknot - 1; ++j)
+	{
+	  if (i != s)
+	    {
+	      if (_knot[j] <= params[i] && params[i] < _knot[j+1])
+		t_end = j;
+	    }
+	  else
+	    t_end = _knot.size() - 1;
+	}
+	
+      // 分割後のノット列を取得
+      if (i != 0) split_knot.push_back(_knot[t_start - 1]); // ノットを足す
+      for (unsigned t = (t_start) ? (t_start - (_ord - 1)): 0; t <= t_end; ++t)
+	  split_knot.push_back(_knot[t]);
+      if (i != s) split_knot.push_back(_knot[t_end]); // ノットを足す
 
-    right_knot.push_back(t); // ノットを足す_
-    for (ki -= _ord-1; ki < _knot.size(); ++ki)
-      right_knot.push_back(_knot[ki]);
+      // 分割後の制御点を取得
+      for (unsigned ci = (i != 0) ? t_start - _ord : 0;
+	   ci < ((i != s) ? t_end - _ord + 2 : t_end - (_ord - 1));
+	   ++ci)
+	split_ctrlp.push_back(_ctrlp[ci]);
 
-    // 制御点分割
-    unsigned t_i; // ノット挿入位置
-    for (unsigned i = 0, s = _knot.size(); i < s - 1; ++i)
-      {
-	if (_knot[i] <= t && t < _knot[i+1])
-	  t_i = i;
-      }
+      // 分割曲線を生成
+      GLdouble color[4];
+      Color::GetRandomColor(color);
+	
+      auto splited_curve =
+	std::make_shared<BsplineCurve>(_ord,
+				       &(split_ctrlp[0]), split_ctrlp.size(),
+				       &(split_knot[0]),
+				       color);
 
-    unsigned ci = 0;
-    for (; ci < (t_i + 1) - (_ord - 2) - (_ord - 1)  + (_ord - 2); ++ci)
-      left_ctrlp.push_back(_ctrlp[ci]);
-    for (--ci; ci < _ctrlp.size(); ++ci)
-      right_ctrlp.push_back(_ctrlp[ci]);
-
-    left = std::make_unique<BsplineCurve>(_ord, &(left_ctrlp[0]), left_ctrlp.size(), &(left_knot[0]), Color::red);
-    right = std::make_unique<BsplineCurve>(_ord, &(right_ctrlp[0]), right_ctrlp.size(), &(right_knot[0]), Color::blue);
-  }
+      split_curves.push_back(splited_curve);
+      t_start = t_end + 1;
+    }
   
-  //return std::make_pair(nullptr, nullptr);
-  return std::make_pair(std::move(left), std::move(right));
+  return split_curves;
 }

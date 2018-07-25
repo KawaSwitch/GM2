@@ -47,9 +47,8 @@ public:
 
     // ノット追加
     void AddKnot(double t);
-    // 2分割した曲線を取得します
-    std::pair<std::shared_ptr<Curve>, std::shared_ptr<Curve>>
-      Get2DevidedCurves(double t) override;
+    // 指定したパラメータ位置で分割した曲線を取得します
+    std::vector<std::shared_ptr<Curve>> GetDevidedCurves(std::vector<double>& params) override;
 
     // デバグ用 -------------------------------
     

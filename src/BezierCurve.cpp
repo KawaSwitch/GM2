@@ -248,10 +248,10 @@ NearestPointInfoC BezierCurve::GetNearestPointInfoFromRef(const Vector3d& ref) c
     return NearestPointInfoC(Vector3d(), ref, 0);
 }
 
-// 2分割した曲線を取得します
-std::pair<std::shared_ptr<Curve>, std::shared_ptr<Curve>>
-BezierCurve::Get2DevidedCurves(double t)
+// 指定したパラメータ位置で分割した曲線を取得します
+std::vector<std::shared_ptr<Curve>>
+BezierCurve::GetDevidedCurves(std::vector<double>& params)
 {
   // NOTE: 未実装
-  return std::make_pair(nullptr, nullptr);
+  return std::vector<std::shared_ptr<Curve>>();
 }
