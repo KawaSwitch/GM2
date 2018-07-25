@@ -1,5 +1,6 @@
 #pragma once
 #include <GL/freeglut.h>
+#include <cstdio>
 
 // 色まとめ
 struct Color
@@ -28,7 +29,7 @@ public:
         //srand((unsigned)time(NULL));
 
         for (int i = 0; i < 3; i++)
-            color[i] = (double)rand() / 32767.0;
+            color[i] = (double)rand() / 32767.0 / 65535;
 
         color[3] = 0.5; // α値は固定
     }
