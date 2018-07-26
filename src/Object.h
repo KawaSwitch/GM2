@@ -233,8 +233,9 @@ public:
 
     virtual ~Object()
     {
-        obj_number--; // 識別子を空ける
-
-	ClearAllShowingIds();
+      // デストラクタ通知
+      cout << "Calling Object Destructor : " << _number << endl;
+ 
+      ClearAllShowingIds();
     }
 };
