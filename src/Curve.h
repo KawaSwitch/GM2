@@ -65,9 +65,8 @@ public:
     double CalcDifferency(const Curve* const other) const;
     double CalcDifferency2(const Curve* const other) const;
 
-    // 2分割した曲線を取得します
-    virtual std::pair<std::shared_ptr<Curve>, std::shared_ptr<Curve>>
-      Get2DevidedCurves(double t) = 0;
+    // 指定したパラメータ位置で分割した曲線を取得します
+    virtual std::vector<std::shared_ptr<Curve>> GetDevidedCurves(std::vector<double>& params) = 0;
 
     virtual ~Curve() { };
 };
