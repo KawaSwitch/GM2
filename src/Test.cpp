@@ -58,8 +58,8 @@ void DrawSplitSurface_CGS8()
   // 分割対象曲線
   std::shared_ptr<BsplineSurface> surf1((BsplineSurface *)reader->GetObjectFromFile(surf1_name));
 
-  surf1->AddKnot(ParamUV::U, 1);
-  surf1->AddKnot(ParamUV::U, 1);
+  surf1->AddKnot(ParamUV::V, 1);
+  surf1->AddKnot(ParamUV::V, 1);
   //surf1->AddKnot(ParamUV::U, 1);
   
   

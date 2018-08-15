@@ -778,11 +778,12 @@ void BsplineSurface::AddKnot(const ParamUV direction, const double param)
   
   // 2. 新制御点の算出
   {
+    vector<ControlPoint> row;
+    int ncpnt = _ncpntU * _ncpntV;
+    
     if (direction == ParamUV::U)
-      {
-	vector<ControlPoint> row;
-	
-	for (int i = 0 ; i < _ncpntU * _ncpntV; ++i)
+      {	
+	for (int i = 0 ; i < ncpnt; ++i)
 	  {
 	    row.push_back(_ctrlp[i]);
 
@@ -799,11 +800,24 @@ void BsplineSurface::AddKnot(const ParamUV direction, const double param)
       }
     else
       {
-	
+	for (int i = 0; i < _ncpntU; ++i)
+	  {
+	    for (int j = 0; j < _ncpntV; ++j)
+	      {
+		row.push_back(_ctrlp[j*_ncpntU + i]);
+	      }
+
+	    vector<ControlPoint> new_ctrlp;
+	    CalcControlPointsForAddingKnot(param, insert, _ordV, new_knot, row, new_ctrlp);
+	    new_cps.push_back(new_ctrlp);
+
+	    row.clear();
+	    row.shrink_to_fit();
+	  }
       }
   }
   
-  // 3. 曲線データの調整
+  // 3. 曲面データの調整
   {
     vector<ControlPoint> new_cps_flat;
     
@@ -826,7 +840,23 @@ void BsplineSurface::AddKnot(const ParamUV direction, const double param)
       }
     else
       {
-	
+	// 各値設定
+	_nknotV = new_knot.size();
+	SetKnotVector(&(new_knot[0]), new_knot.size(), _knotV);
+
+	// 再転置で合わせる
+	for (unsigned i = 0; i < new_cps[0].size(); ++i)
+	  {
+	    for (unsigned j = 0; j < new_cps.size(); ++j)
+	      {
+		new_cps_flat.push_back(new_cps[j][i]);
+	      }
+	  }
+
+	_ncpntV = new_cps[0].size();
+	SetControlPoint(&(new_cps_flat[0]), new_cps_flat.size());
+
+	cout << _ncpntU << " " << _ncpntV << endl;
       }
 
     // 表示用バッファをすべてクリア
