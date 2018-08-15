@@ -58,19 +58,20 @@ void DrawSplitSurface_CGS8()
   // 分割対象曲線
   std::shared_ptr<BsplineSurface> surf1((BsplineSurface *)reader->GetObjectFromFile(surf1_name));
 
-  surf1->AddKnot(ParamUV::V, 1);
-  surf1->AddKnot(ParamUV::V, 1);
+  //surf1->AddKnot(ParamUV::V, 1);
+  //surf1->AddKnot(ParamUV::V, 1);
   //surf1->AddKnot(ParamUV::U, 1);
   
   
-  //vector<double> test_params = { 0.4, 1.5 };
-  //auto split_surfs = surf1->GetDevidedSurfaces(ParamUV::U, test_params);
+  vector<double> test_params = { 0.4, 1.5 };
+  auto split_surfs = surf1->GetDevidedSurfaces(ParamUV::U, test_params);
 
   if (isFirst)
     {
-      test_scene->AddObject(surf1->GetName(), surf1);
+      //test_scene->AddObject(surf1->GetName(), surf1);
     
-
+      for (const auto& s : split_surfs)
+	test_scene->AddObject(s->GetName(), s);
     }
 }
 

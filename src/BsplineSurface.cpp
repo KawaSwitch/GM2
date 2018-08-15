@@ -871,12 +871,109 @@ BsplineSurface::GetDevidedSurfaces(const ParamUV direction, std::vector<double>&
   // あらかじめパラメータをソートし重複を削除しておく
   std::sort(params.begin(), params.end());
   params.erase(std::unique(params.begin(), params.end()), params.end());
-  
-  std::vector<std::shared_ptr<Curve>> split_curves;
 
+  // UVの場合分けを考えないように変数を新たに定義
+  int ord = (direction == ParamUV::U) ? _ordU : _ordV;
+  int nknot = (direction == ParamUV::U) ? _nknotU : _nknotV;
+  int ncpnt = (direction == ParamUV::U) ? _ncpntU : _ncpntV;
+  vector<double>& knot = (direction == ParamUV::U) ? _knotU :_knotV; 
   
+  std::vector<std::shared_ptr<Surface>> split_surfaces;
+
+  // 分割位置のノット多重度が(階数-1)個になるまでノットを挿入
+  for (const auto& param : params)
+    {
+      // 範囲外
+      if (param < knot[0] || param > knot[nknot-1])
+	perror("GetDevidedSurfaces");
+
+      int param_cnt_now = std::count(knot.begin(), knot.end(), param);
+      for (int i = param_cnt_now; i < ord-1; ++i)
+	AddKnot(direction, param);
+    }
+
+  // ノット挿入の変化による再定義
+  nknot = (direction == ParamUV::U) ? _nknotU : _nknotV;
+  ncpnt = (direction == ParamUV::U) ? _ncpntU : _ncpntV;
+  knot = (direction == ParamUV::U) ? _knotU :_knotV; 
   
+  unsigned t_start, t_end; // 分割曲面のノットパラメータ始端/終端位置
+
+  // 分割位置にノットを足して分割
+  for (unsigned i = 0, s = params.size(); i < s + 1; ++i)
+    {
+      if (i == 0)
+	t_start = 0;
+	
+      vector<double> split_knot; // 分割曲面のノット列
+      vector<ControlPoint> split_ctrlp; // 分割曲面の制御点
+
+      // 分割最後方のノット位置を取得
+      for (unsigned j = 0, nknot = knot.size(); j < nknot - 1; ++j)
+	{
+	  if (i != s)
+	    {
+	      if (knot[j] <= params[i] && params[i] < knot[j+1])
+		t_end = j;
+	    }
+	  else
+	    t_end = knot.size() - 1;
+	}
+	
+      // 分割後のノット列を取得
+      if (i != 0) split_knot.push_back(knot[t_start - 1]); // ノットを足す
+      for (unsigned t = (t_start) ? (t_start - (ord - 1)): 0; t <= t_end; ++t)
+	  split_knot.push_back(knot[t]);
+      if (i != s) split_knot.push_back(knot[t_end]); // ノットを足す
+
+      // 分割後の制御点を取得
+      if (direction == ParamUV::U)
+	{
+	  vector<int> ctrlp_idx;
+
+	  // 最前列の制御点インデックスを計算
+	  for (unsigned ci = (i != 0) ? t_start - ord : 0;
+	       ci < ((i != s) ? t_end - ord + 2 : t_end - (ord - 1));
+	       ++ci)
+	    ctrlp_idx.push_back(ci);
+
+	  // 残りの列の制御点インデックスを算出
+	  int idx_ini_size = (int)ctrlp_idx.size();
+	  int cnt = 1;
+	  while (ctrlp_idx[(cnt - 1) * idx_ini_size] + _ncpntU < _ncpntU * _ncpntV)
+	    {
+	      for (int j = 0; j < idx_ini_size; ++j)
+	  	ctrlp_idx.push_back(ctrlp_idx[j] + cnt * ncpnt);
+
+	      ++cnt;
+	    }
+
+	  for (const auto& idx : ctrlp_idx)
+	    split_ctrlp.push_back(_ctrlp[idx]);
+	}
+      else
+	{
+	  
+	}
+
+      // 分割曲線を生成
+      GLdouble color[4];
+      Color::GetRandomColor(color);
+
+      //cout << _ncpntU << " " << _ncpntV << " " << split_ctrlp.size() << endl;
+      
+      auto splited_surface =
+	std::make_shared<BsplineSurface>(_ordU, _ordV,
+					 &(split_ctrlp[0]),
+					 (direction == ParamUV::U) ? split_ctrlp.size() / _ncpntV : _ncpntU,
+					 (direction == ParamUV::V) ? split_ctrlp.size() / _ncpntU : _ncpntV,
+					 (direction == ParamUV::U) ? &(split_knot[0]) : &(_knotU[0]),
+					 (direction == ParamUV::V) ? &(split_knot[0]) : &(_knotV[0]),
+					 color);
+
+      split_surfaces.push_back(splited_surface);
+      t_start = t_end + 1;
+    }
   
-  // NOTE: 未実装
-  return std::vector<std::shared_ptr<Surface>>();
+  return split_surfaces;
 }
