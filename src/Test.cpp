@@ -62,16 +62,22 @@ void DrawSplitSurface_CGS8()
   //surf1->AddKnot(ParamUV::V, 1);
   //surf1->AddKnot(ParamUV::U, 1);
   
-  
-  vector<double> test_params = { 0.4, 1.5 };
-  auto split_surfs = surf1->GetDevidedSurfaces(ParamUV::V, test_params);
+  std::vector<vector<std::shared_ptr<Surface>>> devided;
+  vector<double> u_test_params = { 0.4, 1.5, 2.3, 2.8 };
+  vector<double> v_test_params = { 0.4, 1.5, 1.7 };
+  surf1->GetDevidedSurfaces(u_test_params, v_test_params, devided);
 
   if (isFirst)
     {
       //test_scene->AddObject(surf1->GetName(), surf1);
     
-      for (const auto& s : split_surfs)
-	test_scene->AddObject(s->GetName(), s);
+      for (const auto& us : devided)
+	{
+	  for (const auto& vs : us)
+	    {
+	      test_scene->AddObject(vs->GetName(), vs);
+	    }
+	}
     }
 }
 

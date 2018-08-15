@@ -862,6 +862,22 @@ void BsplineSurface::AddKnot(const ParamUV direction, const double param)
   }
 }
 
+// 指定パラメータ位置でUV方向に分割した曲面を取得する
+void BsplineSurface::GetDevidedSurfaces(std::vector<double>& u_params, std::vector<double>& v_params,
+					std::vector<vector<std::shared_ptr<Surface>>>& devided_surfs)
+{
+  // U方向から分割
+  vector<std::shared_ptr<Surface>> u_split_surfs;
+  u_split_surfs = this->GetDevidedSurfaces(ParamUV::U, u_params);
+
+  // V方向から分割
+  for (const auto& splited_surface : u_split_surfs)
+    {
+      auto v_split_surfs = splited_surface->GetDevidedSurfaces(ParamUV::V, v_params);
+      devided_surfs.push_back(v_split_surfs);
+    }
+}
+
 // 指定方向に指定パラメータ位置で分割した曲面を取得する
 std::vector<std::shared_ptr<Surface>>
 BsplineSurface::GetDevidedSurfaces(const ParamUV direction, std::vector<double>& params)

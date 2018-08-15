@@ -71,6 +71,8 @@ public:
     void AddKnot(const ParamUV direction, double param);
     // 指定方向に指定パラメータ位置で分割した曲面を取得する
     std::vector<std::shared_ptr<Surface>> GetDevidedSurfaces(const ParamUV direction, std::vector<double>& params) override;
+    // 指定パラメータ位置でUV方向に分割した曲面を取得する
+    void GetDevidedSurfaces(std::vector<double>& u_params, std::vector<double>& v_params, std::vector<vector<std::shared_ptr<Surface>>>& devided_surfs);
 };
 
 // 通過点から逆変換してBスプライン曲面を取得する
