@@ -855,8 +855,6 @@ void BsplineSurface::AddKnot(const ParamUV direction, const double param)
 
 	_ncpntV = new_cps[0].size();
 	SetControlPoint(&(new_cps_flat[0]), new_cps_flat.size());
-
-	cout << _ncpntU << " " << _ncpntV << endl;
       }
 
     // 表示用バッファをすべてクリア
@@ -953,7 +951,28 @@ BsplineSurface::GetDevidedSurfaces(const ParamUV direction, std::vector<double>&
 	}
       else
 	{
-	  
+	  vector<int> ctrlp_idx;
+
+	  // 最前列の制御点インデックスを計算
+	  for (unsigned ci = (i != 0) ? t_start - ord : 0;
+	       ci < ((i != s) ? t_end - ord + 2 : t_end - (ord - 1));
+	       ++ci)
+	    ctrlp_idx.push_back(ci * _ncpntU); // 実際のインデックスに変換
+
+	  // 残りの列の制御点インデックスを算出
+	  int idx_ini_size = (int)ctrlp_idx.size();
+	  int cnt = 1;
+	  while (cnt < _ncpntU)
+	    {
+	      for (int j = 0; j < idx_ini_size; ++j)
+	  	ctrlp_idx.push_back(ctrlp_idx[j] + cnt);
+
+	      ++cnt;
+	    }
+
+	  std::sort(ctrlp_idx.begin(), ctrlp_idx.end()); // 転置分をソートさせておく
+	  for (const auto& idx : ctrlp_idx)
+	    split_ctrlp.push_back(_ctrlp[idx]);
 	}
 
       // 分割曲線を生成

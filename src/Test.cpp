@@ -64,7 +64,7 @@ void DrawSplitSurface_CGS8()
   
   
   vector<double> test_params = { 0.4, 1.5 };
-  auto split_surfs = surf1->GetDevidedSurfaces(ParamUV::U, test_params);
+  auto split_surfs = surf1->GetDevidedSurfaces(ParamUV::V, test_params);
 
   if (isFirst)
     {
