@@ -17,3 +17,6 @@ void CalcKnotVectorByPassingPnts(const vector<Vector3d>& pnts, const int ord, ve
 void NormalizeKnotVector(const vector<vector<double>>& knot_array, const int ord, vector<double>* knot_normal);
 void CalcKnotVectorByPassingPnts(const vector<vector<Vector3d>>& pnts, const int ordU, const int ordV, vector<double>* knotU, vector<double>* knotV);
 void CalcControlPointsByPassingPnts(const vector<Vector3d>& pnts, const int ord, const vector<double>& knot, vector<ControlPoint>* ctrlp);
+
+void CalcKnotsForAddingKnot(const double t, const vector<double>& knot, unsigned& insert, vector<double>& new_knot);
+void CalcControlPointsForAddingKnot(const double t, const int insert, const int ord, const vector<double>& knot, const vector<ControlPoint>& ctrlp, vector<ControlPoint>& new_ctrlp);

@@ -39,8 +39,40 @@ static vector<function<void(void)>> TestRegisterDraw
   //DrawApproxSurface_CGS5, // 近似曲面を描画
   //DrawCurveNearest_CGS6, // 最近点を描画_曲線
   //DrawSurfaceNearest_CGS7, // 最近点を描画_曲面
-  DrawSplitCurve_CGS8, // 分割曲線を描画
+  //DrawSplitCurve_CGS8, // 分割曲線を描画
+    DrawSplitSurface_CGS8, // 分割曲面を描画
+    //DrawIntersectCurveSurface_CGS8, // 曲線と曲面の交点取得
 };
+
+// 曲線と曲面の交点取得
+void DrawIntersectCurveSurface_CGS8()
+{
+  
+}
+
+// 分割曲面を描画
+void DrawSplitSurface_CGS8()
+{
+    auto reader = std::make_unique<KjsReader>();
+
+  // 分割対象曲線
+  std::shared_ptr<BsplineSurface> surf1((BsplineSurface *)reader->GetObjectFromFile(surf1_name));
+
+  surf1->AddKnot(ParamUV::U, 1);
+  surf1->AddKnot(ParamUV::U, 1);
+  //surf1->AddKnot(ParamUV::U, 1);
+  
+  
+  //vector<double> test_params = { 0.4, 1.5 };
+  //auto split_surfs = surf1->GetDevidedSurfaces(ParamUV::U, test_params);
+
+  if (isFirst)
+    {
+      test_scene->AddObject(surf1->GetName(), surf1);
+    
+
+    }
+}
 
 // 分割曲線描画
 void DrawSplitCurve_CGS8()
@@ -53,21 +85,36 @@ void DrawSplitCurve_CGS8()
   // ノット追加曲線
   std::shared_ptr<BsplineCurve> curve1_clone((BsplineCurve *)reader->GetObjectFromFile(curve1_name));
   curve1_clone->SetColor(Color::red);
-  curve1_clone->AddKnot(3);
-  curve1_clone->AddKnot(3);
-  curve1_clone->AddKnot(3);
-  // curve1_clone->AddKnot(4);
-  // curve1_clone->AddKnot(4);
-  // curve1_clone->AddKnot(4);
-  
+  // curve1_clone->AddKnot(3);
+  // curve1_clone->AddKnot(3);
+  // curve1_clone->AddKnot(3);
+  // curve1_clone->AddKnot(3);
+  // curve1_clone->AddKnot(1.5);
+  // curve1_clone->AddKnot(1.5);
+  // curve1_clone->AddKnot(1.5);
+
+  // // 基底関数(無理やり)
+  // double knot[20] = {0, 0, 0, 0, 1,1.5, 1.5, 1.5, 2, 3 ,4, 5, 5, 5, 5};
+  // DrawBsplineFunc(4, 11, 15, knot, 0, 5);
+
+  auto test_params = vector<double>{ 1.5, 3, 3.2, 3.4, 4.3, 4.7 };
 
   // 分割曲線
+  auto split_curves = curve1_clone->GetDevidedCurves(test_params);
+  //auto s = curve1_clone->Get2DevidedCurves(3);
+  //auto c = (s.first)->Get2DevidedCurves(1.5);
   
+  //(c.first)->SetName("left");
+  //(c.second)->SetName("right");
   
   if (isFirst)
     {
-      test_scene->AddObject(curve1_name, curve1);
-      test_scene->AddObject(curve1_name+"add_1knot", curve1_clone);
+      //test_scene->AddObject(curve1_name, curve1);
+      //test_scene->AddObject(curve1_name+"add_1knot", curve1_clone);
+      //test_scene->AddObject((c.first)->GetName(), c.first);
+      //test_scene->AddObject((c.second)->GetName(), c.second);
+      for (const auto& c : split_curves)
+	  test_scene->AddObject(c->GetName(), c);
     }
 }
 

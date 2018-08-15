@@ -1,6 +1,7 @@
 #include "BsplineSurface.h"
 #include "BsplineCurve.h"
 #include <iterator>
+#include <algorithm>
 
 BsplineSurface::BsplineSurface(
     const int u_mord, const int v_mord, const ControlPoint* const cp,
@@ -34,6 +35,12 @@ void BsplineSurface::SetKnotVector(const double* const knot, int size, vector<do
     if (size <= 0)
         Error::ShowAndExit("ノットベクトル設定失敗", "knot-vector size must be over 0.");
 
+    if (_knot.size() > 0)
+      {
+	_knot.clear();
+	_knot.shrink_to_fit();
+      }
+    
     _knot.reserve(size);
     for (int i = 0; i < size; i++)
         _knot.emplace_back(knot[i]);
@@ -168,7 +175,7 @@ void BsplineSurface::CreateVBO() const
 {
     // 解像度
     int RES = (int)_resolution;
-
+    
     vector<vector<Vector3d>> pnt;
     vector<vector<Vector3d>> nor;
     vector<Vector3d> pnt_vbo;
@@ -752,4 +759,94 @@ NearestPointInfoS BsplineSurface::GetNearestPointInfoFromRef(const Vector3d& ref
         throw;
 
     return Surface::GetNearestPointInfoInternal(ref, startPnts, search);
+}
+
+// ノットを追加する
+void BsplineSurface::AddKnot(const ParamUV direction, const double param)
+{
+  unsigned insert; // ノット挿入パラメータ
+  vector<double> new_knot; // 新しいノットベクトル
+  vector<vector<ControlPoint>> new_cps; // 新しい制御点
+  
+  // 1. 挿入先の決定
+  {
+    if (direction == ParamUV::U)
+      CalcKnotsForAddingKnot(param, _knotU, insert, new_knot);
+    else
+      CalcKnotsForAddingKnot(param, _knotV, insert, new_knot);      
+  }
+  
+  // 2. 新制御点の算出
+  {
+    if (direction == ParamUV::U)
+      {
+	vector<ControlPoint> row;
+	
+	for (int i = 0 ; i < _ncpntU * _ncpntV; ++i)
+	  {
+	    row.push_back(_ctrlp[i]);
+
+	    if (((i + 1) % (_nknotU - _ordU)) == 0 && i != 0)
+	      {
+		vector<ControlPoint> new_ctrlp;
+		CalcControlPointsForAddingKnot(param, insert, _ordU, new_knot, row, new_ctrlp);
+		new_cps.push_back(new_ctrlp);
+
+		row.clear();
+		row.shrink_to_fit();
+	      }
+	  }
+      }
+    else
+      {
+	
+      }
+  }
+  
+  // 3. 曲線データの調整
+  {
+    vector<ControlPoint> new_cps_flat;
+    
+    if (direction == ParamUV::U)
+      {
+	// 各値設定
+	_nknotU = new_knot.size();
+	SetKnotVector(&(new_knot[0]), new_knot.size(), _knotU);
+	
+	for (const auto& cps : new_cps)
+	  {
+	    for (const auto& cp : cps)
+	      {
+		new_cps_flat.push_back(cp);
+	      }
+	  }
+	
+	_ncpntU = new_cps[0].size();
+	SetControlPoint(&(new_cps_flat[0]), new_cps_flat.size());	
+      }
+    else
+      {
+	
+      }
+
+    // 表示用バッファをすべてクリア
+    Object::ClearAllShowingIds();
+  }
+}
+
+// 指定方向に指定パラメータ位置で分割した曲面を取得する
+std::vector<std::shared_ptr<Surface>>
+BsplineSurface::GetDevidedSurfaces(const ParamUV direction, std::vector<double>& params)
+{
+  // あらかじめパラメータをソートし重複を削除しておく
+  std::sort(params.begin(), params.end());
+  params.erase(std::unique(params.begin(), params.end()), params.end());
+  
+  std::vector<std::shared_ptr<Curve>> split_curves;
+
+  
+  
+  
+  // NOTE: 未実装
+  return std::vector<std::shared_ptr<Surface>>();
 }

@@ -7,9 +7,20 @@ void Surface::SetControlPoint(const ControlPoint* const cp, const int size)
     if (size <= 0)
         Error::ShowAndExit("制御点設定失敗", "CP size must be over 0.");
 
-    //_ctrlp.reserve(size); _ctrlpX.reserve(size);
-    //_ctrlpY.reserve(size); _ctrlpZ.reserve(size);
-    //_weight.reserve(size);
+    // _ctrlp.reserve(size); _ctrlpX.reserve(size);
+    // _ctrlpY.reserve(size); _ctrlpZ.reserve(size);
+    // _weight.reserve(size);
+
+    if (_ctrlp.size() > 0)
+      {
+	_ctrlp.clear();
+	_ctrlp.shrink_to_fit();
+
+	_ctrlpX.clear(); _ctrlpX.shrink_to_fit();
+	_ctrlpY.clear(); _ctrlpY.shrink_to_fit();
+	_ctrlpZ.clear(); _ctrlpZ.shrink_to_fit();
+	_weight.clear(); _weight.shrink_to_fit();
+      }
 
     for (int i = 0; i < size; i++)
         _ctrlp.emplace_back(cp[i]);

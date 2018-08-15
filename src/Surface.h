@@ -111,5 +111,8 @@ public:
     // 通過点から逆変換して曲面を取得する
     virtual std::unique_ptr<Surface> GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, GLdouble width) const = 0;
 
+    // 指定方向に指定パラメータ位置で分割した曲面を取得する
+    virtual std::vector<std::shared_ptr<Surface>> GetDevidedSurfaces(const ParamUV direction, std::vector<double>& params) = 0;
+
     virtual ~Surface() { glDeleteLists(_mesh_displayList, 1); }
 };

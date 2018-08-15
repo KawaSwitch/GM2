@@ -49,4 +49,7 @@ public:
 
     // 最近点取得
     NearestPointInfoS GetNearestPointInfoFromRef(const Vector3d& ref, const NearestSearch search = Project) const override;
+
+    // 指定方向に指定パラメータ位置で分割した曲面を取得する
+    std::vector<std::shared_ptr<Surface>> GetDevidedSurfaces(const ParamUV direction, std::vector<double>& params) override;
 };

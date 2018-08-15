@@ -320,46 +320,14 @@ NearestPointInfoC BsplineCurve::GetNearestPointInfoFromRef(const Vector3d& ref) 
 void BsplineCurve::AddKnot(const double t)
 {
   unsigned t_i; // ノット挿入に必要な位置
-  vector<ControlPoint> new_cps; // 新しい制御点
   vector<double> new_knot; // 新しいノットベクトル
-  Vector3d Q;
+  vector<ControlPoint> new_cps; // 新しい制御点
   
   // 1. 挿入先の決定
-  {
-    for (unsigned i = 0, s = _knot.size(); i < s - 1; ++i)
-      {
-	if (_knot[i] <= t && t < _knot[i+1])
-	  t_i = i;
-      }
-    
-    // 新しいノットベクトルを作成
-    for (unsigned i = 0; i <= t_i; ++i) new_knot.push_back(_knot[i]);
-    new_knot.push_back(t);
-    for (unsigned i = t_i+1; i < _knot.size(); ++i) new_knot.push_back(_knot[i]);
-  }
+  CalcKnotsForAddingKnot(t, _knot, t_i, new_knot);
 
   // 2. 新制御点の算出
-  {
-    // 新制御点算出用の比率変数
-    auto alpha = [&](int i, int j) -> double
-      {
-	if (j <= i-_ord +1)
-	  return 1;
-	else if (i-_ord+2<=j && j <= i)
-	  return (t - new_knot[j]) / (new_knot[j+_ord] - new_knot[j]);
-	else
-	  return 0;
-      };
-
-    // 新しい制御点を作成
-    new_cps.push_back(_ctrlp[0]);
-    for (int j = 1; j < _ncpnt; ++j)
-      {
-	Q = alpha(t_i, j)*_ctrlp[j] + (1-alpha(t_i, j))*_ctrlp[j-1];
-	new_cps.push_back(ControlPoint(Q.X, Q.Y, Q.Z, 1.0));
-      }
-    new_cps.push_back(_ctrlp[_ncpnt-1]);
-  }
+  CalcControlPointsForAddingKnot(t, t_i, _ord, new_knot, _ctrlp, new_cps);
   
   // 3. 曲線データの調整
   {

@@ -432,6 +432,63 @@ void CalcControlPointsByPassingPnts(const vector<Vector3d>& pnts, const int ord,
     delete N_matrix;
 }
 
+// ノット列にノットパラメータを追加する
+void CalcKnotsForAddingKnot(const double t, const vector<double>& knot, unsigned& insert, vector<double>& new_knot)
+{
+  if (new_knot.size() > 0)
+    {
+      new_knot.clear();
+      new_knot.shrink_to_fit();
+    }
+  
+  // 挿入先の決定
+  for (unsigned i = 0, s = knot.size(); i < s - 1; ++i)
+    {
+      if (knot[i] <= t && t < knot[i+1])
+	insert = i;
+    }
+    
+  // 新しいノットベクトルを作成
+  for (unsigned i = 0; i <= insert; ++i) new_knot.push_back(knot[i]);
+  new_knot.push_back(t);
+  for (unsigned i = insert+1; i < knot.size(); ++i) new_knot.push_back(knot[i]);
+}
+
+// ノット追加に伴う制御点の変更を計算する
+void CalcControlPointsForAddingKnot(const double t, const int insert, const int ord, const vector<double>& knot, const vector<ControlPoint>& ctrlp, vector<ControlPoint>& new_ctrlp)
+{
+  Vector3d Q;
+  int ncpnt = ctrlp.size();
+  
+  if (new_ctrlp.size() > 0)
+    {
+      new_ctrlp.clear();
+      new_ctrlp.shrink_to_fit();
+    }
+
+  // 新制御点算出用の比率変数
+  auto alpha = [&](int i, int j) -> double
+    {
+      if (j <= i - ord + 1)
+	return 1;
+      else if (i-ord+2 <= j && j <= i)
+	return (t - knot[j]) / (knot[j+ord] - knot[j]);
+      else
+	return 0;
+    };
+  
+  // 新しい制御点を作成
+  new_ctrlp.push_back(ctrlp[0]);
+  for (int j = 1; j < ncpnt; ++j)
+    {
+      Q = alpha(insert, j)*ctrlp[j] + (1-alpha(insert, j))*ctrlp[j-1];
+      new_ctrlp.push_back(ControlPoint(Q.X, Q.Y, Q.Z, 1.0));
+    }
+  new_ctrlp.push_back(ctrlp[ncpnt-1]);
+}
+
+
+
 // 3点から成るポリゴンの単位化済み面法線を取得する
 Vector3d CalcPolygonNormal(const Vector3d& v0, const Vector3d& v1, const Vector3d& v2)
 {

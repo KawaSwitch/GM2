@@ -66,7 +66,12 @@ public:
 
     // 最近点取得
     NearestPointInfoS GetNearestPointInfoFromRef(const Vector3d& ref, const NearestSearch search = Project) const override;
+
+    // ノットを追加する
+    void AddKnot(const ParamUV direction, double param);
+    // 指定方向に指定パラメータ位置で分割した曲面を取得する
+    std::vector<std::shared_ptr<Surface>> GetDevidedSurfaces(const ParamUV direction, std::vector<double>& params) override;
 };
 
-// 通過点から逆変化してBスプライン曲面を取得する
+// 通過点から逆変換してBスプライン曲面を取得する
 std::unique_ptr<Surface> GetBsplineSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, int ordU, int ordV, const GLdouble* const color, GLdouble resol);
