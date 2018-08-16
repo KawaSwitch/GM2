@@ -1,4 +1,6 @@
 #include "Intersection.h"
+#include <iostream>
+#include <chrono>
 
 // 曲線と曲面ペアセット
 void IntersectSolver::SetPair(const std::shared_ptr<Curve> c, const std::shared_ptr<Surface> s)
@@ -11,19 +13,28 @@ void IntersectSolver::SetPair(const std::shared_ptr<Curve> c, const std::shared_
 Vector3d IntersectSolver::GetIntersect()
 {
   Vector3d intersect;
+
+  // 時間計測
+  auto start = std::chrono::system_clock::now();
+  {
+    // あらかじめ干渉ペアを粗く見積もり交点候補の範囲を狭めておく
+    this->CalcRoughInterferePair();
+
+    // 絞った範囲から各アルゴリズムを実行する
+    if (_algo == Algo::BoxInterfere)
+      {
+	// ボックス干渉法
+	intersect = GetIntersectByBoxInterfere();
+      }
+    else
+      perror("GetIntersect"); // 未実装
+  }
+  auto end = std::chrono::system_clock::now();
+  double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count();
+  cout << "交点取得時間: " << elapsed << "ミリ秒" << endl;
+
+  cout << "交点: (" << intersect.X << ", " << intersect.Y << ", " << intersect.Z << ")" << endl;
   
-  // あらかじめ干渉ペアを粗く見積もり交点候補の範囲を狭めておく
-  this->CalcRoughInterferePair();
-
-  // 絞った範囲から各アルゴリズムを実行する
-  if (_algo == Algo::BoxInterfere)
-    {
-      // ボックス干渉法
-      intersect = GetIntersectByBoxInterfere();
-    }
-  else
-    perror("GetIntersect"); // 未実装
-
   return intersect;
 }
 
@@ -74,19 +85,23 @@ Vector3d IntersectSolver::GetIntersectByBoxInterfere(int c_split, int s_splitU, 
       interferePairs.push_back(stagePairs);
     };
   
-  while (count < EPS::COUNT_MAX)
+  while (count < EPS::COUNT_MAX * 100)
     {
       if (count == 0) // 最初
 	  updateInterferePairs(_interferePair);
       else
 	  updateInterferePairs(interferePairs[count - 1]);
 
-      if (found)
-	return intersect;
-
       ++count;
+      
+      if (found)
+	{
+	  cout << "count: " << count + 1 << endl; // 範囲狭める用のも含めて+1
+	  return intersect;
+	}
     }
 
+  cout << "throw" << endl;
   perror("GetIntersectByBoxInterfere");
   throw;
 }
@@ -96,11 +111,17 @@ void IntersectSolver::CalcInterferePair(const std::shared_ptr<Curve> curve, cons
 {
   // 曲線を分割
   std::vector<std::shared_ptr<Curve>> split_curves;
-  curve->GetDevidedCurves(c_split, split_curves);
-
+  if (curve->GetBound().DiagLength() < _eps / 10) // 部分曲線が十分に小さい場合は再分割を行わない
+    curve->GetDevidedCurves(1, split_curves); // 1分割 = もとの曲線
+  else
+    curve->GetDevidedCurves(c_split, split_curves);
+  
   // 曲面を分割
   std::vector<std::vector<std::shared_ptr<Surface>>> split_surfs;
-  surf->GetDevidedSurfaces(s_splitU, s_splitV, split_surfs, _surface->_color);
+  if (surf->GetBound().DiagLength() < _eps / 10) // 部分曲面が十分に小さい場合は再分割を行わない
+    surf->GetDevidedSurfaces(1, 1, split_surfs, _surface->_color);
+  else
+    surf->GetDevidedSurfaces(s_splitU, s_splitV, split_surfs, _surface->_color);
 
   // 干渉ペアを全探索
   for (const auto& c : split_curves)
