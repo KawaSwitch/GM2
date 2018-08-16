@@ -63,14 +63,22 @@ void DrawIntersectCurveSurface_CGS8()
   std::vector<std::vector<std::shared_ptr<Surface>>> split_surfaces;
   surf->GetDevidedSurfaces(10, 10, split_surfaces, surf->_color);
 
-  auto solver =  std::make_unique<IntersectSolver>(
-		      1.0e-3,
-		      IntersectSolver::Algo::BoxInterfere);
+  // 交点取得
+  {
+    auto solver =  std::make_unique<IntersectSolver>(1.0e-6, IntersectSolver::Algo::BoxInterfere);
+    solver->SetPair(curve, surf);
 
-  solver->SetPair(curve, surf);
-  
-  // IntersectSolver solver(1.0e-3, IntersectSolver::Algo::BoxInterfere);
-  // solver.SetTolerance(1.0e-6);
+    // 交点描画
+    {
+      Vector3d intersect = solver->GetIntersect();
+
+      glColor3dv(Color::red);
+      glPointSize(12.0);
+      glBegin(GL_POINTS);
+      glVertex3d(intersect);
+      glEnd();
+    }
+  }
 
   if (isFirst)
     {

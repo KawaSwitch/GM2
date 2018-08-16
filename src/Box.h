@@ -36,6 +36,17 @@ public:
             (_zmin + _zmax) * 0.5);
     }
 
+    // 対角線の長さ
+    double DiagLength()
+    {
+      Vector3d diag(
+          _xmax - _xmin,
+	  _ymax - _ymin,
+	  _zmax - _zmin);
+
+      return diag.Length();
+    }
+
     // 他ボックスと干渉するか
     bool IsInterfere(const Box& other)
     {

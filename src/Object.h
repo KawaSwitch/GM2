@@ -19,6 +19,7 @@ private:
     bool _deleteFlag = false;
     bool _isSelected = false; // 選択状態にあるか
     unsigned int _number; // 識別番号
+    bool _isBoxCalced = false; // ボックスを計算済みか
 
 protected:
 
@@ -29,7 +30,8 @@ protected:
     std::string _name; // 名前
     vector<ControlPoint> _ctrlp; // 制御点
     double _resolution; // 解像度
-
+    Box _box; // バウンドボックス
+    
     // 事前描画
     virtual void PreDraw() const = 0;
     virtual void DrawCPsInternal() const = 0;
@@ -215,11 +217,16 @@ public:
 
 public:
 
-    // ミニマクスボックス取得
-    Box GetBound() const
+    // バウンドボックス取得
+    Box GetBound()
     {
-        Box box(_ctrlp);
-        return box;
+      if (!_isBoxCalced)
+	{
+	  Box box(_ctrlp);
+	  _box = box;
+	  _isBoxCalced = true;
+	}
+      return _box;
     }
 
     Object()

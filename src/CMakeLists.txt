@@ -34,6 +34,7 @@ add_executable(geoModeling
   Quaternion.cpp
   Resize.cpp
   Scene.cpp
+  Intersection.cpp
   Test.cpp)
 
 find_package(OpenGL REQUIRED)
