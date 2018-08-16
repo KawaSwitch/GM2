@@ -241,8 +241,8 @@ public:
 
     virtual ~Object()
     {
-      // デストラクタ通知
-      cout << "Calling Object Destructor : " << _number << endl;
+      // デストラクタ通知 デバグ用
+      //cout << "Calling Object Destructor : " << _number << endl;
  
       ClearAllShowingIds();
     }
