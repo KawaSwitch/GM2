@@ -50,8 +50,10 @@ public:
 
     // ノット追加
     void AddKnot(double t);
-    // 指定したパラメータ位置で分割した曲線を取得します
+    // 指定したパラメータ位置で分割した曲線を取得する
     void GetDevidedCurves(std::vector<double>& params, std::vector<std::shared_ptr<Curve>>& devided_curves) override;
+    // ノット範囲を等分割した曲線を取得する
+    void GetDevidedCurves(int split, std::vector<std::shared_ptr<Curve>>& devided_curves) override;
 };
 
 // 通観点から逆変換して曲線を取得する

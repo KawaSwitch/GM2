@@ -254,3 +254,10 @@ void BezierCurve::GetDevidedCurves(std::vector<double>& params, std::vector<std:
   // NOTE: 未実装
   return;
 }
+
+// ノット範囲を等分割した曲線を取得する
+void BezierCurve::GetDevidedCurves(int split, std::vector<std::shared_ptr<Curve>>& devided_curves)
+{
+  // NOTE: 未実装
+  return;
+}

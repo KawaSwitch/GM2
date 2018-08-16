@@ -352,6 +352,16 @@ void BsplineCurve::AddKnot(const double t)
   }
 }
 
+// ノット範囲を等分割した曲線を取得する
+void BsplineCurve::GetDevidedCurves(const int split, std::vector<std::shared_ptr<Curve>>& devided_curves)
+{
+  // 等分割したパラメータを取得
+  std::vector<double> split_param;
+  this->GetSplitParam(split_param, split);
+
+  // 分割曲線取得
+  this->GetDevidedCurves(split_param, devided_curves);
+}
 // 指定したパラメータ位置で分割した曲線を取得します
 void BsplineCurve::GetDevidedCurves(std::vector<double>& params, std::vector<std::shared_ptr<Curve>>& devided_curves)
 { 

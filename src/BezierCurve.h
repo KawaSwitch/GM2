@@ -36,4 +36,6 @@ public:
 
     // 指定したパラメータ位置で分割した曲線を取得します
     void GetDevidedCurves(std::vector<double>& params, std::vector<std::shared_ptr<Curve>>& devided_curves) override;
+    // ノット範囲を等分割した曲線を取得する
+    void GetDevidedCurves(int split, std::vector<std::shared_ptr<Curve>>& devided_curves) override; 
 };

@@ -10,6 +10,7 @@
 #include "Writer.h"
 #include "Scene.h"
 #include "glUtil.h"
+#include "Intersection.h"
 
 static int current_size; // 現在のテスト用のディスプレイリスト数
 static int* displayLists; // ディスプレイリスト保管用ポインタ
@@ -55,17 +56,21 @@ void DrawIntersectCurveSurface_CGS8()
   std::shared_ptr<BsplineSurface> surf((BsplineSurface *)reader->GetObjectFromFile(surf1_name));
 
   // 曲線分割
-  std::vector<double> c_split_param;
-  curve->GetSplitParam(c_split_param, 10);
-  auto split_curves = curve->GetDevidedCurves(c_split_param);
+  std::vector<std::shared_ptr<Curve>> split_curves;
+  curve->GetDevidedCurves(10, split_curves);
 
   // 曲面分割
-  std::vector<double> s_split_param_u;
-  std::vector<double> s_split_param_v;
-  surf->GetSplitParam(ParamUV::U, s_split_param_u, 10);
-  surf->GetSplitParam(ParamUV::V, s_split_param_v, 10);
   std::vector<std::vector<std::shared_ptr<Surface>>> split_surfaces;
-  surf->GetDevidedSurfaces(s_split_param_u, s_split_param_v, surf->_color, split_surfaces);
+  surf->GetDevidedSurfaces(10, 10, split_surfaces, surf->_color);
+
+  auto solver =  std::make_unique<IntersectSolver>(
+		      1.0e-3,
+		      IntersectSolver::Algo::BoxInterfere);
+
+  solver->SetPair(curve, surf);
+  
+  // IntersectSolver solver(1.0e-3, IntersectSolver::Algo::BoxInterfere);
+  // solver.SetTolerance(1.0e-6);
 
   if (isFirst)
     {
@@ -100,7 +105,7 @@ void DrawSplitSurface_CGS8()
   std::vector<vector<std::shared_ptr<Surface>>> devided;
   vector<double> u_test_params = { 0.4, 1.5, 2.3, 2.8 };
   vector<double> v_test_params = { 0.4, 1.5, 1.7 };
-  surf1->GetDevidedSurfaces(u_test_params, v_test_params, surf1->_color, devided);
+  surf1->GetDevidedSurfaces(u_test_params, v_test_params, devided, surf1->_color);
 
   if (isFirst)
     {
@@ -142,7 +147,8 @@ void DrawSplitCurve_CGS8()
   auto test_params = vector<double>{ 1.5, 3, 3.2, 3.4, 4.3, 4.7 };
 
   // 分割曲線
-  auto split_curves = curve1_clone->GetDevidedCurves(test_params);
+  std::vector<std::shared_ptr<Curve>> split_curves;
+  curve1_clone->GetDevidedCurves(test_params, split_curves);
   //auto s = curve1_clone->Get2DevidedCurves(3);
   //auto c = (s.first)->Get2DevidedCurves(1.5);
   

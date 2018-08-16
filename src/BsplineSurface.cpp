@@ -886,24 +886,38 @@ void BsplineSurface::AddKnot(const ParamUV direction, const double param)
   }
 }
 
+// ノット範囲を等分割した曲面を取得する
+void BsplineSurface::GetDevidedSurfaces(int splitU, int splitV, std::vector<std::vector<std::shared_ptr<Surface>>>& devided_surfs, const GLdouble* const color)
+{
+  // パラメータを等分割
+  std::vector<double> s_split_param_u;
+  std::vector<double> s_split_param_v;
+  this->GetSplitParam(ParamUV::U, s_split_param_u, splitU);
+  this->GetSplitParam(ParamUV::V, s_split_param_v, splitV);
+  
+  // 分割曲面を取得
+  this->GetDevidedSurfaces(s_split_param_u, s_split_param_v, devided_surfs, color);
+}
+
+
 // 指定パラメータ位置でUV方向に分割した曲面を取得する
-void BsplineSurface::GetDevidedSurfaces(std::vector<double>& u_params, std::vector<double>& v_params, const GLdouble* const color, std::vector<vector<std::shared_ptr<Surface>>>& devided_surfs)
+void BsplineSurface::GetDevidedSurfaces(std::vector<double>& u_params, std::vector<double>& v_params, std::vector<vector<std::shared_ptr<Surface>>>& devided_surfs, const GLdouble* const color)
 {
   // U方向から分割
-  vector<std::shared_ptr<Surface>> u_split_surfs;
-  u_split_surfs = this->GetDevidedSurfaces(ParamUV::U, u_params, color);
+  std::vector<std::shared_ptr<Surface>> u_split_surfs;
+  this->GetDevidedSurfaces(ParamUV::U, u_params, u_split_surfs, color);
 
   // V方向から分割
   for (const auto& splited_surface : u_split_surfs)
     {
-      auto v_split_surfs = splited_surface->GetDevidedSurfaces(ParamUV::V, v_params, color);
+      std::vector<std::shared_ptr<Surface>> v_split_surfs;
+      splited_surface->GetDevidedSurfaces(ParamUV::V, v_params, v_split_surfs, color);
       devided_surfs.push_back(v_split_surfs);
     }
 }
 
 // 指定方向に指定パラメータ位置で分割した曲面を取得する
-std::vector<std::shared_ptr<Surface>>
-BsplineSurface::GetDevidedSurfaces(const ParamUV direction, std::vector<double>& params, const GLdouble* const color)
+void BsplineSurface::GetDevidedSurfaces(const ParamUV direction, std::vector<double>& params, std::vector<std::shared_ptr<Surface>>& devided_surfs, const GLdouble* const color)
 {
   // あらかじめパラメータをソートし重複を削除しておく
   std::sort(params.begin(), params.end());
@@ -913,7 +927,11 @@ BsplineSurface::GetDevidedSurfaces(const ParamUV direction, std::vector<double>&
   int ord = (direction == ParamUV::U) ? _ordU : _ordV;
   vector<double>& knot = (direction == ParamUV::U) ? _knotU :_knotV; 
   
-  std::vector<std::shared_ptr<Surface>> split_surfaces;
+  if (devided_surfs.size() > 0)
+    {
+      devided_surfs.clear();
+      devided_surfs.shrink_to_fit();
+    }
 
   // 分割位置のノット多重度が(階数-1)個になるまでノットを挿入
   for (const auto& param : params)
@@ -1035,9 +1053,7 @@ BsplineSurface::GetDevidedSurfaces(const ParamUV direction, std::vector<double>&
 					 (direction == ParamUV::V) ? &(split_knot[0]) : &(_knotV[0]),
 					 color);
 
-      split_surfaces.push_back(splited_surface);
+      devided_surfs.push_back(splited_surface);
       t_start = t_end + 1;
     }
-  
-  return split_surfaces;
 }

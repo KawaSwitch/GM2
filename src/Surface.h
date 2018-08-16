@@ -112,7 +112,11 @@ public:
     virtual std::unique_ptr<Surface> GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, GLdouble width) const = 0;
 
     // 指定方向に指定パラメータ位置で分割した曲面を取得する
-    virtual std::vector<std::shared_ptr<Surface>> GetDevidedSurfaces(const ParamUV direction, std::vector<double>& params, const GLdouble* const color) = 0;
+    virtual void GetDevidedSurfaces(const ParamUV direction, std::vector<double>& params, std::vector<std::shared_ptr<Surface>>& devided_surfs, const GLdouble* const color) = 0;
+    // 指定パラメータ位置でUV方向に分割した曲面を取得する
+    virtual void GetDevidedSurfaces(std::vector<double>& u_params, std::vector<double>& v_params, std::vector<vector<std::shared_ptr<Surface>>>& devided_surfs, const GLdouble* const color) = 0;
+    // ノット範囲を等分割した曲面を取得する
+    virtual void GetDevidedSurfaces(int splitU, int splitV, std::vector<std::vector<std::shared_ptr<Surface>>>& devided_surfs, const GLdouble* const color) = 0;
 
     virtual ~Surface() { glDeleteLists(_mesh_displayList, 1); }
 };

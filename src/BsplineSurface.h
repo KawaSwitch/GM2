@@ -30,6 +30,9 @@ protected:
     // ノットベクトル設定
     void SetKnotVector(const double* const knot, int size, vector<double>& _knot);
 
+    // 指定方向に指定パラメータ位置で分割した曲面を取得する
+    void GetDevidedSurfaces(const ParamUV direction, std::vector<double>& params, std::vector<std::shared_ptr<Surface>>& devided_surfs, const GLdouble* const color) override;
+
 private:
 
     // 指定した端の曲線を取得する
@@ -72,10 +75,11 @@ public:
 
     // ノットを追加する
     void AddKnot(const ParamUV direction, double param);
-    // 指定方向に指定パラメータ位置で分割した曲面を取得する
-    std::vector<std::shared_ptr<Surface>> GetDevidedSurfaces(const ParamUV direction, std::vector<double>& params, const GLdouble* const color) override;
+
     // 指定パラメータ位置でUV方向に分割した曲面を取得する
-    void GetDevidedSurfaces(std::vector<double>& u_params, std::vector<double>& v_params, const GLdouble* const color, std::vector<vector<std::shared_ptr<Surface>>>& devided_surfs);
+    void GetDevidedSurfaces(std::vector<double>& u_params, std::vector<double>& v_params, std::vector<vector<std::shared_ptr<Surface>>>& devided_surfs, const GLdouble* const color) override;
+    // ノット範囲を等分割した曲面を取得する
+    void GetDevidedSurfaces(int splitU, int splitV, std::vector<std::vector<std::shared_ptr<Surface>>>& devided_surfs, const GLdouble* const color) override;
 };
 
 // 通過点から逆変換してBスプライン曲面を取得する

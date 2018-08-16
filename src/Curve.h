@@ -67,6 +67,8 @@ public:
 
     // 指定したパラメータ位置で分割した曲線を取得します
     virtual void GetDevidedCurves(std::vector<double>& params, std::vector<std::shared_ptr<Curve>>& devided_curves) = 0;
+    // ノット範囲を等分割した曲線を取得する
+    virtual void GetDevidedCurves(int split, std::vector<std::shared_ptr<Curve>>& devided_curves) = 0; 
 
     virtual ~Curve() { };
 };
