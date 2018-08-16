@@ -14,7 +14,10 @@ g++ 7.3.0
 * Linux Mint 19 Cinnamon
 * Linux Mint 19 MATE
 * Ubuntu 16.04 LTS
-* Ubuntu 18.04 LTS
+* Ubuntu 18.04 LTS  
+  
+ Windows上でのコンパイルは今のところ不可能  
+ 対応中です
 
 # ビルドに必要なパッケージ
 _Debian系OSの場合です_  
