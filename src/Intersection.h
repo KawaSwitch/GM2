@@ -40,6 +40,8 @@ class IntersectSolver
   // 曲線と曲面の干渉ペアを取得
   void CalcInterferePair(std::shared_ptr<Curve> curve, std::shared_ptr<Surface> surf, int c_split, int s_splitU, int s_splitV, std::vector<std::pair<std::shared_ptr<Curve>, std::shared_ptr<Surface>>>& interfere);
 
+  // 干渉ペアをすべて描画する
+  void DrawInterferePairs(std::vector<std::vector<std::pair<std::shared_ptr<Curve>, std::shared_ptr<Surface>>>> interferePairs);
   
  public:
 

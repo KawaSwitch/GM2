@@ -31,6 +31,7 @@ protected:
     vector<ControlPoint> _ctrlp; // 制御点
     double _resolution; // 解像度
     Box _box; // バウンドボックス
+    GLdouble _boxColor[4]; // バウンドボックス色(現在はオブジェクト色を使用)
     
     // 事前描画
     virtual void PreDraw() const = 0;
@@ -134,8 +135,16 @@ public:
     // ミニマクスボックス描画
     void DrawBoxInternal() const
     {
-        Box box(_ctrlp);
-        box.Draw(Color::light_blue, 1.0);
+      Box box(_ctrlp);
+      if (_color[0] == -1)
+	box.Draw(Color::light_blue, 1.0);
+      else
+	box.Draw(_color, 1.0);
+    }
+    void SetBoxColor(const GLdouble* const color)
+    {
+      for (int i = 0; i < 4; i++)
+	_boxColor[i] = color[i];
     }
 
     // トグルチェンジ
@@ -237,6 +246,7 @@ public:
         _vbo = 0;
         _ibo = 0;
         _color[0] = -1;
+	_boxColor[0] = -1;
     }
 
     virtual ~Object()

@@ -67,7 +67,7 @@ public:
     }
 
     // 描画
-    void Draw(GLdouble* color, GLdouble width)
+    void Draw(const GLdouble* const color, const GLdouble width) const
     {
         glColor4dv(color);
         glLineWidth((GLfloat)width);

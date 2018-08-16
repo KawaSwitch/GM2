@@ -2,6 +2,8 @@
 #include <iostream>
 #include <chrono>
 
+extern Scene* test_scene;
+
 // 曲線と曲面ペアセット
 void IntersectSolver::SetPair(const std::shared_ptr<Curve> c, const std::shared_ptr<Surface> s)
 {
@@ -47,7 +49,7 @@ void IntersectSolver::CalcRoughInterferePair(const int c_split, const int s_spli
 }
 
 // ボックス干渉法で交点を1点取得(複数の交点取得は要改良)
-Vector3d IntersectSolver::GetIntersectByBoxInterfere(int c_split, int s_splitU, int s_splitV)
+Vector3d IntersectSolver::GetIntersectByBoxInterfere(const int c_split, const int s_splitU, const int s_splitV)
 {
   // 各回数ごとの干渉ペア
   std::vector<std::vector<
@@ -93,10 +95,12 @@ Vector3d IntersectSolver::GetIntersectByBoxInterfere(int c_split, int s_splitU, 
 	  updateInterferePairs(interferePairs[count - 1]);
 
       ++count;
-      
+
       if (found)
 	{
 	  cout << "count: " << count + 1 << endl; // 範囲狭める用のも含めて+1
+	  DrawInterferePairs(interferePairs); // 干渉ボックス描画
+	  
 	  return intersect;
 	}
     }
@@ -139,3 +143,24 @@ void IntersectSolver::CalcInterferePair(const std::shared_ptr<Curve> curve, cons
     }
 }
 
+// 干渉ペアをすべて描画する
+void IntersectSolver::DrawInterferePairs(std::vector<std::vector<std::pair<std::shared_ptr<Curve>, std::shared_ptr<Surface>>>> interferePairs)
+{
+  //srand((unsigned)time(NULL)); // 色ランダム変化用     
+  
+  for (const auto& stage_pairs : interferePairs)
+    {
+      GLdouble curve_color[4], surf_color[4];
+      Color::GetRandomColor(curve_color);
+      Color::GetRandomColor(surf_color);
+	      
+      for (auto& pairs : stage_pairs)
+	{
+	  pairs.first->SetColor(curve_color);
+	  pairs.second->SetColor(surf_color);
+		  
+	  test_scene->AddObject(pairs.first->GetName(), pairs.first);
+	  test_scene->AddObject(pairs.second->GetName(), pairs.second);
+	}
+    }
+}

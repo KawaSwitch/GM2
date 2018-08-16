@@ -82,16 +82,16 @@ void DrawIntersectCurveSurface_CGS8()
 
   if (isFirst)
     {
-      for (const auto& c : split_curves)
-	test_scene->AddObject(c->GetName(), c);
+      // for (const auto& c : split_curves)
+      // 	test_scene->AddObject(c->GetName(), c);
 
-      for (const auto& us : split_surfaces)
-      	{
-      	  for (const auto& vs : us)
-      	    {
-      	      test_scene->AddObject(vs->GetName(), vs);
-      	    }
-      	}
+      // for (const auto& us : split_surfaces)
+      // 	{
+      // 	  for (const auto& vs : us)
+      // 	    {
+      // 	      test_scene->AddObject(vs->GetName(), vs);
+      // 	    }
+      // 	}
       
       //test_scene->AddObject(curve->GetName(), curve);
       //test_scene->AddObject(surf->GetName(), surf);
