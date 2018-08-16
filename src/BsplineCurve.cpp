@@ -353,14 +353,17 @@ void BsplineCurve::AddKnot(const double t)
 }
 
 // 指定したパラメータ位置で分割した曲線を取得します
-std::vector<std::shared_ptr<Curve>>
-BsplineCurve::GetDevidedCurves(std::vector<double>& params)
+void BsplineCurve::GetDevidedCurves(std::vector<double>& params, std::vector<std::shared_ptr<Curve>>& devided_curves)
 { 
   // あらかじめパラメータをソートし重複を削除しておく
   std::sort(params.begin(), params.end());
   params.erase(std::unique(params.begin(), params.end()), params.end());
   
-  std::vector<std::shared_ptr<Curve>> split_curves;
+  if (devided_curves.size() > 0)
+    {
+      devided_curves.clear();
+      devided_curves.shrink_to_fit();
+    }
 
   // 分割位置のノット多重度が(階数-1)個になるまでノットを挿入
   for (const auto& t : params)
@@ -424,9 +427,7 @@ BsplineCurve::GetDevidedCurves(std::vector<double>& params)
 				       &(split_knot[0]),
 				       _color);
 
-      split_curves.push_back(splited_curve);
+      devided_curves.push_back(splited_curve);
       t_start = t_end + 1;
     }
-  
-  return split_curves;
 }

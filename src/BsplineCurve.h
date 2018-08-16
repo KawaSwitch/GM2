@@ -51,18 +51,7 @@ public:
     // ノット追加
     void AddKnot(double t);
     // 指定したパラメータ位置で分割した曲線を取得します
-    std::vector<std::shared_ptr<Curve>> GetDevidedCurves(std::vector<double>& params) override;
-
-    // デバグ用 -------------------------------
-    
-    inline void ShowKnotVector()
-    {
-      cout << _name << " : knots = [ ";
-      for (const auto& knot : _knot) cout << knot << " ";
-      cout << "]" << endl;
-    }
-
-    // -------------------------------------
+    void GetDevidedCurves(std::vector<double>& params, std::vector<std::shared_ptr<Curve>>& devided_curves) override;
 };
 
 // 通観点から逆変換して曲線を取得する

@@ -35,5 +35,5 @@ public:
     NearestPointInfoC GetNearestPointInfoFromRef(const Vector3d& ref) const override;
 
     // 指定したパラメータ位置で分割した曲線を取得します
-    std::vector<std::shared_ptr<Curve>> GetDevidedCurves(std::vector<double>& params) override;
+    void GetDevidedCurves(std::vector<double>& params, std::vector<std::shared_ptr<Curve>>& devided_curves) override;
 };
