@@ -487,6 +487,39 @@ void CalcControlPointsForAddingKnot(const double t, const int insert, const int 
   new_ctrlp.push_back(ctrlp[ncpnt-1]);
 }
 
+// ノット列を指定範囲に置き換える
+void AdjustKnotVector(vector<double>& knot, const int ord, const double min, const double max)
+{
+  int knot_size = (int)knot.size();
+
+  vector<double> seg_dist; // セグメント間の距離
+  seg_dist.resize(knot_size - 1);
+
+  // 最大ノット範囲
+  double paramRange = fabs(max - min);
+  
+  // ノット間の距離の総和
+  double sum = 0.0;
+  for (int i = 0; i < knot_size - 1; ++i)
+    {
+      seg_dist[i] = knot[i+1] - knot[i];
+      sum += seg_dist[i];
+    }
+
+  // ノット間隔の割合は通過点間の距離に比例させる
+  for (size_t i = 0, n = knot.size(); i < n; ++i)
+    {
+      if (i < (unsigned)ord) // 最初は階数分重ねる
+	knot[i] = min;
+      else if (i < knot.size() - ord) // 距離に比例
+	{
+	  knot[i] = knot[i - 1] + (seg_dist[i - 1] / sum) * paramRange;
+	}
+      else // 最後も階数分重ねる
+	knot[i] = max;
+    }
+}
+
 
 
 // 3点から成るポリゴンの単位化済み面法線を取得する

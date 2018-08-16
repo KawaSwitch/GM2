@@ -56,6 +56,9 @@ public:
     Vector3d GetSecondDiffVectorUV(double u, double v) const override;
     Vector3d GetSecondDiffVectorVV(double u, double v) const override;
 
+    // ノット範囲を等分割する位置のノットを取得する
+    void GetSplitParam(ParamUV param, vector<double>& params, int splitSegCnt = 1); 
+
     // ノットベクトルをもとにして点群を取得する
     void GetPointsByKnots(vector<vector<Vector3d>>& pnts, int splitSegCnt_U = 1, int splitSegCnt_V = 1) const;
     // ノットベクトルをもとにして点群情報を取得する
@@ -70,9 +73,9 @@ public:
     // ノットを追加する
     void AddKnot(const ParamUV direction, double param);
     // 指定方向に指定パラメータ位置で分割した曲面を取得する
-    std::vector<std::shared_ptr<Surface>> GetDevidedSurfaces(const ParamUV direction, std::vector<double>& params) override;
+    std::vector<std::shared_ptr<Surface>> GetDevidedSurfaces(const ParamUV direction, std::vector<double>& params, const GLdouble* const color) override;
     // 指定パラメータ位置でUV方向に分割した曲面を取得する
-    void GetDevidedSurfaces(std::vector<double>& u_params, std::vector<double>& v_params, std::vector<vector<std::shared_ptr<Surface>>>& devided_surfs);
+    void GetDevidedSurfaces(std::vector<double>& u_params, std::vector<double>& v_params, const GLdouble* const color, std::vector<vector<std::shared_ptr<Surface>>>& devided_surfs);
 };
 
 // 通過点から逆変換してBスプライン曲面を取得する

@@ -424,7 +424,7 @@ NearestPointInfoS BezierSurface::GetNearestPointInfoFromRef(const Vector3d& ref,
 }
 
 // 指定方向に指定パラメータ位置で分割した曲面を取得する
-std::vector<std::shared_ptr<Surface>> BezierSurface::GetDevidedSurfaces(const ParamUV direction, std::vector<double>& params)
+std::vector<std::shared_ptr<Surface>> BezierSurface::GetDevidedSurfaces(const ParamUV direction, std::vector<double>& params, const GLdouble* const color)
 {
   // NOTE: 未実装
   return std::vector<std::shared_ptr<Surface>>();

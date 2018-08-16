@@ -31,6 +31,9 @@ public:
     BsplineCurve(int mord, const ControlPoint* const cp, int cp_size, const double* const knot, 
         const GLdouble* const color, GLdouble width = 1.0, double resol = 20);
 
+    // ノット範囲を等分割する位置のノットを取得する
+    void GetSplitParam(vector<double>& params, int splitSegCnt = 1);
+    
     virtual vector<Vector3d> GetPositionVectorsByKnots(int splitSegCnt = 1) const;
     virtual vector<Point3dC> GetPointsByKnots(int splitSegCnt = 1) const;
 

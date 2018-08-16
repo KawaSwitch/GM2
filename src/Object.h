@@ -26,7 +26,6 @@ protected:
     bool _isUseIBO = false; // IBOを使うか
     mutable GLuint _vbo, _ibo;
 
-    GLdouble _color[4];  // 色
     std::string _name; // 名前
     vector<ControlPoint> _ctrlp; // 制御点
     double _resolution; // 解像度
@@ -84,7 +83,9 @@ protected:
       glDeleteBuffers(1, &_ibo);
     }
     
-
+ public:
+    GLdouble _color[4];  // 色
+    
 public:
 
     // オブジェクト描画

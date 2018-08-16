@@ -40,14 +40,49 @@ static vector<function<void(void)>> TestRegisterDraw
   //DrawCurveNearest_CGS6, // 最近点を描画_曲線
   //DrawSurfaceNearest_CGS7, // 最近点を描画_曲面
   //DrawSplitCurve_CGS8, // 分割曲線を描画
-    DrawSplitSurface_CGS8, // 分割曲面を描画
-    //DrawIntersectCurveSurface_CGS8, // 曲線と曲面の交点取得
+  //DrawSplitSurface_CGS8, // 分割曲面を描画
+      DrawIntersectCurveSurface_CGS8, // 曲線と曲面の交点取得
 };
 
 // 曲線と曲面の交点取得
 void DrawIntersectCurveSurface_CGS8()
 {
-  
+  auto reader = std::make_unique<KjsReader>();
+
+  // 参照曲線
+  std::shared_ptr<BsplineCurve> curve((BsplineCurve *)reader->GetObjectFromFile(curveS_name));
+  // 参照曲面
+  std::shared_ptr<BsplineSurface> surf((BsplineSurface *)reader->GetObjectFromFile(surf1_name));
+
+  // 曲線分割
+  std::vector<double> c_split_param;
+  curve->GetSplitParam(c_split_param, 10);
+  auto split_curves = curve->GetDevidedCurves(c_split_param);
+
+  // 曲面分割
+  std::vector<double> s_split_param_u;
+  std::vector<double> s_split_param_v;
+  surf->GetSplitParam(ParamUV::U, s_split_param_u, 10);
+  surf->GetSplitParam(ParamUV::V, s_split_param_v, 10);
+  std::vector<std::vector<std::shared_ptr<Surface>>> split_surfaces;
+  surf->GetDevidedSurfaces(s_split_param_u, s_split_param_v, surf->_color, split_surfaces);
+
+  if (isFirst)
+    {
+      for (const auto& c : split_curves)
+	test_scene->AddObject(c->GetName(), c);
+
+      for (const auto& us : split_surfaces)
+      	{
+      	  for (const auto& vs : us)
+      	    {
+      	      test_scene->AddObject(vs->GetName(), vs);
+      	    }
+      	}
+      
+      //test_scene->AddObject(curve->GetName(), curve);
+      //test_scene->AddObject(surf->GetName(), surf);
+    }
 }
 
 // 分割曲面を描画
@@ -65,7 +100,7 @@ void DrawSplitSurface_CGS8()
   std::vector<vector<std::shared_ptr<Surface>>> devided;
   vector<double> u_test_params = { 0.4, 1.5, 2.3, 2.8 };
   vector<double> v_test_params = { 0.4, 1.5, 1.7 };
-  surf1->GetDevidedSurfaces(u_test_params, v_test_params, devided);
+  surf1->GetDevidedSurfaces(u_test_params, v_test_params, surf1->_color, devided);
 
   if (isFirst)
     {

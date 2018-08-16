@@ -20,3 +20,4 @@ void CalcControlPointsByPassingPnts(const vector<Vector3d>& pnts, const int ord,
 
 void CalcKnotsForAddingKnot(const double t, const vector<double>& knot, unsigned& insert, vector<double>& new_knot);
 void CalcControlPointsForAddingKnot(const double t, const int insert, const int ord, const vector<double>& knot, const vector<ControlPoint>& ctrlp, vector<ControlPoint>& new_ctrlp);
+void AdjustKnotVector(vector<double>& knot, int ord, double min, double max);

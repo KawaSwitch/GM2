@@ -48,6 +48,15 @@ void BsplineCurve::SetKnotVector(const double* const knot, const int size)
         _knot.emplace_back(knot[i]);
 }
 
+// ノット範囲を等分割する位置のノットを取得する
+void BsplineCurve::GetSplitParam(vector<double>& params, const int splitSegCnt)
+{
+  double skip = (_knot[_nknot - _ord] - _knot[_ord - 1]) / (double)splitSegCnt;
+
+  for (double param = _knot[0] + skip; param < _knot[_nknot-1] - skip/2; param += skip)
+    params.push_back(param);
+}
+    
 // ノットベクトルをもとにして点群を取得する
 // splitSegCnt: セグメントを何分割するかの回数(デフォルトは1 = 分割しない)
 vector<Vector3d> BsplineCurve::GetPositionVectorsByKnots(const int splitSegCnt) const
@@ -261,7 +270,7 @@ Vector3d BsplineCurve::GetPositionVector(const double t) const
     // 標準的
     for (int i = 0; i < _ncpnt; i++)
         pnt += CalcBsplineFunc(i, _ord, t, &_knot[0]) * _ctrlp[i];
-
+    
     return pnt;
 }
 
@@ -402,14 +411,18 @@ BsplineCurve::GetDevidedCurves(std::vector<double>& params)
 	split_ctrlp.push_back(_ctrlp[ci]);
 
       // 分割曲線を生成
-      GLdouble color[4];
-      Color::GetRandomColor(color);
-	
+      // TODO: ランダムや色指定はあとから指定可能へ
+      // GLdouble color[4];
+      // Color::GetRandomColor(color);
+
+      // ノットの正規化
+      AdjustKnotVector(split_knot, _ord, 0, 1);
+      
       auto splited_curve =
 	std::make_shared<BsplineCurve>(_ord,
 				       &(split_ctrlp[0]), split_ctrlp.size(),
 				       &(split_knot[0]),
-				       color);
+				       _color);
 
       split_curves.push_back(splited_curve);
       t_start = t_end + 1;

@@ -536,6 +536,11 @@ Vector3d BsplineSurface::CalcVector(
 
     // ベクトル算出(行列計算)
     vector = CalcVectorWithBasisFunctions(&N_array_U[0], &N_array_V[0]);
+    // if (vector.X == 0 && vector.Y == 0 && vector.Z == 0)
+    //   {
+    // 	cout << "surf:kita" << endl;
+    // 	cout << "u: " << u << " v: " << v << endl;
+    //   }
 
     delete[](delete[] N_array_U, N_array_V);
     return vector;
@@ -575,6 +580,25 @@ Vector3d BsplineSurface::GetSecondDiffVectorVV(const double u, const double v) c
 {
     // u:0-diff v:2-diff
     return CalcVector(u, v, CalcBsplineFunc, Calc2DiffBsplineFunc);
+}
+
+// ノット範囲を等分割する位置のノットを取得する
+void BsplineSurface::GetSplitParam(const ParamUV param, vector<double>& params, const int splitSegCnt)
+{
+  if (param == ParamUV::U)
+    {
+      double skip = (_knotU[_nknotU - _ordU] - _knotU[_ordU - 1]) / (double)splitSegCnt;
+      
+      for (double param = _knotU[0] + skip; param < _knotU[_nknotU-1] - skip/2; param += skip)
+	params.push_back(param);
+    }
+  else
+    {
+      double skip = (_knotV[_nknotV - _ordV] - _knotV[_ordV - 1]) / (double)splitSegCnt;
+      
+      for (double param = _knotV[0] + skip; param < _knotV[_nknotV-1] - skip/2; param += skip)
+	params.push_back(param);      
+    }
 }
 
 // ノットベクトルをもとにして点群を取得する(pnts[v][u]と並べる)
@@ -863,24 +887,23 @@ void BsplineSurface::AddKnot(const ParamUV direction, const double param)
 }
 
 // 指定パラメータ位置でUV方向に分割した曲面を取得する
-void BsplineSurface::GetDevidedSurfaces(std::vector<double>& u_params, std::vector<double>& v_params,
-					std::vector<vector<std::shared_ptr<Surface>>>& devided_surfs)
+void BsplineSurface::GetDevidedSurfaces(std::vector<double>& u_params, std::vector<double>& v_params, const GLdouble* const color, std::vector<vector<std::shared_ptr<Surface>>>& devided_surfs)
 {
   // U方向から分割
   vector<std::shared_ptr<Surface>> u_split_surfs;
-  u_split_surfs = this->GetDevidedSurfaces(ParamUV::U, u_params);
+  u_split_surfs = this->GetDevidedSurfaces(ParamUV::U, u_params, color);
 
   // V方向から分割
   for (const auto& splited_surface : u_split_surfs)
     {
-      auto v_split_surfs = splited_surface->GetDevidedSurfaces(ParamUV::V, v_params);
+      auto v_split_surfs = splited_surface->GetDevidedSurfaces(ParamUV::V, v_params, color);
       devided_surfs.push_back(v_split_surfs);
     }
 }
 
 // 指定方向に指定パラメータ位置で分割した曲面を取得する
 std::vector<std::shared_ptr<Surface>>
-BsplineSurface::GetDevidedSurfaces(const ParamUV direction, std::vector<double>& params)
+BsplineSurface::GetDevidedSurfaces(const ParamUV direction, std::vector<double>& params, const GLdouble* const color)
 {
   // あらかじめパラメータをソートし重複を削除しておく
   std::sort(params.begin(), params.end());
@@ -888,8 +911,6 @@ BsplineSurface::GetDevidedSurfaces(const ParamUV direction, std::vector<double>&
 
   // UVの場合分けを考えないように変数を新たに定義
   int ord = (direction == ParamUV::U) ? _ordU : _ordV;
-  int nknot = (direction == ParamUV::U) ? _nknotU : _nknotV;
-  int ncpnt = (direction == ParamUV::U) ? _ncpntU : _ncpntV;
   vector<double>& knot = (direction == ParamUV::U) ? _knotU :_knotV; 
   
   std::vector<std::shared_ptr<Surface>> split_surfaces;
@@ -898,8 +919,9 @@ BsplineSurface::GetDevidedSurfaces(const ParamUV direction, std::vector<double>&
   for (const auto& param : params)
     {
       // 範囲外
-      if (param < knot[0] || param > knot[nknot-1])
-	perror("GetDevidedSurfaces");
+      if ((direction == ParamUV::U && (param < _knotU[0] || param > _knotU[_nknotU-1])) ||
+	  (direction == ParamUV::V && (param < _knotV[0] || param > _knotV[_nknotV-1])))
+      	perror("GetDevidedSurfaces");
 
       int param_cnt_now = std::count(knot.begin(), knot.end(), param);
       for (int i = param_cnt_now; i < ord-1; ++i)
@@ -907,9 +929,8 @@ BsplineSurface::GetDevidedSurfaces(const ParamUV direction, std::vector<double>&
     }
 
   // ノット挿入の変化による再定義
-  nknot = (direction == ParamUV::U) ? _nknotU : _nknotV;
-  ncpnt = (direction == ParamUV::U) ? _ncpntU : _ncpntV;
-  knot = (direction == ParamUV::U) ? _knotU :_knotV; 
+  int ncpnt = (direction == ParamUV::U) ? _ncpntU : _ncpntV;
+  knot = (direction == ParamUV::U) ? _knotU :_knotV;
   
   unsigned t_start, t_end; // 分割曲面のノットパラメータ始端/終端位置
 
@@ -992,11 +1013,19 @@ BsplineSurface::GetDevidedSurfaces(const ParamUV direction, std::vector<double>&
 	}
 
       // 分割曲線を生成
-      GLdouble color[4];
-      Color::GetRandomColor(color);
 
-      //cout << _ncpntU << " " << _ncpntV << " " << split_ctrlp.size() << endl;
-      
+      // TODO: ランダムや色指定はあとから指定可能へ
+      //GLdouble color[4];
+      //Color::GetRandomColor(color);
+
+      // ノットの正規化
+      AdjustKnotVector(split_knot, ord, 0, 1);
+
+      // TODO: 15 15のときにおかしくなるバグ修正
+      // for (const auto& b : split_knot)
+      // 	cout << (double)b << " ";
+      // cout << endl;
+
       auto splited_surface =
 	std::make_shared<BsplineSurface>(_ordU, _ordV,
 					 &(split_ctrlp[0]),
