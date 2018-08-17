@@ -146,11 +146,26 @@ void IntersectSolver::CalcInterferePair(const std::shared_ptr<Curve> curve, cons
 // 干渉ペアをすべて描画する
 void IntersectSolver::DrawInterferePairs(std::vector<std::vector<std::pair<std::shared_ptr<Curve>, std::shared_ptr<Surface>>>> interferePairs)
 {
+  GLdouble curve_color[4], surf_color[4];
   //srand((unsigned)time(NULL)); // 色ランダム変化用     
-  
+
+  // 初回の範囲狭める用
+  {
+    Color::GetRandomColor(curve_color);
+    Color::GetRandomColor(surf_color);
+
+    for (auto& pairs : _interferePair)
+      {
+  	pairs.first->SetColor(curve_color);
+  	pairs.second->SetColor(surf_color);
+		  
+  	test_scene->AddObject(pairs.first->GetName(), pairs.first);
+  	test_scene->AddObject(pairs.second->GetName(), pairs.second);
+      }
+  }
+  // 残り
   for (const auto& stage_pairs : interferePairs)
     {
-      GLdouble curve_color[4], surf_color[4];
       Color::GetRandomColor(curve_color);
       Color::GetRandomColor(surf_color);
 	      
@@ -158,7 +173,7 @@ void IntersectSolver::DrawInterferePairs(std::vector<std::vector<std::pair<std::
 	{
 	  pairs.first->SetColor(curve_color);
 	  pairs.second->SetColor(surf_color);
-		  
+
 	  test_scene->AddObject(pairs.first->GetName(), pairs.first);
 	  test_scene->AddObject(pairs.second->GetName(), pairs.second);
 	}
