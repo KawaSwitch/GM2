@@ -32,6 +32,7 @@ protected:
     double _resolution; // 解像度
     Box _box; // バウンドボックス
     GLdouble _boxColor[4]; // バウンドボックス色(現在はオブジェクト色を使用)
+    GLdouble _boxWidth; // ボックスの太さ
     
     // 事前描画
     virtual void PreDraw() const = 0;
@@ -137,14 +138,18 @@ public:
     {
       Box box(_ctrlp);
       if (_color[0] == -1)
-	box.Draw(Color::light_blue, 1.0);
+	box.Draw(Color::light_blue, _boxWidth);
       else
-	box.Draw(_color, 1.0);
+	box.Draw(_color, _boxWidth);
     }
     void SetBoxColor(const GLdouble* const color)
     {
       for (int i = 0; i < 4; i++)
 	_boxColor[i] = color[i];
+    }
+    void SetBoxWidth(const GLdouble width)
+    {
+      _boxWidth = width;
     }
 
     // トグルチェンジ
@@ -247,6 +252,7 @@ public:
         _ibo = 0;
         _color[0] = -1;
 	_boxColor[0] = -1;
+	_boxWidth = 1;
     }
 
     virtual ~Object()
