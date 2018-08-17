@@ -12,9 +12,9 @@ void IntersectSolver::SetPair(const std::shared_ptr<Curve> c, const std::shared_
 }
 
 // 交点取得
-Vector3d IntersectSolver::GetIntersect()
+vector<Vector3d> IntersectSolver::GetIntersects()
 {
-  Vector3d intersect;
+  vector<Vector3d> intersects;
 
   // 時間計測
   auto start = std::chrono::system_clock::now();
@@ -26,7 +26,7 @@ Vector3d IntersectSolver::GetIntersect()
     if (_algo == Algo::BoxInterfere)
       {
 	// ボックス干渉法
-	intersect = GetIntersectByBoxInterfere();
+	intersects = GetIntersectByBoxInterfere();
       }
     else
       perror("GetIntersect"); // 未実装
@@ -35,13 +35,18 @@ Vector3d IntersectSolver::GetIntersect()
   double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count();
   cout << "交点取得時間: " << elapsed << "ミリ秒" << endl;
 
-  cout << "交点: (" << intersect.X << ", " << intersect.Y << ", " << intersect.Z << ")" << endl;
+  for (unsigned i = 0; i < intersects.size(); ++i)
+    {
+      cout << "交点[" << i+1 << "]: (" << intersects[i].X << ", "
+	   << intersects[i].Y << ", "
+	   << intersects[i].Z << ")" << endl;
+    }
   
-  return intersect;
+  return intersects;
 }
 
 // おおまかにボックスの干渉するオブジェクトペアを取得する
-// とりあえずボックス干渉1回のペア
+// とりあえずボックス干渉1回のペア(TODO: より細かな交点群を取得する場合はもっと)
 void IntersectSolver::CalcRoughInterferePair(const int c_split, const int s_splitU, const int s_splitV)
 {
   // 最初にセットしたオブジェクトに対して1回分
@@ -49,14 +54,13 @@ void IntersectSolver::CalcRoughInterferePair(const int c_split, const int s_spli
 }
 
 // ボックス干渉法で交点を1点取得(複数の交点取得は要改良)
-Vector3d IntersectSolver::GetIntersectByBoxInterfere(const int c_split, const int s_splitU, const int s_splitV)
+std::vector<Vector3d> IntersectSolver::GetIntersectByBoxInterfere(const int c_split, const int s_splitU, const int s_splitV)
 {
   // 各回数ごとの干渉ペア
   std::vector<std::vector<
     std::pair<std::shared_ptr<Curve>, std::shared_ptr<Surface>>>> interferePairs;
   int count = 0; // 回数(ステージ数)
-  Vector3d intersect; // 交点
-  bool found = false; // 交点が見つかったか
+  vector<Vector3d> intersects; // 交点群
 
   // 干渉ペアを更新する
   auto updateInterferePairs = [&](std::vector<std::pair<std::shared_ptr<Curve>, std::shared_ptr<Surface>>> curPairs) -> void
@@ -71,12 +75,9 @@ Vector3d IntersectSolver::GetIntersectByBoxInterfere(const int c_split, const in
 	  // 干渉ボックスペアを囲むボックス
 	  Box pairBox(pairBoxes);
 
-	  // 対角線の長さが十分に小さければボックス中心を交点として返却
+	  // 対角線の長さが十分に小さければボックス中心を交点として格納
 	  if (pairBox.DiagLength() < _eps)
-	    {
-	      intersect = pairBox.Center();
-	      found = true;
-	    }
+	      intersects.push_back(pairBox.Center());
 
 	  // 再分割し, 干渉ボックスを探索
 	  std::vector<std::pair<std::shared_ptr<Curve>, std::shared_ptr<Surface>>> pairs;
@@ -96,18 +97,18 @@ Vector3d IntersectSolver::GetIntersectByBoxInterfere(const int c_split, const in
 
       ++count;
 
-      if (found)
+      // 干渉ボックスがなくなったら終了
+      if (interferePairs[count-1].size() == 0)
 	{
 	  cout << "count: " << count + 1 << endl; // 範囲狭める用のも含めて+1
 	  DrawInterferePairs(interferePairs); // 干渉ボックス描画
 	  
-	  return intersect;
+	  return intersects;
 	}
     }
 
-  cout << "throw" << endl;
-  perror("GetIntersectByBoxInterfere");
-  throw;
+  cout << "交点は見つかりませんでした" << endl;
+  return intersects;
 }
 
 // 曲線と曲面の干渉ペアを取得
@@ -116,14 +117,16 @@ void IntersectSolver::CalcInterferePair(const std::shared_ptr<Curve> curve, cons
   // 曲線を分割
   std::vector<std::shared_ptr<Curve>> split_curves;
   if (curve->GetBound().DiagLength() < _eps / 10) // 部分曲線が十分に小さい場合は再分割を行わない
-    curve->GetDevidedCurves(1, split_curves); // 1分割 = もとの曲線
+    //curve->GetDevidedCurves(1, split_curves); // 1分割 = もとの曲線
+    return;
   else
     curve->GetDevidedCurves(c_split, split_curves);
   
   // 曲面を分割
   std::vector<std::vector<std::shared_ptr<Surface>>> split_surfs;
   if (surf->GetBound().DiagLength() < _eps / 10) // 部分曲面が十分に小さい場合は再分割を行わない
-    surf->GetDevidedSurfaces(1, 1, split_surfs, _surface->_color);
+    //surf->GetDevidedSurfaces(1, 1, split_surfs, _surface->_color);
+    return;
   else
     surf->GetDevidedSurfaces(s_splitU, s_splitV, split_surfs, _surface->_color);
 
@@ -153,7 +156,7 @@ void IntersectSolver::DrawInterferePairs(std::vector<std::vector<std::pair<std::
   {
     Color::GetRandomColor(curve_color);
     Color::GetRandomColor(surf_color);
-
+    
     for (auto& pairs : _interferePair)
       {
   	pairs.first->SetColor(curve_color);

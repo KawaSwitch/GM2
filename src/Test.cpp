@@ -25,6 +25,7 @@ static const std::string curve2_name("CGS_bspline_curve_2.kjs");
 static const std::string curveC_name("CGS_bspline_curve_C.kjs");
 static const std::string curveS_name("CGS_bspline_curve_S.kjs");
 static const std::string surf1_name("CGS_bspline_surface_1.kjs");
+static const std::string curveG_name("CGS_bspline_curve_G.kjs");
 
 // テストというか仮描画！！！！！
 
@@ -51,7 +52,7 @@ void DrawIntersectCurveSurface_CGS8()
   auto reader = std::make_unique<KjsReader>();
 
   // 参照曲線
-  std::shared_ptr<BsplineCurve> curve((BsplineCurve *)reader->GetObjectFromFile(curveS_name));
+  std::shared_ptr<BsplineCurve> curve((BsplineCurve *)reader->GetObjectFromFile(curveG_name));
   // 参照曲面
   std::shared_ptr<BsplineSurface> surf((BsplineSurface *)reader->GetObjectFromFile(surf1_name));
 
@@ -70,28 +71,31 @@ void DrawIntersectCurveSurface_CGS8()
 
     // 交点描画
     {
-      Vector3d intersect = solver->GetIntersect();
+      std::vector<Vector3d> intersects = solver->GetIntersects();
 
       glColor3dv(Color::red);
       glPointSize(12.0);
-      glBegin(GL_POINTS);
-      glVertex3d(intersect);
-      glEnd();
+      for (const auto& intersect : intersects)
+    	{
+    	  glBegin(GL_POINTS);
+    	  glVertex3d(intersect);
+    	  glEnd();
+    	}
     }
   }
 
   if (isFirst)
     {
-      // for (const auto& c : split_curves)
-      // 	test_scene->AddObject(c->GetName(), c);
+      for (const auto& c : split_curves)
+	test_scene->AddObject(c->GetName(), c);
 
-      // for (const auto& us : split_surfaces)
-      // 	{
-      // 	  for (const auto& vs : us)
-      // 	    {
-      // 	      test_scene->AddObject(vs->GetName(), vs);
-      // 	    }
-      // 	}
+      for (const auto& us : split_surfaces)
+      	{
+      	  for (const auto& vs : us)
+      	    {
+      	      test_scene->AddObject(vs->GetName(), vs);
+      	    }
+      	}
       
       //test_scene->AddObject(curve->GetName(), curve);
       //test_scene->AddObject(surf->GetName(), surf);

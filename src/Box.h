@@ -50,12 +50,12 @@ public:
     // 他ボックスと干渉するか
     bool IsInterfere(const Box& other)
     {
-        return _xmax >= other._xmin
-            && _ymax >= other._ymin
-            && _zmax >= other._zmin
-            && other._xmax >= _xmin
-            && other._ymax >= _ymin
-            && other._zmax >= _zmin;
+        return _xmax > other._xmin
+            && _ymax > other._ymin
+            && _zmax > other._zmin
+            && other._xmax > _xmin
+            && other._ymax > _ymin
+            && other._zmax > _zmin;
     }
 
     // ボックスが適正か
