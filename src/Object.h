@@ -9,6 +9,8 @@
 #include "Box.h"
 #include "DrawUtil.h"
 
+extern bool canUseVbo;
+
 class Scene;
 
 // オブジェクト基底クラス
@@ -23,7 +25,7 @@ private:
 
 protected:
 
-    bool _isUseVBO = false; // VBOを使うか
+    bool _isUseVBO = canUseVbo; // VBOを使うか
     bool _isUseIBO = false; // IBOを使うか
     mutable GLuint _vbo, _ibo;
 

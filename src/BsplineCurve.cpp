@@ -25,9 +25,6 @@ BsplineCurve::BsplineCurve(const int mord, const ControlPoint* const cp, const i
 
     _length = this->GetLength();
     _draw_vec_length = _length * _draw_vector_ratio;
-
-    // VBO使う
-    _isUseVBO = true;
 }
 
 // ノットベクトル設定

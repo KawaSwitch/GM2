@@ -42,6 +42,8 @@ GLOBAL GridType gridType; // グリッド描画タイプ
 
 GLOBAL bool isViewInitRequested; // 画面表示を初期に戻すか
 
+GLOBAL bool canUseVbo; // VBO機能が使えるか
+
 // 構造体
 GLOBAL Quaternion target;
 GLOBAL Quaternion current;

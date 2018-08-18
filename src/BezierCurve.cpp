@@ -17,9 +17,6 @@ BezierCurve::BezierCurve(const int mord, const ControlPoint* const cp, const int
 
     _length = this->GetLength();
     _draw_vec_length = _length * _draw_vector_ratio;
-
-    // VBO使う
-    _isUseVBO = true;
 }
 
 // 事前描画

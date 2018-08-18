@@ -13,6 +13,7 @@ extern NormalAxis* axis;
 extern GeoGrid2D* grid;
 extern Scene* scene;
 extern Scene* test_scene;
+extern bool canUseVbo;
 
 const int grid_length = 200;
 const int grid_interval = 5;
@@ -46,9 +47,31 @@ void InitQuaternion()
     CalcRotateMatrix(rot_mat, current);
 }
 
+// OpenGLバージョンによる設定を確認する
+void CheckOpenglVersion()
+{
+    SetCanUseVbo(); // VBOチェック
+}
+// VBOが使用可能かをセットする
+void SetCanUseVbo()
+{
+    std::string glVersion = (reinterpret_cast<char const *>(glGetString(GL_VERSION)));
+    std::cout << "OpenGL version: " << glVersion << std::endl << std::endl;
+
+    // 多分環境依存 1文字目と3文字目にこないかもなので要改良
+    int major = (int)glVersion[0] - '0';
+    int minor = (int)glVersion[2] - '0';
+
+    // VBOが使用できるのは1.5から
+    canUseVbo = (major == 1 && minor >= 5) || major > 1;
+}
+
 void Initialize()
 {
+    glewExperimental = GL_TRUE;
     glewInit(); // glew拡張
+
+    CheckOpenglVersion(); // OpenGLバージョン互換
 
     glClearColor(1.0, 1.0, 1.0, 1.0);   // 背景色：白
     glClearStencil(0); // ステンシル値は0で初期化

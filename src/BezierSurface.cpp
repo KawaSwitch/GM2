@@ -13,9 +13,6 @@ BezierSurface::BezierSurface(
     SetControlPoint(cp, u_cp_size * v_cp_size);
     SetColor(color);
     _resolution = resol;
-
-    // VBOを使う
-    _isUseVBO = true;
 }
 
 // 指定した端の曲線を取得する

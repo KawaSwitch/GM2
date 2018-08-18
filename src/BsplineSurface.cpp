@@ -22,11 +22,6 @@ BsplineSurface::BsplineSurface(
     SetKnotVector(v_knot, _nknotV, _knotV);
     SetColor(color);
     _resolution = resol;
-
-    // VBOを使う
-    _isUseVBO = true;
-    // IBOを使う
-    //_isUseIBO = true;
 }
 
 // ノットベクトル設定
