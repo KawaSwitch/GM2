@@ -26,7 +26,7 @@ vector<Vector3d> IntersectSolver::GetIntersects()
     if (_algo == Algo::BoxInterfere)
       {
 	// ボックス干渉法
-	intersects = GetIntersectByBoxInterfere();
+	intersects = GetIntersectsByBoxInterfere();
       }
     else
       perror("GetIntersect"); // 未実装
@@ -53,8 +53,65 @@ void IntersectSolver::CalcRoughInterferePair(const int c_split, const int s_spli
   this->CalcInterferePair(_curve, _surface, c_split, s_splitU, s_splitV, _interferePair);
 }
 
-// ボックス干渉法で交点を1点取得(複数の交点取得は要改良)
-std::vector<Vector3d> IntersectSolver::GetIntersectByBoxInterfere(const int c_split, const int s_splitU, const int s_splitV)
+// ボックス干渉法で交点を1点取得(資料のアルゴリズム)
+// 交点が見つからなければ強制終了
+Vector3d IntersectSolver::GetIntersectByBoxInterfere(const int c_split, const int s_splitU, const int s_splitV)
+{
+  // 各回数ごとの干渉ペア
+  std::vector<std::vector<
+    std::pair<std::shared_ptr<Curve>, std::shared_ptr<Surface>>>> interferePairs;
+  int count = 0; // 回数(ステージ数)
+  Vector3d intersect; // 交点
+  bool found = false; // 交点が見つかったか
+
+  // 干渉ペアを更新する
+  auto updateInterferePairs = [&](std::vector<std::pair<std::shared_ptr<Curve>, std::shared_ptr<Surface>>> curPairs) -> void
+    {
+      std::vector<std::pair<std::shared_ptr<Curve>, std::shared_ptr<Surface>>> stagePairs;
+	  
+      for (const auto& pair : curPairs)
+	{
+	  vector<Box> pairBoxes {
+	    pair.first->GetBound(), pair.second->GetBound() };
+
+	  // 干渉ボックスペアを囲むボックス
+	  Box pairBox(pairBoxes);
+
+	  // 対角線の長さが十分に小さければボックス中心を交点として返却
+	  if (pairBox.DiagLength() < _eps)
+	    {
+	      intersect = pairBox.Center();
+	      found = true;
+	    }
+
+	  // 再分割し, 干渉ボックスを探索
+	  std::vector<std::pair<std::shared_ptr<Curve>, std::shared_ptr<Surface>>> pairs;
+	  this->CalcInterferePair(pair.first, pair.second, c_split, s_splitU, s_splitV, pairs);
+	  stagePairs.insert(stagePairs.end(), pairs.begin(), pairs.end());
+	}
+
+      interferePairs.push_back(stagePairs);
+    };
+  
+  while (count < EPS::COUNT_MAX)
+    {
+      if (count == 0) // 最初
+	  updateInterferePairs(_interferePair);
+      else
+	  updateInterferePairs(interferePairs[count - 1]);
+
+      if (found)
+	return intersect;
+
+      ++count;
+    }
+
+  cout << "交点は見つかりませんでした" << endl;
+  throw;
+}
+
+// ボックス干渉法で交点を複数点取得(なお要改良)
+std::vector<Vector3d> IntersectSolver::GetIntersectsByBoxInterfere(const int c_split, const int s_splitU, const int s_splitV)
 {
   // 各回数ごとの干渉ペア
   std::vector<std::vector<
