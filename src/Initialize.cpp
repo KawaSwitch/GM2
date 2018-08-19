@@ -56,7 +56,7 @@ void CheckOpenglVersion()
 void SetCanUseVbo()
 {
     std::string glVersion = (reinterpret_cast<char const *>(glGetString(GL_VERSION)));
-    std::cout << "OpenGL version: " << glVersion << std::endl << std::endl;
+    std::cout << "Your OpenGL version: " << glVersion << std::endl;
 
     // 多分環境依存 1文字目と3文字目にこないかもなので要改良
     int major = (int)glVersion[0] - '0';
@@ -64,6 +64,10 @@ void SetCanUseVbo()
 
     // VBOが使用できるのは1.5から
     canUseVbo = (major == 1 && minor >= 5) || major > 1;
+
+    if (!canUseVbo)
+        std::cout << "Warning: " << "version1.5未満: 負荷の大きいレンダリングモードで実行します." << std::endl;
+    std::cout << std::endl;
 }
 
 void Initialize()
@@ -83,10 +87,10 @@ void Initialize()
     glHint(GL_POINT_SMOOTH_HINT, GL_NICEST); // アンチエイリアシング品質を最高に
 
     glShadeModel(GL_SMOOTH);
-    
+
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND); // ブレンド 有効化
-    
+
     // メインライト初期化
     {
         lights.push_back(new Light(GL_LIGHT0, 50, 50, -50));
