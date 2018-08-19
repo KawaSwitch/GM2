@@ -23,7 +23,7 @@ Linux以外からは仮想環境のみ
 Windowsの場合WSLが楽  
   
 # ビルドに必要なパッケージ
-_Debian系OSの場合です_  
+(Debian系OSの場合)  
 freeglut  
 glew  
 build-essential  
@@ -40,5 +40,5 @@ cp -r ./KJS_FILE ./build
 cd build  
 cmake ..  
 make  
-src/geoModeling  
+./geoModeling  
 ```  
