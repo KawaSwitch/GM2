@@ -15,21 +15,21 @@ extern Scene* scene;
 
 void Mouse(int button, int state, int x, int y)
 { 
-    // ‰EF‰ñ“]
+    // å³ï¼šå›è»¢
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
     {
 #ifdef _DEBUG
-        //// ƒsƒNƒZƒ‹‚ÌƒfƒvƒX’l‚ğæ“¾
+        //// ãƒ”ã‚¯ã‚»ãƒ«ã®ãƒ‡ãƒ—ã‚¹å€¤ã‚’å–å¾—
         //float z = GetDepth(x, y);
 
-        //// ‰Ÿ‰ºêŠ‚ÌÀ•W’l‚ğæ“¾
+        //// æŠ¼ä¸‹å ´æ‰€ã®åº§æ¨™å€¤ã‚’å–å¾—
         //auto coord = GetWorldCoord(x, y, z);
 
         //printf("mouse : x, y, depth : %d %d %f\n", x, y, z);
         //printf("world : x, y, z : %f %f %f\n\n", coord.X, coord.Y, coord.Z);
 #endif
 
-        // ƒ}ƒEƒXƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½ˆÊ’u‚ğ‹L‰¯
+        // ãƒã‚¦ã‚¹ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸä½ç½®ã‚’è¨˜æ†¶
         mouse_X = x;
         mouse_Y = y;
         rotate_flag = GL_TRUE;
@@ -38,15 +38,15 @@ void Mouse(int button, int state, int x, int y)
     {
         rotate_flag = GL_FALSE;
 
-        // ˆÚ“®‚µ‚Ä‚¢‚é‚Æ‚«‚¾‚¯‰ñ“]•Û‘¶
+        // ç§»å‹•ã—ã¦ã„ã‚‹ã¨ãã ã‘å›è»¢ä¿å­˜
         if (!(x == mouse_X && y == mouse_Y))
         {
-            // p¨‚ğ•Û‘¶
+            // å§¿å‹¢ã‚’ä¿å­˜
             current = target;
         }
     }
 
-    // ¶FˆÚ“®
+    // å·¦ï¼šç§»å‹•
     else if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
         xStart = x;
@@ -58,20 +58,20 @@ void Mouse(int button, int state, int x, int y)
         move_flag = GL_FALSE;
     }
 
-    // ƒzƒC[ƒ‹FŠg‘å/k¬
+    // ãƒ›ã‚¤ãƒ¼ãƒ«ï¼šæ‹¡å¤§/ç¸®å°
     else if (button == EXT_GLUT_WHEEL_UP)
         dist_Z += 2.0;
     else if (button == EXT_GLUT_WHEEL_DOWN)
         dist_Z -= 2.0;
 
-    // ‚»‚êˆÈŠO‚Í‚Ç‚¿‚ç‚Å‚à‚È‚¢
+    // ãã‚Œä»¥å¤–ã¯ã©ã¡ã‚‰ã§ã‚‚ãªã„
     else
     {
         rotate_flag = GL_FALSE;
         move_flag = GL_FALSE;
     }
 
-    glutPostRedisplay(); // “r’†‚Åreturn‚Å”²‚¯‚é‚Æ‚±‚±‚Ü‚Å—ˆ‚¸‚ÉÄ•`‰æ‚Å‚«‚È‚¢‚Ì‚Å’ˆÓ!
+    glutPostRedisplay(); // é€”ä¸­ã§returnã§æŠœã‘ã‚‹ã¨ã“ã“ã¾ã§æ¥ãšã«å†æç”»ã§ããªã„ã®ã§æ³¨æ„!
 }
 
 void Motion(int x, int y)
@@ -81,11 +81,11 @@ void Motion(int x, int y)
 
     if (rotate_flag)
     {
-        // ˆÚ“®—Ê‚ğŒvZ
+        // ç§»å‹•é‡ã‚’è¨ˆç®—
         double dx = (x - mouse_X) * 1.33 / width;
         double dy = (y - mouse_Y) * 1.0 / height;
 
-        // ƒNƒH[ƒ^ƒjƒIƒ“‚Ì’·‚³
+        // ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã®é•·ã•
         double length = sqrt(dx * dx + dy * dy);
 
         if (length != 0.0)
@@ -93,7 +93,7 @@ void Motion(int x, int y)
             double radian = length * M_PI;
             double theta = sin(radian) / length;
 
-            // ‰ñ“]Œã‚Ìp¨
+            // å›è»¢å¾Œã®å§¿å‹¢
             Quaternion after = { dy * theta, dx * theta, 0.0, cos(radian) };
 
             target = after * current;
@@ -104,7 +104,7 @@ void Motion(int x, int y)
     if (move_flag)
     {
         double xdis, ydis;
-        double a = 0.5; // ’²®—p
+        double a = 0.5; // èª¿æ•´ç”¨
 
         xdis = x - xStart;
         ydis = y - yStart;
@@ -112,7 +112,7 @@ void Motion(int x, int y)
         if (move_flag == GL_TRUE)
         {
             dist_X += xdis * a * a * a * a * a;
-            dist_Y -= ydis * a * a * a * a * a; // ƒEƒBƒ“ƒhƒEÀ•WŒn‚É‡‚í‚¹‚é
+            dist_Y -= ydis * a * a * a * a * a; // ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦åº§æ¨™ç³»ã«åˆã‚ã›ã‚‹
         }
 
         xStart = x;
@@ -124,7 +124,7 @@ void Motion(int x, int y)
 
 void Wheel(int wheel_num, int direction, int x, int y)
 {
-    // ƒY[ƒ€
+    // ã‚ºãƒ¼ãƒ 
     if (direction == 1)
         dist_Z += 2.0;
     else if (direction == -1)

@@ -4,13 +4,13 @@
 
 extern Scene* scene;
 
-// ���������ɸ�Υǥץ��ͤ��������
+// ローカル座標のデプス値を取得する
 float GetDepth(int x, int y)
 {
     float z;
-    GLint viewport[4];  // �ӥ塼�ݡ���
+    GLint viewport[4];  // ビューポート
                         
-    // �ǥХ�����ɸ�Ϥȥ�����ɥ���ɸ�Ϥ��Ѵ�
+    // デバイス座標系とウィンドウ座標系の変換
     glGetIntegerv(GL_VIEWPORT, viewport);
 
     glReadBuffer(GL_BACK);
@@ -23,19 +23,19 @@ float GetDepth(int x, int y)
     return z;
 }
 
-// ���������ɸ������ɺ�ɸ���������
+// ローカル座標からワールド座標を取得する
 Vector3d GetWorldCoord(int x, int y, float depth)
 {
     double wx, wy, wz;
     GLdouble mvMatrix[16], pjMatrix[16];
     GLint viewport[4];
 
-    // �ѥ�᡼������
+    // パラメータ取得
     glGetIntegerv(GL_VIEWPORT, viewport);
     glGetDoublev(GL_MODELVIEW_MATRIX, mvMatrix);
     glGetDoublev(GL_PROJECTION_MATRIX, pjMatrix);
 
-    // ������ɸ���������
+    // 世界座標を取得する
     gluUnProject((double)x, (double)viewport[3] - y - 1, depth,
         mvMatrix,
         pjMatrix,
@@ -47,19 +47,19 @@ Vector3d GetWorldCoord(int x, int y, float depth)
     return Vector3d(wx, wy, wz);
 }
 
-// ���ɺ�ɸ������������ɸ���������
+// ワールド座標からローカル座標を取得する
 Vector3d GetLocalCoord(int x, int y, int z)
 {
     double winX, winY, depth;
     GLdouble mvMatrix[16], pjMatrix[16];
     GLint viewport[4];
 
-    // �ѥ�᡼������
+    // パラメータ取得
     glGetIntegerv(GL_VIEWPORT, viewport);
     glGetDoublev(GL_MODELVIEW_MATRIX, mvMatrix);
     glGetDoublev(GL_PROJECTION_MATRIX, pjMatrix);
 
-    // ������ɸ���������
+    // 世界座標を取得する
     gluProject((double)x, (double)viewport[3] - y - 1, z,
         mvMatrix,
         pjMatrix,
@@ -71,68 +71,68 @@ Vector3d GetLocalCoord(int x, int y, int z)
     return Vector3d(winX, winY, depth);
 }
 
-// �ޥ����κ�ɸ�ȽŤʤäƤ��륪�֥������Ȥμ����ֹ���֤�
+// マウスの座標と重なっているオブジェクトの識別番号を返す
 unsigned int GetObjNumberOnMousePointer(int x, int y)
 {
-    GLuint selectBuf[128] = { 0 };  // ���쥯�����Хåե�
-    GLuint hits; // �ҥåȥʥ�С�
-    GLint viewport[4];  // �ӥ塼�ݡ���
+    GLuint selectBuf[128] = { 0 };  // セレクションバッファ
+    GLuint hits; // ヒットナンバー
+    GLint viewport[4];  // ビューポート
     unsigned int objNum = 0;
 
-    // ���쥯����󳫻�
+    // セレクション開始
 
-    // ���ߤΥӥ塼�ݡ��Ȥ����
+    // 現在のビューポートを取得
     glGetIntegerv(GL_VIEWPORT, viewport);
     
-    // ���쥯������ѥХåե���OpenGL���Ϥ�
+    // セレクション用バッファをOpenGLへ渡す
     glSelectBuffer(BUF_MAX, selectBuf);
     
-    // OpenGL����⡼�ɤ򥻥쥯�����⡼�ɤ�
+    // OpenGL描画モードをセレクションモードへ
     (void)glRenderMode(GL_SELECT);
 
     glInitNames();
     glPushName(0);
 
-    // ����Ѵ����������оݤȤ������ߤ�����Ѵ�����򥹥��å��������
+    // 投影変換行列を操作対象とし、現在の投影変換行列をスタックへ入れる
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     
-    // ��ƹ��������
+    // 投影行列を初期化
     glLoadIdentity();
 
-    // �ޥ����ԥå��󥰤��ϰϤ�����
+    // マウスピッキングの範囲の設定
     gluPickMatrix(x,
-        viewport[3] - y, // ������ɥ����������Ȥ���������ɥ�y��ɸ��Ϳ����
-        100.0, // �ԥ�����ñ�̤Υ��쥯������ϰ� X��Y
-        100.0, // �����ߤ�Ĵ��
+        viewport[3] - y, // ウィンドウ左下を原点としたウィンドウy座標を与える
+        100.0, // ピクセル単位のセレクション範囲 XとY
+        100.0, // お好みで調整
         viewport);
 
     glMatrixMode(GL_MODELVIEW);
-    // ������glLoadName�Ĥ������褷��̾����Ĥ���
-    // ���ؤο�����1�ˤ��뤳�ȡ�
+    // ここでglLoadNameつきで描画して名前をつける
+    // 階層の深さは1にすること！
     scene->DrawForPick();
 
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
 
-    // �������⡼�ɤ��᤹
-    hits = glRenderMode(GL_RENDER); // �ҥåȥ쥳���ɤ������
+    // レンダーモードへ戻す
+    hits = glRenderMode(GL_RENDER); // ヒットレコードの戻り値
 
-    // ���ּ����Υ��֥������Ȥ��֤�
+    // 一番手前のオブジェクトを返す
     if (hits > 0)
         objNum = GetNearestNumber(hits, selectBuf);
 
-    glMatrixMode(GL_MODELVIEW);        //��ǥ�ӥ塼�⡼�ɤ��᤹
+    glMatrixMode(GL_MODELVIEW);        //モデルビューモードへ戻す
 
-    // ���Ĥ���ʤ����0���֤�
+    // 見つからなければ0を返す
     return objNum;
 }
 
-// ����1�Ȥ�������ǡ�����������free��˺��ʤ���, ��ǥ��ޡ��ȥݥ��󥿼�����
+// 階層1として選択データを整理（freeし忘れないで, 後でスマートポインタ実装）
 void GetSelectionData(GLuint hits, GLuint* buf, SelectionData* datas)
 {
-    // ����1�Ȥ��ƥǡ���������
+    // 階層1としてデータを整理
     for (unsigned int i = 0, dataI = 0; i < 128; dataI++)
     {
         if (buf[i++] == 0)
@@ -144,7 +144,7 @@ void GetSelectionData(GLuint hits, GLuint* buf, SelectionData* datas)
     }
 }
 
-// ��äȤ�����ˤ��륪�֥��������ֹ�����
+// もっとも手前にあるオブジェクト番号を取得
 unsigned int GetNearestNumber(GLuint hits, GLuint* buf)
 {
     SelectionData* data = (SelectionData *)malloc(sizeof(SelectionData) * hits);
@@ -167,7 +167,7 @@ unsigned int GetNearestNumber(GLuint hits, GLuint* buf)
     return nearest_num;
 }
 
-// ��äȤ���ˤ��륪�֥��������ֹ�����
+// もっとも奥にあるオブジェクト番号を取得
 unsigned int GetFarthestNumber(GLuint hits, GLuint* buf)
 {
     SelectionData* data = (SelectionData *)malloc(sizeof(SelectionData) * hits);

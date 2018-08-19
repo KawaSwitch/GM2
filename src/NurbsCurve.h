@@ -8,7 +8,7 @@ public:
 
     NurbsCurve(int mord, const ControlPoint* const cp, int cp_size, const double* const knot, const GLdouble* const color, GLdouble width);
 
-    // ŠeíƒxƒNƒgƒ‹æ“¾
+    // å„ç¨®ãƒ™ã‚¯ãƒˆãƒ«å–å¾—
     Vector3d GetPositionVector(double t) const override;
     Vector3d GetFirstDiffVector(double t) const override;
     Vector3d GetSecondDiffVector(double t) const override;
