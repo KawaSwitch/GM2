@@ -6,18 +6,16 @@
 // メインにしか使う予定ないので適当
 class Light
 {
-private:
-
+  private:
     GLenum lightNum;
 
     // 適当
-    GLfloat lightDiffuse[4] = { 0.7f, 0.7f, 0.7f, 1.0f }; // 拡散光
-    GLfloat lightAmbient[4] = { 0.1f, 0.1f, 0.1f, 1.0f }; // 環境光
-    GLfloat lightSpecular[4] = { 0.2f, 0.2f, 0.2f, 1.0f }; // 鏡面光
-    GLfloat* lightPosition; // 位置
+    GLfloat lightDiffuse[4] = {0.7f, 0.7f, 0.7f, 1.0f};  // 拡散光
+    GLfloat lightAmbient[4] = {0.1f, 0.1f, 0.1f, 1.0f};  // 環境光
+    GLfloat lightSpecular[4] = {0.2f, 0.2f, 0.2f, 1.0f}; // 鏡面光
+    GLfloat *lightPosition;                              // 位置
 
-public:
-
+  public:
     // 光源オン
     void On() const
     {
@@ -30,11 +28,11 @@ public:
         glDisable(lightNum);
     }
 
-    Light(GLenum light, double posX, double posY, double posZ) 
+    Light(GLenum light, double posX, double posY, double posZ)
     {
         lightNum = light;
 
-        GLfloat pos[4] = { (GLfloat)posX, (GLfloat)posY, (GLfloat)posZ, 1.0 };
+        GLfloat pos[4] = {(GLfloat)posX, (GLfloat)posY, (GLfloat)posZ, 1.0};
         lightPosition = pos;
 
         // ライト設定

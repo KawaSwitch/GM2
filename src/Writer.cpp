@@ -5,7 +5,7 @@
 #include <time.h>
 
 // タイムスタンプを書き出す
-void ExportTimeStamp(std::ofstream* log)
+void ExportTimeStamp(std::ofstream *log)
 {
     char buf[256];
 
@@ -28,9 +28,9 @@ void ExportCsv_NearestInfoCurve(std::string path, std::vector<NearestPointInfoC>
 
     std::string value = ", 最近点X座標, 最近点Y座標, 最近点Z座標, パラメータ, 点間距離";
     log << value << std::endl;
-    
+
     int cnt = 0;
-    for (const auto& info : np_infos)
+    for (const auto &info : np_infos)
     {
         std::string np_data;
 
@@ -75,7 +75,7 @@ void ExportCsv_NearestInfoSurface(std::string path, std::vector<NearestPointInfo
     log << value << std::endl;
 
     int cnt = 0;
-    for (const auto& info : np_infos)
+    for (const auto &info : np_infos)
     {
         std::string np_data;
 

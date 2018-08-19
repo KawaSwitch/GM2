@@ -11,10 +11,10 @@
 #include "Quaternion.h"
 #include "Picking.h"
 
-extern Scene* scene;
+extern Scene *scene;
 
 void Mouse(int button, int state, int x, int y)
-{ 
+{
     // 右：回転
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
     {
@@ -94,7 +94,7 @@ void Motion(int x, int y)
             double theta = sin(radian) / length;
 
             // 回転後の姿勢
-            Quaternion after = { dy * theta, dx * theta, 0.0, cos(radian) };
+            Quaternion after = {dy * theta, dx * theta, 0.0, cos(radian)};
 
             target = after * current;
             CalcRotateMatrix(rot_mat, target);

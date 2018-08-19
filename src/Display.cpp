@@ -13,20 +13,20 @@
 #include "glUtil.h"
 #include "Initialize.h"
 
-NormalAxis* axis; // 軸
-GeoGrid2D* grid; // グリッド
-Scene* scene; // シーン
-extern Scene* test_scene;
+NormalAxis *axis; // 軸
+GeoGrid2D *grid;  // グリッド
+Scene *scene;     // シーン
+extern Scene *test_scene;
 extern const int grid_length;
 
-static Box coverBox; // 全体のボックス
+static Box coverBox;          // 全体のボックス
 static Vector3d rotateCenter; // 回転中心
 static bool isFirst = true;
 
 // --- プロトタイプ宣言 ---
 void SetRotateCenter();
 void ShowRotateCenter(bool isRotating);
-void UpdateLookAtZ(const Box* const box);
+void UpdateLookAtZ(const Box *const box);
 // ------------------------
 
 void Display()
@@ -35,13 +35,13 @@ void Display()
 
   // リクエストがあれば表示を初期位置に戻す
   if (isViewInitRequested)
-    {
-      InitQuaternion(); // 回転姿勢を初期化
-      dist_X = dist_Y = 0.0; // 移動を初期化(Z方向を除く)
+  {
+    InitQuaternion();      // 回転姿勢を初期化
+    dist_X = dist_Y = 0.0; // 移動を初期化(Z方向を除く)
 
-      glutPostRedisplay();
-      isViewInitRequested = false;
-    }
+    glutPostRedisplay();
+    isViewInitRequested = false;
+  }
 
   glEnable(GL_STENCIL_TEST); // ステンシル有効化
 
@@ -69,17 +69,17 @@ void Display()
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(
-            -axisLength, axisLength,
-            -axisLength, axisLength,
-            -axisLength, axisLength);
+        -axisLength, axisLength,
+        -axisLength, axisLength,
+        -axisLength, axisLength);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
     // 軸用ライトのみオンにする
-    for (const auto& light : modelLight)
+    for (const auto &light : modelLight)
       light->Off();
-    for (const auto& light : axisLight)
+    for (const auto &light : axisLight)
       light->On();
 
     glPushMatrix();
@@ -92,7 +92,6 @@ void Display()
     glPopMatrix();
   }
 
-
   // ビューポートをウィンドウ全体に設定
   glViewport(0, 0, width, height);
 
@@ -104,17 +103,16 @@ void Display()
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   gluLookAt(
-	    0.0, 0.0, 0.0,  // 視点位置
-	    0.0, 0.0, -1.0,  // 注視位置
-	    0.0, 1.0, 0.0   // 上方向 : y
-	    );
+      0.0, 0.0, 0.0,  // 視点位置
+      0.0, 0.0, -1.0, // 注視位置
+      0.0, 1.0, 0.0   // 上方向 : y
+  );
 
   // 形状用ライトのみオンにする
-  for (const auto& light : axisLight)
+  for (const auto &light : axisLight)
     light->Off();
-  for (const auto& light : modelLight)
+  for (const auto &light : modelLight)
     light->On();
-
 
   // 3. 形状描画
   {
@@ -127,12 +125,12 @@ void Display()
     {
       // 起動最初の描画で回転中心をウィンドウ中心にする
       if (isFirst)
-	{
-	  TestRegister(); // 事前に登録しておく 
+      {
+        TestRegister(); // 事前に登録しておく
 
-	  SetRotateCenter();
-	  UpdateLookAtZ(&coverBox); // フィット
-	}
+        SetRotateCenter();
+        UpdateLookAtZ(&coverBox); // フィット
+      }
 
       glTranslated(-rotateCenter.X, -rotateCenter.Y, -rotateCenter.Z);
 
@@ -151,14 +149,14 @@ void Display()
 
       // 4.グリッド描画
       {
-	// グリッドの型取り
-	// 上の全部が描画されていない所にグリッドを描画
-	glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::Grid), 0xFF);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+        // グリッドの型取り
+        // 上の全部が描画されていない所にグリッドを描画
+        glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::Grid), 0xFF);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-	// 幾何グリッド描画
-	if (gridType != GridType::InVisible)
-	  grid->Draw();
+        // 幾何グリッド描画
+        if (gridType != GridType::InVisible)
+          grid->Draw();
       }
     }
     glPopMatrix();
@@ -184,14 +182,14 @@ void SetRotateCenter()
 
   // とりあえず
   if (coverBox.IsValid() == false)
-    {
-      Error::ShowMessage(
-			 "バウンドボックス設定エラー",
-			 "描画形状が設定されていません. 既定の回転ボックス, 回転中心を設定します");
-      coverBox = Box(
-		     -grid_length, -grid_length, -grid_length,
-		     grid_length, grid_length, grid_length);
-    }
+  {
+    Error::ShowMessage(
+        "バウンドボックス設定エラー",
+        "描画形状が設定されていません. 既定の回転ボックス, 回転中心を設定します");
+    coverBox = Box(
+        -grid_length, -grid_length, -grid_length,
+        grid_length, grid_length, grid_length);
+  }
 
   auto center = coverBox.Center();
 
@@ -201,55 +199,55 @@ void SetRotateCenter()
 void ShowRotateCenter(bool isRotating)
 {
   if (rotate_flag)
+  {
+    // ライティングは切っておく
+    if (glIsEnabled(GL_LIGHTING))
+      glDisable(GL_LIGHTING);
+
+    // 中心点描画 デプス値は評価しない
+    glColor4dv(Color::orange);
+    glPointSize(10.0);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, Color::orange);
+
+    glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::RotateCenter), 0xFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+    glDisable(GL_DEPTH_TEST);
+    glBegin(GL_POINTS);
+    glVertex3d(rotateCenter);
+    glEnd();
+    glEnable(GL_DEPTH_TEST);
+
+    // カバーボックス描画  形状の後ろにあれば点線表示
+    glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::Entity), 0xFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+    coverBox.Draw(Color::orange, 2.0); // 普通に描画
+
+    // 陰線は破線表示
     {
-      // ライティングは切っておく
-      if (glIsEnabled(GL_LIGHTING))
-	glDisable(GL_LIGHTING);
+      glStencilFunc(GL_GREATER, static_cast<int>(StencilRef::HiddenLine), 0xFF);
+      glStencilOp(GL_KEEP, GL_REPLACE, GL_KEEP);
+      coverBox.Draw(Color::orange, 2.0); // 陰線判定用
 
-      // 中心点描画 デプス値は評価しない
-      glColor4dv(Color::orange);
-      glPointSize(10.0);
-      glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, Color::orange);
+      glStencilFunc(GL_EQUAL, static_cast<int>(StencilRef::HiddenLine), 0xFF);
+      glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+      glEnable(GL_LINE_STIPPLE);
+      glLineStipple(1, 0xF0F0);
 
-      glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::RotateCenter), 0xFF);
-      glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-
+      // デプス値は評価しない
       glDisable(GL_DEPTH_TEST);
-      glBegin(GL_POINTS);
-      glVertex3d(rotateCenter);
-      glEnd();
+      coverBox.Draw(Color::orange, 1.5);
       glEnable(GL_DEPTH_TEST);
 
-      // カバーボックス描画  形状の後ろにあれば点線表示
-      glStencilFunc(GL_GEQUAL, static_cast<int>(StencilRef::Entity), 0xFF);
-      glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-      coverBox.Draw(Color::orange, 2.0); // 普通に描画
-
-      // 陰線は破線表示
-      {
-	glStencilFunc(GL_GREATER, static_cast<int>(StencilRef::HiddenLine), 0xFF);
-	glStencilOp(GL_KEEP, GL_REPLACE, GL_KEEP);
-	coverBox.Draw(Color::orange, 2.0); // 陰線判定用
-
-	glStencilFunc(GL_EQUAL, static_cast<int>(StencilRef::HiddenLine), 0xFF);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-	glEnable(GL_LINE_STIPPLE);
-	glLineStipple(1, 0xF0F0);
-
-	// デプス値は評価しない
-	glDisable(GL_DEPTH_TEST);
-	coverBox.Draw(Color::orange, 1.5);
-	glEnable(GL_DEPTH_TEST);
-
-	glDisable(GL_LINE_STIPPLE);
-      }
-
-      glPointSize(1.0);
+      glDisable(GL_LINE_STIPPLE);
     }
+
+    glPointSize(1.0);
+  }
 }
 
 // 視点のZ位置をボックスから決定し更新します
-void UpdateLookAtZ(const Box* const box)
+void UpdateLookAtZ(const Box *const box)
 {
   double boxHalfX = (box->MaxX() - box->MinX()) / 2;
   double boxHalfY = (box->MaxY() - box->MinY()) / 2;
@@ -309,7 +307,7 @@ void ShowConsoleDiscription()
 }
 
 // ボタンの説明を表示します
-void ShowButtonDiscription(const char* button, const char* disc)
+void ShowButtonDiscription(const char *button, const char *disc)
 {
   printf("    ");
   printf("%s : ", button);

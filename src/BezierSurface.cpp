@@ -2,13 +2,17 @@
 #include "BezierCurve.h"
 
 BezierSurface::BezierSurface(
-    const int u_mord, const int v_mord, const ControlPoint* const cp,
-    const int u_cp_size, const int v_cp_size, const GLdouble* const color, const GLdouble resol)
+    const int u_mord, const int v_mord, const ControlPoint *const cp,
+    const int u_cp_size, const int v_cp_size, const GLdouble *const color, const GLdouble resol)
 {
-    _ordU = u_mord; _ordV = v_mord;
-    _ncpntU = u_cp_size; _ncpntV = v_cp_size;
-    _min_draw_param_U = 0.0;  _max_draw_param_U = 1.0;
-    _min_draw_param_V = 0.0;  _max_draw_param_V = 1.0;
+    _ordU = u_mord;
+    _ordV = v_mord;
+    _ncpntU = u_cp_size;
+    _ncpntV = v_cp_size;
+    _min_draw_param_U = 0.0;
+    _max_draw_param_U = 1.0;
+    _min_draw_param_V = 0.0;
+    _max_draw_param_V = 1.0;
 
     SetControlPoint(cp, u_cp_size * v_cp_size);
     SetColor(color);
@@ -68,10 +72,10 @@ void BezierSurface::PreDraw() const
 
             glNormal3d(nor[i][j + 1]);
             glVertex3d(pnt[i][j + 1]);
-            
+
             glNormal3d(nor[i + 1][j + 1]);
             glVertex3d(pnt[i + 1][j + 1]);
-            
+
             glEnd();
         }
     }
@@ -314,7 +318,7 @@ void BezierSurface::DrawNormalVectorsInternal() const
 void BezierSurface::DrawCurvatureVectorsInternal() const
 {
     Vector3d pnt, curv;
-    
+
     glLineWidth(1.0);
     glPointSize(5.0);
 
@@ -353,8 +357,8 @@ Vector3d BezierSurface::CalcVector(
     Vector3d vector;
 
     // 基底関数配列(行列計算用)
-    double* N_array_U = new double[_ncpntU];
-    double* N_array_V = new double[_ncpntV];
+    double *N_array_U = new double[_ncpntU];
+    double *N_array_V = new double[_ncpntV];
 
     // 基底関数配列へ各基底関数を代入
     for (int i = 0; i < _ncpntU; i++)
@@ -407,14 +411,14 @@ Vector3d BezierSurface::GetSecondDiffVectorVV(const double u, const double v) co
 }
 
 // 逆変換
-std::unique_ptr<Surface> BezierSurface::GetSurfaceFromPoints(const vector<vector<Vector3d>>& pnts, const GLdouble* const color, const GLdouble resol) const
+std::unique_ptr<Surface> BezierSurface::GetSurfaceFromPoints(const vector<vector<Vector3d>> &pnts, const GLdouble *const color, const GLdouble resol) const
 {
     // 未実装
     return nullptr;
 }
 
 // 最近点取得
-NearestPointInfoS BezierSurface::GetNearestPointInfoFromRef(const Vector3d& ref, const NearestSearch search) const
+NearestPointInfoS BezierSurface::GetNearestPointInfoFromRef(const Vector3d &ref, const NearestSearch search) const
 {
     // 未実装
     return NearestPointInfoS(Vector3d(), ref, 0, 0);

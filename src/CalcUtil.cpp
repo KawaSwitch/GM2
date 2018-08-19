@@ -21,14 +21,14 @@ double ToDeg(const double radian)
 }
 
 // 平均値を取得する
-double GetAverage(const vector<double>& array)
+double GetAverage(const vector<double> &array)
 {
     return std::accumulate(array.begin(), array.end(), 0.0) / array.size();
 }
 
 // 2次方程式 ax^2 + bx + c = 0 の 2解x1,x2 を求める
 // 虚数解の場合 x1 ± x2i を満たす x1,x2 を求める
-void SolveQuadraticEquation(const double a, const double b, const double c, double* const x1, double* const x2)
+void SolveQuadraticEquation(const double a, const double b, const double c, double *const x1, double *const x2)
 {
     // 判別式
     double D = b * b - 4 * a * c;
@@ -48,7 +48,7 @@ void SolveQuadraticEquation(const double a, const double b, const double c, doub
     // 異なる2つの虚数解
     else
     {
-        *x1 = -b / (2 * a); // real part
+        *x1 = -b / (2 * a);       // real part
         *x2 = sqrt(-D) / (2 * a); // imaginary part
     }
 }
@@ -80,35 +80,37 @@ double Calc1DiffBernsteinFunc(const unsigned int i, const unsigned int N, const 
 // 2階微分用バーンスタイン基底関数を求める
 double Calc2DiffBernsteinFunc(const unsigned int i, const unsigned int N, const double t)
 {
-    double temp_left = i * ((i - 1) * pow(t, i - 2) * pow(1 - t, N - i)
-        - pow(t, i - 1) * (N - i) * pow(1 - t, N - i - 1));
+    double temp_left = i * ((i - 1) * pow(t, i - 2) * pow(1 - t, N - i) - pow(t, i - 1) * (N - i) * pow(1 - t, N - i - 1));
 
-    double temp_right = (N - i) * (i * pow(t, i - 1) * pow(1 - t, N - i - 1)
-        - pow(t, i) * (N - i - 1) * pow(1 - t, N - i - 2));
+    double temp_right = (N - i) * (i * pow(t, i - 1) * pow(1 - t, N - i - 1) - pow(t, i) * (N - i - 1) * pow(1 - t, N - i - 2));
 
     return Binomial(N, i) * (temp_left - temp_right);
 }
 
 // Bスプライン基底関数値を求める
-double CalcBsplineFunc(const unsigned int i, const unsigned int M, const double t, const double* const knot)
+double CalcBsplineFunc(const unsigned int i, const unsigned int M, const double t, const double *const knot)
 {
     if (M == 1)
     {
         // 端っこは特別扱い
         if (fabs(t - knot[0]) < 1e-6)
         {
-            if (knot[i] <= t && t < knot[i + 1]) return 1.0;
-            else return 0.0;
+            if (knot[i] <= t && t < knot[i + 1])
+                return 1.0;
+            else
+                return 0.0;
         }
         else
         {
-            if (knot[i] < t && t <= knot[i + 1]) return 1.0;
-            else return 0.0;
+            if (knot[i] < t && t <= knot[i + 1])
+                return 1.0;
+            else
+                return 0.0;
         }
     }
     else
     {
-        double temp_left = 0.0 , temp_right = 0.0;
+        double temp_left = 0.0, temp_right = 0.0;
 
         // 0ディバイドに気を付ける
         if (fabs(knot[i + M - 1] - knot[i]) > 1e-6)
@@ -122,20 +124,24 @@ double CalcBsplineFunc(const unsigned int i, const unsigned int M, const double 
 }
 
 // 1階微分用Bスプライン基底関数値を求める
-double Calc1DiffBsplineFunc(const unsigned int i, const unsigned int M, const double t, const double* const knot)
+double Calc1DiffBsplineFunc(const unsigned int i, const unsigned int M, const double t, const double *const knot)
 {
     if (M == 1)
     {
         // 端っこは特別扱い
         if (fabs(t - knot[0]) < 1e-6)
         {
-            if (knot[i] <= t && t < knot[i + 1]) return 1.0;
-            else return 0.0;
+            if (knot[i] <= t && t < knot[i + 1])
+                return 1.0;
+            else
+                return 0.0;
         }
         else
         {
-            if (knot[i] < t && t <= knot[i + 1]) return 1.0;
-            else return 0.0;
+            if (knot[i] < t && t <= knot[i + 1])
+                return 1.0;
+            else
+                return 0.0;
         }
     }
     else
@@ -154,20 +160,24 @@ double Calc1DiffBsplineFunc(const unsigned int i, const unsigned int M, const do
 }
 
 // 2階微分用Bスプライン基底関数値を求める
-double Calc2DiffBsplineFunc(const unsigned int i, const unsigned int M, const double t, const double* const knot)
+double Calc2DiffBsplineFunc(const unsigned int i, const unsigned int M, const double t, const double *const knot)
 {
     if (M == 1)
     {
         // 端っこは特別扱い
         if (fabs(t - knot[0]) < 1e-6)
         {
-            if (knot[i] <= t && t < knot[i + 1]) return 1.0;
-            else return 0.0;
+            if (knot[i] <= t && t < knot[i + 1])
+                return 1.0;
+            else
+                return 0.0;
         }
         else
         {
-            if (knot[i] < t && t <= knot[i + 1]) return 1.0;
-            else return 0.0;
+            if (knot[i] < t && t <= knot[i + 1])
+                return 1.0;
+            else
+                return 0.0;
         }
     }
     else
@@ -187,13 +197,13 @@ double Calc2DiffBsplineFunc(const unsigned int i, const unsigned int M, const do
 
 // 通過点が正しくセットされているか
 // U方向/V方向の点の数がそれぞれ等しいかをチェックする
-bool IsPassingPntsSetCorrectly(const vector<vector<Vector3d>>& pnts)
+bool IsPassingPntsSetCorrectly(const vector<vector<Vector3d>> &pnts)
 {
     if (pnts.size() < 1)
         return false;
 
     // 内側(u方向)だけ調べればよい
-    for (const auto& u_pnts : pnts)
+    for (const auto &u_pnts : pnts)
     {
         if (pnts[0].size() != u_pnts.size())
             return false;
@@ -204,7 +214,7 @@ bool IsPassingPntsSetCorrectly(const vector<vector<Vector3d>>& pnts)
 }
 
 // 通過点と階数からノットベクトルを算出する
-void CalcKnotVectorByPassingPnts(const vector<Vector3d>& pnts, const int ord, vector<double>* knot)
+void CalcKnotVectorByPassingPnts(const vector<Vector3d> &pnts, const int ord, vector<double> *knot)
 {
     if (knot == nullptr)
     {
@@ -233,7 +243,7 @@ void CalcKnotVectorByPassingPnts(const vector<Vector3d>& pnts, const int ord, ve
     // ノット間隔の割合は通過点間の距離に比例させる
     for (size_t i = 0, n = knot->size(); i < n; ++i)
     {
-      if (i < (unsigned)ord) // 最初は階数分重ねる
+        if (i < (unsigned)ord) // 最初は階数分重ねる
             (*knot)[i] = minParam;
         else if (i < knot->size() - ord) // 距離に比例
         {
@@ -245,7 +255,7 @@ void CalcKnotVectorByPassingPnts(const vector<Vector3d>& pnts, const int ord, ve
 }
 
 // 複数のノット列を正規化する
-void NormalizeKnotVector(const vector<vector<double>>& knot_array, const int ord, vector<double>* knot_normal)
+void NormalizeKnotVector(const vector<vector<double>> &knot_array, const int ord, vector<double> *knot_normal)
 {
     if (knot_normal == nullptr)
     {
@@ -277,8 +287,8 @@ void NormalizeKnotVector(const vector<vector<double>>& knot_array, const int ord
 }
 
 // ノットベクトルを取得する
-void CalcKnotVectorByPassingPnts(const vector<vector<Vector3d>>& pnts, const int ordU, const int ordV,
-    vector<double>* knotU, vector<double>* knotV)
+void CalcKnotVectorByPassingPnts(const vector<vector<Vector3d>> &pnts, const int ordU, const int ordV,
+                                 vector<double> *knotU, vector<double> *knotV)
 {
     // 各方向の通過点数
     int passPntsCntU, passPntsCntV;
@@ -341,7 +351,7 @@ P(k_kn-階数-1) = Q_qn-2
 P''(k_階数-1) = 0
 P''(k_kn-階数-2) = 0
 */
-void CalcControlPointsByPassingPnts(const vector<Vector3d>& pnts, const int ord, const vector<double>& knot, vector<ControlPoint>* ctrlp)
+void CalcControlPointsByPassingPnts(const vector<Vector3d> &pnts, const int ord, const vector<double> &knot, vector<ControlPoint> *ctrlp)
 {
     // 各方向の通過点数
     int passPntsCnt = (int)pnts.size();
@@ -352,8 +362,8 @@ void CalcControlPointsByPassingPnts(const vector<Vector3d>& pnts, const int ord,
     vector<Vector3d> P_array;
     vector<double> P_array_x, P_array_y, P_array_z; // 射影版
 
-                                                    // 基底関数行列
-    double* N_matrix;
+    // 基底関数行列
+    double *N_matrix;
 
     // 1. 連立方程式を解く用の通過点ベクトル 作成
     {
@@ -394,17 +404,17 @@ void CalcControlPointsByPassingPnts(const vector<Vector3d>& pnts, const int ord,
             else if (i == 1) // 2階微分終端条件 前
             {
                 for (int j = i - 1; j < ord - 1; ++j)
-                    N_matrix[i * new_ncpnt + j] = Calc2DiffBsplineFunc(j, ord, knot[ord - 1], &(const_cast<vector<double>&>(knot))[0]);
+                    N_matrix[i * new_ncpnt + j] = Calc2DiffBsplineFunc(j, ord, knot[ord - 1], &(const_cast<vector<double> &>(knot))[0]);
             }
             else if (i > 1 && i < new_ncpnt - 2)
             {
                 for (int j = i - 1; j < (ord - 1) + (i - 1); ++j)
-                    N_matrix[i * new_ncpnt + j] = CalcBsplineFunc(j, ord, knot[(ord - 1) + (i - 1)], &(const_cast<vector<double>&>(knot))[0]);
+                    N_matrix[i * new_ncpnt + j] = CalcBsplineFunc(j, ord, knot[(ord - 1) + (i - 1)], &(const_cast<vector<double> &>(knot))[0]);
             }
             else if (i == new_ncpnt - 2) // 2階微分終端条件 後
             {
                 for (int j = i - 1; j < (ord - 1) + (i - 1); ++j)
-                    N_matrix[i * new_ncpnt + j] = Calc2DiffBsplineFunc(j, ord, knot[(ord - 1) + (i - 1)], &(const_cast<vector<double>&>(knot))[0]);
+                    N_matrix[i * new_ncpnt + j] = Calc2DiffBsplineFunc(j, ord, knot[(ord - 1) + (i - 1)], &(const_cast<vector<double> &>(knot))[0]);
             }
             else // 終端条件 後
             {
@@ -433,97 +443,96 @@ void CalcControlPointsByPassingPnts(const vector<Vector3d>& pnts, const int ord,
 }
 
 // ノット列にノットパラメータを追加する
-void CalcKnotsForAddingKnot(const double t, const vector<double>& knot, unsigned& insert, vector<double>& new_knot)
+void CalcKnotsForAddingKnot(const double t, const vector<double> &knot, unsigned &insert, vector<double> &new_knot)
 {
-  if (new_knot.size() > 0)
+    if (new_knot.size() > 0)
     {
-      new_knot.clear();
-      new_knot.shrink_to_fit();
+        new_knot.clear();
+        new_knot.shrink_to_fit();
     }
-  
-  // 挿入先の決定
-  for (unsigned i = 0, s = knot.size(); i < s - 1; ++i)
+
+    // 挿入先の決定
+    for (unsigned i = 0, s = knot.size(); i < s - 1; ++i)
     {
-      if (knot[i] <= t && t < knot[i+1])
-	insert = i;
+        if (knot[i] <= t && t < knot[i + 1])
+            insert = i;
     }
-    
-  // 新しいノットベクトルを作成
-  for (unsigned i = 0; i <= insert; ++i) new_knot.push_back(knot[i]);
-  new_knot.push_back(t);
-  for (unsigned i = insert+1; i < knot.size(); ++i) new_knot.push_back(knot[i]);
+
+    // 新しいノットベクトルを作成
+    for (unsigned i = 0; i <= insert; ++i)
+        new_knot.push_back(knot[i]);
+    new_knot.push_back(t);
+    for (unsigned i = insert + 1; i < knot.size(); ++i)
+        new_knot.push_back(knot[i]);
 }
 
 // ノット追加に伴う制御点の変更を計算する
-void CalcControlPointsForAddingKnot(const double t, const int insert, const int ord, const vector<double>& knot, const vector<ControlPoint>& ctrlp, vector<ControlPoint>& new_ctrlp)
+void CalcControlPointsForAddingKnot(const double t, const int insert, const int ord, const vector<double> &knot, const vector<ControlPoint> &ctrlp, vector<ControlPoint> &new_ctrlp)
 {
-  Vector3d Q;
-  int ncpnt = ctrlp.size();
-  
-  if (new_ctrlp.size() > 0)
+    Vector3d Q;
+    int ncpnt = ctrlp.size();
+
+    if (new_ctrlp.size() > 0)
     {
-      new_ctrlp.clear();
-      new_ctrlp.shrink_to_fit();
+        new_ctrlp.clear();
+        new_ctrlp.shrink_to_fit();
     }
 
-  // 新制御点算出用の比率変数
-  auto alpha = [&](int i, int j) -> double
-    {
-      if (j <= i - ord + 1)
-	return 1;
-      else if (i-ord+2 <= j && j <= i)
-	return (t - knot[j]) / (knot[j+ord] - knot[j]);
-      else
-	return 0;
+    // 新制御点算出用の比率変数
+    auto alpha = [&](int i, int j) -> double {
+        if (j <= i - ord + 1)
+            return 1;
+        else if (i - ord + 2 <= j && j <= i)
+            return (t - knot[j]) / (knot[j + ord] - knot[j]);
+        else
+            return 0;
     };
-  
-  // 新しい制御点を作成
-  new_ctrlp.push_back(ctrlp[0]);
-  for (int j = 1; j < ncpnt; ++j)
+
+    // 新しい制御点を作成
+    new_ctrlp.push_back(ctrlp[0]);
+    for (int j = 1; j < ncpnt; ++j)
     {
-      Q = alpha(insert, j)*ctrlp[j] + (1-alpha(insert, j))*ctrlp[j-1];
-      new_ctrlp.push_back(ControlPoint(Q.X, Q.Y, Q.Z, 1.0));
+        Q = alpha(insert, j) * ctrlp[j] + (1 - alpha(insert, j)) * ctrlp[j - 1];
+        new_ctrlp.push_back(ControlPoint(Q.X, Q.Y, Q.Z, 1.0));
     }
-  new_ctrlp.push_back(ctrlp[ncpnt-1]);
+    new_ctrlp.push_back(ctrlp[ncpnt - 1]);
 }
 
 // ノット列を指定範囲に置き換える
-void AdjustKnotVector(vector<double>& knot, const int ord, const double min, const double max)
+void AdjustKnotVector(vector<double> &knot, const int ord, const double min, const double max)
 {
-  int knot_size = (int)knot.size();
+    int knot_size = (int)knot.size();
 
-  vector<double> seg_dist; // セグメント間の距離
-  seg_dist.resize(knot_size - 1);
+    vector<double> seg_dist; // セグメント間の距離
+    seg_dist.resize(knot_size - 1);
 
-  // 最大ノット範囲
-  double paramRange = fabs(max - min);
-  
-  // ノット間の距離の総和
-  double sum = 0.0;
-  for (int i = 0; i < knot_size - 1; ++i)
+    // 最大ノット範囲
+    double paramRange = fabs(max - min);
+
+    // ノット間の距離の総和
+    double sum = 0.0;
+    for (int i = 0; i < knot_size - 1; ++i)
     {
-      seg_dist[i] = knot[i+1] - knot[i];
-      sum += seg_dist[i];
+        seg_dist[i] = knot[i + 1] - knot[i];
+        sum += seg_dist[i];
     }
 
-  // ノット間隔の割合は通過点間の距離に比例させる
-  for (size_t i = 0, n = knot.size(); i < n; ++i)
+    // ノット間隔の割合は通過点間の距離に比例させる
+    for (size_t i = 0, n = knot.size(); i < n; ++i)
     {
-      if (i < (unsigned)ord) // 最初は階数分重ねる
-	knot[i] = min;
-      else if (i < knot.size() - ord) // 距離に比例
-	{
-	  knot[i] = knot[i - 1] + (seg_dist[i - 1] / sum) * paramRange;
-	}
-      else // 最後も階数分重ねる
-	knot[i] = max;
+        if (i < (unsigned)ord) // 最初は階数分重ねる
+            knot[i] = min;
+        else if (i < knot.size() - ord) // 距離に比例
+        {
+            knot[i] = knot[i - 1] + (seg_dist[i - 1] / sum) * paramRange;
+        }
+        else // 最後も階数分重ねる
+            knot[i] = max;
     }
 }
 
-
-
 // 3点から成るポリゴンの単位化済み面法線を取得する
-Vector3d CalcPolygonNormal(const Vector3d& v0, const Vector3d& v1, const Vector3d& v2)
+Vector3d CalcPolygonNormal(const Vector3d &v0, const Vector3d &v1, const Vector3d &v2)
 {
     Vector3d vec01 = v1 - v0;
     Vector3d vec02 = v2 - v0;
@@ -532,14 +541,16 @@ Vector3d CalcPolygonNormal(const Vector3d& v0, const Vector3d& v1, const Vector3
 }
 
 // 2D:指定座標中心に指定rad回転させる
-void RotateCoord2DAroundCenter(double* const coord_2d, const double* const center, const double rad)
+void RotateCoord2DAroundCenter(double *const coord_2d, const double *const center, const double rad)
 {
     // 2 × 2の回転行列
     double rotate_mat[2 * 2] =
-    {
-        cos(rad), -sin(rad),
-        sin(rad), cos(rad),
-    };
+        {
+            cos(rad),
+            -sin(rad),
+            sin(rad),
+            cos(rad),
+        };
 
     coord_2d[0] -= center[0];
     coord_2d[1] -= center[1];
@@ -554,24 +565,24 @@ void RotateCoord2DAroundCenter(double* const coord_2d, const double* const cente
 }
 
 // 2D:原点中心に指定rad回転させる
-void RotateCoord2DAroundOrigin(double* const coord_2d, const double rad)
+void RotateCoord2DAroundOrigin(double *const coord_2d, const double rad)
 {
-    double origin[2] = { 0, 0 }; // 原点
+    double origin[2] = {0, 0}; // 原点
     RotateCoord2DAroundCenter(coord_2d, origin, rad);
 }
 
 // LU分解で連立方程式を解く
-std::vector<double> LUDecomposition(const int size, const double* const aMatrix, const double* const b)
+std::vector<double> LUDecomposition(const int size, const double *const aMatrix, const double *const b)
 {
     int N = size; // 解く配列のサイズ
 
     // aMatrixの値コピーを作成
-    double* aMatCopy = new double[N * N];
+    double *aMatCopy = new double[N * N];
     for (int i = 0; i < N * N; i++)
         aMatCopy[i] = aMatrix[i];
 
     // L行列(零行列に初期化)
-    double **lMatrix = new double*[N];
+    double **lMatrix = new double *[N];
     for (int i = 0; i < N; i++)
         lMatrix[i] = new double[N];
 
@@ -582,7 +593,7 @@ std::vector<double> LUDecomposition(const int size, const double* const aMatrix,
     }
 
     // U行列(対角要素を1に初期化)
-    double **uMatrix = new double*[N];
+    double **uMatrix = new double *[N];
     for (int i = 0; i < N; i++)
         uMatrix[i] = new double[N];
 
@@ -593,7 +604,7 @@ std::vector<double> LUDecomposition(const int size, const double* const aMatrix,
     }
 
     // 計算用のバッファ
-    double **buffer = new double*[N];
+    double **buffer = new double *[N];
     for (int i = 0; i < N; i++)
         buffer[i] = new double[N];
 
@@ -639,7 +650,7 @@ std::vector<double> LUDecomposition(const int size, const double* const aMatrix,
         delete[] u1;
 
         // A1を求める
-        double **A1 = new double*[n];
+        double **A1 = new double *[n];
         for (int i = 0; i < n; i++)
             A1[i] = new double[n];
 
@@ -687,7 +698,7 @@ std::vector<double> LUDecomposition(const int size, const double* const aMatrix,
 
     delete[] aMatCopy;
     for (int i = 0; i < N; ++i)
-        delete[] (delete[] (delete[] lMatrix[i], uMatrix[i]), buffer[i]);
+        delete[](delete[](delete[] lMatrix[i], uMatrix[i]), buffer[i]);
     delete[](delete[](delete[] lMatrix, uMatrix), buffer);
     delete[] y;
 

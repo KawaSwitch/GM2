@@ -1,8 +1,8 @@
 #include "NurbsCurve.h"
 
-NurbsCurve::NurbsCurve(const int mord, const ControlPoint* const cp, const int cp_size, const double* const knot,
-    const GLdouble* const color, const GLdouble width)
-    : BsplineCurve(mord, cp, cp_size, knot, color, width) { }
+NurbsCurve::NurbsCurve(const int mord, const ControlPoint *const cp, const int cp_size, const double *const knot,
+                       const GLdouble *const color, const GLdouble width)
+    : BsplineCurve(mord, cp, cp_size, knot, color, width) {}
 
 // 位置ベクトル取得
 Vector3d NurbsCurve::GetPositionVector(const double t) const

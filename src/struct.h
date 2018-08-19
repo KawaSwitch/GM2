@@ -11,7 +11,7 @@ struct Quaternion
     double w;
 
     // 長さ
-    double Length() const { return sqrt(x*x + y*y + z*z + w*w); }
+    double Length() const { return sqrt(x * x + y * y + z * z + w * w); }
 
     // 単位化
     Quaternion Normalize() const { return *this / Length(); }
@@ -19,16 +19,16 @@ struct Quaternion
     // 定数倍
     constexpr Quaternion operator*(double value) const
     {
-        return{ x * value, y * value, z * value, w * value };
+        return {x * value, y * value, z * value, w * value};
     }
     constexpr Quaternion operator/(double value) const
     {
-        return{ x / value, y / value, z / value, w / value };
+        return {x / value, y / value, z / value, w / value};
     }
 };
 
 // 2次元点
-template<class T>
+template <class T>
 struct Point
 {
     T x;
@@ -58,7 +58,12 @@ struct SelectionData
     unsigned int maxZ;
     unsigned int name;
 
-    SelectionData() { minZ = 0; maxZ = 0; name = 0; }
+    SelectionData()
+    {
+        minZ = 0;
+        maxZ = 0;
+        name = 0;
+    }
     SelectionData(unsigned int m, unsigned int M, unsigned int n)
     {
         minZ = m;
@@ -72,8 +77,8 @@ enum class StencilRef
 {
     Background = 0, // 背景は0(初期値)
     Grid,
-    Entity, // 曲線・曲面用
-    HiddenLine, // 陰線
+    Entity,       // 曲線・曲面用
+    HiddenLine,   // 陰線
     RotateCenter, // 回転中心
     Axis,
     Ignore, // 意味なし Keepして使うのを想定

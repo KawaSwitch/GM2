@@ -1,15 +1,15 @@
 #include "Quaternion.h"
 
 // クォータニオンのの積の定義
-Quaternion& operator*(Quaternion& q1, Quaternion& q2)
+Quaternion &operator*(Quaternion &q1, Quaternion &q2)
 {
     Quaternion q0 =
-    {
-        q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y,
-        q1.w * q2.y - q1.x * q2.z + q1.y * q2.w + q1.z * q2.x,
-        q1.w * q2.z + q1.x * q2.y - q1.y * q2.x + q1.z * q2.w,
-        q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z,
-    };
+        {
+            q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y,
+            q1.w * q2.y - q1.x * q2.z + q1.y * q2.w + q1.z * q2.x,
+            q1.w * q2.z + q1.x * q2.y - q1.y * q2.x + q1.z * q2.w,
+            q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z,
+        };
 
     q1 = q0;
     return q1;
@@ -59,12 +59,24 @@ void CalcRotateMatrix(double *r, Quaternion q)
     //};
 
     double r1[16] =
-    {
-        1.0 - (yy + zz), xy + wz, xz - wy, 0.0,
-        xy - wz, 1.0 - (xx + zz), yz + wx, 0.0,
-        xz + wy, yz - wx, 1.0 - (xx + yy), 0.0,
-        0.0, 0.0, 0.0, 1.0,
-    };
+        {
+            1.0 - (yy + zz),
+            xy + wz,
+            xz - wy,
+            0.0,
+            xy - wz,
+            1.0 - (xx + zz),
+            yz + wx,
+            0.0,
+            xz + wy,
+            yz - wx,
+            1.0 - (xx + yy),
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+        };
 
     //double xx = q.x * q.x * 2.0;
     //double yy = q.y * q.y * 2.0;

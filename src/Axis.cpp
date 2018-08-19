@@ -6,7 +6,7 @@ AxisShowType axisShowType = AxisShowType::None;
 
 void NormalAxis::Draw()
 {
-     // ディスプレイリスト
+    // ディスプレイリスト
     static int displayList;
     static int displayListLabel; // 文字用
     static bool isRendered = false;
@@ -64,9 +64,9 @@ void NormalAxis::Draw()
 
 void NormalAxis::DrawInternal()
 {
-    GLUquadricObj* base_arrows[3];
-    GLUquadricObj* arrows[3];
-    GLdouble specular[4] = { 0.15, 0.15, 0.15, 1.0 };
+    GLUquadricObj *base_arrows[3];
+    GLUquadricObj *arrows[3];
+    GLdouble specular[4] = {0.15, 0.15, 0.15, 1.0};
 
     // X - axis
     if (isUseLight)

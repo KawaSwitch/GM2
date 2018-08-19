@@ -2,23 +2,23 @@
 #include "Scene.h"
 #include "Picking.h"
 
-extern Scene* scene;
+extern Scene *scene;
 
 // ローカル座標のデプス値を取得する
 float GetDepth(int x, int y)
 {
     float z;
-    GLint viewport[4];  // ビューポート
-                        
+    GLint viewport[4]; // ビューポート
+
     // デバイス座標系とウィンドウ座標系の変換
     glGetIntegerv(GL_VIEWPORT, viewport);
 
     glReadBuffer(GL_BACK);
 
     glReadPixels(x, viewport[3] - y - 1, 1, 1,
-        GL_DEPTH_COMPONENT,
-        GL_FLOAT,
-        &z);
+                 GL_DEPTH_COMPONENT,
+                 GL_FLOAT,
+                 &z);
 
     return z;
 }
@@ -37,12 +37,12 @@ Vector3d GetWorldCoord(int x, int y, float depth)
 
     // 世界座標を取得する
     gluUnProject((double)x, (double)viewport[3] - y - 1, depth,
-        mvMatrix,
-        pjMatrix,
-        viewport,
-        &wx,
-        &wy,
-        &wz);
+                 mvMatrix,
+                 pjMatrix,
+                 viewport,
+                 &wx,
+                 &wy,
+                 &wz);
 
     return Vector3d(wx, wy, wz);
 }
@@ -61,12 +61,12 @@ Vector3d GetLocalCoord(int x, int y, int z)
 
     // 世界座標を取得する
     gluProject((double)x, (double)viewport[3] - y - 1, z,
-        mvMatrix,
-        pjMatrix,
-        viewport,
-        &winX,
-        &winY,
-        &depth);
+               mvMatrix,
+               pjMatrix,
+               viewport,
+               &winX,
+               &winY,
+               &depth);
 
     return Vector3d(winX, winY, depth);
 }
@@ -74,19 +74,19 @@ Vector3d GetLocalCoord(int x, int y, int z)
 // マウスの座標と重なっているオブジェクトの識別番号を返す
 unsigned int GetObjNumberOnMousePointer(int x, int y)
 {
-    GLuint selectBuf[128] = { 0 };  // セレクションバッファ
-    GLuint hits; // ヒットナンバー
-    GLint viewport[4];  // ビューポート
+    GLuint selectBuf[128] = {0}; // セレクションバッファ
+    GLuint hits;                 // ヒットナンバー
+    GLint viewport[4];           // ビューポート
     unsigned int objNum = 0;
 
     // セレクション開始
 
     // 現在のビューポートを取得
     glGetIntegerv(GL_VIEWPORT, viewport);
-    
+
     // セレクション用バッファをOpenGLへ渡す
     glSelectBuffer(BUF_MAX, selectBuf);
-    
+
     // OpenGL描画モードをセレクションモードへ
     (void)glRenderMode(GL_SELECT);
 
@@ -96,22 +96,21 @@ unsigned int GetObjNumberOnMousePointer(int x, int y)
     // 投影変換行列を操作対象とし、現在の投影変換行列をスタックへ入れる
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
-    
+
     // 投影行列を初期化
     glLoadIdentity();
 
     // マウスピッキングの範囲の設定
     gluPickMatrix(x,
-        viewport[3] - y, // ウィンドウ左下を原点としたウィンドウy座標を与える
-        100.0, // ピクセル単位のセレクション範囲 XとY
-        100.0, // お好みで調整
-        viewport);
+                  viewport[3] - y, // ウィンドウ左下を原点としたウィンドウy座標を与える
+                  100.0,           // ピクセル単位のセレクション範囲 XとY
+                  100.0,           // お好みで調整
+                  viewport);
 
     glMatrixMode(GL_MODELVIEW);
     // ここでglLoadNameつきで描画して名前をつける
     // 階層の深さは1にすること！
     scene->DrawForPick();
-
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
@@ -123,14 +122,14 @@ unsigned int GetObjNumberOnMousePointer(int x, int y)
     if (hits > 0)
         objNum = GetNearestNumber(hits, selectBuf);
 
-    glMatrixMode(GL_MODELVIEW);        //モデルビューモードへ戻す
+    glMatrixMode(GL_MODELVIEW); //モデルビューモードへ戻す
 
     // 見つからなければ0を返す
     return objNum;
 }
 
 // 階層1として選択データを整理（freeし忘れないで, 後でスマートポインタ実装）
-void GetSelectionData(GLuint hits, GLuint* buf, SelectionData* datas)
+void GetSelectionData(GLuint hits, GLuint *buf, SelectionData *datas)
 {
     // 階層1としてデータを整理
     for (unsigned int i = 0, dataI = 0; i < 128; dataI++)
@@ -145,9 +144,9 @@ void GetSelectionData(GLuint hits, GLuint* buf, SelectionData* datas)
 }
 
 // もっとも手前にあるオブジェクト番号を取得
-unsigned int GetNearestNumber(GLuint hits, GLuint* buf)
+unsigned int GetNearestNumber(GLuint hits, GLuint *buf)
 {
-    SelectionData* data = (SelectionData *)malloc(sizeof(SelectionData) * hits);
+    SelectionData *data = (SelectionData *)malloc(sizeof(SelectionData) * hits);
     GetSelectionData(hits, buf, data);
 
     if (data == NULL)
@@ -168,9 +167,9 @@ unsigned int GetNearestNumber(GLuint hits, GLuint* buf)
 }
 
 // もっとも奥にあるオブジェクト番号を取得
-unsigned int GetFarthestNumber(GLuint hits, GLuint* buf)
+unsigned int GetFarthestNumber(GLuint hits, GLuint *buf)
 {
-    SelectionData* data = (SelectionData *)malloc(sizeof(SelectionData) * hits);
+    SelectionData *data = (SelectionData *)malloc(sizeof(SelectionData) * hits);
     GetSelectionData(hits, buf, data);
 
     if (data == NULL)

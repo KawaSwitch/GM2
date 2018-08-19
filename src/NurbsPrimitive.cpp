@@ -5,7 +5,7 @@
 #include "NurbsCurve.h"
 #include "NurbsSurface.h"
 
-extern Scene* scene;
+extern Scene *scene;
 
 //// Nurbs曲面で円柱を描く
 //void DrawCylinder_CGS3()

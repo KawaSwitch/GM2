@@ -2,7 +2,7 @@
 #include "BsplineCurve.h"
 
 // 制御点設定
-void Surface::SetControlPoint(const ControlPoint* const cp, const int size)
+void Surface::SetControlPoint(const ControlPoint *const cp, const int size)
 {
     if (size <= 0)
         Error::ShowAndExit("制御点設定失敗", "CP size must be over 0.");
@@ -12,15 +12,19 @@ void Surface::SetControlPoint(const ControlPoint* const cp, const int size)
     // _weight.reserve(size);
 
     if (_ctrlp.size() > 0)
-      {
-	_ctrlp.clear();
-	_ctrlp.shrink_to_fit();
+    {
+        _ctrlp.clear();
+        _ctrlp.shrink_to_fit();
 
-	_ctrlpX.clear(); _ctrlpX.shrink_to_fit();
-	_ctrlpY.clear(); _ctrlpY.shrink_to_fit();
-	_ctrlpZ.clear(); _ctrlpZ.shrink_to_fit();
-	_weight.clear(); _weight.shrink_to_fit();
-      }
+        _ctrlpX.clear();
+        _ctrlpX.shrink_to_fit();
+        _ctrlpY.clear();
+        _ctrlpY.shrink_to_fit();
+        _ctrlpZ.clear();
+        _ctrlpZ.shrink_to_fit();
+        _weight.clear();
+        _weight.shrink_to_fit();
+    }
 
     for (int i = 0; i < size; i++)
         _ctrlp.emplace_back(cp[i]);
@@ -49,14 +53,12 @@ Vector3d Surface::GetCurvatureVector(const double u, const double v) const
     Vector3d e = GetNormalVector(u, v).Normalize();
 
     // 絶対値が大きい方を返す
-    return (fabs(max_kappa) > fabs(min_kappa)) ?
-        (1 / max_kappa) * e :
-        (1 / min_kappa) * e;
+    return (fabs(max_kappa) > fabs(min_kappa)) ? (1 / max_kappa) * e : (1 / min_kappa) * e;
 }
 
 // Σ[i=1tok]Σ[j=1toL] Q(i,j)N[i,n](u)N[j,m](v) を計算する
 // <!>非有理曲面の位置ベクトル, 有理曲面の分子
-Vector3d Surface::CalcVectorWithBasisFunctions(const double* const BF_array_U, const double* const BF_array_V) const
+Vector3d Surface::CalcVectorWithBasisFunctions(const double *const BF_array_U, const double *const BF_array_V) const
 {
     Vector3d retVec;
     double temp[100]; // 計算用
@@ -86,7 +88,7 @@ Vector3d Surface::CalcVectorWithBasisFunctions(const double* const BF_array_U, c
 
 // Σ[i=1tok]Σ[j=1toL] w(i,j)N[i,n](u)N[j,m](v) を計算する
 // <!>有理曲面の分母
-double Surface::CalcWeightWithBasisFunctions(const double* const BF_array_U, const double* const BF_array_V) const
+double Surface::CalcWeightWithBasisFunctions(const double *const BF_array_U, const double *const BF_array_V) const
 {
     double temp[100]; // 計算用
 
@@ -102,7 +104,7 @@ vector<ControlPoint> Surface::GetEdgeCurveControlPoint(const SurfaceEdge edge) c
 
     if (edge == SurfaceEdge::U_min)
     {
-        for (int i = 0; i <_ncpntU * _ncpntV; i += _ncpntU)
+        for (int i = 0; i < _ncpntU * _ncpntV; i += _ncpntU)
             edge_cp.push_back(_ctrlp[i]);
     }
     else if (edge == SurfaceEdge::U_max)
@@ -125,7 +127,7 @@ vector<ControlPoint> Surface::GetEdgeCurveControlPoint(const SurfaceEdge edge) c
 }
 
 // 指定パラメータ固定のアイソ曲線を取得する
-std::unique_ptr<Curve> Surface::GetIsoCurve(const ParamUV const_param, const double param, const GLdouble* const color, const GLdouble width) const
+std::unique_ptr<Curve> Surface::GetIsoCurve(const ParamUV const_param, const double param, const GLdouble *const color, const GLdouble width) const
 {
     vector<Vector3d> pnts; // アイソ曲線取得用の参照点群
     const int split = 30;
@@ -149,7 +151,7 @@ std::unique_ptr<Curve> Surface::GetIsoCurve(const ParamUV const_param, const dou
 }
 
 // 主曲率を取得
-void Surface::GetPrincipalCurvatures(const double u, const double v, double* const max_kappa, double* const min_kappa) const
+void Surface::GetPrincipalCurvatures(const double u, const double v, double *const max_kappa, double *const min_kappa) const
 {
     Vector3d e = GetNormalVector(u, v).Normalize(); // 単位法線ベクトル
 
@@ -239,10 +241,10 @@ void Surface::DrawCPsInternal() const
 }
 
 // 描画範囲を各方向split_num個に分割するような位置ベクトルを取得する(pnts[v][u]と並べる)
-void Surface::GetPositionVectors(vector<vector<Vector3d>>& pnts, const int U_split_num, const int V_split_num) const
+void Surface::GetPositionVectors(vector<vector<Vector3d>> &pnts, const int U_split_num, const int V_split_num) const
 {
     // 点群のクリア
-    for (auto& pntRow : pnts)
+    for (auto &pntRow : pnts)
         pntRow.clear();
     pnts.clear();
 
@@ -264,22 +266,22 @@ void Surface::GetPositionVectors(vector<vector<Vector3d>>& pnts, const int U_spl
 }
 
 // 参照点からの最近点を取得
-NearestPointInfoS Surface::GetNearestPointInfoInternal(const Vector3d& ref, const vector<vector<Point3dS>>& startPnts, const NearestSearch search) const
+NearestPointInfoS Surface::GetNearestPointInfoInternal(const Vector3d &ref, const vector<vector<Point3dS>> &startPnts, const NearestSearch search) const
 {
     if (search == Project)
     {
         vector<NearestPointInfoS> possiblePnts; // 最近候補点
 
         // 開始点毎の最近点を取得し候補点とする
-        for (const auto& startPntRow : startPnts)
+        for (const auto &startPntRow : startPnts)
         {
-            for (const auto& startPnt : startPntRow)
+            for (const auto &startPnt : startPntRow)
                 possiblePnts.push_back(this->GetNearestPointFromRefByProjectionMethod(ref, startPnt));
         }
 
         // 候補の中で一番距離の短いものを最近点とする
         NearestPointInfoS nearestPnt(Vector3d(), Vector3d(DBL_MAX, DBL_MAX, DBL_MAX), 0, 0);
-        for (const auto& p : possiblePnts)
+        for (const auto &p : possiblePnts)
         {
             if (p.dist < nearestPnt.dist)
                 nearestPnt = p;
@@ -294,11 +296,11 @@ NearestPointInfoS Surface::GetNearestPointInfoInternal(const Vector3d& ref, cons
         double min_dist = DBL_MAX;
         Point3dS start(Vector3d(DBL_MAX, DBL_MAX, DBL_MAX), 0, 0);
 
-        for (const auto& startPntRow : startPnts)
+        for (const auto &startPntRow : startPnts)
         {
-            for (const auto& startPnt : startPntRow)
+            for (const auto &startPnt : startPntRow)
             {
-                dist = ref.DistanceFrom((Vector3d)const_cast<Point3dS &>(startPnt));
+                dist = ref.DistanceFrom((Vector3d) const_cast<Point3dS &>(startPnt));
                 if (dist < min_dist)
                 {
                     min_dist = dist;
@@ -315,7 +317,7 @@ NearestPointInfoS Surface::GetNearestPointInfoInternal(const Vector3d& ref, cons
 }
 // 最近点を取得する(射影法)
 // コメント内のe_.は資料の終了条件番号
-NearestPointInfoS Surface::GetNearestPointFromRefByProjectionMethod(const Vector3d& ref, const Point3dS& start) const
+NearestPointInfoS Surface::GetNearestPointFromRefByProjectionMethod(const Vector3d &ref, const Point3dS &start) const
 {
     int count = 0; // ステップ数
 
@@ -323,15 +325,14 @@ NearestPointInfoS Surface::GetNearestPointFromRefByProjectionMethod(const Vector
     double u = start.paramU;
     double v = start.paramV;
 
-    Vector3d p; // 位置ベクトル
-    Vector3d pu; // U方向接線ベクトル
-    Vector3d pv; // V方向接線ベクトル
+    Vector3d p;     // 位置ベクトル
+    Vector3d pu;    // U方向接線ベクトル
+    Vector3d pv;    // V方向接線ベクトル
     double delta_u; // U方向パラメータ移動量
     double delta_v; // V方向パラメータ移動量
 
     // 更新
-    auto update = [&]()
-    {
+    auto update = [&]() {
         // 各ベクトル更新
         p = GetPositionVector(u, v);
         pu = GetFirstDiffVectorU(u, v);
@@ -377,9 +378,9 @@ NearestPointInfoS Surface::GetNearestPointFromRefByProjectionMethod(const Vector
 }
 // パラメータがはみ出したときの最近点取得(曲面の端に最近点があるはず)
 // u,v方向がともにはみ出す場合もOK
-NearestPointInfoS Surface::GetNearestPointWhenParamOver(const Vector3d& ref, const double u, const double v) const
+NearestPointInfoS Surface::GetNearestPointWhenParamOver(const Vector3d &ref, const double u, const double v) const
 {
-    std::unique_ptr<Curve> edge; // 曲面の端
+    std::unique_ptr<Curve> edge;                 // 曲面の端
     std::unique_ptr<NearestPointInfoC> nearInfo; // 最近店情報
 
     // u方向がはみ出る場合
@@ -419,14 +420,14 @@ NearestPointInfoS Surface::GetNearestPointWhenParamOver(const Vector3d& ref, con
 }
 // 最近点を取得する(アイソライン法)
 // コメント内のe_は資料の終了条件番号
-NearestPointInfoS Surface::GetNearestPointFromRefByIsolineMethod(const Vector3d& ref, const Point3dS& start) const
+NearestPointInfoS Surface::GetNearestPointFromRefByIsolineMethod(const Vector3d &ref, const Point3dS &start) const
 {
-    int count = 0; // ステップ数
-    std::unique_ptr<Curve> iso; // アイソ曲線
+    int count = 0;                               // ステップ数
+    std::unique_ptr<Curve> iso;                  // アイソ曲線
     std::unique_ptr<NearestPointInfoC> nearInfo; // 最近点情報
-    double u, v; // 現在のパラメータ
-    double end_param; // 終了点のパラメータ
-    double dot; // 内積値
+    double u, v;                                 // 現在のパラメータ
+    double end_param;                            // 終了点のパラメータ
+    double dot;                                  // 内積値
 
     double ori_rangeU = _max_draw_param_U - _min_draw_param_U;
     double ori_rangeV = _max_draw_param_V - _min_draw_param_V;
@@ -435,7 +436,7 @@ NearestPointInfoS Surface::GetNearestPointFromRefByIsolineMethod(const Vector3d&
     u = start.paramU;
     v = start.paramV;
     iso = this->GetIsoCurve(ParamUV::V, v);
-    dot = (ref - (Vector3d)const_cast<Point3dS &>(start)).Dot(GetFirstDiffVectorU(u, v));
+    dot = (ref - (Vector3d) const_cast<Point3dS &>(start)).Dot(GetFirstDiffVectorU(u, v));
     if (dot > 0)
         end_param = _max_draw_param_U;
     else
@@ -447,16 +448,16 @@ NearestPointInfoS Surface::GetNearestPointFromRefByIsolineMethod(const Vector3d&
         if (count % 2 == 0)
         {
             if (u < end_param)
-	      nearInfo = std::make_unique<NearestPointInfoC>(iso->GetSectionNearestPointInfoByBinary(ref, u / ori_rangeU, end_param / ori_rangeU, 8));
+                nearInfo = std::make_unique<NearestPointInfoC>(iso->GetSectionNearestPointInfoByBinary(ref, u / ori_rangeU, end_param / ori_rangeU, 8));
             else
-	      nearInfo = std::make_unique<NearestPointInfoC>(iso->GetSectionNearestPointInfoByBinary(ref, end_param / ori_rangeU, u / ori_rangeU, 8));
+                nearInfo = std::make_unique<NearestPointInfoC>(iso->GetSectionNearestPointInfoByBinary(ref, end_param / ori_rangeU, u / ori_rangeU, 8));
         }
         else
         {
             if (v < end_param)
-	      nearInfo = std::make_unique<NearestPointInfoC>(iso->GetSectionNearestPointInfoByBinary(ref, v / ori_rangeV, end_param / ori_rangeV, 8));
+                nearInfo = std::make_unique<NearestPointInfoC>(iso->GetSectionNearestPointInfoByBinary(ref, v / ori_rangeV, end_param / ori_rangeV, 8));
             else
-	      nearInfo = std::make_unique<NearestPointInfoC>(iso->GetSectionNearestPointInfoByBinary(ref, end_param / ori_rangeV, v / ori_rangeV, 8));
+                nearInfo = std::make_unique<NearestPointInfoC>(iso->GetSectionNearestPointInfoByBinary(ref, end_param / ori_rangeV, v / ori_rangeV, 8));
         }
         ++count;
 

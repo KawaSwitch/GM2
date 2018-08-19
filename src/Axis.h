@@ -6,8 +6,8 @@
 // 軸の表示タイプ
 enum AxisShowType
 {
-    None,  // 表示しない
-    Normal, // 普通に描画
+    None,      // 表示しない
+    Normal,    // 普通に描画
     WithLabel, // XYZラベルも描画
 };
 
@@ -15,17 +15,17 @@ extern AxisShowType axisShowType;
 
 class Axis
 {
-private:
+  private:
     // 矢印部分の占める割合
     const double _ratio = (double)1 / 3;
 
-protected:
-    double _length; 
-    double _bodyLength; // 胴体部分の長さ
+  protected:
+    double _length;
+    double _bodyLength;  // 胴体部分の長さ
     double _arrowLength; // 矢印部分の長さ
 
-public:
-    Axis(double len) 
+  public:
+    Axis(double len)
     {
         _length = len;
 
@@ -40,11 +40,11 @@ public:
 // ソリッド軸
 class NormalAxis : public Axis
 {
-private:
+  private:
     void DrawInternal();
     void DrawCharacter();
 
-public:
-    NormalAxis(double len) : Axis(len) { }
+  public:
+    NormalAxis(double len) : Axis(len) {}
     void Draw();
 };

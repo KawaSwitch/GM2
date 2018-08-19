@@ -4,7 +4,7 @@ using namespace std;
 
 class Error
 {
-private:
+  private:
     static void Exit()
     {
         cerr << "Press any key to exit..." << endl;
@@ -12,18 +12,19 @@ private:
         exit(1);
     }
 
-public:
+  public:
     Error() = delete;
 
-public:
-
-    static void ShowMessage(const char* error_name, const char* detail = NULL)
+  public:
+    static void ShowMessage(const char *error_name, const char *detail = NULL)
     {
         cerr << "an error has occured : " << error_name << endl;
-        if (detail != NULL) cerr << "error detail : " << detail << endl << endl;
+        if (detail != NULL)
+            cerr << "error detail : " << detail << endl
+                 << endl;
     }
 
-    static void ShowAndExit(const char* error_name, const char* detail = NULL)
+    static void ShowAndExit(const char *error_name, const char *detail = NULL)
     {
         ShowMessage(error_name, detail);
         Exit();

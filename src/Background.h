@@ -5,10 +5,11 @@
 #include "Camera.h"
 #include "CalcUtil.h"
 
-static GLdouble color_top[4] = { 1.0, 1.0, 1.0, 1.0 };
-static GLdouble color_bottom[4] = { 0.8, 1.0, 0.9, 1.0 };
+static GLdouble color_top[4] = {1.0, 1.0, 1.0, 1.0};
+static GLdouble color_bottom[4] = {0.8, 1.0, 0.9, 1.0};
 
-template<class IBackGround> void DrawBackground(const IBackGround& grid)
+template <class IBackGround>
+void DrawBackground(const IBackGround &grid)
 {
     grid.Draw();
 }
@@ -25,7 +26,7 @@ struct BackgroundNormal : IBackGround
     void Draw() const override
     {
         double elev_angle = PersParam::fovy / 2; // 仰角(度数法)
-        double backHeightHalf, backWidthHalf; // 背景の大きさ(原点からの長さ)
+        double backHeightHalf, backWidthHalf;    // 背景の大きさ(原点からの長さ)
 
         glPushMatrix();
         {
@@ -43,7 +44,6 @@ struct BackgroundNormal : IBackGround
             }
             else
                 Error::ShowAndExit("背景設定不可", "投影法が無効な値です");
-
 
             // 背景描画
             glBegin(GL_QUADS);

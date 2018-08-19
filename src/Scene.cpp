@@ -4,12 +4,11 @@
 
 Scene::Scene()
 {
-
 }
 
 void Scene::AddObject(std::string key, shared_ptr<Object> obj)
 {
-  _objTable.emplace(key, obj);
+    _objTable.emplace(key, obj);
 }
 
 void Scene::DeleteObjectAll()
@@ -110,25 +109,25 @@ void Scene::ToggleDrawCurvatureVectors()
 
 void Scene::Draw()
 {
-// α値がある場合を考慮して最後に描く
+    // α値がある場合を考慮して最後に描く
     // 形状情報描画(非透明)
-  for (const auto& obj : _objTable)
+    for (const auto &obj : _objTable)
     {
         obj.second->DrawControlPointsAndLines(); // 制御点描画
-        obj.second->DrawFirstDiffVectors(); // 接線描画
-        obj.second->DrawSecondDiffVectors(); // 2階微分ベクトル描画
-        obj.second->DrawBox(); // ミニマクスボックス描画
-        obj.second->DrawNormalVectors(); // 法線描画
-        obj.second->DrawCurvatureVectors(); // 曲率ベクトル描画
+        obj.second->DrawFirstDiffVectors();      // 接線描画
+        obj.second->DrawSecondDiffVectors();     // 2階微分ベクトル描画
+        obj.second->DrawBox();                   // ミニマクスボックス描画
+        obj.second->DrawNormalVectors();         // 法線描画
+        obj.second->DrawCurvatureVectors();      // 曲率ベクトル描画
     }
     // 形状描画
     // 形状同士のαでの順番考慮
-  for (const auto& obj : _objTable)
+    for (const auto &obj : _objTable)
     {
         if (!obj.second->IsSemiTransparent())
             obj.second->Draw(); // モデル描画
     }
-  for (const auto& obj : _objTable)
+    for (const auto &obj : _objTable)
     {
         if (obj.second->IsSemiTransparent())
             obj.second->Draw(); // モデル描画

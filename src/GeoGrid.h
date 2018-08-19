@@ -6,8 +6,8 @@ extern const int grid_interval;
 
 class GeoGrid2D
 {
-private:
-    int _len; // 原点からの長さ
+  private:
+    int _len;  // 原点からの長さ
     int _skip; // グリッド間の長さ
 
     // 内部描画(軸あり)
@@ -89,10 +89,13 @@ private:
         glLineWidth(1.0);
     }
 
-public:
-    
-    GeoGrid2D(int len, int skip) { _len = len; _skip = skip; }
-    
+  public:
+    GeoGrid2D(int len, int skip)
+    {
+        _len = len;
+        _skip = skip;
+    }
+
     // ディスプレイリスト描画
     void Draw()
     {

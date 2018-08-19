@@ -9,12 +9,12 @@
 #include <cstring>
 
 // 指定拡張子のファイル名をすべて取得
-vector<string> Reader::GetFilenames(const string& extension) const
+vector<string> Reader::GetFilenames(const string &extension) const
 {
     vector<string> returnFiles;
 
     DIR *dp;       // ディレクトリポインタ
-    dirent* entry; // readdir() で返されるエントリーポイント
+    dirent *entry; // readdir() で返されるエントリーポイント
 
     string path = (_path == "") ? "./" : _path; // パス指定がなければカレント
     string ext = "." + extension;
@@ -56,7 +56,7 @@ vector<string> Reader::GetFilenames(const string& extension) const
 }
 
 // 1行ずつすべて読み込んで返す
-vector<string> Reader::ReadAllLines(const string& filepath) const
+vector<string> Reader::ReadAllLines(const string &filepath) const
 {
     vector<string> returnLines;
     std::ifstream ifs(filepath);
@@ -76,7 +76,7 @@ vector<string> Reader::ReadAllLines(const string& filepath) const
 }
 
 // ファイルからオブジェクトを取得する
-Object* KjsReader::GetObjectFromFile(const string& file_name) const
+Object *KjsReader::GetObjectFromFile(const string &file_name) const
 {
     string file_path = KJS_FILE_NAME + "/" + file_name;
 
@@ -114,27 +114,27 @@ Object* KjsReader::GetObjectFromFile(const string& file_name) const
     // 大文字変換
     transform(lines[0].begin(), lines[0].end(), lines[0].begin(), ::toupper);
     transform(lines[1].begin(), lines[1].end(), lines[1].begin(), ::toupper);
-    
+
     if (strstr(lines[0].c_str(), "BEZIER"))
     {
-      if (strstr(lines[1].c_str(), "CURVE"))
-	return BezierCurveReader(lines);
-      else
-	return BezierSurfaceReader(lines);
+        if (strstr(lines[1].c_str(), "CURVE"))
+            return BezierCurveReader(lines);
+        else
+            return BezierSurfaceReader(lines);
     }
     else if (strstr(lines[0].c_str(), "BSPLINE"))
     {
-      if (strstr(lines[1].c_str(), "CURVE"))
-	return BsplineCurveReader(lines);
-      else
-	return BsplineSurfaceReader(lines);
+        if (strstr(lines[1].c_str(), "CURVE"))
+            return BsplineCurveReader(lines);
+        else
+            return BsplineSurfaceReader(lines);
     }
     else if (strstr(lines[0].c_str(), "NURBS"))
     {
-      if (strstr(lines[1].c_str(), "CURVE"))
-	return NurbsCurveReader(lines);
-      else
-	return NurbsSurfaceReader(lines);
+        if (strstr(lines[1].c_str(), "CURVE"))
+            return NurbsCurveReader(lines);
+        else
+            return NurbsSurfaceReader(lines);
     }
     else
     {
@@ -158,7 +158,7 @@ vector<Object *> KjsReader::GetObjectsFromKjsFolder() const
             continue;
 
         // ファイルからオブジェクトを取得する
-        Object* obj = GetObjectFromFile(kjsFiles[i]);
+        Object *obj = GetObjectFromFile(kjsFiles[i]);
         if (obj != NULL)
             returnObjs.push_back(GetObjectFromFile(kjsFiles[i]));
     }
@@ -167,7 +167,7 @@ vector<Object *> KjsReader::GetObjectsFromKjsFolder() const
 }
 
 // 文字列の中から数字のみを取り出す
-void KjsReader::ExtractNumberFromString(char* dest, const char* src) const
+void KjsReader::ExtractNumberFromString(char *dest, const char *src) const
 {
     while (*src)
     {
@@ -181,13 +181,13 @@ void KjsReader::ExtractNumberFromString(char* dest, const char* src) const
 
 // 以下各オブジェクトのリーダー(ゲッター)関数
 // 長々しいのでまとめれたらまとめたい
-Object* KjsReader::BezierCurveReader(const vector<string>& lines) const
+Object *KjsReader::BezierCurveReader(const vector<string> &lines) const
 {
-    int current = 2; // 3行目から読み込む
-    char mord[8]; // 階数
-    char ncpnt[8]; // 制御点数
+    int current = 2;   // 3行目から読み込む
+    char mord[8];      // 階数
+    char ncpnt[8];     // 制御点数
     GLdouble color[4]; // 色
-    GLdouble width; // 幅
+    GLdouble width;    // 幅
 
     // 色
     {
@@ -221,18 +221,18 @@ Object* KjsReader::BezierCurveReader(const vector<string>& lines) const
         cps[i] = cp;
     }
 
-    BezierCurve* curve = new BezierCurve(atoi(mord), &cps[0], atoi(ncpnt), color, width);
+    BezierCurve *curve = new BezierCurve(atoi(mord), &cps[0], atoi(ncpnt), color, width);
     return curve;
 }
-Object* KjsReader::BezierSurfaceReader(const vector<string>& lines) const
+Object *KjsReader::BezierSurfaceReader(const vector<string> &lines) const
 {
-    int current = 2; // 3行目から読み込む
-    char uord[8]; // u階数
-    char ucpnt[8]; // u制御点数
-    char vord[8]; // v階数
-    char vcpnt[8]; // v制御点数
+    int current = 2;   // 3行目から読み込む
+    char uord[8];      // u階数
+    char ucpnt[8];     // u制御点数
+    char vord[8];      // v階数
+    char vcpnt[8];     // v制御点数
     GLdouble color[4]; // 色
-    GLdouble resol; // 解像度
+    GLdouble resol;    // 解像度
 
     // 色
     {
@@ -268,16 +268,16 @@ Object* KjsReader::BezierSurfaceReader(const vector<string>& lines) const
         cps[i] = cp;
     }
 
-    BezierSurface* surf = new BezierSurface(atoi(uord), atoi(vord), &cps[0], atoi(ucpnt), atoi(vcpnt), color, resol);
+    BezierSurface *surf = new BezierSurface(atoi(uord), atoi(vord), &cps[0], atoi(ucpnt), atoi(vcpnt), color, resol);
     return surf;
 }
-Object* KjsReader::BsplineCurveReader(const vector<string>& lines) const
+Object *KjsReader::BsplineCurveReader(const vector<string> &lines) const
 {
-    int current = 2; // 3行目から読み込む
-    char mord[8]; // 階数
-    char ncpnt[8]; // 制御点数
+    int current = 2;   // 3行目から読み込む
+    char mord[8];      // 階数
+    char ncpnt[8];     // 制御点数
     GLdouble color[4]; // 色
-    GLdouble width; // 幅
+    GLdouble width;    // 幅
 
     // 色
     {
@@ -308,8 +308,6 @@ Object* KjsReader::BsplineCurveReader(const vector<string>& lines) const
         stringstream ss(lines[current++]);
         ss >> buf[0] >> x >> y >> z;
 
-
-
         ControlPoint cp(x, y, z);
         cps[i] = cp;
     }
@@ -327,18 +325,18 @@ Object* KjsReader::BsplineCurveReader(const vector<string>& lines) const
         ss >> buf[0] >> knot[i];
     }
 
-    BsplineCurve* curve = new BsplineCurve(atoi(mord), &cps[0], atoi(ncpnt), &knot[0], color, width);
+    BsplineCurve *curve = new BsplineCurve(atoi(mord), &cps[0], atoi(ncpnt), &knot[0], color, width);
     return curve;
 }
-Object* KjsReader::BsplineSurfaceReader(const vector<string>& lines) const
+Object *KjsReader::BsplineSurfaceReader(const vector<string> &lines) const
 {
-    int current = 2; // 3行目から読み込む
-    char uord[8]; // u階数
-    char ucpnt[8]; // u制御点数
-    char vord[8]; // v階数
-    char vcpnt[8]; // v制御点数
+    int current = 2;   // 3行目から読み込む
+    char uord[8];      // u階数
+    char ucpnt[8];     // u制御点数
+    char vord[8];      // v階数
+    char vcpnt[8];     // v制御点数
     GLdouble color[4]; // 色
-    GLdouble resol; // 解像度
+    GLdouble resol;    // 解像度
 
     // 色
     {
@@ -401,18 +399,18 @@ Object* KjsReader::BsplineSurfaceReader(const vector<string>& lines) const
         ss >> buf[0] >> knotV[i];
     }
 
-    BsplineSurface* surf = 
+    BsplineSurface *surf =
         new BsplineSurface(atoi(uord), atoi(vord), &cps[0], atoi(ucpnt), atoi(vcpnt), &knotU[0], &knotV[0], color, resol);
 
     return surf;
 }
-Object* KjsReader::NurbsCurveReader(const vector<string>& lines) const
+Object *KjsReader::NurbsCurveReader(const vector<string> &lines) const
 {
-    int current = 2; // 3行目から読み込む
-    char mord[8]; // 階数
-    char ncpnt[8]; // 制御点数
+    int current = 2;   // 3行目から読み込む
+    char mord[8];      // 階数
+    char ncpnt[8];     // 制御点数
     GLdouble color[4]; // 色
-    GLdouble width; // 幅
+    GLdouble width;    // 幅
 
     // 色
     {
@@ -460,18 +458,18 @@ Object* KjsReader::NurbsCurveReader(const vector<string>& lines) const
         ss >> buf[0] >> knot[i];
     }
 
-    NurbsCurve* curve = new NurbsCurve(atoi(mord), &cps[0], atoi(ncpnt), &knot[0], color, width);
+    NurbsCurve *curve = new NurbsCurve(atoi(mord), &cps[0], atoi(ncpnt), &knot[0], color, width);
     return curve;
 }
-Object* KjsReader::NurbsSurfaceReader(const vector<string>& lines) const
+Object *KjsReader::NurbsSurfaceReader(const vector<string> &lines) const
 {
-    int current = 2; // 3行目から読み込む
-    char uord[8]; // u階数
-    char ucpnt[8]; // u制御点数
-    char vord[8]; // v階数
-    char vcpnt[8]; // v制御点数
+    int current = 2;   // 3行目から読み込む
+    char uord[8];      // u階数
+    char ucpnt[8];     // u制御点数
+    char vord[8];      // v階数
+    char vcpnt[8];     // v制御点数
     GLdouble color[4]; // 色
-    GLdouble resol; // 解像度
+    GLdouble resol;    // 解像度
 
     // 色
     {
@@ -534,7 +532,7 @@ Object* KjsReader::NurbsSurfaceReader(const vector<string>& lines) const
         ss >> buf[0] >> knotV[i];
     }
 
-    NurbsSurface* surf =
+    NurbsSurface *surf =
         new NurbsSurface(atoi(uord), atoi(vord), &cps[0], atoi(ucpnt), atoi(vcpnt), &knotU[0], &knotV[0], color, resol);
 
     return surf;

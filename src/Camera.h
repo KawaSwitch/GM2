@@ -11,8 +11,8 @@ struct PersParam
 // 投影法
 enum ProjectType
 {
-    Perspective,    // 透視投影
-    Ortho,          // 平行投影
+    Perspective, // 透視投影
+    Ortho,       // 平行投影
 };
 
 extern ProjectType mainProjType; // メインビューの投影法

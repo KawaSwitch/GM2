@@ -13,4 +13,4 @@ Vector3d GetLocalCoord(int x, int y, int z);
 unsigned int GetObjNumberOnMousePointer(int x, int y);
 
 unsigned int GetNearestNumber(GLuint hits, GLuint *buf);
-unsigned int GetFarthestNumber(GLuint hits, GLuint* buf);
+unsigned int GetFarthestNumber(GLuint hits, GLuint *buf);

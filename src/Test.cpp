@@ -12,12 +12,12 @@
 #include "glUtil.h"
 #include "Intersection.h"
 
-static int current_size; // 現在のテスト用のディスプレイリスト数
-static int* displayLists; // ディスプレイリスト保管用ポインタ
+static int current_size;  // 現在のテスト用のディスプレイリスト数
+static int *displayLists; // ディスプレイリスト保管用ポインタ
 static bool isFirst = true;
 static bool isRegistered = false;
 
-Scene* test_scene;
+Scene *test_scene;
 
 // 形状の名称(ファイル名) TODO: どっかで共有
 static const std::string curve1_name("CGS_bspline_curve_1.kjs");
@@ -30,75 +30,74 @@ static const std::string curveG_name("CGS_bspline_curve_G.kjs");
 // テストというか仮描画！！！！！
 
 // 描画したいのをおく
-static vector<function<void(void)>> TestRegisterDraw
-{
-  //DrawBsplineFunctions, // Bスプライン基底関数描画
-  //DrawBsplineCurves, // Bスプライン曲線描画
-  //DrawCircle_CGS3, // Nurbs曲線で円描く
-  //DrawSphere_CGS3, // Nurbs曲面で球を描く
-  //DrawCylinder_CGS3, // Nurbs曲面で円柱を描く
-  //DrawApproxCurve_CGS4, // 近似曲線を描画
-  //DrawApproxSurface_CGS5, // 近似曲面を描画
-  //DrawCurveNearest_CGS6, // 最近点を描画_曲線
-  //DrawSurfaceNearest_CGS7, // 最近点を描画_曲面
-  //DrawSplitCurve_CGS8, // 分割曲線を描画
-  //DrawSplitSurface_CGS8, // 分割曲面を描画
-      DrawIntersectCurveSurface_CGS8, // 曲線と曲面の交点取得
+static vector<function<void(void)>> TestRegisterDraw{
+    //DrawBsplineFunctions, // Bスプライン基底関数描画
+    //DrawBsplineCurves, // Bスプライン曲線描画
+    //DrawCircle_CGS3, // Nurbs曲線で円描く
+    //DrawSphere_CGS3, // Nurbs曲面で球を描く
+    //DrawCylinder_CGS3, // Nurbs曲面で円柱を描く
+    //DrawApproxCurve_CGS4, // 近似曲線を描画
+    //DrawApproxSurface_CGS5, // 近似曲面を描画
+    //DrawCurveNearest_CGS6, // 最近点を描画_曲線
+    //DrawSurfaceNearest_CGS7, // 最近点を描画_曲面
+    //DrawSplitCurve_CGS8, // 分割曲線を描画
+    //DrawSplitSurface_CGS8, // 分割曲面を描画
+    DrawIntersectCurveSurface_CGS8, // 曲線と曲面の交点取得
 };
 
 // 曲線と曲面の交点取得
 void DrawIntersectCurveSurface_CGS8()
 {
-  auto reader = std::make_unique<KjsReader>();
+    auto reader = std::make_unique<KjsReader>();
 
-  // 参照曲線
-  std::shared_ptr<BsplineCurve> curve((BsplineCurve *)reader->GetObjectFromFile(curveG_name));
-  // 参照曲面
-  std::shared_ptr<BsplineSurface> surf((BsplineSurface *)reader->GetObjectFromFile(surf1_name));
+    // 参照曲線
+    std::shared_ptr<BsplineCurve> curve((BsplineCurve *)reader->GetObjectFromFile(curveG_name));
+    // 参照曲面
+    std::shared_ptr<BsplineSurface> surf((BsplineSurface *)reader->GetObjectFromFile(surf1_name));
 
-  // 曲線分割
-  std::vector<std::shared_ptr<Curve>> split_curves;
-  curve->GetDevidedCurves(10, split_curves);
+    // 曲線分割
+    std::vector<std::shared_ptr<Curve>> split_curves;
+    curve->GetDevidedCurves(10, split_curves);
 
-  // 曲面分割
-  std::vector<std::vector<std::shared_ptr<Surface>>> split_surfaces;
-  surf->GetDevidedSurfaces(10, 10, split_surfaces, surf->_color);
+    // 曲面分割
+    std::vector<std::vector<std::shared_ptr<Surface>>> split_surfaces;
+    surf->GetDevidedSurfaces(10, 10, split_surfaces, surf->_color);
 
-  // 交点取得
-  {
-    auto solver =  std::make_unique<IntersectSolver>(1.0e-6, IntersectSolver::Algo::BoxInterfere);
-    solver->SetPair(curve, surf);
-
-    // 交点描画
+    // 交点取得
     {
-      std::vector<Vector3d> intersects = solver->GetIntersects();
+        auto solver = std::make_unique<IntersectSolver>(1.0e-6, IntersectSolver::Algo::BoxInterfere);
+        solver->SetPair(curve, surf);
 
-      glColor3dv(Color::red);
-      glPointSize(12.0);
-      for (const auto& intersect : intersects)
-    	{
-    	  glBegin(GL_POINTS);
-    	  glVertex3d(intersect);
-    	  glEnd();
-    	}
+        // 交点描画
+        {
+            std::vector<Vector3d> intersects = solver->GetIntersects();
+
+            glColor3dv(Color::red);
+            glPointSize(12.0);
+            for (const auto &intersect : intersects)
+            {
+                glBegin(GL_POINTS);
+                glVertex3d(intersect);
+                glEnd();
+            }
+        }
     }
-  }
 
-  if (isFirst)
+    if (isFirst)
     {
-      for (const auto& c : split_curves)
-	test_scene->AddObject(c->GetName(), c);
+        for (const auto &c : split_curves)
+            test_scene->AddObject(c->GetName(), c);
 
-      for (const auto& us : split_surfaces)
-      	{
-      	  for (const auto& vs : us)
-      	    {
-      	      test_scene->AddObject(vs->GetName(), vs);
-      	    }
-      	}
-      
-      //test_scene->AddObject(curve->GetName(), curve);
-      //test_scene->AddObject(surf->GetName(), surf);
+        for (const auto &us : split_surfaces)
+        {
+            for (const auto &vs : us)
+            {
+                test_scene->AddObject(vs->GetName(), vs);
+            }
+        }
+
+        //test_scene->AddObject(curve->GetName(), curve);
+        //test_scene->AddObject(surf->GetName(), surf);
     }
 }
 
@@ -107,74 +106,74 @@ void DrawSplitSurface_CGS8()
 {
     auto reader = std::make_unique<KjsReader>();
 
-  // 分割対象曲線
-  std::shared_ptr<BsplineSurface> surf1((BsplineSurface *)reader->GetObjectFromFile(surf1_name));
+    // 分割対象曲線
+    std::shared_ptr<BsplineSurface> surf1((BsplineSurface *)reader->GetObjectFromFile(surf1_name));
 
-  //surf1->AddKnot(ParamUV::V, 1);
-  //surf1->AddKnot(ParamUV::V, 1);
-  //surf1->AddKnot(ParamUV::U, 1);
-  
-  std::vector<vector<std::shared_ptr<Surface>>> devided;
-  vector<double> u_test_params = { 0.4, 1.5, 2.3, 2.8 };
-  vector<double> v_test_params = { 0.4, 1.5, 1.7 };
-  surf1->GetDevidedSurfaces(u_test_params, v_test_params, devided, surf1->_color);
+    //surf1->AddKnot(ParamUV::V, 1);
+    //surf1->AddKnot(ParamUV::V, 1);
+    //surf1->AddKnot(ParamUV::U, 1);
 
-  if (isFirst)
+    std::vector<vector<std::shared_ptr<Surface>>> devided;
+    vector<double> u_test_params = {0.4, 1.5, 2.3, 2.8};
+    vector<double> v_test_params = {0.4, 1.5, 1.7};
+    surf1->GetDevidedSurfaces(u_test_params, v_test_params, devided, surf1->_color);
+
+    if (isFirst)
     {
-      //test_scene->AddObject(surf1->GetName(), surf1);
-    
-      for (const auto& us : devided)
-	{
-	  for (const auto& vs : us)
-	    {
-	      test_scene->AddObject(vs->GetName(), vs);
-	    }
-	}
+        //test_scene->AddObject(surf1->GetName(), surf1);
+
+        for (const auto &us : devided)
+        {
+            for (const auto &vs : us)
+            {
+                test_scene->AddObject(vs->GetName(), vs);
+            }
+        }
     }
 }
 
 // 分割曲線描画
 void DrawSplitCurve_CGS8()
 {
-  auto reader = std::make_unique<KjsReader>();
+    auto reader = std::make_unique<KjsReader>();
 
-  // 分割対象曲線
-  std::shared_ptr<BsplineCurve> curve1((BsplineCurve *)reader->GetObjectFromFile(curve1_name));
+    // 分割対象曲線
+    std::shared_ptr<BsplineCurve> curve1((BsplineCurve *)reader->GetObjectFromFile(curve1_name));
 
-  // ノット追加曲線
-  std::shared_ptr<BsplineCurve> curve1_clone((BsplineCurve *)reader->GetObjectFromFile(curve1_name));
-  curve1_clone->SetColor(Color::red);
-  // curve1_clone->AddKnot(3);
-  // curve1_clone->AddKnot(3);
-  // curve1_clone->AddKnot(3);
-  // curve1_clone->AddKnot(3);
-  // curve1_clone->AddKnot(1.5);
-  // curve1_clone->AddKnot(1.5);
-  // curve1_clone->AddKnot(1.5);
+    // ノット追加曲線
+    std::shared_ptr<BsplineCurve> curve1_clone((BsplineCurve *)reader->GetObjectFromFile(curve1_name));
+    curve1_clone->SetColor(Color::red);
+    // curve1_clone->AddKnot(3);
+    // curve1_clone->AddKnot(3);
+    // curve1_clone->AddKnot(3);
+    // curve1_clone->AddKnot(3);
+    // curve1_clone->AddKnot(1.5);
+    // curve1_clone->AddKnot(1.5);
+    // curve1_clone->AddKnot(1.5);
 
-  // // 基底関数(無理やり)
-  // double knot[20] = {0, 0, 0, 0, 1,1.5, 1.5, 1.5, 2, 3 ,4, 5, 5, 5, 5};
-  // DrawBsplineFunc(4, 11, 15, knot, 0, 5);
+    // // 基底関数(無理やり)
+    // double knot[20] = {0, 0, 0, 0, 1,1.5, 1.5, 1.5, 2, 3 ,4, 5, 5, 5, 5};
+    // DrawBsplineFunc(4, 11, 15, knot, 0, 5);
 
-  auto test_params = vector<double>{ 1.5, 3, 3.2, 3.4, 4.3, 4.7 };
+    auto test_params = vector<double>{1.5, 3, 3.2, 3.4, 4.3, 4.7};
 
-  // 分割曲線
-  std::vector<std::shared_ptr<Curve>> split_curves;
-  curve1_clone->GetDevidedCurves(test_params, split_curves);
-  //auto s = curve1_clone->Get2DevidedCurves(3);
-  //auto c = (s.first)->Get2DevidedCurves(1.5);
-  
-  //(c.first)->SetName("left");
-  //(c.second)->SetName("right");
-  
-  if (isFirst)
+    // 分割曲線
+    std::vector<std::shared_ptr<Curve>> split_curves;
+    curve1_clone->GetDevidedCurves(test_params, split_curves);
+    //auto s = curve1_clone->Get2DevidedCurves(3);
+    //auto c = (s.first)->Get2DevidedCurves(1.5);
+
+    //(c.first)->SetName("left");
+    //(c.second)->SetName("right");
+
+    if (isFirst)
     {
-      //test_scene->AddObject(curve1_name, curve1);
-      //test_scene->AddObject(curve1_name+"add_1knot", curve1_clone);
-      //test_scene->AddObject((c.first)->GetName(), c.first);
-      //test_scene->AddObject((c.second)->GetName(), c.second);
-      for (const auto& c : split_curves)
-	  test_scene->AddObject(c->GetName(), c);
+        //test_scene->AddObject(curve1_name, curve1);
+        //test_scene->AddObject(curve1_name+"add_1knot", curve1_clone);
+        //test_scene->AddObject((c.first)->GetName(), c.first);
+        //test_scene->AddObject((c.second)->GetName(), c.second);
+        for (const auto &c : split_curves)
+            test_scene->AddObject(c->GetName(), c);
     }
 }
 
@@ -184,10 +183,10 @@ void DrawCurveNearest_CGS6()
     auto reader = std::make_unique<KjsReader>();
 
     // 対象曲線/曲面
-    std::shared_ptr<BsplineCurve> curve1((BsplineCurve*)reader->GetObjectFromFile(curve1_name));
+    std::shared_ptr<BsplineCurve> curve1((BsplineCurve *)reader->GetObjectFromFile(curve1_name));
     // 参照曲線
-    std::shared_ptr<BsplineCurve> curveC((BsplineCurve*)reader->GetObjectFromFile(curveC_name));
-    
+    std::shared_ptr<BsplineCurve> curveC((BsplineCurve *)reader->GetObjectFromFile(curveC_name));
+
     //// 対象曲線をセグメント8分割した点群
     //{
     //    vector<Vector3d> passPnts, segPassPnts;
@@ -242,8 +241,8 @@ void DrawCurveNearest_CGS6()
 
     if (isFirst)
     {
-      test_scene->AddObject(curve1_name, curve1);
-      test_scene->AddObject(curveC_name, curveC);
+        test_scene->AddObject(curve1_name, curve1);
+        test_scene->AddObject(curveC_name, curveC);
     }
 }
 
@@ -265,12 +264,12 @@ void DrawSurfaceNearest_CGS7()
     clock_t start = clock();
 
     // 最近点取得
-    for (const auto& ref : ref_pnts)
+    for (const auto &ref : ref_pnts)
         //nearest_pnts.push_back(surf1->GetNearestPointInfoFromRef(ref, Surface::Project));
         nearest_pnts.push_back(surf1->GetNearestPointInfoFromRef(ref, Surface::Isoline));
 
     clock_t end = clock();
-    cout << "トレランス : "  << EPS::NEAREST << "  最近点取得(21点)時間 = " << (double)(end - start) / CLOCKS_PER_SEC << "sec.\n";
+    cout << "トレランス : " << EPS::NEAREST << "  最近点取得(21点)時間 = " << (double)(end - start) / CLOCKS_PER_SEC << "sec.\n";
 
     vector<vector<Vector3d>> startPnts; // 開始点群
     int seg_split_u = 1;
@@ -312,8 +311,8 @@ void DrawSurfaceNearest_CGS7()
         {
             // 開始点
             glColor4dv(Color::pink);
-            for (const auto& startRow : startPnts)
-                for (const auto& start : startRow)
+            for (const auto &startRow : startPnts)
+                for (const auto &start : startRow)
                     glVertex3d(start);
         }
         glEnd();
@@ -324,8 +323,8 @@ void DrawSurfaceNearest_CGS7()
 
     if (isFirst)
     {
-      test_scene->AddObject(surf1_name, surf1);
-      test_scene->AddObject(curveS_name, curveS);
+        test_scene->AddObject(surf1_name, surf1);
+        test_scene->AddObject(curveS_name, curveS);
     }
 }
 
@@ -343,7 +342,7 @@ void DrawApproxSurface_CGS5()
     {
         vector<vector<Vector3d>> passPnts;
         surf->GetPointsByKnots(passPnts, 1, 1);
-        for (const auto& pnts : passPnts)
+        for (const auto &pnts : passPnts)
             DrawPoints(pnts, Color::green, 10);
 
         surf_knot_remake = surf->GetSurfaceFromPoints(passPnts, Color::blue_alpha, 20);
@@ -352,7 +351,7 @@ void DrawApproxSurface_CGS5()
     {
         vector<vector<Vector3d>> passPnts;
         surf->GetPointsByKnots(passPnts, 3, 3);
-        for (const auto& pnts : passPnts)
+        for (const auto &pnts : passPnts)
             DrawPoints(pnts, Color::pink, 10);
 
         surf_knot_split_remake = surf->GetSurfaceFromPoints(passPnts, Color::orange_alpha, 20);
@@ -360,9 +359,9 @@ void DrawApproxSurface_CGS5()
 
     if (isFirst)
     {
-      test_scene->AddObject(surf1_name, surf);
+        test_scene->AddObject(surf1_name, surf);
         //test_scene->AddObject(surf_knot_remake);
-      test_scene->AddObject("surf1_knot_split_remake", std::move(surf_knot_split_remake));
+        test_scene->AddObject("surf1_knot_split_remake", std::move(surf_knot_split_remake));
     }
 }
 
@@ -447,13 +446,13 @@ void DrawApproxCurve_CGS4()
 
     if (isFirst)
     {
-      test_scene->AddObject(curve1_name, curve1);
-      test_scene->AddObject("curve1_remake", std::move(curve1_remake));
-      test_scene->AddObject("curve1_remake_split", std::move(curve1_remake_split));
+        test_scene->AddObject(curve1_name, curve1);
+        test_scene->AddObject("curve1_remake", std::move(curve1_remake));
+        test_scene->AddObject("curve1_remake_split", std::move(curve1_remake_split));
 
-      test_scene->AddObject(curve2_name, curve2);
-      test_scene->AddObject("curve2_remake", std::move(curve2_remake));
-      test_scene->AddObject("curve2_remake_split", std::move(curve2_remake_split));
+        test_scene->AddObject(curve2_name, curve2);
+        test_scene->AddObject("curve2_remake", std::move(curve2_remake));
+        test_scene->AddObject("curve2_remake_split", std::move(curve2_remake_split));
     }
 }
 
@@ -461,11 +460,10 @@ void DrawApproxCurve_CGS4()
 void DrawCylinder_CGS3()
 {
     // よくないけど無理やり求めた
-    double cp1_p[2] = { 5, 5 * sqrt(3) };
+    double cp1_p[2] = {5, 5 * sqrt(3)};
     RotateCoord2DAroundOrigin(cp1_p, (double)2 / 3 * M_PI);
 
-    ControlPoint cp0[9]
-    {
+    ControlPoint cp0[9]{
         ControlPoint(5, 0, 0, 1.0),
         ControlPoint(5, 5 * sqrt(3), 0, (double)1 / 2),
         ControlPoint(-(double)5 / 2, 5 * (sqrt(3) / 2), 0, 1.0),
@@ -474,8 +472,7 @@ void DrawCylinder_CGS3()
         ControlPoint(5, 5 * sqrt(3), 10, (double)1 / 2),
         ControlPoint(-(double)5 / 2, 5 * (sqrt(3) / 2), 10, 1.0),
     };
-    ControlPoint cp1[9]
-    {
+    ControlPoint cp1[9]{
         ControlPoint(-(double)5 / 2, 5 * (sqrt(3) / 2), 0, 1.0),
         ControlPoint(cp1_p[0], cp1_p[1], 0, (double)1 / 2),
         ControlPoint(-(double)5 / 2, -5 * (sqrt(3) / 2), 0, 1.0),
@@ -484,8 +481,7 @@ void DrawCylinder_CGS3()
         ControlPoint(cp1_p[0], cp1_p[1], 10, (double)1 / 2),
         ControlPoint(-(double)5 / 2, -5 * (sqrt(3) / 2), 10, 1.0),
     };
-    ControlPoint cp2[9]
-    {
+    ControlPoint cp2[9]{
         ControlPoint(-(double)5 / 2, -5 * (sqrt(3) / 2), 0, 1.0),
         ControlPoint(5, -5 * sqrt(3), 0, (double)1 / 2),
         ControlPoint(5, 0, 0, 1.0),
@@ -495,9 +491,8 @@ void DrawCylinder_CGS3()
         ControlPoint(5, 0, 10, 1.0),
     };
 
-
-    double knotU[6] = { 0, 0, 0, 1, 1, 1 };
-    double knotV[4] = { 0, 0, 1, 1 };
+    double knotU[6] = {0, 0, 0, 1, 1, 1};
+    double knotV[4] = {0, 0, 1, 1};
 
     shared_ptr<NurbsSurface> surf0(new NurbsSurface(3, 2, cp0, 3, 2, knotU, knotV, Color::green_alpha));
     shared_ptr<NurbsSurface> surf1(new NurbsSurface(3, 2, cp1, 3, 2, knotU, knotV, Color::green_alpha));
@@ -505,17 +500,16 @@ void DrawCylinder_CGS3()
 
     if (isFirst)
     {
-      test_scene->AddObject("cylinder_part0", surf0);
-      test_scene->AddObject("cylinder_part1", surf1);
-      test_scene->AddObject("cylinder_part2", surf2);
+        test_scene->AddObject("cylinder_part0", surf0);
+        test_scene->AddObject("cylinder_part1", surf1);
+        test_scene->AddObject("cylinder_part2", surf2);
     }
 }
 
 // Nurbs曲面で球を描く
 void DrawSphere_CGS3()
 {
-    ControlPoint cp0[9]
-    {
+    ControlPoint cp0[9]{
         ControlPoint(5, 0, 0, 1.0),
         ControlPoint(5, 0, -5, 1 / sqrt(2)),
         ControlPoint(0, 0, -5, 1.0),
@@ -528,8 +522,7 @@ void DrawSphere_CGS3()
         ControlPoint(0, 5, 0, 1 / sqrt(2)),
         ControlPoint(0, 5, 0, 1.0),
     };
-    ControlPoint cp1[9]
-    {
+    ControlPoint cp1[9]{
         ControlPoint(0, 0, 5, 1.0),
         ControlPoint(5, 0, 5, 1 / sqrt(2)),
         ControlPoint(5, 0, 0, 1.0),
@@ -542,8 +535,7 @@ void DrawSphere_CGS3()
         ControlPoint(0, 5, 0, 1 / sqrt(2)),
         ControlPoint(0, 5, 0, 1.0),
     };
-    ControlPoint cp2[9]
-    {
+    ControlPoint cp2[9]{
         ControlPoint(0, 0, -5, 1.0),
         ControlPoint(-5, 0, -5, 1 / sqrt(2)),
         ControlPoint(-5, 0, 0, 1.0),
@@ -556,8 +548,7 @@ void DrawSphere_CGS3()
         ControlPoint(0, 5, 0, 1 / sqrt(2)),
         ControlPoint(0, 5, 0, 1.0),
     };
-    ControlPoint cp3[9]
-    {
+    ControlPoint cp3[9]{
         ControlPoint(-5, 0, 0, 1.0),
         ControlPoint(-5, 0, 5, 1 / sqrt(2)),
         ControlPoint(0, 0, 5, 1.0),
@@ -570,8 +561,7 @@ void DrawSphere_CGS3()
         ControlPoint(0, 5, 0, 1 / sqrt(2)),
         ControlPoint(0, 5, 0, 1.0),
     };
-    ControlPoint cp4[9]
-    {
+    ControlPoint cp4[9]{
         ControlPoint(0, 0, -5, 1.0),
         ControlPoint(5, 0, -5, 1 / sqrt(2)),
         ControlPoint(5, 0, 0, 1.0),
@@ -584,8 +574,7 @@ void DrawSphere_CGS3()
         ControlPoint(0, -5, 0, 1 / sqrt(2)),
         ControlPoint(0, -5, 0, 1.0),
     };
-    ControlPoint cp5[9]
-    {
+    ControlPoint cp5[9]{
         ControlPoint(5, 0, 0, 1.0),
         ControlPoint(5, 0, 5, 1 / sqrt(2)),
         ControlPoint(0, 0, 5, 1.0),
@@ -598,8 +587,7 @@ void DrawSphere_CGS3()
         ControlPoint(0, -5, 0, 1 / sqrt(2)),
         ControlPoint(0, -5, 0, 1.0),
     };
-    ControlPoint cp6[9]
-    {
+    ControlPoint cp6[9]{
         ControlPoint(-5, 0, 0, 1.0),
         ControlPoint(-5, 0, -5, 1 / sqrt(2)),
         ControlPoint(0, 0, -5, 1.0),
@@ -612,8 +600,7 @@ void DrawSphere_CGS3()
         ControlPoint(0, -5, 0, 1 / sqrt(2)),
         ControlPoint(0, -5, 0, 1.0),
     };
-    ControlPoint cp7[9]
-    {
+    ControlPoint cp7[9]{
         ControlPoint(0, 0, 5, 1.0),
         ControlPoint(-5, 0, 5, 1 / sqrt(2)),
         ControlPoint(-5, 0, 0, 1.0),
@@ -627,8 +614,8 @@ void DrawSphere_CGS3()
         ControlPoint(0, -5, 0, 1.0),
     };
 
-    double knotU[6] = { 0, 0, 0, 1, 1, 1 };
-    double knotV[6] = { 0, 0, 0, 1, 1, 1 };
+    double knotU[6] = {0, 0, 0, 1, 1, 1};
+    double knotV[6] = {0, 0, 0, 1, 1, 1};
 
     shared_ptr<NurbsSurface> surf0(new NurbsSurface(3, 3, cp0, 3, 3, knotU, knotV, Color::green_alpha));
     shared_ptr<NurbsSurface> surf1(new NurbsSurface(3, 3, cp1, 3, 3, knotU, knotV, Color::green_alpha));
@@ -641,46 +628,42 @@ void DrawSphere_CGS3()
 
     if (isFirst)
     {
-      test_scene->AddObject("sphere_part0", surf0);
-      test_scene->AddObject("sphere_part1", surf1);
-      test_scene->AddObject("sphere_part2", surf2);
-      test_scene->AddObject("sphere_part3", surf3);
-      test_scene->AddObject("sphere_part4", surf4);
-      test_scene->AddObject("sphere_part5", surf5);
-      test_scene->AddObject("sphere_part6", surf6);
-      test_scene->AddObject("sphere_part7", surf7);
+        test_scene->AddObject("sphere_part0", surf0);
+        test_scene->AddObject("sphere_part1", surf1);
+        test_scene->AddObject("sphere_part2", surf2);
+        test_scene->AddObject("sphere_part3", surf3);
+        test_scene->AddObject("sphere_part4", surf4);
+        test_scene->AddObject("sphere_part5", surf5);
+        test_scene->AddObject("sphere_part6", surf6);
+        test_scene->AddObject("sphere_part7", surf7);
     }
 }
 
 // Nurbs曲線で円を描く
 void DrawCircle_CGS3()
 {
-    ControlPoint cp0[3]
-    {
+    ControlPoint cp0[3]{
         ControlPoint(5, 0, 0, 1),
         ControlPoint(5, 5, 0, 1 / sqrt(2)),
         ControlPoint(0, 5, 0, 1),
     };
-    ControlPoint cp1[3]
-    {
+    ControlPoint cp1[3]{
         ControlPoint(0, 5, 0, sqrt(2)),
         ControlPoint(-5, 5, 0, 1),
         ControlPoint(-5, 0, 0, sqrt(2)),
     };
-    ControlPoint cp2[3]
-    {
+    ControlPoint cp2[3]{
         ControlPoint(-5, 0, 0, sqrt(2)),
         ControlPoint(-5, -5, 0, 1),
         ControlPoint(0, -5, 0, sqrt(2)),
     };
-    ControlPoint cp3[3]
-    {
+    ControlPoint cp3[3]{
         ControlPoint(0, -5, 0, sqrt(2)),
         ControlPoint(5, -5, 0, 1),
         ControlPoint(5, 0, 0, sqrt(2)),
     };
 
-    double knot[6] = { 0, 0, 0, 1, 1, 1 };
+    double knot[6] = {0, 0, 0, 1, 1, 1};
 
     shared_ptr<NurbsCurve> curve0(new NurbsCurve(3, cp0, 3, knot, Color::blue, 2.0));
     shared_ptr<NurbsCurve> curve1(new NurbsCurve(3, cp1, 3, knot, Color::blue, 2.0));
@@ -689,18 +672,18 @@ void DrawCircle_CGS3()
 
     if (isFirst)
     {
-      test_scene->AddObject("circle_part0", curve0);
-      test_scene->AddObject("circle_part1", curve1);
-      test_scene->AddObject("circle_part2", curve2);
-      test_scene->AddObject("circle_part3", curve3);
+        test_scene->AddObject("circle_part0", curve0);
+        test_scene->AddObject("circle_part1", curve1);
+        test_scene->AddObject("circle_part2", curve2);
+        test_scene->AddObject("circle_part3", curve3);
     }
 }
 
 // 基底関数およびその関数を使ってBスプライン曲線を描画する
 // 第1回課題
-static double knot_a[10] = { -3, -2, -1, 0, 1, 2, 3, 4, 5, 6 };
-static double knot_b[10] = { 0, 0, 0, 0, 1, 2, 3, 3, 3, 3 };
-static double knot_c[10] = { 0, 0, 0, 0, 1, 1, 3, 3, 3, 3 };
+static double knot_a[10] = {-3, -2, -1, 0, 1, 2, 3, 4, 5, 6};
+static double knot_b[10] = {0, 0, 0, 0, 1, 2, 3, 3, 3, 3};
+static double knot_c[10] = {0, 0, 0, 0, 1, 1, 3, 3, 3, 3};
 void DrawBsplineFunctions()
 {
     // 別のとこでディスプレイリストをstaticで使ってるので同時には書けない
@@ -711,14 +694,14 @@ void DrawBsplineFunctions()
 void DrawBsplineCurves()
 {
     static ControlPoint cp[6] =
-    {
-        ControlPoint(30, 80, 0),
-        ControlPoint(50, 110, 0),
-        ControlPoint(70, 120, 0),
-        ControlPoint(90, 70, 0),
-        ControlPoint(110, 60, 0),
-        ControlPoint(130, 80, 0),
-    };
+        {
+            ControlPoint(30, 80, 0),
+            ControlPoint(50, 110, 0),
+            ControlPoint(70, 120, 0),
+            ControlPoint(90, 70, 0),
+            ControlPoint(110, 60, 0),
+            ControlPoint(130, 80, 0),
+        };
 
     auto A = new BsplineCurve(4, cp, 6, knot_a, Color::blue, 1.0);
     auto B = new BsplineCurve(4, cp, 6, knot_b, Color::orange, 1.0);

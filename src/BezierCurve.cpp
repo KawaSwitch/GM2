@@ -2,8 +2,8 @@
 #include "ControlPoint.h"
 #include "glUtil.h"
 
-BezierCurve::BezierCurve(const int mord, const ControlPoint* const cp, const int cp_size,
-    const GLdouble* const color, const GLdouble width, const double resol)
+BezierCurve::BezierCurve(const int mord, const ControlPoint *const cp, const int cp_size,
+                         const GLdouble *const color, const GLdouble width, const double resol)
 {
     _ord = mord;
     _ncpnt = cp_size;
@@ -54,7 +54,7 @@ void BezierCurve::CreateVBO() const
 
     glGenBuffers(1, &_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferData(GL_ARRAY_BUFFER, pnts.size() * 3 * sizeof(double), (GLdouble*)&pnts[0], GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, pnts.size() * 3 * sizeof(double), (GLdouble *)&pnts[0], GL_DYNAMIC_DRAW);
 }
 
 // VBOで描画
@@ -204,7 +204,7 @@ Vector3d BezierCurve::GetSecondDiffVector(const double t) const
 }
 
 // 通過点から逆変換して曲線を取得
-std::unique_ptr<Curve> BezierCurve::GetCurveFromPoints(const vector<Vector3d>& pnts, const GLdouble* const color, const GLdouble width) const
+std::unique_ptr<Curve> BezierCurve::GetCurveFromPoints(const vector<Vector3d> &pnts, const GLdouble *const color, const GLdouble width) const
 {
     vector<ControlPoint> new_cps;
     new_cps.resize(_ncpnt);
@@ -235,26 +235,26 @@ std::unique_ptr<Curve> BezierCurve::GetCurveFromPoints(const vector<Vector3d>& p
     //        B_matrix[i][j] = CalcBernsteinFunc(j, _ord - 1, )
     //}
 
-    return  std::unique_ptr<Curve>(new BezierCurve(_ord, &new_cps[0], _ncpnt, color, width));
+    return std::unique_ptr<Curve>(new BezierCurve(_ord, &new_cps[0], _ncpnt, color, width));
 }
 
 // 最近点取得
-NearestPointInfoC BezierCurve::GetNearestPointInfoFromRef(const Vector3d& ref) const
+NearestPointInfoC BezierCurve::GetNearestPointInfoFromRef(const Vector3d &ref) const
 {
     // NOTE: 未実装
     return NearestPointInfoC(Vector3d(), ref, 0);
 }
 
 // 指定したパラメータ位置で分割した曲線を取得します
-void BezierCurve::GetDevidedCurves(std::vector<double>& params, std::vector<std::shared_ptr<Curve>>& devided_curves)
+void BezierCurve::GetDevidedCurves(std::vector<double> &params, std::vector<std::shared_ptr<Curve>> &devided_curves)
 {
-  // NOTE: 未実装
-  return;
+    // NOTE: 未実装
+    return;
 }
 
 // ノット範囲を等分割した曲線を取得する
-void BezierCurve::GetDevidedCurves(int split, std::vector<std::shared_ptr<Curve>>& devided_curves)
+void BezierCurve::GetDevidedCurves(int split, std::vector<std::shared_ptr<Curve>> &devided_curves)
 {
-  // NOTE: 未実装
-  return;
+    // NOTE: 未実装
+    return;
 }

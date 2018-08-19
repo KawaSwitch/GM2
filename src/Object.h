@@ -1,5 +1,5 @@
 #pragma once
-#pragma comment(lib,"glew32.lib")
+#pragma comment(lib, "glew32.lib")
 
 #include "GV.h"
 #include "CalcUtil.h"
@@ -16,44 +16,42 @@ class Scene;
 // オブジェクト基底クラス
 class Object
 {
-private:
-
+  private:
     bool _deleteFlag = false;
-    bool _isSelected = false; // 選択状態にあるか
-    unsigned int _number; // 識別番号
+    bool _isSelected = false;  // 選択状態にあるか
+    unsigned int _number;      // 識別番号
     bool _isBoxCalced = false; // ボックスを計算済みか
 
-protected:
-
+  protected:
     bool _isUseVBO = canUseVbo; // VBOを使うか
-    bool _isUseIBO = false; // IBOを使うか
+    bool _isUseIBO = false;     // IBOを使うか
     mutable GLuint _vbo, _ibo;
 
-    std::string _name; // 名前
+    std::string _name;           // 名前
     vector<ControlPoint> _ctrlp; // 制御点
-    double _resolution; // 解像度
-    Box _box; // バウンドボックス
-    GLdouble _boxColor[4]; // バウンドボックス色(現在はオブジェクト色を使用)
-    GLdouble _boxWidth; // ボックスの太さ
-    
+    double _resolution;          // 解像度
+    Box _box;                    // バウンドボックス
+    GLdouble _boxColor[4];       // バウンドボックス色(現在はオブジェクト色を使用)
+    GLdouble _boxWidth;          // ボックスの太さ
+
     // 事前描画
     virtual void PreDraw() const = 0;
     virtual void DrawCPsInternal() const = 0;
-    virtual void DrawFirstDiffVectorsInternal() const { };
-    virtual void DrawSecondDiffVectorsInternal() const { };
-    virtual void DrawNormalVectorsInternal() const { };
-    virtual void DrawCurvatureVectorsInternal() const { };
+    virtual void DrawFirstDiffVectorsInternal() const {};
+    virtual void DrawSecondDiffVectorsInternal() const {};
+    virtual void DrawNormalVectorsInternal() const {};
+    virtual void DrawCurvatureVectorsInternal() const {};
 
     // VBO
-    virtual void CreateVBO() const { };
-    virtual void ModifyVBO() const { };
-    virtual void DrawVBO() const { };
+    virtual void CreateVBO() const {};
+    virtual void ModifyVBO() const {};
+    virtual void DrawVBO() const {};
 
     // IBO
-    virtual void CreateIBO() const { };
-    virtual void ModifyIBO() const { };
-    virtual void DrawIBO() const { };
-    
+    virtual void CreateIBO() const {};
+    virtual void ModifyIBO() const {};
+    virtual void DrawIBO() const {};
+
     // ディスプレイリスト
     mutable int _displayList = 0; // オブジェクト用
     mutable int _ctrlp_displayList = 0;
@@ -64,36 +62,35 @@ protected:
     mutable int _cur_displayList = 0;
 
     // 表示系ブーリアン
-    bool _isDrawCtrlp = false; // 制御点
-    bool _isDrawFirstDiff = false; // 接線
+    bool _isDrawCtrlp = false;      // 制御点
+    bool _isDrawFirstDiff = false;  // 接線
     bool _isDrawSecondDiff = false; // 2階微分
-    bool _isDrawBox = false; // ミニマクスボックス
-    bool _isDrawNormal = false; // 法線
-    bool _isDrawCurvature = false; // 曲率
+    bool _isDrawBox = false;        // ミニマクスボックス
+    bool _isDrawNormal = false;     // 法線
+    bool _isDrawCurvature = false;  // 曲率
 
     // 表示系の識別子をすべてクリアする
     void ClearAllShowingIds()
     {
-      // ディスプレイリスト破棄
-      glDeleteLists(_displayList, 1);
-      glDeleteLists(_ctrlp_displayList, 1);
-      glDeleteLists(_fd_displayList, 1);
-      glDeleteLists(_sd_displayList, 1);
-      glDeleteLists(_box_displayList, 1);
-      glDeleteLists(_cur_displayList, 1);
+        // ディスプレイリスト破棄
+        glDeleteLists(_displayList, 1);
+        glDeleteLists(_ctrlp_displayList, 1);
+        glDeleteLists(_fd_displayList, 1);
+        glDeleteLists(_sd_displayList, 1);
+        glDeleteLists(_box_displayList, 1);
+        glDeleteLists(_cur_displayList, 1);
 
-      // VBO破棄
-      glDeleteBuffers(1, &_vbo);
+        // VBO破棄
+        glDeleteBuffers(1, &_vbo);
 
-      // IBO破棄
-      glDeleteBuffers(1, &_ibo);
+        // IBO破棄
+        glDeleteBuffers(1, &_ibo);
     }
-    
- public:
-    GLdouble _color[4];  // 色
-    
-public:
 
+  public:
+    GLdouble _color[4]; // 色
+
+  public:
     // オブジェクト描画
     virtual void Draw() const
     {
@@ -138,20 +135,20 @@ public:
     // ミニマクスボックス描画
     void DrawBoxInternal() const
     {
-      Box box(_ctrlp);
-      if (_color[0] == -1)
-	box.Draw(Color::light_blue, _boxWidth);
-      else
-	box.Draw(_color, _boxWidth);
+        Box box(_ctrlp);
+        if (_color[0] == -1)
+            box.Draw(Color::light_blue, _boxWidth);
+        else
+            box.Draw(_color, _boxWidth);
     }
-    void SetBoxColor(const GLdouble* const color)
+    void SetBoxColor(const GLdouble *const color)
     {
-      for (int i = 0; i < 4; i++)
-	_boxColor[i] = color[i];
+        for (int i = 0; i < 4; i++)
+            _boxColor[i] = color[i];
     }
     void SetBoxWidth(const GLdouble width)
     {
-      _boxWidth = width;
+        _boxWidth = width;
     }
 
     // トグルチェンジ
@@ -201,7 +198,7 @@ public:
     }
 
     // 色設定
-    void SetColor(const GLdouble* const color)
+    void SetColor(const GLdouble *const color)
     {
         for (int i = 0; i < 4; i++)
             _color[i] = color[i];
@@ -211,7 +208,7 @@ public:
     void SetName(const std::string name) { _name = name; }
     // 名前の取得
     std::string GetName() const { return _name; }
-    
+
     // 半透明オブジェクトであるか
     bool IsSemiTransparent()
     {
@@ -231,37 +228,36 @@ public:
     void RaiseDeleteFlag() { _deleteFlag = true; }
     bool IsDeleteFlagRaised() { return _deleteFlag == true; }
 
-public:
-
+  public:
     // バウンドボックス取得
     Box GetBound()
     {
-      if (!_isBoxCalced)
-	{
-	  Box box(_ctrlp);
-	  _box = box;
-	  _isBoxCalced = true;
-	}
-      return _box;
+        if (!_isBoxCalced)
+        {
+            Box box(_ctrlp);
+            _box = box;
+            _isBoxCalced = true;
+        }
+        return _box;
     }
 
     Object()
     {
-        _number = obj_number++; // 識別子を振る
-	_name = std::to_string(_number); // ここで規定値として振っておく
+        _number = obj_number++;          // 識別子を振る
+        _name = std::to_string(_number); // ここで規定値として振っておく
 
         _vbo = 0;
         _ibo = 0;
         _color[0] = -1;
-	_boxColor[0] = -1;
-	_boxWidth = 1;
+        _boxColor[0] = -1;
+        _boxWidth = 1;
     }
 
     virtual ~Object()
     {
-      // デストラクタ通知 デバグ用
-      //cout << "Calling Object Destructor : " << _number << endl;
- 
-      ClearAllShowingIds();
+        // デストラクタ通知 デバグ用
+        //cout << "Calling Object Destructor : " << _number << endl;
+
+        ClearAllShowingIds();
     }
 };

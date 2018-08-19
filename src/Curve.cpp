@@ -2,18 +2,18 @@
 #include <cfloat>
 
 // 制御点設定
-void Curve::SetControlPoint(const ControlPoint* const cp, const int size)
+void Curve::SetControlPoint(const ControlPoint *const cp, const int size)
 {
     if (size <= 0)
         Error::ShowAndExit("制御点設定失敗", "CP size must be over 0.");
 
     // リセット
     if (_ctrlp.size() > 0)
-      {
-	_ctrlp.clear();
-	_ctrlp.shrink_to_fit();
-      }
-    
+    {
+        _ctrlp.clear();
+        _ctrlp.shrink_to_fit();
+    }
+
     _ctrlp.reserve(size);
 
     for (int i = 0; i < size; i++)
@@ -43,9 +43,9 @@ void Curve::DrawCPsInternal() const
 // 曲率ベクトル取得
 Vector3d Curve::GetCurvatureVector(const double t) const
 {
-    double kappa =  // κ = |Pt×Ptt| / |Pt|^3
+    double kappa =                                                // κ = |Pt×Ptt| / |Pt|^3
         (GetFirstDiffVector(t) * GetSecondDiffVector(t)).Length() // |Pt×Ptt|
-        / pow(GetFirstDiffVector(t).Length(), 3); // |Pt|^3
+        / pow(GetFirstDiffVector(t).Length(), 3);                 // |Pt|^3
 
     // 法線方向N = (Pt × Ptt) × Pt
     Vector3d direct = (GetFirstDiffVector(t) * GetSecondDiffVector(t)) * GetFirstDiffVector(t);
@@ -54,7 +54,7 @@ Vector3d Curve::GetCurvatureVector(const double t) const
 }
 
 // 描画範囲をsplit_num個に分割するような位置ベクトルを取得する
-void Curve::GetPositionVectors(vector<Vector3d>& pnts, const int split_num) const
+void Curve::GetPositionVectors(vector<Vector3d> &pnts, const int split_num) const
 {
     pnts.clear();
 
@@ -68,9 +68,9 @@ void Curve::GetPositionVectors(vector<Vector3d>& pnts, const int split_num) cons
 
 // 他曲線との相違度を計算します
 // NOTE: 現在ノット位置の分布に偏りがあると機能しない
-double Curve::CalcDifferency(const Curve* const other) const
+double Curve::CalcDifferency(const Curve *const other) const
 {
-    int checkCnt = 100; // 距離を測る点の数
+    int checkCnt = 100;       // 距離を測る点の数
     double sumDistance = 0.0; // 相違距離の合計
 
     // 分割区間を計算
@@ -85,9 +85,9 @@ double Curve::CalcDifferency(const Curve* const other) const
 }
 // 他曲線との相違度を計算します
 // 最近点平均
-double Curve::CalcDifferency2(const Curve* const other) const
+double Curve::CalcDifferency2(const Curve *const other) const
 {
-    int checkCnt = 100; // 距離を測る点の数
+    int checkCnt = 100;       // 距離を測る点の数
     double sumDistance = 0.0; // 相違距離の合計
 
     // 参照点群を取得
@@ -99,7 +99,7 @@ double Curve::CalcDifferency2(const Curve* const other) const
     for (int i = 0; i < (int)ref_pnts.size(); i++)
         nearest_pnts.push_back(this->GetNearestPointInfoFromRef(ref_pnts[i]));
 
-    for (const auto& p : nearest_pnts)
+    for (const auto &p : nearest_pnts)
         sumDistance += p.dist;
 
     // 相違距離の平均を返す
@@ -107,21 +107,21 @@ double Curve::CalcDifferency2(const Curve* const other) const
 }
 
 // 2曲線で一番遠ざかる距離を計算する
-double Curve::CalcFarthestDistant(const Curve* const other) const
+double Curve::CalcFarthestDistant(const Curve *const other) const
 {
-    int checkCnt = 100; // 距離を測る点の数
+    int checkCnt = 100;             // 距離を測る点の数
     double farthestDist = -DBL_MAX; // 2曲線で一番遠い距離
 
     // 参照点群を取得
     vector<Vector3d> ref_pnts;
-   other->GetPositionVectors(ref_pnts, checkCnt - 1);
+    other->GetPositionVectors(ref_pnts, checkCnt - 1);
 
     // 最近点取得
     vector<NearestPointInfoC> nearest_pnts;
     for (int i = 0; i < (int)ref_pnts.size(); i++)
         nearest_pnts.push_back(this->GetNearestPointInfoFromRef(ref_pnts[i]));
 
-    for (const auto& p : nearest_pnts)
+    for (const auto &p : nearest_pnts)
     {
         if (p.dist > farthestDist)
             farthestDist = p.dist;
@@ -148,10 +148,10 @@ double Curve::GetLength(int split) const
 
 // 参照点からの最近点情報を2分探索で取得します
 // ref : 参照点, startPnts : 2分探索開始点位置情報
-NearestPointInfoC Curve::GetNearestPointInfoInternal(const Vector3d& ref, const vector<Point3dC>& startPnts) const
+NearestPointInfoC Curve::GetNearestPointInfoInternal(const Vector3d &ref, const vector<Point3dC> &startPnts) const
 {
     vector<NearestPointInfoC> possiblePnts; // 最近候補点
-    double left, right; // 2分探索用パラメータ
+    double left, right;                     // 2分探索用パラメータ
 
     // 開始点範囲毎の最近点を取得し候補点とする
     for (size_t i = 0, s = startPnts.size(); i < s; ++i)
@@ -164,7 +164,7 @@ NearestPointInfoC Curve::GetNearestPointInfoInternal(const Vector3d& ref, const 
 
     // 候補の中で一番距離の短いものを最近点とする
     NearestPointInfoC nearestPnt(Vector3d(), Vector3d(DBL_MAX, DBL_MAX, DBL_MAX), 0);
-    for (const auto& p : possiblePnts)
+    for (const auto &p : possiblePnts)
     {
         if (p.dist < nearestPnt.dist)
             nearestPnt = p;
@@ -175,17 +175,17 @@ NearestPointInfoC Curve::GetNearestPointInfoInternal(const Vector3d& ref, const 
 
 // 区間内最近点取得(2分探索)
 // コメント内のe_は資料の終了条件番号
-NearestPointInfoC Curve::GetSectionNearestPointInfoByBinary(const Vector3d& ref, const double ini_left, const double ini_right) const
+NearestPointInfoC Curve::GetSectionNearestPointInfoByBinary(const Vector3d &ref, const double ini_left, const double ini_right) const
 {
     Vector3d pnt, vec_ref_pnt, tan;
     double left, right, middle; // 2分探索用パラメータ
-    double dot; // 内積値
-    int count = 0; // 2分探索ステップ数
+    double dot;                 // 内積値
+    int count = 0;              // 2分探索ステップ数
 
-    left = ini_left; right = ini_right;
+    left = ini_left;
+    right = ini_right;
 
-    auto update = [&]()
-    {
+    auto update = [&]() {
         middle = (left + right) / 2;
         pnt = GetPositionVector(middle);
         tan = GetFirstDiffVector(middle);
@@ -238,7 +238,7 @@ NearestPointInfoC Curve::GetSectionNearestPointInfoByBinary(const Vector3d& ref,
     return NearestPointInfoC(pnt, ref, middle);
 }
 // 区間内最近点取得(2分探索)
-NearestPointInfoC Curve::GetSectionNearestPointInfoByBinary(const Vector3d& ref, double ini_left, double ini_right, int split) const
+NearestPointInfoC Curve::GetSectionNearestPointInfoByBinary(const Vector3d &ref, double ini_left, double ini_right, int split) const
 {
     vector<NearestPointInfoC> possiblePnts; // 最近候補点
     double skip = (ini_right - ini_left) / split;
@@ -257,7 +257,7 @@ NearestPointInfoC Curve::GetSectionNearestPointInfoByBinary(const Vector3d& ref,
 
     // 候補の中で一番距離の短いものを最近点とする
     NearestPointInfoC nearestPnt(Vector3d(), Vector3d(DBL_MAX, DBL_MAX, DBL_MAX), 0);
-    for (const auto& p : possiblePnts)
+    for (const auto &p : possiblePnts)
     {
         if (p.dist < nearestPnt.dist)
             nearestPnt = p;

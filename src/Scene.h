@@ -10,10 +10,10 @@ class Object;
 
 class Scene
 {
- private:
+private:
   std::map<std::string, shared_ptr<Object>> _objTable;
 
- public:
+public:
   Scene();
 
   void AddObject(std::string, shared_ptr<Object>);

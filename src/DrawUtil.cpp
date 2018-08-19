@@ -3,7 +3,7 @@
 #include "glUtil.h"
 
 // 点群を描画する
-void DrawPoints(vector<Vector3d> vec, GLdouble* color, GLdouble pSize)
+void DrawPoints(vector<Vector3d> vec, GLdouble *color, GLdouble pSize)
 {
     glColor4dv(color);
     glPointSize(pSize);
@@ -19,7 +19,7 @@ void DrawPoints(vector<Vector3d> vec, GLdouble* color, GLdouble pSize)
 }
 
 // 基底関数を描画する
-void DrawBsplineFunc(int mord, int ncpnt, int nknot, double* knot, double min_t, double max_t)
+void DrawBsplineFunc(int mord, int ncpnt, int nknot, double *knot, double min_t, double max_t)
 {
     // ディスプレイリスト
     static int displayList = 0;
@@ -68,7 +68,7 @@ void DrawBsplineFunc(int mord, int ncpnt, int nknot, double* knot, double min_t,
 }
 
 // ディスプレイリストと描画関数を用いて描画する
-void DrawUsingDisplayList(int* const displayList, const function<void(void)> RegisterDraw)
+void DrawUsingDisplayList(int *const displayList, const function<void(void)> RegisterDraw)
 {
     if (*displayList == 0)
     {

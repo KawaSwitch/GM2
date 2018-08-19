@@ -9,10 +9,10 @@
 #include "Axis.h"
 #include "Initialize.h"
 
-extern NormalAxis* axis;
-extern GeoGrid2D* grid;
-extern Scene* scene;
-extern Scene* test_scene;
+extern NormalAxis *axis;
+extern GeoGrid2D *grid;
+extern Scene *scene;
+extern Scene *test_scene;
 extern bool canUseVbo;
 
 const int grid_length = 200;
@@ -38,10 +38,14 @@ void InitQuaternion()
         rot_mat[i] = 0.0;
 
     // クォータニオン
-    target.x = 0.0; target.y = 0.0;
-    target.z = 0.0; target.w = 0.0;
-    current.x = 0.0; current.y = 0.0;
-    current.z = 0.0; current.w = 1.0;
+    target.x = 0.0;
+    target.y = 0.0;
+    target.z = 0.0;
+    target.w = 0.0;
+    current.x = 0.0;
+    current.y = 0.0;
+    current.z = 0.0;
+    current.w = 1.0;
 
     // クォータニオン初期化
     CalcRotateMatrix(rot_mat, current);
@@ -66,7 +70,8 @@ void SetCanUseVbo()
     canUseVbo = (major == 1 && minor >= 5) || major > 1;
 
     if (!canUseVbo)
-        std::cout << "Warning: " << "version1.5未満: 負荷の大きいレンダリングモードで実行します." << std::endl;
+        std::cout << "Warning: "
+                  << "version1.5未満: 負荷の大きいレンダリングモードで実行します." << std::endl;
     std::cout << std::endl;
 }
 
@@ -77,13 +82,13 @@ void Initialize()
 
     CheckOpenglVersion(); // OpenGLバージョン互換
 
-    glClearColor(1.0, 1.0, 1.0, 1.0);   // 背景色：白
-    glClearStencil(0); // ステンシル値は0で初期化
+    glClearColor(1.0, 1.0, 1.0, 1.0); // 背景色：白
+    glClearStencil(0);                // ステンシル値は0で初期化
 
     glEnable(GL_DEPTH_TEST); // デプス値 有効化
     glDepthFunc(GL_LESS);
 
-    glEnable(GL_POINT_SMOOTH); // 点にアンチエイリアシング処理を行う
+    glEnable(GL_POINT_SMOOTH);               // 点にアンチエイリアシング処理を行う
     glHint(GL_POINT_SMOOTH_HINT, GL_NICEST); // アンチエイリアシング品質を最高に
 
     glShadeModel(GL_SMOOTH);

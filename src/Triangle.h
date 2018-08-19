@@ -7,8 +7,7 @@
 // 三角形状
 class Triangle : public Object
 {
-private:
-
+  private:
     Vector3d A, B, C;
 
     // 事前描画
@@ -22,8 +21,12 @@ private:
         glEnd();
     }
 
-public:
-
-    Triangle(Vector3d a, Vector3d b, Vector3d c) { A = a; B = b; C = c; }
-    ~Triangle() { }
+  public:
+    Triangle(Vector3d a, Vector3d b, Vector3d c)
+    {
+        A = a;
+        B = b;
+        C = c;
+    }
+    ~Triangle() {}
 };
