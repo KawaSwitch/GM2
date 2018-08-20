@@ -20,6 +20,9 @@ static bool isRegistered = false;
 Scene *test_scene;
 
 // 形状の名称(ファイル名) TODO: どっかで共有
+static const std::string bezierCurveB_name("CGS_bezier_curve_B.kjs");
+static const std::string bezierSurfA_name("CGS_bezier_surface_A.kjs");
+static const std::string bezierSurfD_name("CGS_bezier_surface_D.kjs");
 static const std::string curve1_name("CGS_bspline_curve_1.kjs");
 static const std::string curve2_name("CGS_bspline_curve_2.kjs");
 static const std::string curveC_name("CGS_bspline_curve_C.kjs");
@@ -40,10 +43,35 @@ static vector<function<void(void)>> TestRegisterDraw{
     //DrawApproxSurface_CGS5, // 近似曲面を描画
     //DrawCurveNearest_CGS6, // 最近点を描画_曲線
     //DrawSurfaceNearest_CGS7, // 最近点を描画_曲面
-    //DrawSplitCurve_CGS8, // 分割曲線を描画
+    //DrawSplitCurve_CGS8,   // 分割曲線を描画
     //DrawSplitSurface_CGS8, // 分割曲面を描画
-    DrawIntersectCurveSurface_CGS8, // 曲線と曲面の交点取得
+    //DrawIntersectCurveSurface_CGS8, // 曲線と曲面の交点取得
+    DrawAllKind,
 };
+
+// すべてのタイプの曲線/曲面を描画
+void DrawAllKind()
+{
+    auto reader = std::make_unique<KjsReader>();
+
+    // 参照曲線
+    std::shared_ptr<BsplineCurve> curve1((BsplineCurve *)reader->GetObjectFromFile(curve1_name));
+    // 参照曲面
+    std::shared_ptr<BsplineSurface> surf1((BsplineSurface *)reader->GetObjectFromFile(surf1_name));
+    // 参照曲線
+    std::shared_ptr<BezierCurve> curve2((BezierCurve *)reader->GetObjectFromFile(bezierCurveB_name));
+    // 参照曲面
+    std::shared_ptr<BezierSurface> surf2((BezierSurface *)reader->GetObjectFromFile(bezierSurfA_name));
+
+    if (isFirst)
+    {
+        test_scene->AddObject(curve1->GetName(), curve1);
+        test_scene->AddObject(curve2->GetName(), curve2);
+
+        test_scene->AddObject(surf1->GetName(), surf1);
+        test_scene->AddObject(surf2->GetName(), surf2);
+    }
+}
 
 // 曲線と曲面の交点取得
 void DrawIntersectCurveSurface_CGS8()

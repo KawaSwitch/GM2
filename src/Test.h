@@ -3,6 +3,8 @@
 void TestRegister();
 void TestDraw();
 
+void DrawAllKind(); // すべてのタイプの曲線/曲面を描画
+
 // 基底関数およびその関数を使ってBスプライン曲線を描画する
 // 中級編第1回/第2回課題
 void DrawBsplineFunctions();
