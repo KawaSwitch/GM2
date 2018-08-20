@@ -34,9 +34,9 @@ struct BackgroundNormal : IBackGround
             // 現状メインビューは透視投影のみ
             if (mainProjType == ProjectType::Perspective)
             {
-                // NOTE: アス比変えたときにバグあり, いつかSlicerWpfに合わせる
+                // 視錐体前面の縦幅横幅を計算
                 backHeightHalf = PersParam::zNear * std::tan(ToRad(elev_angle));
-                backWidthHalf = PersParam::zNear * std::tan(ToRad(elev_angle * ((GLdouble)width / height)));
+                backWidthHalf = backHeightHalf * ((GLdouble)width / height);
 
                 // 視錐体の前面に設定する
                 // NOTE: 後面だとなぜかずらす必要があったので前面にした
