@@ -23,9 +23,10 @@ class Object
     bool _isBoxCalced = false; // ボックスを計算済みか
 
   protected:
-    bool _isUseVBO = canUseVbo; // VBOを使うか
-    bool _isUseIBO = false;     // IBOを使うか
-    mutable GLuint _vbo, _ibo;
+    bool _isUseVBO = canUseVbo;      // VBOを使うか
+    mutable int _nVertex_cache;      // 頂点個数
+    mutable GLuint _vbo, _color_vbo; // VBO
+    mutable GLuint _ibo;             // IBO
 
     std::string _name;           // 名前
     vector<ControlPoint> _ctrlp; // 制御点
@@ -42,15 +43,10 @@ class Object
     virtual void DrawNormalVectorsInternal() const {};
     virtual void DrawCurvatureVectorsInternal() const {};
 
-    // VBO
-    virtual void CreateVBO() const {};
-    virtual void ModifyVBO() const {};
-    virtual void DrawVBO() const {};
-
-    // IBO
-    virtual void CreateIBO() const {};
-    virtual void ModifyIBO() const {};
-    virtual void DrawIBO() const {};
+    // バッファオブジェクト
+    virtual void CreateBufferObject() const = 0;
+    virtual void ModifyBufferObject() const {};
+    virtual void DrawUsingBufferObject() const = 0;
 
     // ディスプレイリスト
     mutable int _displayList = 0; // オブジェクト用
@@ -94,29 +90,18 @@ class Object
     // オブジェクト描画
     virtual void Draw() const
     {
-        // VBO
+        // バッファオブジェクト
         if (_isUseVBO)
         {
             if (_vbo == 0)
             {
-                CreateVBO(); // VBO作成
+                CreateBufferObject(); // VBO作成
                 glutPostRedisplay();
             }
             else
-                DrawVBO(); // 描画
+                DrawUsingBufferObject(); // 描画
         }
-        // IBO(未完成) ← VBOと一緒に作るから違う
-        else if (_isUseIBO)
-        {
-            if (_ibo == 0)
-            {
-                CreateIBO(); // IBO作成
-                glutPostRedisplay();
-            }
-            else
-                DrawIBO(); // 描画
-        }
-        // ディスプレイリスト
+        // ディスプレイリスト(OpenGLバージョンが低いとき)
         else
             DrawUsingDisplayList(&_displayList, [&] { return (*this).PreDraw(); });
     }
@@ -247,6 +232,7 @@ class Object
         _name = std::to_string(_number); // ここで規定値として振っておく
 
         _vbo = 0;
+        _color_vbo = 0;
         _ibo = 0;
         _color[0] = -1;
         _boxColor[0] = -1;

@@ -125,7 +125,7 @@ void BezierSurface::DrawMeshInternal() const
 }
 
 // 頂点バッファ作成
-void BezierSurface::CreateVBO() const
+void BezierSurface::CreateBufferObject() const
 {
     vector<vector<Vector3d>> pnt;
     vector<vector<Vector3d>> nor;
@@ -191,7 +191,7 @@ void BezierSurface::CreateVBO() const
 }
 
 // VBOで描画
-void BezierSurface::DrawVBO() const
+void BezierSurface::DrawUsingBufferObject() const
 {
     //glColor4dv(_color);
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, _color);

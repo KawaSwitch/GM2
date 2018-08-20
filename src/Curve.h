@@ -18,9 +18,6 @@ class Curve : public Object
     double _draw_vec_length;                          // 描画ベクトル長
     const double _draw_vector_ratio = (double)1 / 20; // 描画ベクトル長の曲線長との比
 
-    // バッファオブジェクト用
-    mutable int _nVertex_cache; // 頂点個数
-
     // 法線ベクトル取得
     Vector3d GetNormalVector(double t) const { return (Vector3d(0, 0, 1) * GetFirstDiffVector(t)); }
     // 曲率ベクトル取得
@@ -35,6 +32,10 @@ class Curve : public Object
   private:
     // 制御点描画
     void DrawCPsInternal() const override;
+
+    // バッファオブジェクト
+    virtual void CreateBufferObject() const override;
+    virtual void DrawUsingBufferObject() const override;
 
   public:
     double GetDrawParamRange() const { return _max_draw_param - _min_draw_param; }

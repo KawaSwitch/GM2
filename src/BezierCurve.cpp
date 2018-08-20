@@ -39,7 +39,7 @@ void BezierCurve::PreDraw() const
 }
 
 // 頂点バッファ作成
-void BezierCurve::CreateVBO() const
+void BezierCurve::CreateBufferObject() const
 {
     vector<Vector3d> pnts;
 
@@ -58,7 +58,7 @@ void BezierCurve::CreateVBO() const
 }
 
 // VBOで描画
-void BezierCurve::DrawVBO() const
+void BezierCurve::DrawUsingBufferObject() const
 {
     glColor4dv(_color);
     glLineWidth(_width);

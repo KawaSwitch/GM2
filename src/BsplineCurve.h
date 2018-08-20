@@ -18,10 +18,6 @@ class BsplineCurve : public Curve
     // 事前描画
     void PreDraw() const override;
 
-    // バッファオブジェクト
-    void CreateVBO() const override;
-    void DrawVBO() const override;
-
     // ノットベクトル設定
     void SetKnotVector(const double *const knot, int size);
 

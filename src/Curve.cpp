@@ -66,6 +66,58 @@ void Curve::GetPositionVectors(vector<Vector3d> &pnts, const int split_num) cons
         pnts.push_back(GetPositionVector(t));
 }
 
+// 頂点バッファ作成
+void Curve::CreateBufferObject() const
+{
+    // 頂点取得
+    vector<Vector3d> pnts;
+    this->GetPositionVectors(pnts, 100);
+
+    _nVertex_cache = (int)pnts.size();
+
+    // 色情報取得
+    vector<GLdouble> color(_nVertex_cache * 4);
+    {
+        for (int i = 0; i < _nVertex_cache * 4; ++i)
+            color[i] = _color[i % 4];
+    }
+
+    // 頂点VBO作成
+    glGenBuffers(1, &_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glBufferData(GL_ARRAY_BUFFER, _nVertex_cache * 3 * sizeof(double), (GLdouble *)&pnts[0], GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // 色VBO作成
+    glGenBuffers(1, &_color_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, _color_vbo);
+    glBufferData(GL_ARRAY_BUFFER, _nVertex_cache * 4 * sizeof(double), &(color[0]), GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+// VBOで描画
+void Curve::DrawUsingBufferObject() const
+{
+    glLineWidth(_width);
+
+    // 頂点
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_DOUBLE, 0, 0);
+
+    // 色
+    glBindBuffer(GL_ARRAY_BUFFER, _color_vbo);
+    glEnableClientState(GL_COLOR_ARRAY);
+    glColorPointer(4, GL_DOUBLE, 0, 0);
+
+    // 描画
+    glDrawArrays(GL_LINE_STRIP, 0, _nVertex_cache);
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_COLOR_ARRAY);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
 // 他曲線との相違度を計算します
 // NOTE: 現在ノット位置の分布に偏りがあると機能しない
 double Curve::CalcDifferency(const Curve *const other) const

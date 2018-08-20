@@ -19,8 +19,8 @@ class BezierSurface : public Surface
     void PreDraw() const override;
 
     // バッファオブジェクト
-    void CreateVBO() const override;
-    void DrawVBO() const override;
+    void CreateBufferObject() const override;
+    void DrawUsingBufferObject() const override;
 
     // 指定した端の曲線を取得する
     std::unique_ptr<Curve> GetEdgeCurve(SurfaceEdge edge) const override;

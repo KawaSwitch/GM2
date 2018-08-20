@@ -21,10 +21,8 @@ class BsplineSurface : public Surface
     void PreDraw() const override;
 
     // バッファオブジェクト
-    void CreateVBO() const override;
-    void DrawVBO() const override;
-    void CreateIBO() const override;
-    void DrawIBO() const override;
+    void CreateBufferObject() const override;
+    void DrawUsingBufferObject() const override;
 
     // ノットベクトル設定
     void SetKnotVector(const double *const knot, int size, vector<double> &_knot);

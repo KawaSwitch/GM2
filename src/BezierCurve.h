@@ -15,8 +15,8 @@ class BezierCurve : public Curve
     void PreDraw() const override;
 
     // バッファオブジェクト
-    void CreateVBO() const override;
-    void DrawVBO() const override;
+    void CreateBufferObject() const override;
+    void DrawUsingBufferObject() const override;
 
   public:
     BezierCurve(int mord, const ControlPoint *const cp, int cp_size, const GLdouble *const color, GLdouble width = 1.0, double resol = 20);

@@ -125,42 +125,6 @@ void BsplineCurve::PreDraw() const
     glEnd();
 }
 
-// 頂点バッファ作成
-void BsplineCurve::CreateVBO() const
-{
-    vector<Vector3d> pnts;
-
-    // 頂点取得
-    for (int i = (int)(_knot[_ord - 1] * 100); i <= (int)(_knot[_ncpnt] * 100); i++)
-    {
-        double t = (double)i / 100;
-        pnts.push_back(GetPositionVector(t));
-    }
-
-    _nVertex_cache = (int)pnts.size();
-
-    glGenBuffers(1, &_vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferData(GL_ARRAY_BUFFER, pnts.size() * 3 * sizeof(double), (GLdouble *)&pnts[0], GL_DYNAMIC_DRAW);
-}
-
-// VBOで描画
-void BsplineCurve::DrawVBO() const
-{
-    glColor4dv(_color);
-    glLineWidth(_width);
-
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glVertexPointer(3, GL_DOUBLE, 0, 0);
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-
-    glDrawArrays(GL_LINE_STRIP, 0, _nVertex_cache);
-
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
 // 接線ベクトル描画
 void BsplineCurve::DrawFirstDiffVectorsInternal() const
 {

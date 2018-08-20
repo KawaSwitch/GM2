@@ -27,8 +27,6 @@ class Surface : public Object
     vector<double> _weight;
 
     mutable GLuint _vbo_nor = 0; // 法線用vbo
-    mutable GLuint _ibo_nor = 0; // 法線用ibo
-    mutable int _nVertex_cache;  // 頂点個数
 
     // 描画範囲パラメータ
     double _min_draw_param_U, _max_draw_param_U;
