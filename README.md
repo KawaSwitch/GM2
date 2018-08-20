@@ -1,44 +1,42 @@
-# about Geometric Modeling 2
+# about KawaGM (Kawa Geometric Modeling)
 簡単な形状処理テストアプリケーションです  
 スプライン曲線/曲面をGLUTを用いて描画&操作します  
   
+# ブランチ
+このリポジトリはWindows用とLinux用(GM3とGM2)をブランチを切って共存開発/保守しています  
+それぞれの2ブランチが各OS上での開発ブランチで現在GM2は保守のみです  
+ 
+- master(GM3)  
+Windows用の開発ブランチ  
+VisualStudioでの開発/実行を想定  
+機能実装の主軸ブランチでOpenGLバージョンの高い環境にも対応  
+- GM2  
+Linux用の開発ブランチ  
+cmake, g++での開発/実行を想定  
+[About GM2](./READMEold.md)  
+    
+**以下masterブランチのみに関して**
+  
 # 開発環境
-Linux Mint 19 Cinnamon  
-g++ 7.3.0
+OS: Windows 10  
+IDE: Visual Studio 2017  
 
 # 動作確認済み/推奨環境
 OpenGLバージョン 1.5以上  
-これ未満だと技術的な問題で動作が遅くなります  
+これ未満だと技術的な問題で動作がかなり遅くなります    
   
-- Linux  
-  * Linux Mint 19 Cinnamon  
-  * Linux Mint 19 MATE  
-  * Ubuntu 16.04 LTS  
-  * Ubuntu 18.04 LTS  
-- Windows  
-  * VirtualBox, VMwareで上記のディストリビューション  
-  * WSL(Ubuntu 18.04 LTS)  
-  
-Linux以外からは仮想環境のみ  
-Windowsの場合WSLが楽  
+Windows 10 OSでのみ動作確認済み  
+Visual Studio 2017を推奨  
   
 # ビルドに必要なパッケージ
-(Debian系OSの場合)  
-freeglut  
-glew  
-build-essential  
-cmake  
-とか  
+どちらもNuGetパッケージマネージャで取得できます  
+- nupengl  
+- dirent  
 
 # 実行方法
-cmakeの生成ファイルが邪魔なので以下のようにするのがおすすめです  
-```  
-git clone <これのurl>  
-cd GM2  
-mkdir build  
-cp -r ./KJS_FILE ./build  
-cd build  
-cmake ..  
-make  
-./geoModeling  
-```  
+GM3.slnをVisual Studioで開いたらソリューションエクスプローラ内のソリューションを右クリックして  
+"Nugetパッケージマネージャの復元(G)"をしてください  
+上記のパッケージが導入できます  
+  
+あとは普通にビルドして実行  
+実行が目的ならReleaseモードが速いです  
