@@ -42,6 +42,137 @@ void Surface::SetControlPoint(const ControlPoint *const cp, const int size)
     }
 }
 
+// 頂点バッファ(VBO)作成
+void Surface::CreateVBO() const
+{
+    // 解像度
+    int RES = (int)_resolution;
+
+    // 分割数を計算
+    int u_min = (int)(_min_draw_param_U * RES);
+    int v_min = (int)(_min_draw_param_V * RES);
+    int u_max = (int)(_max_draw_param_U * RES);
+    int v_max = (int)(_max_draw_param_V * RES);
+    _nVertex_U = u_max - u_min + 1;
+    _nVertex_V = v_max - v_min + 1;
+
+    _nVertex_cache = _nVertex_U * _nVertex_V;
+
+    // 頂点と法線の情報を取得
+    std::vector<Vector3d> pnts;
+    std::vector<Vector3d> normals;
+    {
+        pnts.reserve(_nVertex_cache);
+        normals.reserve(_nVertex_cache);
+
+        for (int i = v_min; i <= v_max; i++)
+        {
+            for (int j = u_min; j <= u_max; j++)
+            {
+                double u = (double)j / RES;
+                double v = (double)i / RES;
+
+                pnts.emplace_back(GetPositionVector(u, v));
+                normals.emplace_back(GetNormalVector(u, v).Normalize());
+            }
+        }
+    }
+
+    // 色情報取得(すべて同じ色)
+    vector<GLdouble> color(_nVertex_cache * 4);
+    {
+        for (int i = 0; i < _nVertex_cache * 4; ++i)
+            color[i] = _color[i % 4];
+    }
+
+    // 頂点VBOの作成
+    glGenBuffers(1, &_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glBufferData(GL_ARRAY_BUFFER, _nVertex_cache * 3 * sizeof(double), &pnts[0], GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    // 法線VBOの作成
+    glGenBuffers(1, &_normal_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, _normal_vbo);
+    glBufferData(GL_ARRAY_BUFFER, _nVertex_cache * 3 * sizeof(double), &normals[0], GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    // 色VBO作成
+    glGenBuffers(1, &_color_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, _color_vbo);
+    glBufferData(GL_ARRAY_BUFFER, _nVertex_cache * 4 * sizeof(double), &(color[0]), GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+// インデックスバッファ(IBO)作成
+void Surface::CreateIBO() const
+{
+    vector<unsigned> index;
+
+    // インデックスを計算
+    for (int i = 0; i < _nVertex_V - 1; ++i)
+    {
+        for (int j = 0; j < _nVertex_U - 1; ++j)
+        {
+            // 下三角
+            index.emplace_back(i * _nVertex_U + j);
+            index.emplace_back(i * _nVertex_U + (j + 1));
+            index.emplace_back((i + 1) * _nVertex_U + j);
+
+            // 上三角
+            index.emplace_back(i * _nVertex_U + (j + 1));
+            index.emplace_back((i + 1) * _nVertex_U + (j + 1));
+            index.emplace_back((i + 1) * _nVertex_U + j);
+        }
+    }
+
+    _nIndex = index.size();
+
+    // IBOの作成
+    glGenBuffers(1, &_ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(unsigned int), &index[0], GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+// モデルのバッファオブジェクトを作成する
+void Surface::CreateBufferObject() const
+{
+    this->CreateVBO();
+    this->CreateIBO();
+}
+// バッファオブジェクトを使って描画する
+void Surface::DrawUsingBufferObject() const
+{
+    // シェーダ対応までこれで拡散光対応
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, _color);
+
+    // 頂点
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_DOUBLE, 0, 0);
+
+    // 法線
+    glBindBuffer(GL_ARRAY_BUFFER, _normal_vbo);
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glNormalPointer(GL_DOUBLE, 0, 0);
+
+    // 色
+    glBindBuffer(GL_ARRAY_BUFFER, _color_vbo);
+    glEnableClientState(GL_COLOR_ARRAY);
+    glColorPointer(4, GL_DOUBLE, 0, 0);
+
+    // インデックス
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo);
+    glEnableClientState(GL_INDEX_ARRAY);
+    glDrawElements(GL_TRIANGLES, _nIndex, GL_UNSIGNED_INT, 0);
+
+    // clean up
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_COLOR_ARRAY);
+    glDisableClientState(GL_INDEX_ARRAY);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
 // 描画用曲率ベクトル取得
 Vector3d Surface::GetCurvatureVector(const double u, const double v) const
 {

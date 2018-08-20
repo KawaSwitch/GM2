@@ -26,7 +26,7 @@ class Surface : public Object
     vector<double> _ctrlpZ;
     vector<double> _weight;
 
-    mutable GLuint _vbo_nor = 0; // 法線用vbo
+    mutable GLuint _normal_vbo = 0; // 法線用vbo
 
     // 描画範囲パラメータ
     double _min_draw_param_U, _max_draw_param_U;
@@ -45,6 +45,10 @@ class Surface : public Object
     virtual Vector3d GetSecondDiffVectorUU(double u, double v) const = 0; // 2階微分ベクトル
     virtual Vector3d GetSecondDiffVectorUV(double u, double v) const = 0;
     virtual Vector3d GetSecondDiffVectorVV(double u, double v) const = 0;
+
+    // バッファオブジェクト
+    void CreateBufferObject() const override;
+    void DrawUsingBufferObject() const override;
 
     // 法線ベクトル取得
     Vector3d GetNormalVector(double u, double v) const { return (GetFirstDiffVectorU(u, v) * GetFirstDiffVectorV(u, v)); }
@@ -79,6 +83,12 @@ class Surface : public Object
   private:
     // オブジェクト描画
     void Draw() const override;
+
+    // バッファオブジェクト作成
+    void CreateVBO() const;
+    void CreateIBO() const;
+    mutable int _nVertex_U, _nVertex_V;
+    mutable int _nIndex;
 
     // 制御点描画
     void DrawCPsInternal() const override;

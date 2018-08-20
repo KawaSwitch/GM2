@@ -17,12 +17,8 @@ class BsplineSurface : public Surface
     // メッシュ描画
     void DrawMeshInternal() const override;
 
-    // 事前描画
+    // 事前描画(ディスプレイリスト用)
     void PreDraw() const override;
-
-    // バッファオブジェクト
-    void CreateBufferObject() const override;
-    void DrawUsingBufferObject() const override;
 
     // ノットベクトル設定
     void SetKnotVector(const double *const knot, int size, vector<double> &_knot);

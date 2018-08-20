@@ -15,12 +15,8 @@ class BezierSurface : public Surface
     // メッシュ描画
     void DrawMeshInternal() const override;
 
-    // 事前描画
+    // 事前描画(ディスプレイリスト用)
     void PreDraw() const override;
-
-    // バッファオブジェクト
-    void CreateBufferObject() const override;
-    void DrawUsingBufferObject() const override;
 
     // 指定した端の曲線を取得する
     std::unique_ptr<Curve> GetEdgeCurve(SurfaceEdge edge) const override;
