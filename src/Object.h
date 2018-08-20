@@ -10,6 +10,8 @@
 #include "DrawUtil.h"
 
 extern bool canUseVbo;
+extern bool canUsePShader;
+extern bool canUseVao;
 
 class Scene;
 
@@ -23,10 +25,12 @@ class Object
     bool _isBoxCalced = false; // ボックスを計算済みか
 
   protected:
-    bool _isUseVBO = canUseVbo;      // VBOを使うか
-    mutable int _nVertex_cache;      // 頂点個数
-    mutable GLuint _vbo, _color_vbo; // VBO
-    mutable GLuint _ibo;             // IBO
+    bool _isUseVBO = canUseVbo;         // VBOを使うか
+    bool _isUsePShader = canUsePShader; // プログラマブルシェーダを使うか
+    bool _isUseVAO = canUseVao;         // VAOを使うか
+    mutable int _nVertex_cache;         // 頂点個数
+    mutable GLuint _vbo, _color_vbo;    // VBO
+    mutable GLuint _ibo;                // IBO
 
     std::string _name;           // 名前
     vector<ControlPoint> _ctrlp; // 制御点
