@@ -13,8 +13,7 @@ VisualStudioでの開発/実行を想定
 - GM2  
 Linux用の開発ブランチ  
 cmake, g++での開発/実行を想定  
-[About GM2](./READMEold.md)  
-    
+  
 **以下masterブランチのみに関して**
   
 # 開発環境
