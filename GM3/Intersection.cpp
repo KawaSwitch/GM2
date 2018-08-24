@@ -44,6 +44,37 @@ vector<Vector3d> IntersectSolver::GetIntersects()
 
   return intersects;
 }
+// 1交点取得
+Vector3d IntersectSolver::GetIntersect()
+{
+	Vector3d intersects;
+
+	// 時間計測
+	clock_t start = clock();
+	{
+		// あらかじめ干渉ペアを粗く見積もり交点候補の範囲を狭めておく
+		this->CalcRoughInterferePair();
+
+		// 絞った範囲から各アルゴリズムを実行する
+		if (_algo == Algo::BoxInterfere)
+		{
+			// ボックス干渉法
+			intersects = GetIntersectByBoxInterfere();
+		}
+		else
+			perror("GetIntersect"); // 未実装
+	}
+	clock_t end = clock();
+	double elapsed = (double)(end - start) / CLOCKS_PER_SEC;
+	cout << "交点取得時間: " << elapsed << "ミリ秒" << endl;
+
+	cout << "交点: (" 
+		<< intersects.X << ", "
+		<< intersects.Y << ", "
+		<< intersects.Z << ")" << endl;
+
+	return intersects;
+}
 
 // おおまかにボックスの干渉するオブジェクトペアを取得する
 // とりあえずボックス干渉1回のペア(TODO: より細かな交点群を取得する場合はもっと)

@@ -62,4 +62,5 @@ public:
 
   // 交点取得
   std::vector<Vector3d> GetIntersects();
+  Vector3d GetIntersect();
 };

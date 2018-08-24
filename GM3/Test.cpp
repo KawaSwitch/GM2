@@ -37,16 +37,17 @@ static vector<function<void(void)>> TestRegisterDraw{
     //DrawBsplineFunctions, // Bスプライン基底関数描画
     //DrawBsplineCurves, // Bスプライン曲線描画
     //DrawCircle_CGS3, // Nurbs曲線で円描く
-   DrawSphere_CGS3, // Nurbs曲面で球を描く
+    //DrawSphere_CGS3, // Nurbs曲面で球を描く
     //DrawCylinder_CGS3, // Nurbs曲面で円柱を描く
     //DrawApproxCurve_CGS4, // 近似曲線を描画
-    DrawApproxSurface_CGS5, // 近似曲面を描画
+    //DrawApproxSurface_CGS5, // 近似曲面を描画
     //DrawCurveNearest_CGS6, // 最近点を描画_曲線
     //DrawSurfaceNearest_CGS7, // 最近点を描画_曲面
     //DrawSplitCurve_CGS8,   // 分割曲線を描画
     //DrawSplitSurface_CGS8, // 分割曲面を描画
-    DrawIntersectCurveSurface_CGS8, // 曲線と曲面の交点取得
-    DrawAllKind,
+	DrawIntersectCurveSurface_CGS8_one, // 曲線と曲面の1交点取得
+    //DrawIntersectCurveSurface_CGS8, // 曲線と曲面の交点取得
+    //DrawAllKind,
 };
 
 // すべてのタイプの曲線/曲面を描画
@@ -73,7 +74,7 @@ void DrawAllKind()
     }
 }
 
-// 曲線と曲面の交点取得
+// 曲線と曲面の交点群取得
 void DrawIntersectCurveSurface_CGS8()
 {
     auto reader = std::make_unique<KjsReader>();
@@ -127,6 +128,57 @@ void DrawIntersectCurveSurface_CGS8()
         //test_scene->AddObject(curve->GetName(), curve);
         //test_scene->AddObject(surf->GetName(), surf);
     }
+}
+// 曲線と曲面の1交点取得
+void DrawIntersectCurveSurface_CGS8_one()
+{
+	auto reader = std::make_unique<KjsReader>();
+
+	// 参照曲線
+	std::shared_ptr<BsplineCurve> curve((BsplineCurve *)reader->GetObjectFromFile(curveS_name));
+	// 参照曲面
+	std::shared_ptr<BsplineSurface> surf((BsplineSurface *)reader->GetObjectFromFile(surf1_name));
+
+	// 曲線分割
+	std::vector<std::shared_ptr<Curve>> split_curves;
+	curve->GetDevidedCurves(10, split_curves);
+
+	// 曲面分割
+	std::vector<std::vector<std::shared_ptr<Surface>>> split_surfaces;
+	surf->GetDevidedSurfaces(10, 10, split_surfaces, surf->_color);
+
+	// 交点取得
+	{
+		auto solver = std::make_unique<IntersectSolver>(1.0e-6, IntersectSolver::Algo::BoxInterfere);
+		solver->SetPair(curve, surf);
+
+		// 交点描画
+		{
+			Vector3d intersect = solver->GetIntersect();
+
+			glColor3dv(Color::red);
+			glPointSize(12.0);
+			{
+				glBegin(GL_POINTS);
+				glVertex3d(intersect);
+				glEnd();
+			}
+		}
+	}
+
+	if (isFirst)
+	{
+		for (const auto &c : split_curves)
+			test_scene->AddObject(c->GetName(), c);
+
+		for (const auto &us : split_surfaces)
+		{
+			for (const auto &vs : us)
+			{
+				test_scene->AddObject(vs->GetName(), vs);
+			}
+		}
+	}
 }
 
 // 分割曲面を描画
