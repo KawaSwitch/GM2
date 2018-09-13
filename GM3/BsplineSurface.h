@@ -52,7 +52,7 @@ class BsplineSurface : public Surface
     Vector3d GetSecondDiffVectorVV(double u, double v) const override;
 
     // ノット範囲を等分割する位置のノットを取得する
-    void GetSplitParam(ParamUV param, vector<double> &params, int splitSegCnt = 1);
+    void GetSplitParam(ParamUV param, vector<double> &params, int splitSegCnt = 1) const;
 
     // ノットベクトルをもとにして点群を取得する
     void GetPointsByKnots(vector<vector<Vector3d>> &pnts, int splitSegCnt_U = 1, int splitSegCnt_V = 1) const;
@@ -75,7 +75,7 @@ class BsplineSurface : public Surface
 
     // 曲面上に乗るような曲線を再生成し位相要素を取得
     std::shared_ptr<Edge> GetOnSurfaceCurve(const std::shared_ptr<BsplineCurve> curve,
-        std::vector<Vector3d>& on_params, std::vector<Point<double>>& uv_params);
+        std::vector<Vector3d>& on_params, std::vector<Point<double>>& uv_params) const;
 
 };
 

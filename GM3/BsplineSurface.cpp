@@ -368,7 +368,7 @@ Vector3d BsplineSurface::GetSecondDiffVectorVV(const double u, const double v) c
 }
 
 // ノット範囲を等分割する位置のノットを取得する
-void BsplineSurface::GetSplitParam(const ParamUV param, vector<double> &params, const int splitSegCnt)
+void BsplineSurface::GetSplitParam(const ParamUV param, vector<double> &params, const int splitSegCnt) const
 {
     if (param == ParamUV::U)
     {
@@ -672,7 +672,8 @@ void BsplineSurface::AddKnot(const ParamUV direction, const double param)
 }
 
 // ノット範囲を等分割した曲面を取得する
-void BsplineSurface::GetDevidedSurfaces(int splitU, int splitV, std::vector<std::vector<std::shared_ptr<Surface>>> &devided_surfs, const GLdouble *const color)
+void BsplineSurface::GetDevidedSurfaces(int splitU, int splitV, 
+    std::vector<std::vector<std::shared_ptr<Surface>>> &devided_surfs, const GLdouble *const color)
 {
     // パラメータを等分割
     std::vector<double> s_split_param_u;
@@ -685,7 +686,8 @@ void BsplineSurface::GetDevidedSurfaces(int splitU, int splitV, std::vector<std:
 }
 
 // 指定パラメータ位置でUV方向に分割した曲面を取得する
-void BsplineSurface::GetDevidedSurfaces(std::vector<double> &u_params, std::vector<double> &v_params, std::vector<vector<std::shared_ptr<Surface>>> &devided_surfs, const GLdouble *const color)
+void BsplineSurface::GetDevidedSurfaces(std::vector<double> &u_params,
+    std::vector<double> &v_params, std::vector<vector<std::shared_ptr<Surface>>> &devided_surfs, const GLdouble *const color)
 {
     // U方向から分割
     std::vector<std::shared_ptr<Surface>> u_split_surfs;
@@ -701,7 +703,8 @@ void BsplineSurface::GetDevidedSurfaces(std::vector<double> &u_params, std::vect
 }
 
 // 指定方向に指定パラメータ位置で分割した曲面を取得する
-void BsplineSurface::GetDevidedSurfaces(const ParamUV direction, std::vector<double> &params, std::vector<std::shared_ptr<Surface>> &devided_surfs, const GLdouble *const color)
+void BsplineSurface::GetDevidedSurfaces(const ParamUV direction, std::vector<double> &params,
+    std::vector<std::shared_ptr<Surface>> &devided_surfs, const GLdouble *const color)
 {
     // あらかじめパラメータをソートし重複を削除しておく
     std::sort(params.begin(), params.end());
@@ -846,7 +849,7 @@ void BsplineSurface::GetDevidedSurfaces(const ParamUV direction, std::vector<dou
 
 // 曲面上に乗るような曲線を再生成し位相要素を取得
 std::shared_ptr<Edge> BsplineSurface::GetOnSurfaceCurve(const std::shared_ptr<BsplineCurve> curve,
-    std::vector<Vector3d>& on_params, std::vector<Point<double>>& uv_params)
+    std::vector<Vector3d>& on_params, std::vector<Point<double>>& uv_params) const
 {
     int seg_split = 1;
 
