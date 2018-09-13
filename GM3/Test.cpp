@@ -170,6 +170,9 @@ void DrawUV_CGS9()
         }
     }
 
+    cout << "曲線1 moto 相違度: " << surf->CalcDifferency(curve1) << endl;
+    cout << "曲線1 on 相違度: " << surf->CalcDifferency(on_curve1->GetXYZCurve()) << endl;
+
     if (isFirst)
     {
         // 元の曲線

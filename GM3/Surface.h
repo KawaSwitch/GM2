@@ -129,5 +129,8 @@ class Surface : public Object
     // ノット範囲を等分割した曲面を取得する
     virtual void GetDevidedSurfaces(int splitU, int splitV, std::vector<std::vector<std::shared_ptr<Surface>>> &devided_surfs, const GLdouble *const color) = 0;
 
+    // 曲面と他曲線の相違度を計算します(最近点距離平均)
+    double CalcDifferency(const std::shared_ptr<Curve> curve) const;
+
     virtual ~Surface() { glDeleteLists(_mesh_displayList, 1); }
 };

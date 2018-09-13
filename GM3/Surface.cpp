@@ -646,3 +646,25 @@ NearestPointInfoS Surface::GetNearestPointFromRefByIsolineMethod(const Vector3d 
 
     return NearestPointInfoS(nearInfo->nearestPnt, ref, u, v);
 }
+
+// 曲面と他曲線の相違度を計算します(最近点距離平均)
+double Surface::CalcDifferency(const std::shared_ptr<Curve> curve) const
+{
+    int checkCnt = 100;       // 距離を測る点の数
+    double sumDistance = 0.0; // 相違距離の合計
+
+    // 参照点群を取得
+    vector<Vector3d> ref_pnts;
+    curve->GetPositionVectors(ref_pnts, checkCnt - 1);
+
+    // 最近点取得
+    vector<NearestPointInfoS> nearest_pnts;
+    for (int i = 0; i < (int)ref_pnts.size(); i++)
+        nearest_pnts.push_back(this->GetNearestPointInfoFromRef(ref_pnts[i]));
+
+    for (const auto &p : nearest_pnts)
+        sumDistance += p.dist;
+
+    // 相違距離の平均を返す
+    return sumDistance / (double)checkCnt;
+}
