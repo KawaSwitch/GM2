@@ -5,6 +5,7 @@
 #include "CalcUtil.h"
 #include "Matrix.h"
 #include "Error.h"
+#include "struct.h"
 using std::vector;
 
 // 度数法から弧度法に変換する
@@ -703,4 +704,17 @@ std::vector<double> LUDecomposition(const int size, const double *const aMatrix,
     delete[] y;
 
     return x;
+}
+
+// 2点が近いか
+// r : 判定円の半径
+bool IsNear(Point<double> pntA, Point<double> pntB, double r)
+{
+    // 点の2乗距離
+    double dist = (pntA.x - pntB.x) * (pntA.x - pntB.x) + (pntA.y - pntB.y) * (pntA.y - pntB.y);
+
+    // 2つの判定円が干渉
+    // ⇔ 2つの判定円の倍半径(= 直径)よりも小さい
+    bool a =  dist < (2 * r) * (2 * r);
+    return a;
 }

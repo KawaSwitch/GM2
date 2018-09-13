@@ -166,6 +166,7 @@
     <ClInclude Include="Curve.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="DrawUtil.h" />
+    <ClInclude Include="Edge.h" />
     <ClInclude Include="EPS.h" />
     <ClInclude Include="Error.h" />
     <ClInclude Include="GeoGrid.h" />

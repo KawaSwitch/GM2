@@ -4,6 +4,7 @@
 #include "Vector.h"
 #include "Point3d.h"
 #include "CalcGeoModelUtil.h"
+#include "struct.h"
 
 double ToRad(const double degree);
 double ToDeg(const double radian);
@@ -17,3 +18,5 @@ void RotateCoord2DAroundOrigin(double *const coord_2d, double rad);
 
 void SolveQuadraticEquation(double a, double b, double c, double *x1, double *x2);
 std::vector<double> LUDecomposition(int size, const double *const aMatrix, const double *const b);
+
+bool IsNear(Point<double> pntA, Point<double> pntB, double r);

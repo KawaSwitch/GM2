@@ -44,5 +44,3 @@ void DrawIntersectCurveSurface_CGS8_one();
 void DrawUV_CGS9();
 void DrawXYZ_CGS9();
 void CalcArea_CGS9();
-void AdjustLoopEdges(std::vector<std::vector<Point<double>>>& edges);
-double GetLoopArea(int base, const std::vector<std::vector<Point<double>>>& edges);

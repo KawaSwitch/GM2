@@ -59,54 +59,6 @@ static vector<function<void(void)>> TestRegisterDraw{
     //DrawAllKind,
 };
 
-// ループを構成するエッジ群の端を補正
-void AdjustLoopEdges(std::vector<std::vector<Point<double>>>& edges)
-{
-    int edge_cnt = edges.size();
-
-    // エッジ群の始端と終端が一致するように補正
-    for (int i = 0; i < edge_cnt; ++i)
-    {
-        int edge_pnt_cnt = edges[i].size();
-        int next_edge_idx = (i + 1 >= edges.size()) ? i + 1 : 0;
-
-        for (int j = 0; j < edge_pnt_cnt - 1; ++j)
-        {
-            if (j == edges[i].size() - 1)
-            {
-                // エッジの終端と次のエッジの始端の中点を補正点とする
-                Point<double> middle;
-                middle.x = edges[i][j].x + edges[next_edge_idx][0].x;
-                middle.y = edges[i][j].y + edges[next_edge_idx][0].y;
-
-                edges[i][j] = middle;
-                edges[next_edge_idx][0] = middle;
-            }
-        }
-    }
-}
-// ループを構成するエッジ群(向き付け済み)からループ面積を取得
-double GetLoopArea(int base, const std::vector<std::vector<Point<double>>>& edges)
-{
-    double area = 0.0; // 面積(符号付)
-    int edge_cnt = edges.size();
-
-    for (int i = 0; i < edge_cnt; ++i)
-    {
-        int edge_pnt_cnt = edges[i].size();
-
-        for (int j = 0; j < edge_pnt_cnt - 1; ++j)
-        {
-            double height = edges[i][j].x - edges[i][j + 1].x;
-            double upper = edges[i][j].y - base;
-            double lower = edges[i][j + 1].y - base;
-
-            // 台形面積
-            area += (upper + lower) * height * 0.5;
-        }
-    }
-}
-
 void DrawUV_CGS9()
 {
     auto reader = std::make_unique<KjsReader>();
@@ -119,50 +71,141 @@ void DrawUV_CGS9()
     // 参照曲面
     std::shared_ptr<BsplineSurface> surf((BsplineSurface *)reader->GetObjectFromFile(surf1_name));
 
-    std::vector<Point<double>> uv_params_list[4];
-    auto uv_curve1 = GetOnSurfaceUVParams(curve1, surf, uv_params_list[0]);
-   // auto uv_curve1_copy = GetOnSurfaceUVParams(curve1, surf, uv_params_list[0]);
-    auto uv_curve2 = GetOnSurfaceUVParams(curve2, surf, uv_params_list[1]);
-    auto uv_curve3 = GetOnSurfaceUVParams(curve3, surf, uv_params_list[2]);
-    auto uv_curve4 = GetOnSurfaceUVParams(curve4, surf, uv_params_list[3]);
+    std::vector<vector<Point<double>>> uv_params_list(4);
+    std::vector<Vector3d> on_params_list[4];
+    std::shared_ptr<Edge> on_curve1 =  surf->GetOnSurfaceCurve(curve1, on_params_list[0], uv_params_list[0]);
+    std::shared_ptr<Edge> on_curve2 = surf->GetOnSurfaceCurve(curve2, on_params_list[1], uv_params_list[1]);
+    std::shared_ptr<Edge> on_curve3 = surf->GetOnSurfaceCurve(curve3, on_params_list[2], uv_params_list[2]);
+    std::shared_ptr<Edge> on_curve4 = surf->GetOnSurfaceCurve(curve4, on_params_list[3], uv_params_list[3]);
+    std::vector<Edge> edges;
+    edges.push_back(*on_curve1);
+    edges.push_back(*on_curve2);
+    edges.push_back(*on_curve3);
+    edges.push_back(*on_curve4);
+    std::shared_ptr<Loop> loop = std::make_shared<Loop>(edges);
+
+   //// auto uv_curve1 = GetOnSurfaceUVParams(curve1, surf, uv_params_list[0]);
+   ////// auto uv_curve1_copy = GetOnSurfaceUVParams(curve1, surf, uv_params_list[0]);
+   //// auto uv_curve2 = GetOnSurfaceUVParams(curve2, surf, uv_params_list[1]);
+   //// auto uv_curve3 = GetOnSurfaceUVParams(curve3, surf, uv_params_list[2]);
+   //// auto uv_curve4 = GetOnSurfaceUVParams(curve4, surf, uv_params_list[3]);
+
+    // 面上点群
+    glColor3dv(Color::red);
+    glPointSize(3.0);
+    glBegin(GL_POINTS);
     {
-        // UVパラメータ描画
-        glColor3dv(Color::red);
+        for (const auto& on_params : on_params_list)
+        {
+            for (const auto& on_param : on_params)
+                glVertex3d(on_param.X, on_param.Y, on_param.Z);
+        }
+    }
+    glEnd();
+
+    //// 補正前
+    //glColor3dv(Color::red);
+    //glPointSize(3.0);
+    //glBegin(GL_POINTS);
+    //{
+    //    for (const auto& uv_params : uv_params_list)
+    //    {
+    //        for (const auto& uv_param : uv_params)
+    //            glVertex3d(Vector3d(uv_param.x, uv_param.y, 0));
+    //    }
+    //}
+    //glEnd();
+
+    // 面積
+    //on_curve1->GetUVCurve()->Reverse();
+    //on_curve4->GetUVCurve()->Reverse();
+    //std::reverse(uv_params_list[0].begin(), uv_params_list[0].end());
+    //std::reverse(uv_params_list[3].begin(), uv_params_list[3].end());
+    //for (const auto& p : uv_params_list[0])
+    //    cout << p.x << ", " << p.y << " / " << endl;
+    //cout << endl;
+    //AdjustLoopEdges(uv_params_list);
+    //cout << GetLoopArea(0, uv_params_list) << endl;
+
+    cout << loop->GetArea() << endl;
+
+    {
+        // TODO: ColorをRGBAを持つ構造体かクラスにするべき
+        vector<GLdouble[4]> color(4);
+        for (int i = 0; i < 4; ++i)
+            color[0][i] = Color::light_blue[i];
+        for (int i = 0; i < 4; ++i)
+            color[1][i] = Color::orange[i];
+        for (int i = 0; i < 4; ++i)
+            color[2][i] = Color::pink[i];
+        for (int i = 0; i < 4; ++i)
+            color[3][i] = Color::red[i];
+
+        int cnt = 0;
+
+        // UVパラメータ描画 補正点群
         glPointSize(3.0);
         glBegin(GL_POINTS);
         {
             for (const auto& uv_params : uv_params_list)
             {
-                //for (const auto& uv_param : uv_params)
-                //    glVertex3d(Vector3d(uv_param.x, uv_param.y, 0));
+                glColor3dv(color[cnt++]);
+                for (const auto& uv_param : uv_params)
+                    glVertex3d(Vector3d(uv_param.x, uv_param.y, 0));
             }
         }
         glEnd();
+
+        cnt = 0;
+        glLineWidth(1.0);
+        for (const auto& uv_params : uv_params_list)
+        {
+            glBegin(GL_LINE_STRIP);
+            {
+                glColor3dv(color[cnt++]);
+                for (const auto& uv_param : uv_params)
+                    glVertex3d(Vector3d(uv_param.x, uv_param.y, 0));
+            }
+            glEnd();
+        }
     }
 
     if (isFirst)
     {
+        // 元の曲線
         //test_scene->AddObject(curve1->GetName(), curve1);
         //test_scene->AddObject(curve2->GetName(), curve2);
         //test_scene->AddObject(curve3->GetName(), curve3);
         //test_scene->AddObject(curve4->GetName(), curve4);
-        test_scene->AddObject(surf->GetName(), surf);
+        test_scene->AddObject(surf->GetName(), surf); // 対象曲面
 
-        uv_curve1->SetColor(Color::light_blue);
-        uv_curve2->SetColor(Color::orange);
-        uv_curve3->SetColor(Color::pink);
-        uv_curve4->SetColor(Color::red);
+        on_curve1->GetXYZCurve()->SetColor(Color::light_blue);
+        on_curve2->GetXYZCurve()->SetColor(Color::orange);
+        on_curve3->GetXYZCurve()->SetColor(Color::pink);
+        on_curve4->GetXYZCurve()->SetColor(Color::green);
+        on_curve1->GetUVCurve()->SetColor(Color::light_blue);
+        on_curve2->GetUVCurve()->SetColor(Color::orange);
+        on_curve3->GetUVCurve()->SetColor(Color::pink);
+        on_curve4->GetUVCurve()->SetColor(Color::green);
         ////uv_curve1_copy->SetColor(Color::blue);
         ////uv_curve1_copy->ReverseFault();
 
-        ////uv_curve1->Reverse();
-        ////uv_curve4->Reverse();
-
         ////test_scene->AddObject(uv_curve1->GetName(), uv_curve1_copy);
-        test_scene->AddObject(uv_curve1->GetName(), uv_curve1);
-        test_scene->AddObject(uv_curve2->GetName(), uv_curve2);
-        test_scene->AddObject(uv_curve3->GetName(), uv_curve3);
-        test_scene->AddObject(uv_curve4->GetName(), uv_curve4);
+        // UV曲線      
+        test_scene->AddObject(on_curve1->GetUVCurve()->GetName(), on_curve1->GetUVCurve());
+        //vector<Vector3d> temp;
+        //on_curve1->GetUVCurve()->GetPositionVectors(temp, 10);
+        //for (const auto& p : temp)
+        //    p.Show();
+        test_scene->AddObject(on_curve2->GetUVCurve()->GetName(), on_curve2->GetUVCurve());
+        test_scene->AddObject(on_curve3->GetUVCurve()->GetName(), on_curve3->GetUVCurve());
+        test_scene->AddObject(on_curve4->GetUVCurve()->GetName(), on_curve4->GetUVCurve());
+
+        // 面上線
+        test_scene->AddObject(on_curve1->GetXYZCurve()->GetName(), on_curve1->GetXYZCurve());
+        test_scene->AddObject(on_curve2->GetXYZCurve()->GetName(), on_curve2->GetXYZCurve());
+        test_scene->AddObject(on_curve3->GetXYZCurve()->GetName(), on_curve3->GetXYZCurve());
+        test_scene->AddObject(on_curve4->GetXYZCurve()->GetName(), on_curve4->GetXYZCurve());
     }
 }
 void DrawXYZ_CGS9()

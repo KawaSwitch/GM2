@@ -292,20 +292,12 @@ void BsplineCurve::Reverse()
     // ノット反転 + 単調増加
     // ⇔ -1 をかけて最大を足す
     double max = *std::max_element(_knot.begin(), _knot.end());
-
-    for (auto& knot : _knot)
-        cout << knot << " ";
-    cout << endl;
     for (auto& knot : _knot)
     {
         knot *= -1;
         knot += max;
     }
-    for (auto& knot : _knot)
-        cout << knot << " ";
-    cout << endl;
-    cout << endl;
-
+    // 昇順になるよう反転
     std::reverse(_knot.begin(), _knot.end());
 
     Curve::Reverse(); // 制御点反転

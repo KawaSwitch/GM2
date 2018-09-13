@@ -33,6 +33,13 @@ struct Point
 {
     T x;
     T y;
+
+    template <class T>
+    Point(T X, T Y)
+    {
+        x = X;
+        y = Y;
+    }
 };
 
 // 曲面のUVパラメータ

@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Surface.h"
+#include "Edge.h"
 
 class BsplineSurface : public Surface
 {
@@ -71,6 +72,11 @@ class BsplineSurface : public Surface
     void GetDevidedSurfaces(std::vector<double> &u_params, std::vector<double> &v_params, std::vector<vector<std::shared_ptr<Surface>>> &devided_surfs, const GLdouble *const color) override;
     // ノット範囲を等分割した曲面を取得する
     void GetDevidedSurfaces(int splitU, int splitV, std::vector<std::vector<std::shared_ptr<Surface>>> &devided_surfs, const GLdouble *const color) override;
+
+    // 曲面上に乗るような曲線を再生成し位相要素を取得
+    std::shared_ptr<Edge> GetOnSurfaceCurve(const std::shared_ptr<BsplineCurve> curve,
+        std::vector<Vector3d>& on_params, std::vector<Point<double>>& uv_params);
+
 };
 
 // 通過点から逆変換してBスプライン曲面を取得する
