@@ -1,5 +1,6 @@
 #include "MakeUV.h"
 
+// 面上線と元の曲線が十分に近いか判定
 bool CheckDistant(const std::shared_ptr<BsplineCurve>& curve, const std::shared_ptr<BsplineCurve>& curve_on_surf, const double eps)
 {
     return curve->IsDifferentAtLeast(curve_on_surf.get(), eps);
@@ -24,9 +25,9 @@ std::shared_ptr<BsplineCurve> GetOnSurfaceUVParams(const std::shared_ptr<Bspline
 
         // XYZの離散点 (セグメント分割)
         std::vector<Point3dC> c_pts = curve->GetPointsByKnots(seg_split);
-        /*std::vector<Vector3d> c_pts;
-        curve->GetPositionVectors(c_pts, seg_split);
-*/
+        //std::vector<Vector3d> c_pts;
+        //curve->GetPositionVectors(c_pts, seg_split);
+
         // 離散点から曲面への最近点取得
         std::vector<NearestPointInfoS> nearest_pts;
         {
@@ -45,7 +46,6 @@ std::shared_ptr<BsplineCurve> GetOnSurfaceUVParams(const std::shared_ptr<Bspline
             }
             tole = std::fmax(tole, max_dist);
         }
-
 
         // 最近点からUVパラメータ取得
         for (const auto& pnt : nearest_pts)
@@ -68,18 +68,18 @@ std::shared_ptr<BsplineCurve> GetOnSurfaceUVParams(const std::shared_ptr<Bspline
 
             // UV曲線から面上線を取得
             //std::vector<Point3dC> pts_on_uv_curve = uv_curve->GetPointsByKnots(seg_split);
-   /*         std::vector<Vector3d> pts_on_uv_curve;
-            uv_curve->GetPositionVectors(pts_on_uv_curve, seg_split);*/
+            std::vector<Vector3d> pts_on_uv_curve;
+            uv_curve->GetPositionVectors(pts_on_uv_curve, 50);
 
             std::vector<Vector3d> pts_on_surf;
-            for (auto& pnt : uv_pts)
+            for (auto& pnt : pts_on_uv_curve)
                 pts_on_surf.push_back(surf->GetPositionVector(((Vector3d)pnt).X, ((Vector3d)pnt).Y));
             auto curve_on_surf = static_pointer_cast<BsplineCurve>(GetBsplineCurveFromPoints(pts_on_surf, 4, Color::blue, 2));
 
             if (CheckDistant(curve, curve_on_surf, tole))
             {
                 cout << seg_split << endl;
-                return curve_on_surf;
+                return uv_curve;
             }
         }
 

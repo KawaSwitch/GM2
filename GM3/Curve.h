@@ -64,6 +64,9 @@ class Curve : public Object
     double CalcDifferency2(const Curve *const other) const;
     bool IsDifferentAtLeast(const Curve *const other, double eps) const;
 
+    // 曲線を反転します
+    void Reverse() override;
+
     // 指定したパラメータ位置で分割した曲線を取得します
     virtual void GetDevidedCurves(std::vector<double> &params, std::vector<std::shared_ptr<Curve>> &devided_curves) = 0;
     // ノット範囲を等分割した曲線を取得する

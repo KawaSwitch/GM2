@@ -163,7 +163,7 @@ double Curve::CalcDifferency2(const Curve *const other) const
 // 他曲線との距離がEPS以下であるか(1箇所でもEPSより大きい箇所があれば偽)
 bool Curve::IsDifferentAtLeast(const Curve *const other, double eps) const
 {
-    int checkCnt = 10;       // 距離を測る点の数
+    int checkCnt = 20;       // 距離を測る点の数
 
     // 参照点群を取得
     vector<Vector3d> ref_pnts;
@@ -178,6 +178,14 @@ bool Curve::IsDifferentAtLeast(const Curve *const other, double eps) const
     }
 
     return true;
+}
+
+// 曲線の向きを反転する
+void Curve::Reverse()
+{
+    std::reverse(_ctrlp.begin(), _ctrlp.end());
+    this->ClearAllShowingIds();
+    glutPostRedisplay();
 }
 
 // 2曲線で一番遠ざかる距離を計算する

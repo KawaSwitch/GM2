@@ -286,6 +286,31 @@ NearestPointInfoC BsplineCurve::GetNearestPointInfoFromRef(const Vector3d &ref) 
     return Curve::GetNearestPointInfoInternal(ref, startPnts);
 }
 
+// 向き反転
+void BsplineCurve::Reverse()
+{
+    // ノット反転 + 単調増加
+    // ⇔ -1 をかけて最大を足す
+    double max = *std::max_element(_knot.begin(), _knot.end());
+
+    for (auto& knot : _knot)
+        cout << knot << " ";
+    cout << endl;
+    for (auto& knot : _knot)
+    {
+        knot *= -1;
+        knot += max;
+    }
+    for (auto& knot : _knot)
+        cout << knot << " ";
+    cout << endl;
+    cout << endl;
+
+    std::reverse(_knot.begin(), _knot.end());
+
+    Curve::Reverse(); // 制御点反転
+}
+
 // ノットの追加
 void BsplineCurve::AddKnot(const double t)
 {

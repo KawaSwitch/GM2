@@ -87,6 +87,9 @@ class Object
         glDeleteBuffers(1, &_ibo);
     }
 
+    // 反転
+    virtual void Reverse() = 0;
+
   public:
     GLdouble _color[4]; // 色
 

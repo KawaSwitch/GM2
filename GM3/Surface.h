@@ -116,6 +116,9 @@ class Surface : public Object
     // 描画範囲を各方向split_num個に分割するような位置ベクトルを取得する
     void GetPositionVectors(vector<vector<Vector3d>> &pnts, int U_split_num, int V_split_num) const;
 
+    //  向きを反転させる
+    void Reverse() override;
+
     // 通過点から逆変換して曲面を取得する
     virtual std::unique_ptr<Surface> GetSurfaceFromPoints(const vector<vector<Vector3d>> &pnts, const GLdouble *const color, GLdouble width) const = 0;
 

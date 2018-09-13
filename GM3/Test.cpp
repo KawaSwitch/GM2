@@ -73,19 +73,20 @@ void DrawUV_CGS9()
 
     std::vector<Point<double>> uv_params_list[4];
     auto uv_curve1 = GetOnSurfaceUVParams(curve1, surf, uv_params_list[0]);
+    auto uv_curve1_copy = GetOnSurfaceUVParams(curve1, surf, uv_params_list[0]);
     auto uv_curve2 = GetOnSurfaceUVParams(curve2, surf, uv_params_list[1]);
     auto uv_curve3 = GetOnSurfaceUVParams(curve3, surf, uv_params_list[2]);
     auto uv_curve4 = GetOnSurfaceUVParams(curve4, surf, uv_params_list[3]);
     {
         // UVパラメータ描画
         glColor3dv(Color::red);
-        glPointSize(1.0);
+        glPointSize(3.0);
         glBegin(GL_POINTS);
         {
             for (const auto& uv_params : uv_params_list)
             {
-                //for (const auto& uv_param : uv_params)
-                //    glVertex3d(Vector3d(uv_param.x, uv_param.y, 0));
+                for (const auto& uv_param : uv_params)
+                    glVertex3d(Vector3d(uv_param.x, uv_param.y, 0));
             }
         }
         glEnd();
@@ -103,7 +104,13 @@ void DrawUV_CGS9()
         uv_curve2->SetColor(Color::orange);
         uv_curve3->SetColor(Color::pink);
         uv_curve4->SetColor(Color::red);
+        uv_curve1_copy->SetColor(Color::blue);
+        uv_curve1_copy->ReverseFault();
 
+        uv_curve1->Reverse();
+        uv_curve4->Reverse();
+
+        //test_scene->AddObject(uv_curve1->GetName(), uv_curve1_copy);
         test_scene->AddObject(uv_curve1->GetName(), uv_curve1);
         test_scene->AddObject(uv_curve2->GetName(), uv_curve2);
         test_scene->AddObject(uv_curve3->GetName(), uv_curve3);

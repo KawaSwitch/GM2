@@ -42,6 +42,13 @@ class BsplineCurve : public Curve
     // 最近点取得
     NearestPointInfoC GetNearestPointInfoFromRef(const Vector3d &ref) const override;
 
+    // 向き反転
+    void Reverse() override;
+    void ReverseFault()
+    {
+        Curve::Reverse();
+    }
+
     // ノット追加
     void AddKnot(double t);
     // 指定したパラメータ位置で分割した曲線を取得する

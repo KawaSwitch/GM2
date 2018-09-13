@@ -281,6 +281,12 @@ std::shared_ptr<Curve> Surface::GetIsoCurve(const ParamUV const_param, const dou
     return GetBsplineCurveFromPoints(pnts, 4, color, width);
 }
 
+//  向きを反転させる
+void Surface::Reverse()
+{
+    // TODO: 後で実装
+}
+
 // 主曲率を取得
 void Surface::GetPrincipalCurvatures(const double u, const double v, double *const max_kappa, double *const min_kappa) const
 {
