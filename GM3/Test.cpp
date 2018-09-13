@@ -59,6 +59,49 @@ static vector<function<void(void)>> TestRegisterDraw{
     //DrawAllKind,
 };
 
+// 折れ点線群からループを構成する
+// 順番にいれる必要有
+void GetLoopByEdges(const std::vector<std::vector<Point<double>>>& edges, std::vector<Point<double>>& loop)
+{
+    // 既に格納されていれば削除
+    if (loop.size() > 0)
+    {
+        loop.clear();
+        loop.shrink_to_fit();
+    }
+
+    int edge_cnt = edges.size();
+
+    // エッジ群からループを構成
+    for (int i = 0; i < edge_cnt; ++i)
+    {
+        int edge_pnt_cnt = edges[i].size();
+        int edge_pre_pnt_cnt = edges[(i - 1 >= 0) ? i - 1 : edge_cnt - 1].size();
+
+        for (int j = 0; j < edge_pnt_cnt - 1; ++j)
+        {
+            if (j == 0)
+            {
+                Point<double> middle;
+                middle.x = edges[i][0].x + edges[(i - 1 >= 0) ? i - 1 : edge_cnt - 1][edge_pre_pnt_cnt - 1].x;
+                middle.y = edges[i][0].y + edges[(i - 1 >= 0) ? i - 1 : edge_cnt - 1][edge_pre_pnt_cnt - 1].y;
+
+                // エッジの始端と前の終端の中点をとり補正
+                loop.push_back(middle);
+            }
+
+            // 最後の点以外を追加
+            loop.push_back(edges[i][j]);
+        }
+    }
+}
+// ループ面積を求める
+// 可視分割法
+void GetLoopArea(const std::vector<Point<double>>& loop)
+{
+
+}
+
 void DrawUV_CGS9()
 {
     auto reader = std::make_unique<KjsReader>();
@@ -73,7 +116,7 @@ void DrawUV_CGS9()
 
     std::vector<Point<double>> uv_params_list[4];
     auto uv_curve1 = GetOnSurfaceUVParams(curve1, surf, uv_params_list[0]);
-    auto uv_curve1_copy = GetOnSurfaceUVParams(curve1, surf, uv_params_list[0]);
+   // auto uv_curve1_copy = GetOnSurfaceUVParams(curve1, surf, uv_params_list[0]);
     auto uv_curve2 = GetOnSurfaceUVParams(curve2, surf, uv_params_list[1]);
     auto uv_curve3 = GetOnSurfaceUVParams(curve3, surf, uv_params_list[2]);
     auto uv_curve4 = GetOnSurfaceUVParams(curve4, surf, uv_params_list[3]);
@@ -85,8 +128,8 @@ void DrawUV_CGS9()
         {
             for (const auto& uv_params : uv_params_list)
             {
-                for (const auto& uv_param : uv_params)
-                    glVertex3d(Vector3d(uv_param.x, uv_param.y, 0));
+                //for (const auto& uv_param : uv_params)
+                //    glVertex3d(Vector3d(uv_param.x, uv_param.y, 0));
             }
         }
         glEnd();
@@ -98,19 +141,19 @@ void DrawUV_CGS9()
         //test_scene->AddObject(curve2->GetName(), curve2);
         //test_scene->AddObject(curve3->GetName(), curve3);
         //test_scene->AddObject(curve4->GetName(), curve4);
-        //test_scene->AddObject(surf->GetName(), surf);
+        test_scene->AddObject(surf->GetName(), surf);
 
         uv_curve1->SetColor(Color::light_blue);
         uv_curve2->SetColor(Color::orange);
         uv_curve3->SetColor(Color::pink);
         uv_curve4->SetColor(Color::red);
-        uv_curve1_copy->SetColor(Color::blue);
-        uv_curve1_copy->ReverseFault();
+        ////uv_curve1_copy->SetColor(Color::blue);
+        ////uv_curve1_copy->ReverseFault();
 
-        uv_curve1->Reverse();
-        uv_curve4->Reverse();
+        ////uv_curve1->Reverse();
+        ////uv_curve4->Reverse();
 
-        //test_scene->AddObject(uv_curve1->GetName(), uv_curve1_copy);
+        ////test_scene->AddObject(uv_curve1->GetName(), uv_curve1_copy);
         test_scene->AddObject(uv_curve1->GetName(), uv_curve1);
         test_scene->AddObject(uv_curve2->GetName(), uv_curve2);
         test_scene->AddObject(uv_curve3->GetName(), uv_curve3);
