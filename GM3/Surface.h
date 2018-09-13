@@ -105,7 +105,7 @@ class Surface : public Object
     virtual std::unique_ptr<Curve> GetEdgeCurve(SurfaceEdge edge) const = 0;
 
     // 指定したパラメータのアイソ曲線を取得する
-    virtual std::unique_ptr<Curve> GetIsoCurve(ParamUV const_param, double param, const GLdouble *const color = Color::red, GLdouble width = 3) const;
+    virtual std::shared_ptr<Curve> GetIsoCurve(ParamUV const_param, double param, const GLdouble *const color = Color::red, GLdouble width = 3) const;
 
     // 参照点からの最近点を取得
     virtual NearestPointInfoS GetNearestPointInfoFromRef(const Vector3d &ref, const NearestSearch search = Project) const = 0;

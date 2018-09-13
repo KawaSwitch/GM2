@@ -11,6 +11,7 @@
 #include "Scene.h"
 #include "glUtil.h"
 #include "Intersection.h"
+#include "MakeUV.h"
 
 static int current_size;  // 現在のテスト用のディスプレイリスト数
 static int *displayLists; // ディスプレイリスト保管用ポインタ
@@ -29,6 +30,11 @@ static const std::string curveC_name("CGS_bspline_curve_C.kjs");
 static const std::string curveS_name("CGS_bspline_curve_S.kjs");
 static const std::string surf1_name("CGS_bspline_surface_1.kjs");
 static const std::string curveG_name("CGS_bspline_curve_G.kjs");
+static const std::string curve9_1_name("CGS_bspline_curve_9_1.kjs");
+static const std::string curve9_2_name("CGS_bspline_curve_9_2.kjs");
+static const std::string curve9_3_name("CGS_bspline_curve_9_3.kjs");
+static const std::string curve9_4_name("CGS_bspline_curve_9_4.kjs");
+
 
 // テストというか仮描画！！！！！
 
@@ -45,10 +51,74 @@ static vector<function<void(void)>> TestRegisterDraw{
     //DrawSurfaceNearest_CGS7, // 最近点を描画_曲面
     //DrawSplitCurve_CGS8,   // 分割曲線を描画
     //DrawSplitSurface_CGS8, // 分割曲面を描画
-	DrawIntersectCurveSurface_CGS8_one, // 曲線と曲面の1交点取得
+	//DrawIntersectCurveSurface_CGS8_one, // 曲線と曲面の1交点取得
     //DrawIntersectCurveSurface_CGS8, // 曲線と曲面の交点取得
+    DrawUV_CGS9,
+    DrawXYZ_CGS9,
+    CalcArea_CGS9,
     //DrawAllKind,
 };
+
+void DrawUV_CGS9()
+{
+    auto reader = std::make_unique<KjsReader>();
+
+    // 参照曲線
+    std::shared_ptr<BsplineCurve> curve1((BsplineCurve *)reader->GetObjectFromFile(curve9_1_name));
+    std::shared_ptr<BsplineCurve> curve2((BsplineCurve *)reader->GetObjectFromFile(curve9_2_name));
+    std::shared_ptr<BsplineCurve> curve3((BsplineCurve *)reader->GetObjectFromFile(curve9_3_name));
+    std::shared_ptr<BsplineCurve> curve4((BsplineCurve *)reader->GetObjectFromFile(curve9_4_name));
+    // 参照曲面
+    std::shared_ptr<BsplineSurface> surf((BsplineSurface *)reader->GetObjectFromFile(surf1_name));
+
+    std::vector<Point<double>> uv_params_list[4];
+    auto uv_curve1 = GetOnSurfaceUVParams(curve1, surf, uv_params_list[0]);
+    auto uv_curve2 = GetOnSurfaceUVParams(curve2, surf, uv_params_list[1]);
+    auto uv_curve3 = GetOnSurfaceUVParams(curve3, surf, uv_params_list[2]);
+    auto uv_curve4 = GetOnSurfaceUVParams(curve4, surf, uv_params_list[3]);
+    {
+        // UVパラメータ描画
+        glColor3dv(Color::red);
+        glPointSize(1.0);
+        glBegin(GL_POINTS);
+        {
+            for (const auto& uv_params : uv_params_list)
+            {
+                //for (const auto& uv_param : uv_params)
+                //    glVertex3d(Vector3d(uv_param.x, uv_param.y, 0));
+            }
+        }
+        glEnd();
+    }
+
+    if (isFirst)
+    {
+        //test_scene->AddObject(curve1->GetName(), curve1);
+        //test_scene->AddObject(curve2->GetName(), curve2);
+        //test_scene->AddObject(curve3->GetName(), curve3);
+        //test_scene->AddObject(curve4->GetName(), curve4);
+        //test_scene->AddObject(surf->GetName(), surf);
+
+        uv_curve1->SetColor(Color::light_blue);
+        uv_curve2->SetColor(Color::orange);
+        uv_curve3->SetColor(Color::pink);
+        uv_curve4->SetColor(Color::red);
+
+        test_scene->AddObject(uv_curve1->GetName(), uv_curve1);
+        test_scene->AddObject(uv_curve2->GetName(), uv_curve2);
+        test_scene->AddObject(uv_curve3->GetName(), uv_curve3);
+        test_scene->AddObject(uv_curve4->GetName(), uv_curve4);
+    }
+}
+void DrawXYZ_CGS9()
+{
+
+}
+void CalcArea_CGS9()
+{
+
+
+}
 
 // すべてのタイプの曲線/曲面を描画
 void DrawAllKind()
@@ -454,8 +524,8 @@ void DrawApproxCurve_CGS4()
     shared_ptr<BsplineCurve> curve2((BsplineCurve *)reader->GetObjectFromFile("CGS_bspline_curve_2.kjs"));
 
     // 近似曲線
-    std::unique_ptr<Curve> curve1_remake, curve2_remake;
-    std::unique_ptr<Curve> curve1_remake_split, curve2_remake_split;
+    std::shared_ptr<Curve> curve1_remake, curve2_remake;
+    std::shared_ptr<Curve> curve1_remake_split, curve2_remake_split;
 
     // 曲線1の近似(ノット位置のみ)
     {

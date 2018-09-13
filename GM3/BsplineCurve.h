@@ -37,7 +37,7 @@ class BsplineCurve : public Curve
     Vector3d GetSecondDiffVector(double t) const override;
 
     // 逆変換
-    std::unique_ptr<Curve> GetCurveFromPoints(const vector<Vector3d> &pnts, const GLdouble *const color, GLdouble width) const override;
+    std::shared_ptr<Curve> GetCurveFromPoints(const vector<Vector3d> &pnts, const GLdouble *const color, GLdouble width) const override;
 
     // 最近点取得
     NearestPointInfoC GetNearestPointInfoFromRef(const Vector3d &ref) const override;
@@ -51,4 +51,4 @@ class BsplineCurve : public Curve
 };
 
 // 通観点から逆変換して曲線を取得する
-std::unique_ptr<Curve> GetBsplineCurveFromPoints(const vector<Vector3d> &pnts, int ord, const GLdouble *const color, GLdouble width);
+std::shared_ptr<Curve> GetBsplineCurveFromPoints(const vector<Vector3d> &pnts, int ord, const GLdouble *const color, GLdouble width);

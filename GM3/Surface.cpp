@@ -258,7 +258,7 @@ vector<ControlPoint> Surface::GetEdgeCurveControlPoint(const SurfaceEdge edge) c
 }
 
 // 指定パラメータ固定のアイソ曲線を取得する
-std::unique_ptr<Curve> Surface::GetIsoCurve(const ParamUV const_param, const double param, const GLdouble *const color, const GLdouble width) const
+std::shared_ptr<Curve> Surface::GetIsoCurve(const ParamUV const_param, const double param, const GLdouble *const color, const GLdouble width) const
 {
     vector<Vector3d> pnts; // アイソ曲線取得用の参照点群
     const int split = 30;
@@ -554,8 +554,8 @@ NearestPointInfoS Surface::GetNearestPointWhenParamOver(const Vector3d &ref, con
 NearestPointInfoS Surface::GetNearestPointFromRefByIsolineMethod(const Vector3d &ref, const Point3dS &start) const
 {
     int count = 0;                               // ステップ数
-    std::unique_ptr<Curve> iso;                  // アイソ曲線
-    std::unique_ptr<NearestPointInfoC> nearInfo; // 最近点情報
+    std::shared_ptr<Curve> iso;                  // アイソ曲線
+    std::shared_ptr<NearestPointInfoC> nearInfo; // 最近点情報
     double u, v;                                 // 現在のパラメータ
     double end_param;                            // 終了点のパラメータ
     double dot;                                  // 内積値

@@ -57,13 +57,16 @@ Vector3d Curve::GetCurvatureVector(const double t) const
 void Curve::GetPositionVectors(vector<Vector3d> &pnts, const int split_num) const
 {
     pnts.clear();
+    pnts.shrink_to_fit();
 
     // 分割区間を計算
-    double skip = (fabs(_min_draw_param) + fabs(_max_draw_param)) / split_num;
+    //int skip = (int)((fabs(_min_draw_param) * 100 + fabs(_max_draw_param) * 100) / split_num);
 
-    // double型の誤差考慮
-    for (double t = _min_draw_param; t < _max_draw_param + skip / 2; t += skip)
+    for (int i = (int)(_min_draw_param * split_num); i <= (int)(_max_draw_param * split_num); ++i)
+    {
+        double t = (double)i / split_num;
         pnts.push_back(GetPositionVector(t));
+    }
 }
 
 // 頂点バッファ作成
@@ -156,6 +159,25 @@ double Curve::CalcDifferency2(const Curve *const other) const
 
     // 相違距離の平均を返す
     return sumDistance / (double)checkCnt;
+}
+// 他曲線との距離がEPS以下であるか(1箇所でもEPSより大きい箇所があれば偽)
+bool Curve::IsDifferentAtLeast(const Curve *const other, double eps) const
+{
+    int checkCnt = 10;       // 距離を測る点の数
+
+    // 参照点群を取得
+    vector<Vector3d> ref_pnts;
+    other->GetPositionVectors(ref_pnts, checkCnt - 1);
+
+    // 最近点取得
+    for (int i = 0; i < (int)ref_pnts.size(); i++)
+    {
+        NearestPointInfoC nearest = this->GetNearestPointInfoFromRef(ref_pnts[i]);
+        if (nearest.dist > eps)
+            return false;
+    }
+
+    return true;
 }
 
 // 2曲線で一番遠ざかる距離を計算する

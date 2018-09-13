@@ -56,12 +56,13 @@ class Curve : public Object
     void GetPositionVectors(vector<Vector3d> &pnts, int split_num) const;
 
     // 通過点から逆変換して曲線を取得する
-    virtual std::unique_ptr<Curve> GetCurveFromPoints(const vector<Vector3d> &pnts, const GLdouble *const color, GLdouble width) const = 0;
+    virtual std::shared_ptr<Curve> GetCurveFromPoints(const vector<Vector3d> &pnts, const GLdouble *const color, GLdouble width) const = 0;
 
     // 他曲線との相違度を計算します
     double CalcFarthestDistant(const Curve *const other) const;
     double CalcDifferency(const Curve *const other) const;
     double CalcDifferency2(const Curve *const other) const;
+    bool IsDifferentAtLeast(const Curve *const other, double eps) const;
 
     // 指定したパラメータ位置で分割した曲線を取得します
     virtual void GetDevidedCurves(std::vector<double> &params, std::vector<std::shared_ptr<Curve>> &devided_curves) = 0;

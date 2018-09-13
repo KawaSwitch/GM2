@@ -204,7 +204,7 @@ Vector3d BezierCurve::GetSecondDiffVector(const double t) const
 }
 
 // 通過点から逆変換して曲線を取得
-std::unique_ptr<Curve> BezierCurve::GetCurveFromPoints(const vector<Vector3d> &pnts, const GLdouble *const color, const GLdouble width) const
+std::shared_ptr<Curve> BezierCurve::GetCurveFromPoints(const vector<Vector3d> &pnts, const GLdouble *const color, const GLdouble width) const
 {
     vector<ControlPoint> new_cps;
     new_cps.resize(_ncpnt);

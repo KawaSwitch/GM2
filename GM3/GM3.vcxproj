@@ -132,6 +132,7 @@
     <ClCompile Include="Intersection.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MakeUV.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="NurbsCurve.cpp" />
     <ClCompile Include="NurbsPrimitive.cpp" />
@@ -173,6 +174,7 @@
     <ClInclude Include="Initialize.h" />
     <ClInclude Include="Intersection.h" />
     <ClInclude Include="Light.h" />
+    <ClInclude Include="MakeUV.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Matrix3d.h" />
     <ClInclude Include="Model.h" />
