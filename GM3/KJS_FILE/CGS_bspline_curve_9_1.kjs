@@ -1,6 +1,6 @@
 Bspline
 Curve
-0.0 1.0 1.0 1.0 //COLOR
+0.0 0.2 1.0 1.0 //COLOR
 1.0 // WIDTH
 MORD=4
 NCPNT=12
