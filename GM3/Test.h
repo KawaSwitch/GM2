@@ -44,5 +44,5 @@ void DrawIntersectCurveSurface_CGS8_one();
 void DrawUV_CGS9();
 void DrawXYZ_CGS9();
 void CalcArea_CGS9();
-void GetLoopByEdges(const std::vector<std::vector<Point<double>>>& edges, std::vector<Point<double>>& loop); // 折れ点線群からループを構成する
-void GetLoopArea(const std::vector<Point<double>>& loop); // ループ面積を求める
+void AdjustLoopEdges(std::vector<std::vector<Point<double>>>& edges);
+double GetLoopArea(int base, const std::vector<std::vector<Point<double>>>& edges);

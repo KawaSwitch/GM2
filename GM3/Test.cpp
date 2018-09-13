@@ -59,47 +59,52 @@ static vector<function<void(void)>> TestRegisterDraw{
     //DrawAllKind,
 };
 
-// 折れ点線群からループを構成する
-// 順番にいれる必要有
-void GetLoopByEdges(const std::vector<std::vector<Point<double>>>& edges, std::vector<Point<double>>& loop)
+// ループを構成するエッジ群の端を補正
+void AdjustLoopEdges(std::vector<std::vector<Point<double>>>& edges)
 {
-    // 既に格納されていれば削除
-    if (loop.size() > 0)
-    {
-        loop.clear();
-        loop.shrink_to_fit();
-    }
-
     int edge_cnt = edges.size();
 
-    // エッジ群からループを構成
+    // エッジ群の始端と終端が一致するように補正
     for (int i = 0; i < edge_cnt; ++i)
     {
         int edge_pnt_cnt = edges[i].size();
-        int edge_pre_pnt_cnt = edges[(i - 1 >= 0) ? i - 1 : edge_cnt - 1].size();
+        int next_edge_idx = (i + 1 >= edges.size()) ? i + 1 : 0;
 
         for (int j = 0; j < edge_pnt_cnt - 1; ++j)
         {
-            if (j == 0)
+            if (j == edges[i].size() - 1)
             {
+                // エッジの終端と次のエッジの始端の中点を補正点とする
                 Point<double> middle;
-                middle.x = edges[i][0].x + edges[(i - 1 >= 0) ? i - 1 : edge_cnt - 1][edge_pre_pnt_cnt - 1].x;
-                middle.y = edges[i][0].y + edges[(i - 1 >= 0) ? i - 1 : edge_cnt - 1][edge_pre_pnt_cnt - 1].y;
+                middle.x = edges[i][j].x + edges[next_edge_idx][0].x;
+                middle.y = edges[i][j].y + edges[next_edge_idx][0].y;
 
-                // エッジの始端と前の終端の中点をとり補正
-                loop.push_back(middle);
+                edges[i][j] = middle;
+                edges[next_edge_idx][0] = middle;
             }
-
-            // 最後の点以外を追加
-            loop.push_back(edges[i][j]);
         }
     }
 }
-// ループ面積を求める
-// 可視分割法
-void GetLoopArea(const std::vector<Point<double>>& loop)
+// ループを構成するエッジ群(向き付け済み)からループ面積を取得
+double GetLoopArea(int base, const std::vector<std::vector<Point<double>>>& edges)
 {
+    double area = 0.0; // 面積(符号付)
+    int edge_cnt = edges.size();
 
+    for (int i = 0; i < edge_cnt; ++i)
+    {
+        int edge_pnt_cnt = edges[i].size();
+
+        for (int j = 0; j < edge_pnt_cnt - 1; ++j)
+        {
+            double height = edges[i][j].x - edges[i][j + 1].x;
+            double upper = edges[i][j].y - base;
+            double lower = edges[i][j + 1].y - base;
+
+            // 台形面積
+            area += (upper + lower) * height * 0.5;
+        }
+    }
 }
 
 void DrawUV_CGS9()
