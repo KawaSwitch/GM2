@@ -905,9 +905,7 @@ std::shared_ptr<Edge> BsplineSurface::GetOnSurfaceCurve(const std::shared_ptr<Bs
 
             // UV曲線から面上線を取得
             std::vector<Vector3d> pts_on_uv_curve;
-            uv_spline_curve->GetPositionVectors(pts_on_uv_curve, 20); // とりあえず100分割
-            //std::vector<Point3dC> pts_on_uv_curve;
-            //pts_on_uv_curve = uv_spline_curve->GetPointsByKnots(seg_split / 2);
+            uv_spline_curve->GetPositionVectors(pts_on_uv_curve, 50); // とりあえず50分割
 
             std::vector<Vector3d> pts_on_surf;
             for (auto& pnt : pts_on_uv_curve)

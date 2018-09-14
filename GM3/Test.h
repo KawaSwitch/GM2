@@ -42,5 +42,3 @@ void DrawIntersectCurveSurface_CGS8_one();
 // UV曲線の生成
 // 中級編第9回
 void DrawUV_CGS9();
-void DrawXYZ_CGS9();
-void CalcArea_CGS9();

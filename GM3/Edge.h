@@ -106,31 +106,10 @@ private:
             }
         }
     }
-    // エッジの端が繋がるように補正
+    // 極/シームの通過や接触に対する補正処理
     void FixLoop()
     {
-        int split = 10; // 1でいいかも
-
-        for (int i = 0; i < _edge_cnt; ++i)
-        {
-            std::vector<Point<double>> edge_pnts; // エッジを構成する点群
-            _edges[i].GetOnUVCurvePoints(split, edge_pnts);
-            int edge_pnt_cnt = (int)edge_pnts.size();
-
-            int next_edge_idx = (i + 1 < _edge_cnt) ? i + 1 : 0;
-            std::vector<Point<double>> next_edge_pnts; // 次のエッジを構成する点群
-            _edges[next_edge_idx].GetOnUVCurvePoints(split, next_edge_pnts);
-
-            {
-                // エッジの終端と次のエッジの始端の中点を補正点とする
-                double middleX = (edge_pnts[edge_pnt_cnt - 1].x + next_edge_pnts[0].x) / 2;
-                double middleY = (edge_pnts[edge_pnt_cnt - 1].y + next_edge_pnts[0].y) / 2;
-                Point<double> middle(middleX, middleY);
-
-                edge_pnts[edge_pnt_cnt - 1] = middle; // 終端
-                next_edge_pnts[0] = middle; // 始端
-            }
-        }
+        // TODO: 実装
     }
 
     // エッジごとの折れ点の端が繋がるように補正
@@ -159,7 +138,7 @@ public:
     double GetArea(const int baseline = 0) const
     {
         double area = 0.0; // 面積(符号付)
-        const int split = 20; // エッジ分割数
+        const int split = 10; // エッジ分割数
 
         // エッジからUV折れ線のループ多角形を作成する
         std::vector<std::vector<Point<double>>> polylines(_edge_cnt); // 折れ線群
