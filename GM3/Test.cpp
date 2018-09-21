@@ -135,49 +135,49 @@ void DrawUV_CGS9()
     cout << loop->GetArea() << endl;
 
     {
-        // TODO: ColorをRGBAを持つ構造体かクラスにするべき
-        vector<GLdouble[4]> color(4);
-        for (int i = 0; i < 4; ++i)
-            color[0][i] = Color::light_blue[i];
-        for (int i = 0; i < 4; ++i)
-            color[1][i] = Color::orange[i];
-        for (int i = 0; i < 4; ++i)
-            color[2][i] = Color::pink[i];
-        for (int i = 0; i < 4; ++i)
-            color[3][i] = Color::red[i];
+        //// TODO: ColorをRGBAを持つ構造体かクラスにするべき
+        //vector<GLdouble[4]> color(4);
+        //for (int i = 0; i < 4; ++i)
+        //    color[0][i] = Color::light_blue[i];
+        //for (int i = 0; i < 4; ++i)
+        //    color[1][i] = Color::orange[i];
+        //for (int i = 0; i < 4; ++i)
+        //    color[2][i] = Color::pink[i];
+        //for (int i = 0; i < 4; ++i)
+        //    color[3][i] = Color::red[i];
 
-        int cnt = 0;
+        //int cnt = 0;
 
-        std::vector<vector<Point<double>>> uv_params_list_split(4);
-        on_curve1->GetOnUVCurvePoints(10, uv_params_list_split[0]);
-        on_curve2->GetOnUVCurvePoints(10, uv_params_list_split[1]);
-        on_curve3->GetOnUVCurvePoints(10, uv_params_list_split[2]);
-        on_curve4->GetOnUVCurvePoints(10, uv_params_list_split[3]);
-        // UVパラメータ描画 
-        glPointSize(7.0);
-        glBegin(GL_POINTS);
-        {
-            for (const auto& uv_params : uv_params_list_split)
-            {
-                glColor3dv(color[cnt++]);
-                for (const auto& uv_param : uv_params)
-                    glVertex3d(Vector3d(uv_param.x - 0.4994188, uv_param.y - 0.3654095, 0));
-            }
-        }
-        glEnd();
+        //std::vector<vector<Point<double>>> uv_params_list_split(4);
+        //on_curve1->GetOnUVCurvePoints(10, uv_params_list_split[0]);
+        //on_curve2->GetOnUVCurvePoints(10, uv_params_list_split[1]);
+        //on_curve3->GetOnUVCurvePoints(10, uv_params_list_split[2]);
+        //on_curve4->GetOnUVCurvePoints(10, uv_params_list_split[3]);
+        //// UVパラメータ描画 
+        //glPointSize(7.0);
+        //glBegin(GL_POINTS);
+        //{
+        //    for (const auto& uv_params : uv_params_list_split)
+        //    {
+        //        glColor3dv(color[cnt++]);
+        //        for (const auto& uv_param : uv_params)
+        //            glVertex3d(Vector3d(uv_param.x/* - 0.4994188*/, uv_param.y/* - 0.3654095*/, 0));
+        //    }
+        //}
+        //glEnd();
 
-        cnt = 0;
-        glLineWidth(1.0);
-        for (const auto& uv_params : uv_params_list_split)
-        {
-            glBegin(GL_LINE_STRIP);
-            {
-                glColor3dv(color[cnt++]);
-                for (const auto& uv_param : uv_params)
-                    glVertex3d(Vector3d(uv_param.x - 0.4994188, uv_param.y - 0.3654095, 0));
-            }
-            glEnd();
-        }
+        //cnt = 0;
+        //glLineWidth(1.0);
+        //for (const auto& uv_params : uv_params_list_split)
+        //{
+        //    glBegin(GL_LINE_STRIP);
+        //    {
+        //        glColor3dv(color[cnt++]);
+        //        for (const auto& uv_param : uv_params)
+        //            glVertex3d(Vector3d(uv_param.x/* - 0.4994188*/, uv_param.y/* - 0.3654095*/, 0));
+        //    }
+        //    glEnd();
+        //}
     }
 
     //cout << "曲線1 moto 相違度: " << surf->CalcDifferency(curve1) << endl;
@@ -192,11 +192,11 @@ void DrawUV_CGS9()
     if (isFirst)
     {
         // 元の曲線
-        test_scene->AddObject(curve1->GetName(), curve1);
+        //test_scene->AddObject(curve1->GetName(), curve1);
         //test_scene->AddObject(curve2->GetName(), curve2);
         //test_scene->AddObject(curve3->GetName(), curve3);
         //test_scene->AddObject(curve4->GetName(), curve4);
-        //test_scene->AddObject(surf->GetName(), surf); // 対象曲面
+        test_scene->AddObject(surf->GetName(), surf); // 対象曲面
 
         on_curve1->GetXYZCurve()->SetColor(Color::light_blue);
         on_curve2->GetXYZCurve()->SetColor(Color::orange);
@@ -210,17 +210,17 @@ void DrawUV_CGS9()
         ////uv_curve1_copy->ReverseFault();
 
         ////test_scene->AddObject(uv_curve1->GetName(), uv_curve1_copy);
-        //// UV曲線      
-        //test_scene->AddObject(on_curve1->GetUVCurve()->GetName(), on_curve1->GetUVCurve());
-        //test_scene->AddObject(on_curve2->GetUVCurve()->GetName(), on_curve2->GetUVCurve());
-        //test_scene->AddObject(on_curve3->GetUVCurve()->GetName(), on_curve3->GetUVCurve());
-        //test_scene->AddObject(on_curve4->GetUVCurve()->GetName(), on_curve4->GetUVCurve());
+        // UV曲線      
+        test_scene->AddObject(on_curve1->GetUVCurve()->GetName(), on_curve1->GetUVCurve());
+        test_scene->AddObject(on_curve2->GetUVCurve()->GetName(), on_curve2->GetUVCurve());
+        test_scene->AddObject(on_curve3->GetUVCurve()->GetName(), on_curve3->GetUVCurve());
+        test_scene->AddObject(on_curve4->GetUVCurve()->GetName(), on_curve4->GetUVCurve());
 
-        //// 面上線
-        //test_scene->AddObject(on_curve1->GetXYZCurve()->GetName(), on_curve1->GetXYZCurve());
-        //test_scene->AddObject(on_curve2->GetXYZCurve()->GetName(), on_curve2->GetXYZCurve());
-        //test_scene->AddObject(on_curve3->GetXYZCurve()->GetName(), on_curve3->GetXYZCurve());
-        //test_scene->AddObject(on_curve4->GetXYZCurve()->GetName(), on_curve4->GetXYZCurve());
+        // 面上線
+        test_scene->AddObject(on_curve1->GetXYZCurve()->GetName(), on_curve1->GetXYZCurve());
+        test_scene->AddObject(on_curve2->GetXYZCurve()->GetName(), on_curve2->GetXYZCurve());
+        test_scene->AddObject(on_curve3->GetXYZCurve()->GetName(), on_curve3->GetXYZCurve());
+        test_scene->AddObject(on_curve4->GetXYZCurve()->GetName(), on_curve4->GetXYZCurve());
     }
 }
 
