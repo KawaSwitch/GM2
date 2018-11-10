@@ -52,8 +52,8 @@ static vector<function<void(void)>> TestRegisterDraw{
     //DrawSplitSurface_CGS8, // 分割曲面を描画
 	//DrawIntersectCurveSurface_CGS8_one, // 曲線と曲面の1交点取得
     //DrawIntersectCurveSurface_CGS8, // 曲線と曲面の交点取得
-    DrawUV_CGS9,
-    //DrawAllKind,
+    //DrawUV_CGS9,
+    DrawAllKind,
 };
 
 void DrawUV_CGS9()
